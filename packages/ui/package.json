@@ -5,7 +5,7 @@
   "type": "module",
   "types": "./src/index.ts",
   "exports": {
-    "./styles/globals.css": "./src/styles/globals.css",
+    "./styles/globals.css": "./src/globals.css",
     "./atoms/*": {
       "types": "./src/atoms/*/*.tsx",
       "development": "./src/atoms/*/*.tsx",
