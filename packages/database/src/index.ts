@@ -1,1 +1,25 @@
-// Prisma client exported after Phase 2
+export { prisma } from './client'
+export type {
+  EnglishLevel,
+  EnglishNote,
+  ExperienceLevel,
+  InterviewAnswer,
+  InterviewQuestion,
+  InterviewSession,
+  InterviewType,
+  LearningRecommendation,
+  NoteGeneratedQuestion,
+  NoteStatus,
+  NoteType,
+  Prisma,
+  QuestionDifficulty,
+  RecommendationStatus,
+  ResumeAnalysis,
+  TechnicalNote,
+  TechnicalNoteSection,
+  User,
+  UserEnglishWeakness,
+  UserLearningProfile,
+  UserWeakConcept,
+} from './generated/prisma/client'
+export { PrismaClient } from './generated/prisma/client'
