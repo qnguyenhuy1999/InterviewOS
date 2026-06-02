@@ -1,0 +1,50 @@
+export enum ExperienceLevel {
+  JUNIOR = 'JUNIOR',
+  MID = 'MID',
+  SENIOR = 'SENIOR',
+  STAFF = 'STAFF',
+  PRINCIPAL = 'PRINCIPAL',
+}
+
+export enum EnglishLevel {
+  BEGINNER = 'BEGINNER',
+  ELEMENTARY = 'ELEMENTARY',
+  INTERMEDIATE = 'INTERMEDIATE',
+  UPPER_INTERMEDIATE = 'UPPER_INTERMEDIATE',
+  ADVANCED = 'ADVANCED',
+  NATIVE = 'NATIVE',
+}
+
+export enum NoteStatus {
+  DRAFT = 'DRAFT',
+  PUBLISHED = 'PUBLISHED',
+  ARCHIVED = 'ARCHIVED',
+}
+
+export enum NoteType {
+  CONCEPT = 'CONCEPT',
+  ALGORITHM = 'ALGORITHM',
+  SYSTEM_DESIGN = 'SYSTEM_DESIGN',
+  BEHAVIORAL = 'BEHAVIORAL',
+  LANGUAGE_SPECIFIC = 'LANGUAGE_SPECIFIC',
+}
+
+export enum InterviewType {
+  TECHNICAL = 'TECHNICAL',
+  BEHAVIORAL = 'BEHAVIORAL',
+  SYSTEM_DESIGN = 'SYSTEM_DESIGN',
+  MIXED = 'MIXED',
+}
+
+export enum QuestionDifficulty {
+  EASY = 'EASY',
+  MEDIUM = 'MEDIUM',
+  HARD = 'HARD',
+  EXPERT = 'EXPERT',
+}
+
+export enum RecommendationStatus {
+  PENDING = 'PENDING',
+  DISMISSED = 'DISMISSED',
+  COMPLETED = 'COMPLETED',
+}

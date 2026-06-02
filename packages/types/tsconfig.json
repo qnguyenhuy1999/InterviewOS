@@ -1,0 +1,4 @@
+{
+  "extends": "@interviewos/tsconfig/base.json",
+  "include": ["src/**/*"]
+}
