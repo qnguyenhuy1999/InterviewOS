@@ -118,18 +118,21 @@ export class NotebookRepository {
     payload: {
       structuredContent: Record<string, unknown>
       sections: Array<{ heading: string; content: string }>
+      aiMetadata: Prisma.InputJsonValue
     },
   ) {
     return this.prisma.technicalNote.update({
       where: { id: noteId },
       data: {
         structuredContent: payload.structuredContent as Prisma.InputJsonValue,
+        aiMetadata: payload.aiMetadata,
         sections: {
           deleteMany: {},
           create: payload.sections.map((section, index) => ({
             heading: section.heading,
             content: section.content,
             order: index,
+            aiMetadata: payload.aiMetadata,
           })),
         },
         status: 'PUBLISHED',
@@ -155,6 +158,7 @@ export class NotebookRepository {
       expectedConcepts: string[]
       sourceSection: string
     }>,
+    aiMetadata: Prisma.InputJsonValue,
   ) {
     return this.prisma.technicalNote.update({
       where: { id: noteId },
@@ -168,6 +172,7 @@ export class NotebookRepository {
             difficulty: question.difficulty ?? 'MEDIUM',
             expectedConcepts: question.expectedConcepts,
             sourceSection: question.sourceSection,
+            aiMetadata,
           })),
         },
       },

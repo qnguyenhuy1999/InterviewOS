@@ -1,5 +1,5 @@
 import type { Prisma } from '@interviewos/database'
-import type { EnglishLevel, ExperienceLevel } from '@interviewos/types'
+import type { AIExecutionMetadata, EnglishLevel, ExperienceLevel } from '@interviewos/types'
 import { interviewAnswerSchema, startInterviewSessionSchema } from '@interviewos/validators'
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
 
@@ -9,7 +9,7 @@ import { UsersRepository } from '../users/users.repository'
 import { InterviewRepository } from './interview.repository'
 
 type CurrentUserLike = {
-  email?: string
+  id?: string
 }
 
 @Injectable()
@@ -22,7 +22,7 @@ export class InterviewService {
   ) {}
 
   async createSession(currentUser: unknown, payload: Record<string, unknown>) {
-    const user = await this.usersRepository.ensureUserByEmail(this.resolveEmail(currentUser))
+    const user = await this.usersRepository.ensureUserById(this.resolveUserId(currentUser))
     const input = startInterviewSessionSchema.parse(payload)
     const note = await this.findQuestionSource(user.id, input.generatedQuestionId)
 
@@ -38,12 +38,12 @@ export class InterviewService {
   }
 
   async findSessions(currentUser: unknown) {
-    const user = await this.usersRepository.ensureUserByEmail(this.resolveEmail(currentUser))
+    const user = await this.usersRepository.ensureUserById(this.resolveUserId(currentUser))
     return this.interviewRepository.findSessions(user.id)
   }
 
   async findSessionById(currentUser: unknown, sessionId: string) {
-    const user = await this.usersRepository.ensureUserByEmail(this.resolveEmail(currentUser))
+    const user = await this.usersRepository.ensureUserById(this.resolveUserId(currentUser))
     const session = await this.interviewRepository.findSessionById(user.id, sessionId)
 
     if (!session) {
@@ -54,7 +54,7 @@ export class InterviewService {
   }
 
   async answerQuestion(currentUser: unknown, sessionId: string, payload: Record<string, unknown>) {
-    const user = await this.usersRepository.ensureUserByEmail(this.resolveEmail(currentUser))
+    const user = await this.usersRepository.ensureUserById(this.resolveUserId(currentUser))
     const profile = await this.usersRepository.findProfileByUserId(user.id)
     if (!profile) {
       throw new BadRequestException('Complete onboarding before practicing questions.')
@@ -86,11 +86,11 @@ export class InterviewService {
       expectedConcepts: primaryQuestion.expectedConcepts,
       sourceSection: primaryQuestion.sourceSection,
       targetLevel: targetLevel as ExperienceLevel,
-    })
+    }, { userId: user.id })
     const english = await this.aiGateway.generateEnglishFeedback({
       text: input.answer,
       targetLevel: englishLevel as EnglishLevel,
-    })
+    }, { userId: user.id })
 
     const updatedSession = await this.interviewRepository.saveAnswer(
       session.id,
@@ -110,24 +110,26 @@ export class InterviewService {
         preferredOutputStyle:
           advancedSettings?.preferredOutputStyle ?? session.preferredOutputStyle,
         rawAnswer: input.answer,
-        technicalScore: technical.technicalScore,
-        englishScore: technical.englishScore,
-        clarityScore: technical.clarityScore,
-        overallScore: technical.overallScore,
-        aiFeedback: technical.summary,
+        technicalScore: technical.result.technicalScore,
+        englishScore: technical.result.englishScore,
+        clarityScore: technical.result.clarityScore,
+        overallScore: technical.result.overallScore,
+        aiFeedback: technical.result.summary,
         technicalFeedback: {
-          summary: technical.summary,
-          strengths: technical.strengths,
-          improvements: technical.improvements,
+          summary: technical.result.summary,
+          strengths: technical.result.strengths,
+          improvements: technical.result.improvements,
         } satisfies Prisma.JsonObject,
         englishFeedback: {
-          summary: english.feedback,
-          overallScore: english.overallScore,
-          highlightedTopics: english.weakTopics,
+          summary: english.result.feedback,
+          overallScore: english.result.overallScore,
+          highlightedTopics: english.result.weakTopics,
         } satisfies Prisma.JsonObject,
-        nextRecommendedQuestion: technical.nextRecommendedQuestion satisfies Prisma.JsonObject,
-        recommendedLearning: technical.recommendedLearning satisfies Prisma.JsonObject,
-        weakConcepts: technical.weakConcepts,
+        nextRecommendedQuestion:
+          technical.result.nextRecommendedQuestion satisfies Prisma.JsonObject,
+        recommendedLearning: technical.result.recommendedLearning satisfies Prisma.JsonObject,
+        weakConcepts: technical.result.weakConcepts,
+        aiMetadata: this.toAiMetadataJson(technical.metadata),
       },
     )
 
@@ -136,14 +138,27 @@ export class InterviewService {
       throw new BadRequestException('Answer persistence failed.')
     }
 
-    const usefulEnglishNotes = english.notes.filter(
+    const usefulEnglishNotes = english.result.notes.filter(
       (note) =>
         note.correctedSentence.trim() !== note.userSentence.trim() || note.explanation.length > 20,
     )
 
-    await this.interviewRepository.saveEnglishNotes(user.id, answerId, usefulEnglishNotes)
-    await this.interviewRepository.upsertWeakConcepts(user.id, answerId, technical.weakConcepts)
-    await this.interviewRepository.upsertEnglishWeaknesses(user.id, answerId, english.weakTopics)
+    await this.interviewRepository.saveEnglishNotes(
+      user.id,
+      answerId,
+      usefulEnglishNotes,
+      this.toAiMetadataJson(english.metadata),
+    )
+    await this.interviewRepository.upsertWeakConcepts(
+      user.id,
+      answerId,
+      technical.result.weakConcepts,
+    )
+    await this.interviewRepository.upsertEnglishWeaknesses(
+      user.id,
+      answerId,
+      english.result.weakTopics,
+    )
 
     return this.interviewRepository.findSessionById(user.id, session.id)
   }
@@ -153,7 +168,7 @@ export class InterviewService {
   }
 
   async deleteSession(currentUser: unknown, sessionId: string) {
-    const user = await this.usersRepository.ensureUserByEmail(this.resolveEmail(currentUser))
+    const user = await this.usersRepository.ensureUserById(this.resolveUserId(currentUser))
     return this.interviewRepository.deleteSession(user.id, sessionId)
   }
 
@@ -170,8 +185,12 @@ export class InterviewService {
     return note
   }
 
-  private resolveEmail(currentUser: unknown): string | undefined {
-    return (currentUser as CurrentUserLike | undefined)?.email
+  private resolveUserId(currentUser: unknown): string | undefined {
+    return (currentUser as CurrentUserLike | undefined)?.id
+  }
+
+  private toAiMetadataJson(metadata: AIExecutionMetadata): Prisma.InputJsonValue {
+    return metadata as unknown as Prisma.InputJsonValue
   }
 }
 

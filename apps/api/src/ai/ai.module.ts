@@ -7,6 +7,7 @@ import {
 import { Module } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 
+import { AIAuditRepository } from './ai-audit.repository'
 import { AIGateway } from './ai.gateway'
 
 @Module({
@@ -40,6 +41,7 @@ import { AIGateway } from './ai.gateway'
         return new PackageAIGateway(provider)
       },
     },
+    AIAuditRepository,
     AIGateway,
   ],
   exports: [AIGateway],

@@ -13,6 +13,33 @@ export interface GenerateTextResult {
   tokensUsed?: number
 }
 
+export interface AITokenUsage {
+  inputTokens?: number
+  outputTokens?: number
+  totalTokens?: number
+}
+
+export type AIValidationStatus = 'success' | 'validation_failed' | 'provider_error'
+
+export interface AIExecutionMetadata {
+  provider: string
+  model: string
+  promptKey: string
+  promptVersion: string
+  schemaKey: string
+  schemaVersion: string
+  inputHash: string
+  validationStatus: AIValidationStatus
+  tokenUsage?: AITokenUsage
+  latencyMs: number
+  generatedAt: string
+}
+
+export interface AIResult<T> {
+  result: T
+  metadata: AIExecutionMetadata
+}
+
 export interface GenerateStructuredInput<T = unknown> {
   prompt: string
   systemPrompt?: string
@@ -178,21 +205,21 @@ export interface AnalyzeResumeResult {
 }
 
 export interface AIProvider {
-  generateText(input: GenerateTextInput): Promise<GenerateTextResult>
-  generateStructured<T>(input: GenerateStructuredInput<T>): Promise<GenerateStructuredResult<T>>
+  generateText(input: GenerateTextInput): Promise<AIResult<GenerateTextResult>>
+  generateStructured<T>(input: GenerateStructuredInput<T>): Promise<AIResult<GenerateStructuredResult<T>>>
   transcribeAudio(input: TranscribeAudioInput): Promise<TranscribeAudioResult>
   textToSpeech(input: TextToSpeechInput): Promise<TextToSpeechResult>
-  generateTechnicalNote(input: GenerateTechnicalNoteInput): Promise<GenerateTechnicalNoteResult>
-  improveTechnicalNote(input: ImproveTechnicalNoteInput): Promise<ImproveTechnicalNoteResult>
+  generateTechnicalNote(input: GenerateTechnicalNoteInput): Promise<AIResult<GenerateTechnicalNoteResult>>
+  improveTechnicalNote(input: ImproveTechnicalNoteInput): Promise<AIResult<ImproveTechnicalNoteResult>>
   generateQuestionsFromNote(
     input: GenerateQuestionsFromNoteInput,
-  ): Promise<GenerateQuestionsFromNoteResult>
+  ): Promise<AIResult<GenerateQuestionsFromNoteResult>>
   evaluateInterviewAnswer(
     input: EvaluateInterviewAnswerInput,
-  ): Promise<EvaluateInterviewAnswerResult>
+  ): Promise<AIResult<EvaluateInterviewAnswerResult>>
   generateEnglishFeedback(
     input: GenerateEnglishFeedbackInput,
-  ): Promise<GenerateEnglishFeedbackResult>
-  recommendNextLearning(input: RecommendNextLearningInput): Promise<RecommendNextLearningResult>
-  analyzeResume(input: AnalyzeResumeInput): Promise<AnalyzeResumeResult>
+  ): Promise<AIResult<GenerateEnglishFeedbackResult>>
+  recommendNextLearning(input: RecommendNextLearningInput): Promise<AIResult<RecommendNextLearningResult>>
+  analyzeResume(input: AnalyzeResumeInput): Promise<AIResult<AnalyzeResumeResult>>
 }

@@ -47,6 +47,7 @@ export class RecommendationsRepository {
   async replaceRecommendations(
     userId: string,
     items: Array<{ type: string; payload: RecommendationPayload }>,
+    aiMetadata?: Prisma.InputJsonValue,
   ) {
     await this.prisma.learningRecommendation.deleteMany({
       where: { userId },
@@ -61,6 +62,7 @@ export class RecommendationsRepository {
         userId,
         type: item.type,
         payload: item.payload as unknown as Prisma.InputJsonValue,
+        aiMetadata,
       })),
     })
 

@@ -9,9 +9,10 @@ export default () => {
     },
     app: {
       env: parsed.NODE_ENV,
-      jwtSecret: parsed.JWT_SECRET,
       authCookieName: parsed.AUTH_COOKIE_NAME,
       authSessionTtlDays: parsed.AUTH_SESSION_TTL_DAYS,
+      passwordResetTtlMinutes: parsed.PASSWORD_RESET_TTL_MINUTES,
+      emailVerificationTtlHours: parsed.EMAIL_VERIFICATION_TTL_HOURS,
       webAppUrl: parsed.WEB_APP_URL,
     },
     database: {

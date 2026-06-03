@@ -1,12 +1,15 @@
-import type { UserLearningProfile } from '@interviewos/types'
+import type { ActiveAuthSession, AuthSessionResponse, UserLearningProfile } from '@interviewos/types'
 
 import { ProfileForm } from '@/components/forms/ProfileForm'
+import { SecuritySettings } from '@/components/settings/SecuritySettings'
 import { serverApiClient } from '@/lib/server-api-client'
 
 export default async function SettingsPage() {
-  const profile = await serverApiClient<UserLearningProfile | null>('/users/me/profile').catch(
-    () => null,
-  )
+  const [profile, session, sessions] = await Promise.all([
+    serverApiClient<UserLearningProfile | null>('/users/me/profile').catch(() => null),
+    serverApiClient<AuthSessionResponse>('/auth/me'),
+    serverApiClient<ActiveAuthSession[]>('/auth/sessions').catch(() => []),
+  ])
 
   return (
     <div className="mx-auto max-w-lg space-y-8">
@@ -18,6 +21,7 @@ export default async function SettingsPage() {
         </p>
       </div>
       <ProfileForm initialProfile={profile} mode="settings" />
+      <SecuritySettings currentUser={session.user} sessions={sessions} />
     </div>
   )
 }

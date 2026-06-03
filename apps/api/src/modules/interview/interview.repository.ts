@@ -123,6 +123,7 @@ export class InterviewRepository {
       nextRecommendedQuestion: Prisma.JsonObject
       recommendedLearning: Prisma.JsonObject
       weakConcepts: string[]
+      aiMetadata: Prisma.InputJsonValue
     },
   ) {
     return this.prisma.interviewSession.update({
@@ -180,6 +181,7 @@ export class InterviewRepository {
       recommendedTopics: string[]
       practicePatterns: string[]
     }>,
+    aiMetadata: Prisma.InputJsonValue,
   ) {
     if (notes.length === 0) {
       return []
@@ -196,6 +198,7 @@ export class InterviewRepository {
         grammarTopic: note.grammarTopic,
         recommendedStudyTopics: note.recommendedTopics,
         practicePatterns: note.practicePatterns,
+        aiMetadata,
       })),
     })
 

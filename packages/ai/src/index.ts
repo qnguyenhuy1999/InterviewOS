@@ -1,5 +1,5 @@
-export { AIGateway } from './gateway'
-export type { AIProvider } from './provider'
+export { AIGateway, AIResponseValidationError } from './gateway'
 export * from './prompts'
+export type { AIProvider } from './provider'
 export { MockAIProvider } from './providers/mock'
 export { OpenAIProvider } from './providers/openai.stub'

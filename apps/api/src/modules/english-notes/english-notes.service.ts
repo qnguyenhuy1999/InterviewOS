@@ -4,7 +4,7 @@ import { UsersRepository } from '../users/users.repository'
 import { EnglishNotesRepository } from './english-notes.repository'
 
 type CurrentUserLike = {
-  email?: string
+  id?: string
 }
 
 @Injectable()
@@ -15,12 +15,12 @@ export class EnglishNotesService {
   ) {}
 
   async findEnglishNotes(currentUser: unknown) {
-    const user = await this.usersRepository.ensureUserByEmail(this.resolveEmail(currentUser))
+    const user = await this.usersRepository.ensureUserById(this.resolveUserId(currentUser))
     return this.englishNotesRepository.findEnglishNotes(user.id)
   }
 
   async createEnglishNote(currentUser: unknown, payload: Record<string, unknown>) {
-    const user = await this.usersRepository.ensureUserByEmail(this.resolveEmail(currentUser))
+    const user = await this.usersRepository.ensureUserById(this.resolveUserId(currentUser))
     return this.englishNotesRepository.createEnglishNote(user.id, {
       answerId: String(payload.answerId ?? ''),
       originalSentence: String(payload.originalSentence ?? ''),
@@ -37,7 +37,7 @@ export class EnglishNotesService {
     })
   }
 
-  private resolveEmail(currentUser: unknown): string | undefined {
-    return (currentUser as CurrentUserLike | undefined)?.email
+  private resolveUserId(currentUser: unknown): string | undefined {
+    return (currentUser as CurrentUserLike | undefined)?.id
   }
 }

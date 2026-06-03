@@ -1,5 +1,9 @@
+import { createHash } from 'node:crypto'
+
 import type {
+  AIExecutionMetadata,
   AIProvider,
+  AIResult,
   AnalyzeResumeInput,
   AnalyzeResumeResult,
   EvaluateInterviewAnswerInput,
@@ -23,15 +27,6 @@ import type {
   TranscribeAudioInput,
   TranscribeAudioResult,
 } from '@interviewos/types'
-import {
-  englishFeedbackResultSchema,
-  generatedQuestionsResultSchema,
-  interviewAnswerResultSchema,
-  recommendationResultSchema,
-  resumeAnalysisResultSchema,
-  technicalNoteResultSchema,
-} from '@interviewos/validators'
-import { ZodError, type ZodType } from 'zod'
 
 import {
   englishFeedbackPrompt,
@@ -53,31 +48,39 @@ type OpenAIProviderOptions = {
 type JsonSchemaFormat = {
   name: string
   schema: Record<string, unknown>
+  version: string
 }
+
+const structuredSchemaVersion = 'v1'
 
 export class OpenAIProvider implements AIProvider {
   constructor(private readonly options: OpenAIProviderOptions) {}
 
-  async generateText(_input: GenerateTextInput): Promise<GenerateTextResult> {
+  async generateText(_input: GenerateTextInput): Promise<AIResult<GenerateTextResult>> {
     throw new Error('Text generation is not used in this phase.')
   }
 
   async generateStructured<T>(
     input: GenerateStructuredInput<T>,
-  ): Promise<GenerateStructuredResult<T>> {
+  ): Promise<AIResult<GenerateStructuredResult<T>>> {
     const result = await this.createStructuredResponse({
       instructions: input.systemPrompt ?? 'Return only valid JSON.',
       prompt: input.prompt,
       format: {
         name: 'structured_response',
         schema: input.schema as Record<string, unknown>,
+        version: structuredSchemaVersion,
       },
-      validator: null,
+      promptKey: 'structured-generation',
+      promptVersion: 'v1',
     })
 
     return {
-      data: result.data as T,
-      tokensUsed: result.tokensUsed,
+      result: {
+        data: result.result as T,
+        tokensUsed: result.metadata.tokenUsage?.totalTokens,
+      },
+      metadata: result.metadata,
     }
   }
 
@@ -91,7 +94,7 @@ export class OpenAIProvider implements AIProvider {
 
   async generateTechnicalNote(
     input: GenerateTechnicalNoteInput,
-  ): Promise<GenerateTechnicalNoteResult> {
+  ): Promise<AIResult<GenerateTechnicalNoteResult>> {
     const prompt = technicalNotePrompt(input)
     return this.createStructuredResponse({
       instructions: withVersion(prompt),
@@ -99,24 +102,39 @@ export class OpenAIProvider implements AIProvider {
       format: {
         name: 'technical_note',
         schema: technicalNoteJsonSchema,
+        version: structuredSchemaVersion,
       },
-      validator: technicalNoteResultSchema,
-    }).then((result) => result.data as GenerateTechnicalNoteResult)
+      promptKey: prompt.id,
+      promptVersion: prompt.version,
+    })
   }
 
   async improveTechnicalNote(
     input: ImproveTechnicalNoteInput,
-  ): Promise<ImproveTechnicalNoteResult> {
+  ): Promise<AIResult<ImproveTechnicalNoteResult>> {
     return {
-      title: input.title,
-      content: input.content,
-      improvements: ['No automatic improvement flow is configured in this phase.'],
+      result: {
+        title: input.title,
+        content: input.content,
+        improvements: ['No automatic improvement flow is configured in this phase.'],
+      },
+      metadata: buildMetadata({
+        provider: 'openai',
+        model: this.options.model,
+        promptKey: 'technical-note-improvement',
+        promptVersion: 'v1',
+        schemaKey: 'technical_note_improvement',
+        schemaVersion: structuredSchemaVersion,
+        input,
+        generatedAt: new Date(),
+        latencyMs: 0,
+      }),
     }
   }
 
   async generateQuestionsFromNote(
     input: GenerateQuestionsFromNoteInput,
-  ): Promise<GenerateQuestionsFromNoteResult> {
+  ): Promise<AIResult<GenerateQuestionsFromNoteResult>> {
     const prompt = generatedQuestionsPrompt(input)
     return this.createStructuredResponse({
       instructions: withVersion(prompt),
@@ -124,14 +142,16 @@ export class OpenAIProvider implements AIProvider {
       format: {
         name: 'generated_questions',
         schema: generatedQuestionsJsonSchema,
+        version: structuredSchemaVersion,
       },
-      validator: generatedQuestionsResultSchema,
-    }).then((result) => result.data as GenerateQuestionsFromNoteResult)
+      promptKey: prompt.id,
+      promptVersion: prompt.version,
+    })
   }
 
   async evaluateInterviewAnswer(
     input: EvaluateInterviewAnswerInput,
-  ): Promise<EvaluateInterviewAnswerResult> {
+  ): Promise<AIResult<EvaluateInterviewAnswerResult>> {
     const prompt = interviewEvaluationPrompt(input)
     return this.createStructuredResponse({
       instructions: withVersion(prompt),
@@ -139,14 +159,16 @@ export class OpenAIProvider implements AIProvider {
       format: {
         name: 'interview_evaluation',
         schema: interviewEvaluationJsonSchema,
+        version: structuredSchemaVersion,
       },
-      validator: interviewAnswerResultSchema,
-    }).then((result) => result.data as EvaluateInterviewAnswerResult)
+      promptKey: prompt.id,
+      promptVersion: prompt.version,
+    })
   }
 
   async generateEnglishFeedback(
     input: GenerateEnglishFeedbackInput,
-  ): Promise<GenerateEnglishFeedbackResult> {
+  ): Promise<AIResult<GenerateEnglishFeedbackResult>> {
     const prompt = englishFeedbackPrompt(input)
     return this.createStructuredResponse({
       instructions: withVersion(prompt),
@@ -154,14 +176,16 @@ export class OpenAIProvider implements AIProvider {
       format: {
         name: 'english_feedback',
         schema: englishFeedbackJsonSchema,
+        version: structuredSchemaVersion,
       },
-      validator: englishFeedbackResultSchema,
-    }).then((result) => result.data as GenerateEnglishFeedbackResult)
+      promptKey: prompt.id,
+      promptVersion: prompt.version,
+    })
   }
 
   async recommendNextLearning(
     input: RecommendNextLearningInput,
-  ): Promise<RecommendNextLearningResult> {
+  ): Promise<AIResult<RecommendNextLearningResult>> {
     const prompt = learningRecommendationsPrompt(input)
     return this.createStructuredResponse({
       instructions: withVersion(prompt),
@@ -169,12 +193,14 @@ export class OpenAIProvider implements AIProvider {
       format: {
         name: 'learning_recommendations',
         schema: learningRecommendationsJsonSchema,
+        version: structuredSchemaVersion,
       },
-      validator: recommendationResultSchema,
-    }).then((result) => result.data as RecommendNextLearningResult)
+      promptKey: prompt.id,
+      promptVersion: prompt.version,
+    })
   }
 
-  async analyzeResume(input: AnalyzeResumeInput): Promise<AnalyzeResumeResult> {
+  async analyzeResume(input: AnalyzeResumeInput): Promise<AIResult<AnalyzeResumeResult>> {
     const prompt = resumeAnalysisPrompt(input)
     return this.createStructuredResponse({
       instructions: withVersion(prompt),
@@ -182,22 +208,28 @@ export class OpenAIProvider implements AIProvider {
       format: {
         name: 'resume_analysis',
         schema: resumeAnalysisJsonSchema,
+        version: structuredSchemaVersion,
       },
-      validator: resumeAnalysisResultSchema,
-    }).then((result) => result.data as AnalyzeResumeResult)
+      promptKey: prompt.id,
+      promptVersion: prompt.version,
+    })
   }
 
-  private async createStructuredResponse<T>({
+  private async createStructuredResponse<TResult>({
     instructions,
     prompt,
     format,
-    validator,
+    promptKey,
+    promptVersion,
   }: {
     instructions: string
     prompt: string
     format: JsonSchemaFormat
-    validator: ZodType<T> | null
-  }): Promise<{ data: T; tokensUsed?: number }> {
+    promptKey: string
+    promptVersion: string
+  }): Promise<AIResult<TResult>> {
+    const startedAt = Date.now()
+    const generatedAt = new Date()
     const response = await fetch(`${trimTrailingSlash(this.options.baseUrl)}/responses`, {
       method: 'POST',
       headers: {
@@ -239,18 +271,20 @@ export class OpenAIProvider implements AIProvider {
       throw new Error('OpenAI response did not include structured output text.')
     }
 
-    const parsed = JSON.parse(outputText) as unknown
-
-    try {
-      return {
-        data: validator ? validator.parse(parsed) : (parsed as T),
-        tokensUsed: payload.usage?.total_tokens,
-      }
-    } catch (error) {
-      if (error instanceof ZodError) {
-        throw new Error(`Structured output validation failed: ${error.message}`)
-      }
-      throw error instanceof Error ? error : new Error('Structured output validation failed.')
+    return {
+      result: JSON.parse(outputText) as TResult,
+      metadata: buildMetadata({
+        provider: 'openai',
+        model: this.options.model,
+        promptKey,
+        promptVersion,
+        schemaKey: format.name,
+        schemaVersion: format.version,
+        input: { instructions, prompt, schema: format.schema },
+        usage: payload.usage,
+        generatedAt,
+        latencyMs: Date.now() - startedAt,
+      }),
     }
   }
 }
@@ -258,6 +292,8 @@ export class OpenAIProvider implements AIProvider {
 type OpenAIResponsesPayload = {
   output_text?: string
   usage?: {
+    input_tokens?: number
+    output_tokens?: number
     total_tokens?: number
   }
   output?: Array<{
@@ -293,6 +329,37 @@ function trimTrailingSlash(value: string): string {
 
 function withVersion(prompt: { id: string; version: string; instructions: string }) {
   return `[Prompt ${prompt.id}@${prompt.version}]\n${prompt.instructions}`
+}
+
+function buildMetadata(input: {
+  provider: string
+  model: string
+  promptKey: string
+  promptVersion: string
+  schemaKey: string
+  schemaVersion: string
+  input: unknown
+  usage?: OpenAIResponsesPayload['usage']
+  generatedAt: Date
+  latencyMs: number
+}): AIExecutionMetadata {
+  return {
+    provider: input.provider,
+    model: input.model,
+    promptKey: input.promptKey,
+    promptVersion: input.promptVersion,
+    schemaKey: input.schemaKey,
+    schemaVersion: input.schemaVersion,
+    inputHash: createHash('sha256').update(JSON.stringify(input.input)).digest('hex'),
+    validationStatus: 'success',
+    tokenUsage: {
+      inputTokens: input.usage?.input_tokens,
+      outputTokens: input.usage?.output_tokens,
+      totalTokens: input.usage?.total_tokens,
+    },
+    latencyMs: input.latencyMs,
+    generatedAt: input.generatedAt.toISOString(),
+  }
 }
 
 const sharedStringArray = { type: 'array', items: { type: 'string' }, minItems: 1 } as const

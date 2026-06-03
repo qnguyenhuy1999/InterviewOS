@@ -1,9 +1,11 @@
 import type {
+  AIExecutionMetadata,
   ExperienceLevel,
   LearningRecommendation,
   RecommendationPayload,
   RecommendationSummary,
 } from '@interviewos/types'
+import type { Prisma } from '@interviewos/database'
 import { Injectable } from '@nestjs/common'
 
 import { AIGateway } from '../../ai/ai.gateway'
@@ -11,7 +13,7 @@ import { UsersRepository } from '../users/users.repository'
 import { RecommendationsRepository } from './recommendations.repository'
 
 type CurrentUserLike = {
-  email?: string
+  id?: string
 }
 
 @Injectable()
@@ -23,7 +25,7 @@ export class RecommendationsService {
   ) {}
 
   async getRecommendations(currentUser: unknown): Promise<RecommendationSummary> {
-    const user = await this.usersRepository.ensureUserByEmail(this.resolveEmail(currentUser))
+    const user = await this.usersRepository.ensureUserById(this.resolveUserId(currentUser))
     const profile = await this.usersRepository.findProfileByUserId(user.id)
     const context = await this.recommendationsRepository.getSourceContext(user.id)
 
@@ -62,14 +64,14 @@ export class RecommendationsService {
           techStack: profile.techStack,
           recentTopics: context.notes.slice(0, 3).map((note) => note.title),
           weakConcepts: context.weakConcepts.slice(0, 5).map((item) => item.concept),
-        })
-      : { recommendations: [] }
+        }, { userId: user.id })
+      : null
 
-    const nextLearningItem = aiNext.recommendations[0]
+    const nextLearningItem = aiNext?.result.recommendations[0]
       ? recommendation(
-          aiNext.recommendations[0].topic,
-          aiNext.recommendations[0].reason,
-          aiNext.recommendations[0].action,
+          aiNext.result.recommendations[0].topic,
+          aiNext.result.recommendations[0].reason,
+          aiNext.result.recommendations[0].action,
         )
       : null
 
@@ -81,6 +83,7 @@ export class RecommendationsService {
         nextEnglishTopic && { type: 'english-topic', payload: nextEnglishTopic },
         nextLearningItem && { type: 'next-learning', payload: nextLearningItem },
       ].filter((item): item is { type: string; payload: RecommendationPayload } => Boolean(item)),
+      aiNext ? this.toAiMetadataJson(aiNext.metadata) : undefined,
     )
 
     return {
@@ -95,8 +98,12 @@ export class RecommendationsService {
     }
   }
 
-  private resolveEmail(currentUser: unknown): string | undefined {
-    return (currentUser as CurrentUserLike | undefined)?.email
+  private resolveUserId(currentUser: unknown): string | undefined {
+    return (currentUser as CurrentUserLike | undefined)?.id
+  }
+
+  private toAiMetadataJson(metadata: AIExecutionMetadata): Prisma.InputJsonValue {
+    return metadata as unknown as Prisma.InputJsonValue
   }
 }
 

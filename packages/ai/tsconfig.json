@@ -1,5 +1,8 @@
 {
   "extends": "@interviewos/tsconfig/base.json",
+  "compilerOptions": {
+    "types": ["node"]
+  },
   "include": ["src/**/*"],
   "exclude": ["src/**/*.test.ts"]
 }

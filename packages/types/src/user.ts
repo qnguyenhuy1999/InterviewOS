@@ -3,6 +3,7 @@ import type { EnglishLevel, ExperienceLevel } from './enums'
 export interface User {
   id: string
   email: string
+  emailVerifiedAt?: Date | null
   name: string | null
   createdAt: Date
   updatedAt: Date

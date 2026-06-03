@@ -1,26 +1,23 @@
 'use client'
 
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
 import { apiFetch } from '@/lib/api-client'
 
-export function LoginForm() {
-  const router = useRouter()
+export function ForgotPasswordForm() {
   const [pending, setPending] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [submitted, setSubmitted] = useState(false)
 
   async function handleSubmit(formData: FormData) {
     setPending(true)
     setError(null)
 
     try {
-      const response = await apiFetch('/auth/login', {
+      const response = await apiFetch('/auth/forgot-password', {
         method: 'POST',
         body: JSON.stringify({
           email: String(formData.get('email') ?? ''),
-          password: String(formData.get('password') ?? ''),
         }),
       })
 
@@ -28,10 +25,13 @@ export function LoginForm() {
         throw new Error(await response.text())
       }
 
-      router.push('/dashboard')
-      router.refresh()
+      setSubmitted(true)
     } catch (submissionError) {
-      setError(submissionError instanceof Error ? submissionError.message : 'Unable to sign in.')
+      setError(
+        submissionError instanceof Error
+          ? submissionError.message
+          : 'Unable to request a password reset.',
+      )
     } finally {
       setPending(false)
     }
@@ -56,23 +56,11 @@ export function LoginForm() {
           className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
         />
       </div>
-      <div className="space-y-2">
-        <div className="flex items-center justify-between">
-          <label className="text-sm font-medium" htmlFor="password">
-            Password
-          </label>
-          <Link href="/forgot-password" className="text-xs text-primary hover:underline">
-            Forgot password?
-          </Link>
+      {submitted ? (
+        <div className="rounded-lg border border-border bg-muted/50 px-3 py-2 text-sm text-muted-foreground">
+          If an account exists for that email, a reset link has been sent.
         </div>
-        <input
-          id="password"
-          name="password"
-          type="password"
-          placeholder="Enter your password"
-          className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
-        />
-      </div>
+      ) : null}
       {error ? (
         <div className="rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
           {error}
@@ -83,7 +71,7 @@ export function LoginForm() {
         disabled={pending}
         className="w-full rounded-lg bg-primary py-2 text-sm font-medium text-primary-foreground disabled:opacity-60"
       >
-        {pending ? 'Signing in...' : 'Sign in'}
+        {pending ? 'Sending link...' : 'Send reset link'}
       </button>
     </form>
   )

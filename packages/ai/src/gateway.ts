@@ -1,5 +1,7 @@
 import type {
+  AIExecutionMetadata,
   AIProvider,
+  AIResult,
   AnalyzeResumeInput,
   AnalyzeResumeResult,
   EvaluateInterviewAnswerInput,
@@ -23,53 +25,102 @@ import {
   resumeAnalysisResultSchema,
   technicalNoteResultSchema,
 } from '@interviewos/validators'
+import { ZodError, type ZodType } from 'zod'
+
+export class AIResponseValidationError extends Error {
+  constructor(
+    message: string,
+    readonly metadata: AIExecutionMetadata,
+  ) {
+    super(message)
+    this.name = 'AIResponseValidationError'
+  }
+}
 
 export class AIGateway {
   constructor(private readonly provider: AIProvider) {}
 
-  generateTechnicalNote(input: GenerateTechnicalNoteInput): Promise<GenerateTechnicalNoteResult> {
-    return this.provider.generateTechnicalNote(input).then((result) =>
-      technicalNoteResultSchema.parse(result),
+  async generateTechnicalNote(
+    input: GenerateTechnicalNoteInput,
+  ): Promise<AIResult<GenerateTechnicalNoteResult>> {
+    return this.validateResult(
+      this.provider.generateTechnicalNote(input),
+      technicalNoteResultSchema,
     )
   }
 
-  improveTechnicalNote(input: ImproveTechnicalNoteInput): Promise<ImproveTechnicalNoteResult> {
+  async improveTechnicalNote(
+    input: ImproveTechnicalNoteInput,
+  ): Promise<AIResult<ImproveTechnicalNoteResult>> {
     return this.provider.improveTechnicalNote(input)
   }
 
-  generateQuestionsFromNote(
+  async generateQuestionsFromNote(
     input: GenerateQuestionsFromNoteInput,
-  ): Promise<GenerateQuestionsFromNoteResult> {
-    return this.provider.generateQuestionsFromNote(input).then((result) =>
-      generatedQuestionsResultSchema.parse(result),
+  ): Promise<AIResult<GenerateQuestionsFromNoteResult>> {
+    return this.validateResult(
+      this.provider.generateQuestionsFromNote(input),
+      generatedQuestionsResultSchema,
     )
   }
 
-  evaluateInterviewAnswer(
+  async evaluateInterviewAnswer(
     input: EvaluateInterviewAnswerInput,
-  ): Promise<EvaluateInterviewAnswerResult> {
-    return this.provider.evaluateInterviewAnswer(input).then((result) =>
-      interviewAnswerResultSchema.parse(result),
+  ): Promise<AIResult<EvaluateInterviewAnswerResult>> {
+    return this.validateResult(
+      this.provider.evaluateInterviewAnswer(input),
+      interviewAnswerResultSchema,
     )
   }
 
-  generateEnglishFeedback(
+  async generateEnglishFeedback(
     input: GenerateEnglishFeedbackInput,
-  ): Promise<GenerateEnglishFeedbackResult> {
-    return this.provider.generateEnglishFeedback(input).then((result) =>
-      englishFeedbackResultSchema.parse(result),
+  ): Promise<AIResult<GenerateEnglishFeedbackResult>> {
+    return this.validateResult(
+      this.provider.generateEnglishFeedback(input),
+      englishFeedbackResultSchema,
     )
   }
 
-  recommendNextLearning(input: RecommendNextLearningInput): Promise<RecommendNextLearningResult> {
-    return this.provider.recommendNextLearning(input).then((result) =>
-      recommendationResultSchema.parse(result),
+  async recommendNextLearning(
+    input: RecommendNextLearningInput,
+  ): Promise<AIResult<RecommendNextLearningResult>> {
+    return this.validateResult(
+      this.provider.recommendNextLearning(input),
+      recommendationResultSchema,
     )
   }
 
-  analyzeResume(input: AnalyzeResumeInput): Promise<AnalyzeResumeResult> {
-    return this.provider.analyzeResume(input).then((result) =>
-      resumeAnalysisResultSchema.parse(result),
-    )
+  async analyzeResume(input: AnalyzeResumeInput): Promise<AIResult<AnalyzeResumeResult>> {
+    return this.validateResult(this.provider.analyzeResume(input), resumeAnalysisResultSchema)
+  }
+
+  private async validateResult<TResult>(
+    resultPromise: Promise<AIResult<TResult>>,
+    schema: ZodType<TResult>,
+  ): Promise<AIResult<TResult>> {
+    const response = await resultPromise
+
+    try {
+      return {
+        result: schema.parse(response.result),
+        metadata: {
+          ...response.metadata,
+          validationStatus: 'success',
+        },
+      }
+    } catch (error) {
+      if (error instanceof ZodError) {
+        throw new AIResponseValidationError(
+          `Structured output validation failed: ${error.message}`,
+          {
+            ...response.metadata,
+            validationStatus: 'validation_failed',
+          },
+        )
+      }
+
+      throw error
+    }
   }
 }

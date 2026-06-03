@@ -58,15 +58,25 @@ enum RecommendationStatus {
   COMPLETED
 }
 
+enum AIValidationStatus {
+  SUCCESS
+  VALIDATION_FAILED
+  PROVIDER_ERROR
+}
+
 model User {
   id                String                  @id @default(cuid())
   email             String                  @unique
   passwordHash      String?
+  emailVerifiedAt   DateTime?
   name              String?
   avatarUrl         String?
   createdAt         DateTime                @default(now())
   updatedAt         DateTime                @updatedAt
   profile           UserLearningProfile?
+  authSessions      AuthSession[]
+  passwordResets    PasswordResetToken[]
+  emailVerifications EmailVerificationToken[]
   notes             TechnicalNote[]
   sessions          InterviewSession[]
   englishNotes      EnglishNote[]
@@ -74,6 +84,7 @@ model User {
   englishWeaknesses UserEnglishWeakness[]
   recommendations   LearningRecommendation[]
   resumes           ResumeAnalysis[]
+  aiRequestLogs     AIRequestLog[]
 
   @@index([createdAt])
 }
@@ -96,6 +107,54 @@ model UserLearningProfile {
   @@index([createdAt])
 }
 
+model AuthSession {
+  id         String   @id @default(cuid())
+  userId      String
+  tokenHash   String   @unique
+  userAgent   String?
+  ipAddress   String?
+  expiresAt   DateTime
+  lastSeenAt  DateTime?
+  revokedAt   DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, expiresAt])
+  @@index([userId, revokedAt])
+  @@index([expiresAt])
+}
+
+model PasswordResetToken {
+  id         String   @id @default(cuid())
+  userId      String
+  tokenHash   String   @unique
+  expiresAt   DateTime
+  usedAt      DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, expiresAt])
+  @@index([userId, usedAt])
+  @@index([expiresAt])
+}
+
+model EmailVerificationToken {
+  id         String   @id @default(cuid())
+  userId      String
+  tokenHash   String   @unique
+  expiresAt   DateTime
+  usedAt      DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, expiresAt])
+  @@index([userId, usedAt])
+  @@index([expiresAt])
+}
+
 model TechnicalNote {
   id            String          @id @default(cuid())
   userId        String
@@ -110,6 +169,7 @@ model TechnicalNote {
   overrideEnglishLevel EnglishLevel?
   preferredOutputStyle String?
   structuredContent Json?
+  aiMetadata    Json?
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
   deletedAt     DateTime?
@@ -131,6 +191,7 @@ model TechnicalNoteSection {
   order     Int
   heading   String
   content   String
+  aiMetadata Json?
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt
   note      TechnicalNote @relation(fields: [noteId], references: [id], onDelete: Cascade)
@@ -148,6 +209,7 @@ model NoteGeneratedQuestion {
   expectedConcepts String[]
   difficulty QuestionDifficulty
   sourceSection String
+  aiMetadata Json?
   createdAt  DateTime           @default(now())
   updatedAt  DateTime           @updatedAt
   note       TechnicalNote      @relation(fields: [noteId], references: [id], onDelete: Cascade)
@@ -218,6 +280,7 @@ model InterviewAnswer {
   nextRecommendedQuestion Json?
   recommendedLearning Json?
   weakConcepts String[]
+  aiMetadata     Json?
   createdAt      DateTime          @default(now())
   updatedAt      DateTime          @updatedAt
   question       InterviewQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
@@ -238,6 +301,7 @@ model EnglishNote {
   grammarTopic           String
   recommendedStudyTopics String[]
   practicePatterns       String[]
+  aiMetadata             Json?
   createdAt              DateTime          @default(now())
   updatedAt              DateTime          @updatedAt
   user                   User              @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -284,6 +348,7 @@ model LearningRecommendation {
   status     RecommendationStatus @default(PENDING)
   type       String
   payload    Json
+  aiMetadata Json?
   createdAt  DateTime             @default(now())
   updatedAt  DateTime             @updatedAt
   user       User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -301,6 +366,7 @@ model ResumeAnalysis {
   fileUrl        String?
   rawText        String?
   analysisResult Json?
+  aiMetadata     Json?
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
   deletedAt      DateTime?
@@ -308,4 +374,28 @@ model ResumeAnalysis {
 
   @@index([userId])
   @@index([createdAt])
+}
+
+model AIRequestLog {
+  id               String             @id @default(cuid())
+  userId           String?
+  operation        String
+  provider         String
+  model            String
+  promptKey        String
+  promptVersion    String
+  schemaKey        String
+  schemaVersion    String
+  inputHash        String
+  validationStatus AIValidationStatus
+  tokenUsage       Json?
+  latencyMs        Int
+  generatedAt      DateTime
+  errorMessage     String?
+  createdAt        DateTime           @default(now())
+  user             User?              @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId, createdAt])
+  @@index([operation, createdAt])
+  @@index([validationStatus, createdAt])
 }

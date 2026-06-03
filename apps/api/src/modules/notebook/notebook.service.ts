@@ -1,9 +1,11 @@
 import type {
+  AIExecutionMetadata,
   EnglishLevel,
   ExperienceLevel,
   NoteType,
   TechnicalNoteContent,
 } from '@interviewos/types'
+import type { Prisma } from '@interviewos/database'
 import {
   generateQuestionsSchema,
   noteCreateSchema,
@@ -16,7 +18,7 @@ import { UsersRepository } from '../users/users.repository'
 import { NotebookRepository } from './notebook.repository'
 
 type CurrentUserLike = {
-  email?: string
+  id?: string
 }
 
 @Injectable()
@@ -28,18 +30,18 @@ export class NotebookService {
   ) {}
 
   async createNote(currentUser: unknown, payload: Record<string, unknown>) {
-    const user = await this.usersRepository.ensureUserByEmail(this.resolveEmail(currentUser))
+    const user = await this.usersRepository.ensureUserById(this.resolveUserId(currentUser))
     const input = noteCreateSchema.parse(payload)
     return this.notebookRepository.createNote(user.id, input)
   }
 
   async findNotes(currentUser: unknown) {
-    const user = await this.usersRepository.ensureUserByEmail(this.resolveEmail(currentUser))
+    const user = await this.usersRepository.ensureUserById(this.resolveUserId(currentUser))
     return this.notebookRepository.findNotes(user.id)
   }
 
   async findNoteById(currentUser: unknown, noteId: string) {
-    const user = await this.usersRepository.ensureUserByEmail(this.resolveEmail(currentUser))
+    const user = await this.usersRepository.ensureUserById(this.resolveUserId(currentUser))
     const note = await this.notebookRepository.findNoteById(user.id, noteId)
 
     if (!note) {
@@ -50,18 +52,18 @@ export class NotebookService {
   }
 
   async updateNote(currentUser: unknown, noteId: string, payload: Record<string, unknown>) {
-    const user = await this.usersRepository.ensureUserByEmail(this.resolveEmail(currentUser))
+    const user = await this.usersRepository.ensureUserById(this.resolveUserId(currentUser))
     const input = noteUpdateSchema.parse(payload)
     return this.notebookRepository.updateNote(user.id, noteId, input)
   }
 
   async deleteNote(currentUser: unknown, noteId: string) {
-    const user = await this.usersRepository.ensureUserByEmail(this.resolveEmail(currentUser))
+    const user = await this.usersRepository.ensureUserById(this.resolveUserId(currentUser))
     return this.notebookRepository.deleteNote(user.id, noteId)
   }
 
   async generateTechnicalNote(currentUser: unknown, noteId: string) {
-    const user = await this.usersRepository.ensureUserByEmail(this.resolveEmail(currentUser))
+    const user = await this.usersRepository.ensureUserById(this.resolveUserId(currentUser))
     const note = await this.notebookRepository.findNoteById(user.id, noteId)
 
     if (!note) {
@@ -79,16 +81,17 @@ export class NotebookService {
       interviewGoals: note.overrideGoals.length > 0 ? note.overrideGoals : profile.interviewGoals,
       preferredOutputStyle: note.preferredOutputStyle ?? profile.preferredOutputStyle,
       additionalContext: note.rawInput,
-    })
+    }, { userId: user.id })
 
     return this.notebookRepository.replaceGeneratedContent(note.id, {
-      structuredContent: generated.content as unknown as Record<string, unknown>,
-      sections: generated.sections,
+      structuredContent: generated.result.content as unknown as Record<string, unknown>,
+      sections: generated.result.sections,
+      aiMetadata: this.toAiMetadataJson(generated.metadata),
     })
   }
 
   async generateQuestions(currentUser: unknown, noteId: string, payload: Record<string, unknown>) {
-    const user = await this.usersRepository.ensureUserByEmail(this.resolveEmail(currentUser))
+    const user = await this.usersRepository.ensureUserById(this.resolveUserId(currentUser))
     const note = await this.notebookRepository.findNoteById(user.id, noteId)
 
     if (!note) {
@@ -106,9 +109,13 @@ export class NotebookService {
       content: note.structuredContent as unknown as TechnicalNoteContent,
       count: input.count,
       difficulty: input.difficulty,
-    })
+    }, { userId: user.id })
 
-    return this.notebookRepository.replaceQuestions(note.id, questions.questions)
+    return this.notebookRepository.replaceQuestions(
+      note.id,
+      questions.result.questions,
+      this.toAiMetadataJson(questions.metadata),
+    )
   }
 
   private async requireProfile(userId: string) {
@@ -119,7 +126,11 @@ export class NotebookService {
     return profile
   }
 
-  private resolveEmail(currentUser: unknown): string | undefined {
-    return (currentUser as CurrentUserLike | undefined)?.email
+  private resolveUserId(currentUser: unknown): string | undefined {
+    return (currentUser as CurrentUserLike | undefined)?.id
+  }
+
+  private toAiMetadataJson(metadata: AIExecutionMetadata): Prisma.InputJsonValue {
+    return metadata as unknown as Prisma.InputJsonValue
   }
 }

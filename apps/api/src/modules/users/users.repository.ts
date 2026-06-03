@@ -7,13 +7,13 @@ import { PrismaService } from '../../database/prisma.service'
 export class UsersRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async ensureUserByEmail(email?: string) {
-    if (!email) {
+  async ensureUserById(userId?: string) {
+    if (!userId) {
       throw new UnauthorizedException('Authentication required.')
     }
 
     const user = await this.prisma.user.findUnique({
-      where: { email },
+      where: { id: userId },
       include: { profile: true },
     })
 
