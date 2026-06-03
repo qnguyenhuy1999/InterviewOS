@@ -8,6 +8,7 @@ export const envSchema = z.object({
   PASSWORD_RESET_TTL_MINUTES: z.coerce.number().int().min(5).max(1440).default(30),
   EMAIL_VERIFICATION_TTL_HOURS: z.coerce.number().int().min(1).max(168).default(24),
   WEB_APP_URL: z.string().url().default('http://localhost:3000'),
+  EMAIL_PROVIDER: z.enum(['console', 'noop']).default('console'),
   OPENAI_API_KEY: z.string().optional(),
   OPENAI_GATEWAY_BASE_URL: z.string().url().optional(),
   OPENAI_MODEL: z.string().min(1).default('gpt-5.4-mini'),

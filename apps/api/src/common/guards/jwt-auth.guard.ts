@@ -7,9 +7,9 @@ import {
 import { ConfigService } from '@nestjs/config'
 import { Reflector } from '@nestjs/core'
 
+import { AuthService } from '../../modules/auth/auth.service'
 import type { AuthenticatedRequest } from '../auth/authenticated-request'
 import { IS_PUBLIC_ROUTE } from '../decorators/public.decorator'
-import { AuthService } from '../../modules/auth/auth.service'
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {

@@ -1,8 +1,14 @@
-import type { NoteGeneratedQuestion, TechnicalNote, TechnicalNoteContent } from '@interviewos/types'
+import {
+  type NoteGeneratedQuestion,
+  NoteStatus,
+  type TechnicalNote,
+  type TechnicalNoteContent,
+} from '@interviewos/types'
 import Link from 'next/link'
 
 import { NoteActions } from '@/components/forms/NoteActions'
 import { StartPracticeButton } from '@/components/forms/StartPracticeButton'
+import { StatusSelect } from '@/components/forms/StatusSelect'
 import { formatDate } from '@/lib/format'
 import { serverApiClient } from '@/lib/server-api-client'
 
@@ -29,7 +35,8 @@ export default async function NoteDetailPage({ params }: { params: Promise<{ id:
       <div className="space-y-2">
         <h2 className="font-heading text-xl font-medium">{note.title}</h2>
         <p className="text-sm text-muted-foreground">
-          {note.type.replaceAll('_', ' ')} · Updated {formatDate(note.updatedAt)}
+          {note.type.replaceAll('_', ' ')} | Updated {formatDate(note.updatedAt)} | Status{' '}
+          {note.status.replaceAll('_', ' ')}
         </p>
       </div>
 
@@ -38,17 +45,24 @@ export default async function NoteDetailPage({ params }: { params: Promise<{ id:
           <div>
             <p className="text-sm font-medium">Generation settings</p>
             <p className="mt-1 text-sm text-muted-foreground">
-              Role: {note.overrideRole ?? 'Onboarding default'} · Level:{' '}
-              {note.overrideLevel ?? 'Onboarding default'} · English:{' '}
+              Role: {note.overrideRole ?? 'Onboarding default'} | Level{' '}
+              {note.overrideLevel ?? 'Onboarding default'} | English{' '}
               {note.overrideEnglishLevel ?? 'Onboarding default'}
             </p>
           </div>
-          <Link
-            href={`/notebook/${note.id}/edit`}
-            className="rounded-lg border border-border px-3 py-2 text-sm font-medium"
-          >
-            Edit
-          </Link>
+          <div className="flex flex-wrap gap-3">
+            <StatusSelect
+              endpoint={`/notes/${note.id}`}
+              value={note.status}
+              options={Object.values(NoteStatus)}
+            />
+            <Link
+              href={`/notebook/${note.id}/edit`}
+              className="rounded-lg border border-border px-3 py-2 text-sm font-medium"
+            >
+              Edit
+            </Link>
+          </div>
         </div>
       </div>
 
@@ -97,7 +111,7 @@ export default async function NoteDetailPage({ params }: { params: Promise<{ id:
                   <div className="space-y-2">
                     <p className="text-sm font-medium">{question.question}</p>
                     <p className="text-xs uppercase tracking-wide text-muted-foreground">
-                      {question.difficulty} · {question.category} · {question.sourceSection}
+                      {question.difficulty} | {question.category} | {question.sourceSection}
                     </p>
                     <p className="text-sm text-muted-foreground">
                       Expected concepts: {question.expectedConcepts.join(', ')}

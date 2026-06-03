@@ -5,17 +5,19 @@ import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard'
 import { AuthController } from './auth.controller'
 import { AuthRepository } from './auth.repository'
 import { AuthService } from './auth.service'
+import { AuthEmailService } from './auth-email.service'
 
 @Module({
   controllers: [AuthController],
   providers: [
     AuthService,
+    AuthEmailService,
     AuthRepository,
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,
     },
   ],
-  exports: [AuthService, AuthRepository],
+  exports: [AuthService, AuthRepository, AuthEmailService],
 })
 export class AuthModule {}

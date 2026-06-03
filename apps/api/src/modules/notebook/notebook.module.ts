@@ -1,13 +1,14 @@
 import { Module } from '@nestjs/common'
 
 import { AIModule } from '../../ai/ai.module'
+import { ReviewModule } from '../review/review.module'
 import { UsersModule } from '../users/users.module'
 import { NotebookController } from './notebook.controller'
 import { NotebookRepository } from './notebook.repository'
 import { NotebookService } from './notebook.service'
 
 @Module({
-  imports: [UsersModule, AIModule],
+  imports: [UsersModule, AIModule, ReviewModule],
   controllers: [NotebookController],
   providers: [NotebookService, NotebookRepository],
   exports: [NotebookService, NotebookRepository],

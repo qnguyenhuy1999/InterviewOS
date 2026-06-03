@@ -246,6 +246,23 @@ export class InterviewRepository {
         })
       }),
     )
+
+    const findMany = this.prisma.userWeakConcept.findMany?.bind(this.prisma.userWeakConcept)
+    if (!findMany) {
+      return []
+    }
+
+    return findMany({
+      where: {
+        userId,
+        concept: {
+          in: concepts,
+        },
+      },
+      orderBy: {
+        updatedAt: 'desc',
+      },
+    })
   }
 
   async upsertEnglishWeaknesses(userId: string, answerId: string, topics: string[]) {

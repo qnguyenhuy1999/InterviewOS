@@ -9,6 +9,7 @@ export interface EnglishNote {
   grammarTopic: string
   recommendedStudyTopics: string[]
   practicePatterns: string[]
+  status: string
   createdAt: Date
   updatedAt: Date
 }

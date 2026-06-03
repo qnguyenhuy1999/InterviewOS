@@ -17,6 +17,10 @@ export enum EnglishLevel {
 
 export enum NoteStatus {
   DRAFT = 'DRAFT',
+  REVIEWING = 'REVIEWING',
+  NEEDS_PRACTICE = 'NEEDS_PRACTICE',
+  INTERVIEW_READY = 'INTERVIEW_READY',
+  MASTERED = 'MASTERED',
   PUBLISHED = 'PUBLISHED',
   ARCHIVED = 'ARCHIVED',
 }
@@ -47,4 +51,40 @@ export enum RecommendationStatus {
   PENDING = 'PENDING',
   DISMISSED = 'DISMISSED',
   COMPLETED = 'COMPLETED',
+}
+
+export enum EnglishNoteStatus {
+  NEEDS_PRACTICE = 'NEEDS_PRACTICE',
+  REVIEWING = 'REVIEWING',
+  IMPROVED = 'IMPROVED',
+  MASTERED = 'MASTERED',
+}
+
+export enum WeakConceptStatus {
+  ACTIVE = 'ACTIVE',
+  IMPROVING = 'IMPROVING',
+  RESOLVED = 'RESOLVED',
+  IGNORED = 'IGNORED',
+}
+
+export enum ReviewItemType {
+  TECHNICAL_NOTE = 'TECHNICAL_NOTE',
+  GENERATED_QUESTION = 'GENERATED_QUESTION',
+  ENGLISH_NOTE = 'ENGLISH_NOTE',
+  WEAK_CONCEPT = 'WEAK_CONCEPT',
+}
+
+export enum ReviewRating {
+  AGAIN = 'AGAIN',
+  HARD = 'HARD',
+  GOOD = 'GOOD',
+  EASY = 'EASY',
+}
+
+export enum LearningPathItemStatus {
+  PENDING = 'PENDING',
+  IN_PROGRESS = 'IN_PROGRESS',
+  COMPLETED = 'COMPLETED',
+  SNOOZED = 'SNOOZED',
+  SKIPPED = 'SKIPPED',
 }

@@ -1,3 +1,4 @@
+import type { Prisma } from '@interviewos/database'
 import type {
   AIExecutionMetadata,
   EnglishLevel,
@@ -5,7 +6,6 @@ import type {
   NoteType,
   TechnicalNoteContent,
 } from '@interviewos/types'
-import type { Prisma } from '@interviewos/database'
 import {
   generateQuestionsSchema,
   noteCreateSchema,
@@ -14,6 +14,7 @@ import {
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
 
 import { AIGateway } from '../../ai/ai.gateway'
+import { ReviewService } from '../review/review.service'
 import { UsersRepository } from '../users/users.repository'
 import { NotebookRepository } from './notebook.repository'
 
@@ -23,11 +24,38 @@ type CurrentUserLike = {
 
 @Injectable()
 export class NotebookService {
+  private readonly reviewActions: {
+    syncTechnicalNoteReview: (payload: {
+      userId: string
+      noteId: string
+      title: string
+      status: string
+      aiMetadata?: Prisma.InputJsonValue
+    }) => Promise<unknown>
+    replaceQuestionReviews: (payload: {
+      userId: string
+      noteId: string
+      questions: Array<{
+        id: string
+        question: string
+        difficulty: string
+        expectedConcepts: string[]
+      }>
+      aiMetadata?: Prisma.InputJsonValue
+    }) => Promise<unknown>
+  }
+
   constructor(
     private readonly notebookRepository: NotebookRepository,
     private readonly usersRepository: UsersRepository,
     private readonly aiGateway: AIGateway,
-  ) {}
+    reviewService?: ReviewService,
+  ) {
+    this.reviewActions = reviewService ?? {
+      syncTechnicalNoteReview: async () => undefined,
+      replaceQuestionReviews: async () => undefined,
+    }
+  }
 
   async createNote(currentUser: unknown, payload: Record<string, unknown>) {
     const user = await this.usersRepository.ensureUserById(this.resolveUserId(currentUser))
@@ -54,7 +82,15 @@ export class NotebookService {
   async updateNote(currentUser: unknown, noteId: string, payload: Record<string, unknown>) {
     const user = await this.usersRepository.ensureUserById(this.resolveUserId(currentUser))
     const input = noteUpdateSchema.parse(payload)
-    return this.notebookRepository.updateNote(user.id, noteId, input)
+    const note = await this.notebookRepository.updateNote(user.id, noteId, input)
+    await this.reviewActions.syncTechnicalNoteReview({
+      userId: user.id,
+      noteId: note.id,
+      title: note.title,
+      status: note.status,
+      aiMetadata: note.aiMetadata as Prisma.InputJsonValue | undefined,
+    })
+    return note
   }
 
   async deleteNote(currentUser: unknown, noteId: string) {
@@ -83,11 +119,19 @@ export class NotebookService {
       additionalContext: note.rawInput,
     }, { userId: user.id })
 
-    return this.notebookRepository.replaceGeneratedContent(note.id, {
+    const saved = await this.notebookRepository.replaceGeneratedContent(note.id, {
       structuredContent: generated.result.content as unknown as Record<string, unknown>,
       sections: generated.result.sections,
       aiMetadata: this.toAiMetadataJson(generated.metadata),
     })
+    await this.reviewActions.syncTechnicalNoteReview({
+      userId: user.id,
+      noteId: saved.id,
+      title: saved.title,
+      status: saved.status,
+      aiMetadata: this.toAiMetadataJson(generated.metadata),
+    })
+    return saved
   }
 
   async generateQuestions(currentUser: unknown, noteId: string, payload: Record<string, unknown>) {
@@ -111,11 +155,23 @@ export class NotebookService {
       difficulty: input.difficulty,
     }, { userId: user.id })
 
-    return this.notebookRepository.replaceQuestions(
+    const saved = await this.notebookRepository.replaceQuestions(
       note.id,
       questions.result.questions,
       this.toAiMetadataJson(questions.metadata),
     )
+    await this.reviewActions.replaceQuestionReviews({
+      userId: user.id,
+      noteId: saved.id,
+      questions: saved.questions.map((question) => ({
+        id: question.id,
+        question: question.question,
+        difficulty: question.difficulty,
+        expectedConcepts: question.expectedConcepts,
+      })),
+      aiMetadata: this.toAiMetadataJson(questions.metadata),
+    })
+    return saved
   }
 
   private async requireProfile(userId: string) {

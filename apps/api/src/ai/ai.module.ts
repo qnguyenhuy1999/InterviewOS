@@ -7,8 +7,8 @@ import {
 import { Module } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 
-import { AIAuditRepository } from './ai-audit.repository'
 import { AIGateway } from './ai.gateway'
+import { AIAuditRepository } from './ai-audit.repository'
 
 @Module({
   providers: [

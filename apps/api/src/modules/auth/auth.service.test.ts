@@ -234,29 +234,34 @@ function createHarness() {
     },
   }
 
-  const service = new AuthService(repository as never, {
-    get: (key: string, fallback?: unknown) => {
-      if (key === 'app.authSessionTtlDays') {
-        return 7
-      }
-      if (key === 'app.passwordResetTtlMinutes') {
-        return 30
-      }
-      if (key === 'app.emailVerificationTtlHours') {
-        return 24
-      }
-      if (key === 'app.webAppUrl') {
-        return 'http://localhost:3000'
-      }
-      return fallback
-    },
-  } as never)
-
-  ;(service as unknown as { logger: { log: (message: string) => void } }).logger = {
-    log: (message: string) => {
-      logs.push(message)
-    },
-  }
+  const service = new AuthService(
+    repository as never,
+    {
+      get: (key: string, fallback?: unknown) => {
+        if (key === 'app.authSessionTtlDays') {
+          return 7
+        }
+        if (key === 'app.passwordResetTtlMinutes') {
+          return 30
+        }
+        if (key === 'app.emailVerificationTtlHours') {
+          return 24
+        }
+        if (key === 'app.webAppUrl') {
+          return 'http://localhost:3000'
+        }
+        return fallback
+      },
+    } as never,
+    {
+      sendPasswordResetEmail: async ({ link }: { link: string }) => {
+        logs.push(link)
+      },
+      sendVerificationEmail: async ({ link }: { link: string }) => {
+        logs.push(link)
+      },
+    } as never,
+  )
 
   function seedUser(input: Partial<UserRecord> & { email: string; password?: string }) {
     const user: UserRecord = {

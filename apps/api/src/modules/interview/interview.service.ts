@@ -5,6 +5,7 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 
 import { AIGateway } from '../../ai/ai.gateway'
 import { NotebookRepository } from '../notebook/notebook.repository'
+import { ReviewService } from '../review/review.service'
 import { UsersRepository } from '../users/users.repository'
 import { InterviewRepository } from './interview.repository'
 
@@ -14,12 +15,23 @@ type CurrentUserLike = {
 
 @Injectable()
 export class InterviewService {
+  private readonly reviewActions: Pick<
+    ReviewService,
+    'syncEnglishNoteReviews' | 'syncWeakConceptReviews'
+  >
+
   constructor(
     private readonly interviewRepository: InterviewRepository,
     private readonly notebookRepository: NotebookRepository,
     private readonly usersRepository: UsersRepository,
     private readonly aiGateway: AIGateway,
-  ) {}
+    reviewService?: ReviewService,
+  ) {
+    this.reviewActions = reviewService ?? {
+      syncEnglishNoteReviews: async () => undefined,
+      syncWeakConceptReviews: async () => undefined,
+    }
+  }
 
   async createSession(currentUser: unknown, payload: Record<string, unknown>) {
     const user = await this.usersRepository.ensureUserById(this.resolveUserId(currentUser))
@@ -143,13 +155,13 @@ export class InterviewService {
         note.correctedSentence.trim() !== note.userSentence.trim() || note.explanation.length > 20,
     )
 
-    await this.interviewRepository.saveEnglishNotes(
+    const englishNotes = await this.interviewRepository.saveEnglishNotes(
       user.id,
       answerId,
       usefulEnglishNotes,
       this.toAiMetadataJson(english.metadata),
     )
-    await this.interviewRepository.upsertWeakConcepts(
+    const weakConcepts = await this.interviewRepository.upsertWeakConcepts(
       user.id,
       answerId,
       technical.result.weakConcepts,
@@ -159,6 +171,17 @@ export class InterviewService {
       answerId,
       english.result.weakTopics,
     )
+    await this.reviewActions.syncEnglishNoteReviews(
+      user.id,
+      englishNotes.map((note) => ({
+        id: note.id,
+        grammarTopic: note.grammarTopic,
+        originalSentence: note.originalSentence,
+        status: note.status,
+      })),
+      this.toAiMetadataJson(english.metadata),
+    )
+    await this.reviewActions.syncWeakConceptReviews(user.id, weakConcepts as never)
 
     return this.interviewRepository.findSessionById(user.id, session.id)
   }

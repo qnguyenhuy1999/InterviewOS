@@ -1,3 +1,4 @@
+import type { EnglishNoteStatus } from '@interviewos/database'
 import { Injectable } from '@nestjs/common'
 
 import { PrismaService } from '../../database/prisma.service'
@@ -32,6 +33,18 @@ export class EnglishNotesRepository {
       data: {
         userId,
         ...payload,
+      },
+    })
+  }
+
+  async updateStatus(userId: string, englishNoteId: string, status: EnglishNoteStatus) {
+    return this.prisma.englishNote.update({
+      where: {
+        id: englishNoteId,
+        userId,
+      },
+      data: {
+        status,
       },
     })
   }

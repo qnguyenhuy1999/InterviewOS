@@ -1,3 +1,4 @@
+import type { Prisma } from '@interviewos/database'
 import type {
   AIExecutionMetadata,
   ExperienceLevel,
@@ -5,10 +6,10 @@ import type {
   RecommendationPayload,
   RecommendationSummary,
 } from '@interviewos/types'
-import type { Prisma } from '@interviewos/database'
 import { Injectable } from '@nestjs/common'
 
 import { AIGateway } from '../../ai/ai.gateway'
+import { ReviewService } from '../review/review.service'
 import { UsersRepository } from '../users/users.repository'
 import { RecommendationsRepository } from './recommendations.repository'
 
@@ -18,34 +19,41 @@ type CurrentUserLike = {
 
 @Injectable()
 export class RecommendationsService {
+  private readonly reviewActions: Pick<ReviewService, 'getReviewQueue'>
+
   constructor(
     private readonly recommendationsRepository: RecommendationsRepository,
     private readonly usersRepository: UsersRepository,
     private readonly aiGateway: AIGateway,
-  ) {}
+    reviewService?: ReviewService,
+  ) {
+    this.reviewActions = reviewService ?? {
+      getReviewQueue: async () => ({ items: [], dueCount: 0 }),
+    }
+  }
 
   async getRecommendations(currentUser: unknown): Promise<RecommendationSummary> {
     const user = await this.usersRepository.ensureUserById(this.resolveUserId(currentUser))
     const profile = await this.usersRepository.findProfileByUserId(user.id)
     const context = await this.recommendationsRepository.getSourceContext(user.id)
+    const queue = await this.reviewActions.getReviewQueue(user)
 
-    const nextNoteToReview = context.notes[0]
+    const nextReview = queue.items[0]?.item
+    const nextNoteToReview = nextReview?.type === 'TECHNICAL_NOTE'
       ? recommendation(
           'Review note',
-          `Revisit ${context.notes[0].title} and restate the production checklist out loud.`,
-          `/notebook/${context.notes[0].id}`,
+          `Overdue note review for ${nextReview.sourceLabel}.`,
+          `/notebook/${nextReview.sourceId}`,
         )
       : null
 
-    const nextQuestionSource = context.notes
-      .flatMap((note) => note.questions.map((question) => ({ note, question })))
-      .at(0)
+    const nextQuestionReview = queue.items.find((item) => item.item.type === 'GENERATED_QUESTION')?.item
 
-    const nextQuestionToPractice = nextQuestionSource
+    const nextQuestionToPractice = nextQuestionReview
       ? recommendation(
           'Practice question',
-          nextQuestionSource.question.question,
-          `/notebook/${nextQuestionSource.note.id}`,
+          nextQuestionReview.sourceLabel,
+          routeFromMetadata(nextQuestionReview.metadata, '/interview'),
         )
       : null
 
@@ -109,4 +117,9 @@ export class RecommendationsService {
 
 function recommendation(title: string, reason: string, action: string): RecommendationPayload {
   return { title, reason, action }
+}
+
+function routeFromMetadata(metadata: unknown, fallback: string) {
+  const noteId = (metadata as { noteId?: unknown } | null)?.noteId
+  return typeof noteId === 'string' ? `/notebook/${noteId}` : fallback
 }

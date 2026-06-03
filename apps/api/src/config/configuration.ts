@@ -15,6 +15,9 @@ export default () => {
       emailVerificationTtlHours: parsed.EMAIL_VERIFICATION_TTL_HOURS,
       webAppUrl: parsed.WEB_APP_URL,
     },
+    email: {
+      provider: parsed.EMAIL_PROVIDER,
+    },
     database: {
       url: parsed.DATABASE_URL,
     },

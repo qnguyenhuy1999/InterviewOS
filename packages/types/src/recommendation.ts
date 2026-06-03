@@ -22,6 +22,7 @@ export interface UserWeakConcept {
   userId: string
   concept: string
   occurrenceCount: number
+  status: string
   lastSeenAt: Date
   sourceAnswerIds: string[]
 }

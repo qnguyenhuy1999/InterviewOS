@@ -26,6 +26,10 @@ enum EnglishLevel {
 
 enum NoteStatus {
   DRAFT
+  REVIEWING
+  NEEDS_PRACTICE
+  INTERVIEW_READY
+  MASTERED
   PUBLISHED
   ARCHIVED
 }
@@ -58,6 +62,42 @@ enum RecommendationStatus {
   COMPLETED
 }
 
+enum EnglishNoteStatus {
+  NEEDS_PRACTICE
+  REVIEWING
+  IMPROVED
+  MASTERED
+}
+
+enum WeakConceptStatus {
+  ACTIVE
+  IMPROVING
+  RESOLVED
+  IGNORED
+}
+
+enum ReviewItemType {
+  TECHNICAL_NOTE
+  GENERATED_QUESTION
+  ENGLISH_NOTE
+  WEAK_CONCEPT
+}
+
+enum ReviewRating {
+  AGAIN
+  HARD
+  GOOD
+  EASY
+}
+
+enum LearningPathItemStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  SNOOZED
+  SKIPPED
+}
+
 enum AIValidationStatus {
   SUCCESS
   VALIDATION_FAILED
@@ -85,6 +125,9 @@ model User {
   recommendations   LearningRecommendation[]
   resumes           ResumeAnalysis[]
   aiRequestLogs     AIRequestLog[]
+  reviewItems       ReviewItem[]
+  reviewAttempts    ReviewAttempt[]
+  learningPathItems LearningPathItem[]
 
   @@index([createdAt])
 }
@@ -177,6 +220,7 @@ model TechnicalNote {
   sections      TechnicalNoteSection[]
   questions     NoteGeneratedQuestion[]
   sessions      InterviewSession[]
+  reviewItems   ReviewItem[]
 
   @@index([userId, status, type, createdAt])
   @@index([userId])
@@ -213,6 +257,7 @@ model NoteGeneratedQuestion {
   createdAt  DateTime           @default(now())
   updatedAt  DateTime           @updatedAt
   note       TechnicalNote      @relation(fields: [noteId], references: [id], onDelete: Cascade)
+  reviewItems ReviewItem[]
 
   @@index([noteId])
   @@index([createdAt])
@@ -301,11 +346,13 @@ model EnglishNote {
   grammarTopic           String
   recommendedStudyTopics String[]
   practicePatterns       String[]
+  status                 EnglishNoteStatus @default(NEEDS_PRACTICE)
   aiMetadata             Json?
   createdAt              DateTime          @default(now())
   updatedAt              DateTime          @updatedAt
   user                   User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   answer                 InterviewAnswer   @relation(fields: [answerId], references: [id], onDelete: Cascade)
+  reviewItems            ReviewItem[]
 
   @@index([userId, answerId])
   @@index([userId])
@@ -317,11 +364,13 @@ model UserWeakConcept {
   userId          String
   concept         String
   occurrenceCount Int      @default(1)
+  status          WeakConceptStatus @default(ACTIVE)
   lastSeenAt      DateTime
   sourceAnswerIds String[]
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reviewItems     ReviewItem[]
 
   @@index([userId])
   @@index([createdAt])
@@ -398,4 +447,81 @@ model AIRequestLog {
   @@index([userId, createdAt])
   @@index([operation, createdAt])
   @@index([validationStatus, createdAt])
+}
+
+model ReviewItem {
+  id                  String              @id @default(cuid())
+  userId              String
+  type                ReviewItemType
+  sourceId            String
+  sourceLabel         String
+  weaknessScore       Int                 @default(0)
+  masteryScore        Float               @default(0)
+  nextReviewAt        DateTime
+  reviewIntervalDays  Int                 @default(1)
+  lastReviewedAt      DateTime?
+  lastFailureAt       DateTime?
+  lastRating          ReviewRating?
+  metadata            Json?
+  aiMetadata          Json?
+  technicalNoteId     String?
+  generatedQuestionId String?
+  englishNoteId       String?
+  weakConceptId       String?
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
+  user                User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  technicalNote       TechnicalNote?      @relation(fields: [technicalNoteId], references: [id], onDelete: Cascade)
+  generatedQuestion   NoteGeneratedQuestion? @relation(fields: [generatedQuestionId], references: [id], onDelete: Cascade)
+  englishNote         EnglishNote?        @relation(fields: [englishNoteId], references: [id], onDelete: Cascade)
+  weakConcept         UserWeakConcept?    @relation(fields: [weakConceptId], references: [id], onDelete: Cascade)
+  attempts            ReviewAttempt[]
+  learningPathItems   LearningPathItem[]
+
+  @@unique([userId, type, sourceId])
+  @@index([userId, nextReviewAt])
+  @@index([userId, weaknessScore])
+  @@index([userId, lastFailureAt])
+}
+
+model ReviewAttempt {
+  id                 String       @id @default(cuid())
+  reviewItemId       String
+  userId             String
+  rating             ReviewRating
+  masteryBefore      Float
+  masteryAfter       Float
+  reviewIntervalDays Int
+  nextReviewAt       DateTime
+  createdAt          DateTime     @default(now())
+  reviewItem         ReviewItem   @relation(fields: [reviewItemId], references: [id], onDelete: Cascade)
+  user               User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@index([reviewItemId, createdAt])
+}
+
+model LearningPathItem {
+  id                 String                 @id @default(cuid())
+  userId             String
+  type               String
+  title              String
+  reason             String
+  actionPath         String
+  status             LearningPathItemStatus @default(PENDING)
+  priorityScore      Float
+  availableAt        DateTime               @default(now())
+  snoozedUntil       DateTime?
+  startedAt          DateTime?
+  completedAt        DateTime?
+  skippedAt          DateTime?
+  sourceReviewItemId String?
+  metadata           Json?
+  createdAt          DateTime               @default(now())
+  updatedAt          DateTime               @updatedAt
+  user               User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sourceReviewItem   ReviewItem?            @relation(fields: [sourceReviewItemId], references: [id], onDelete: SetNull)
+
+  @@index([userId, status, availableAt])
+  @@index([userId, priorityScore])
 }

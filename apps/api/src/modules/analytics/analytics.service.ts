@@ -1,13 +1,12 @@
-import { Injectable, NotImplementedException } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 
-import { AnalyticsRepository } from './analytics.repository'
+import { ReviewService } from '../review/review.service'
 
 @Injectable()
 export class AnalyticsService {
-  constructor(private readonly analyticsRepository: AnalyticsRepository) {}
+  constructor(private readonly reviewService: ReviewService) {}
 
-  getProgress(_currentUser: unknown) {
-    void this.analyticsRepository
-    throw new NotImplementedException()
+  getProgress(currentUser: unknown) {
+    return this.reviewService.getDashboardProgress(currentUser)
   }
 }

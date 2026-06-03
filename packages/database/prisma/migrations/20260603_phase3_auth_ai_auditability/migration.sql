@@ -8,7 +8,7 @@ CREATE TYPE "ExperienceLevel" AS ENUM ('JUNIOR', 'MID', 'SENIOR', 'STAFF', 'PRIN
 CREATE TYPE "EnglishLevel" AS ENUM ('BEGINNER', 'ELEMENTARY', 'INTERMEDIATE', 'UPPER_INTERMEDIATE', 'ADVANCED', 'NATIVE');
 
 -- CreateEnum
-CREATE TYPE "NoteStatus" AS ENUM ('DRAFT', 'PUBLISHED', 'ARCHIVED');
+CREATE TYPE "NoteStatus" AS ENUM ('DRAFT', 'REVIEWING', 'NEEDS_PRACTICE', 'INTERVIEW_READY', 'MASTERED', 'PUBLISHED', 'ARCHIVED');
 
 -- CreateEnum
 CREATE TYPE "NoteType" AS ENUM ('CONCEPT', 'ALGORITHM', 'SYSTEM_DESIGN', 'BEHAVIORAL', 'LANGUAGE_SPECIFIC');
@@ -24,6 +24,21 @@ CREATE TYPE "RecommendationStatus" AS ENUM ('PENDING', 'DISMISSED', 'COMPLETED')
 
 -- CreateEnum
 CREATE TYPE "AIValidationStatus" AS ENUM ('SUCCESS', 'VALIDATION_FAILED', 'PROVIDER_ERROR');
+
+-- CreateEnum
+CREATE TYPE "EnglishNoteStatus" AS ENUM ('NEEDS_PRACTICE', 'REVIEWING', 'IMPROVED', 'MASTERED');
+
+-- CreateEnum
+CREATE TYPE "WeakConceptStatus" AS ENUM ('ACTIVE', 'IMPROVING', 'RESOLVED', 'IGNORED');
+
+-- CreateEnum
+CREATE TYPE "ReviewItemType" AS ENUM ('TECHNICAL_NOTE', 'GENERATED_QUESTION', 'ENGLISH_NOTE', 'WEAK_CONCEPT');
+
+-- CreateEnum
+CREATE TYPE "ReviewRating" AS ENUM ('AGAIN', 'HARD', 'GOOD', 'EASY');
+
+-- CreateEnum
+CREATE TYPE "LearningPathItemStatus" AS ENUM ('PENDING', 'IN_PROGRESS', 'COMPLETED', 'SNOOZED', 'SKIPPED');
 
 -- CreateTable
 CREATE TABLE "User" (
@@ -226,6 +241,7 @@ CREATE TABLE "EnglishNote" (
     "grammarTopic" TEXT NOT NULL,
     "recommendedStudyTopics" TEXT[],
     "practicePatterns" TEXT[],
+    "status" "EnglishNoteStatus" NOT NULL DEFAULT 'NEEDS_PRACTICE',
     "aiMetadata" JSONB,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -239,6 +255,7 @@ CREATE TABLE "UserWeakConcept" (
     "userId" TEXT NOT NULL,
     "concept" TEXT NOT NULL,
     "occurrenceCount" INTEGER NOT NULL DEFAULT 1,
+    "status" "WeakConceptStatus" NOT NULL DEFAULT 'ACTIVE',
     "lastSeenAt" TIMESTAMP(3) NOT NULL,
     "sourceAnswerIds" TEXT[],
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -310,6 +327,70 @@ CREATE TABLE "AIRequestLog" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "AIRequestLog_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "ReviewItem" (
+    "id" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "type" "ReviewItemType" NOT NULL,
+    "sourceId" TEXT NOT NULL,
+    "sourceLabel" TEXT NOT NULL,
+    "weaknessScore" INTEGER NOT NULL DEFAULT 0,
+    "masteryScore" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "nextReviewAt" TIMESTAMP(3) NOT NULL,
+    "reviewIntervalDays" INTEGER NOT NULL DEFAULT 1,
+    "lastReviewedAt" TIMESTAMP(3),
+    "lastFailureAt" TIMESTAMP(3),
+    "lastRating" "ReviewRating",
+    "metadata" JSONB,
+    "aiMetadata" JSONB,
+    "technicalNoteId" TEXT,
+    "generatedQuestionId" TEXT,
+    "englishNoteId" TEXT,
+    "weakConceptId" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "ReviewItem_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "ReviewAttempt" (
+    "id" TEXT NOT NULL,
+    "reviewItemId" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "rating" "ReviewRating" NOT NULL,
+    "masteryBefore" DOUBLE PRECISION NOT NULL,
+    "masteryAfter" DOUBLE PRECISION NOT NULL,
+    "reviewIntervalDays" INTEGER NOT NULL,
+    "nextReviewAt" TIMESTAMP(3) NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "ReviewAttempt_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "LearningPathItem" (
+    "id" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "type" TEXT NOT NULL,
+    "title" TEXT NOT NULL,
+    "reason" TEXT NOT NULL,
+    "actionPath" TEXT NOT NULL,
+    "status" "LearningPathItemStatus" NOT NULL DEFAULT 'PENDING',
+    "priorityScore" DOUBLE PRECISION NOT NULL,
+    "availableAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "snoozedUntil" TIMESTAMP(3),
+    "startedAt" TIMESTAMP(3),
+    "completedAt" TIMESTAMP(3),
+    "skippedAt" TIMESTAMP(3),
+    "sourceReviewItemId" TEXT,
+    "metadata" JSONB,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "LearningPathItem_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -471,6 +552,30 @@ CREATE INDEX "AIRequestLog_operation_createdAt_idx" ON "AIRequestLog"("operation
 -- CreateIndex
 CREATE INDEX "AIRequestLog_validationStatus_createdAt_idx" ON "AIRequestLog"("validationStatus", "createdAt");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "ReviewItem_userId_type_sourceId_key" ON "ReviewItem"("userId", "type", "sourceId");
+
+-- CreateIndex
+CREATE INDEX "ReviewItem_userId_nextReviewAt_idx" ON "ReviewItem"("userId", "nextReviewAt");
+
+-- CreateIndex
+CREATE INDEX "ReviewItem_userId_weaknessScore_idx" ON "ReviewItem"("userId", "weaknessScore");
+
+-- CreateIndex
+CREATE INDEX "ReviewItem_userId_lastFailureAt_idx" ON "ReviewItem"("userId", "lastFailureAt");
+
+-- CreateIndex
+CREATE INDEX "ReviewAttempt_userId_createdAt_idx" ON "ReviewAttempt"("userId", "createdAt");
+
+-- CreateIndex
+CREATE INDEX "ReviewAttempt_reviewItemId_createdAt_idx" ON "ReviewAttempt"("reviewItemId", "createdAt");
+
+-- CreateIndex
+CREATE INDEX "LearningPathItem_userId_status_availableAt_idx" ON "LearningPathItem"("userId", "status", "availableAt");
+
+-- CreateIndex
+CREATE INDEX "LearningPathItem_userId_priorityScore_idx" ON "LearningPathItem"("userId", "priorityScore");
+
 -- AddForeignKey
 ALTER TABLE "UserLearningProfile" ADD CONSTRAINT "UserLearningProfile_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
@@ -524,3 +629,30 @@ ALTER TABLE "ResumeAnalysis" ADD CONSTRAINT "ResumeAnalysis_userId_fkey" FOREIGN
 
 -- AddForeignKey
 ALTER TABLE "AIRequestLog" ADD CONSTRAINT "AIRequestLog_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ReviewItem" ADD CONSTRAINT "ReviewItem_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ReviewItem" ADD CONSTRAINT "ReviewItem_technicalNoteId_fkey" FOREIGN KEY ("technicalNoteId") REFERENCES "TechnicalNote"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ReviewItem" ADD CONSTRAINT "ReviewItem_generatedQuestionId_fkey" FOREIGN KEY ("generatedQuestionId") REFERENCES "NoteGeneratedQuestion"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ReviewItem" ADD CONSTRAINT "ReviewItem_englishNoteId_fkey" FOREIGN KEY ("englishNoteId") REFERENCES "EnglishNote"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ReviewItem" ADD CONSTRAINT "ReviewItem_weakConceptId_fkey" FOREIGN KEY ("weakConceptId") REFERENCES "UserWeakConcept"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ReviewAttempt" ADD CONSTRAINT "ReviewAttempt_reviewItemId_fkey" FOREIGN KEY ("reviewItemId") REFERENCES "ReviewItem"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ReviewAttempt" ADD CONSTRAINT "ReviewAttempt_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "LearningPathItem" ADD CONSTRAINT "LearningPathItem_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "LearningPathItem" ADD CONSTRAINT "LearningPathItem_sourceReviewItemId_fkey" FOREIGN KEY ("sourceReviewItemId") REFERENCES "ReviewItem"("id") ON DELETE SET NULL ON UPDATE CASCADE;

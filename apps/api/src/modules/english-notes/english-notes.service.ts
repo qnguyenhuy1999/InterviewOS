@@ -1,5 +1,7 @@
+import { englishNoteStatusSchema } from '@interviewos/validators'
 import { Injectable } from '@nestjs/common'
 
+import { ReviewService } from '../review/review.service'
 import { UsersRepository } from '../users/users.repository'
 import { EnglishNotesRepository } from './english-notes.repository'
 
@@ -12,6 +14,7 @@ export class EnglishNotesService {
   constructor(
     private readonly englishNotesRepository: EnglishNotesRepository,
     private readonly usersRepository: UsersRepository,
+    private readonly reviewService: ReviewService,
   ) {}
 
   async findEnglishNotes(currentUser: unknown) {
@@ -35,6 +38,21 @@ export class EnglishNotesService {
         ? payload.practicePatterns.map(String)
         : [],
     })
+  }
+
+  async updateEnglishNoteStatus(currentUser: unknown, englishNoteId: string, payload: Record<string, unknown>) {
+    const user = await this.usersRepository.ensureUserById(this.resolveUserId(currentUser))
+    const input = englishNoteStatusSchema.parse(payload)
+    const note = await this.englishNotesRepository.updateStatus(user.id, englishNoteId, input.status)
+    await this.reviewService.syncEnglishNoteReviews(user.id, [
+      {
+        id: note.id,
+        grammarTopic: note.grammarTopic,
+        originalSentence: note.originalSentence,
+        status: note.status,
+      },
+    ])
+    return note
   }
 
   private resolveUserId(currentUser: unknown): string | undefined {

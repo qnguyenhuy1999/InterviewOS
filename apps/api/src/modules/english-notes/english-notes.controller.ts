@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common'
+import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common'
 
 import { CurrentUser } from '../../common/decorators/current-user.decorator'
 import { EnglishNotesService } from './english-notes.service'
@@ -15,5 +15,14 @@ export class EnglishNotesController {
   @Post()
   createEnglishNote(@CurrentUser() currentUser: unknown, @Body() payload: Record<string, unknown>) {
     return this.englishNotesService.createEnglishNote(currentUser, payload)
+  }
+
+  @Patch(':englishNoteId/status')
+  updateEnglishNoteStatus(
+    @CurrentUser() currentUser: unknown,
+    @Param('englishNoteId') englishNoteId: string,
+    @Body() payload: Record<string, unknown>,
+  ) {
+    return this.englishNotesService.updateEnglishNoteStatus(currentUser, englishNoteId, payload)
   }
 }

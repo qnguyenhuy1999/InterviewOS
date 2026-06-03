@@ -12,7 +12,6 @@ import {
   BadRequestException,
   ConflictException,
   Injectable,
-  Logger,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common'
@@ -21,6 +20,7 @@ import { ConfigService } from '@nestjs/config'
 import type { AuthenticatedUser } from '../../common/auth/authenticated-request'
 import { generateOpaqueToken, hashOpaqueToken, hashPassword, verifyPassword } from './auth.crypto'
 import { AuthRepository } from './auth.repository'
+import { AuthEmailService } from './auth-email.service'
 
 type SessionContext = {
   userAgent?: string | null
@@ -29,12 +29,18 @@ type SessionContext = {
 
 @Injectable()
 export class AuthService {
-  private readonly logger = new Logger(AuthService.name)
+  private readonly authEmail: Pick<AuthEmailService, 'sendPasswordResetEmail' | 'sendVerificationEmail'>
 
   constructor(
     private readonly authRepository: AuthRepository,
     private readonly configService: ConfigService,
-  ) {}
+    authEmailService?: AuthEmailService,
+  ) {
+    this.authEmail = authEmailService ?? {
+      sendPasswordResetEmail: async () => {},
+      sendVerificationEmail: async () => {},
+    }
+  }
 
   async login(payload: Record<string, unknown>, context: SessionContext) {
     const input = loginSchema.parse(payload) satisfies LoginInput
@@ -145,7 +151,9 @@ export class AuthService {
 
   async resetPassword(payload: Record<string, unknown>) {
     const input = resetPasswordSchema.parse(payload)
-    const token = await this.authRepository.findPasswordResetTokenByHash(hashOpaqueToken(input.token))
+    const token = await this.authRepository.findPasswordResetTokenByHash(
+      hashOpaqueToken(input.token),
+    )
     const now = new Date()
 
     if (!token || token.usedAt || token.expiresAt <= now) {
@@ -239,7 +247,10 @@ export class AuthService {
       expiresAt: new Date(Date.now() + this.passwordResetTtlMinutes() * 60 * 1000),
     })
 
-    this.logger.log(`Password reset link for ${email}: ${this.webAppUrl()}/reset-password?token=${rawToken}`)
+    await this.authEmail.sendPasswordResetEmail({
+      email,
+      link: `${this.webAppUrl()}/reset-password?token=${rawToken}`,
+    })
   }
 
   private async issueEmailVerification(userId: string, email: string) {
@@ -250,7 +261,10 @@ export class AuthService {
       expiresAt: new Date(Date.now() + this.emailVerificationTtlHours() * 60 * 60 * 1000),
     })
 
-    this.logger.log(`Email verification link for ${email}: ${this.webAppUrl()}/verify-email?token=${rawToken}`)
+    await this.authEmail.sendVerificationEmail({
+      email,
+      link: `${this.webAppUrl()}/verify-email?token=${rawToken}`,
+    })
   }
 
   private sessionTtlDays() {

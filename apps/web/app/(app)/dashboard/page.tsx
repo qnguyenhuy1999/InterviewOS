@@ -1,42 +1,56 @@
-import Link from 'next/link'
+import type { DashboardProgress } from '@interviewos/types'
 
-import { EmptyState } from '@/components/empty-states/EmptyState'
+import { serverApiClient } from '@/lib/server-api-client'
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  const progress = await serverApiClient<DashboardProgress>('/analytics/progress').catch(() => null)
+
+  if (!progress) {
+    return (
+      <div className="rounded-xl border border-dashed border-border p-6 text-sm text-muted-foreground">
+        Dashboard metrics will appear once you have reviewable activity.
+      </div>
+    )
+  }
+
+  const cards = [
+    ['Interview readiness', progress.interviewReadiness],
+    ['Technical mastery', progress.technicalMastery],
+    ['English score', progress.englishScore],
+    ['Review streak', progress.reviewStreak],
+    ['Questions practiced', progress.questionsPracticed],
+    ['Notes mastered', progress.notesMastered],
+    ['Due reviews', progress.dueReviews],
+  ]
+
   return (
-    <EmptyState
-      title="Your dashboard is ready"
-      description="Start by adding notes, uploading your resume, or creating an interview session."
-      icon={
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-        >
-          <rect width="18" height="18" x="3" y="3" rx="2" />
-          <path d="M3 9h18" />
-        </svg>
-      }
-      cta={
-        <div className="flex gap-3">
-          <Link
-            href="/notebook/new"
-            className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
-          >
-            New note
-          </Link>
-          <Link
-            href="/interview"
-            className="rounded-lg border border-border px-4 py-2 text-sm font-medium"
-          >
-            Start interview
-          </Link>
+    <div className="space-y-6">
+      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        {cards.map(([label, value]) => (
+          <div key={label} className="rounded-xl border border-border bg-card p-4">
+            <p className="text-sm text-muted-foreground">{label}</p>
+            <p className="mt-2 font-heading text-2xl font-medium">{value}</p>
+          </div>
+        ))}
+      </section>
+
+      <section className="rounded-xl border border-border bg-card p-5">
+        <h2 className="font-heading text-lg font-medium">Weak concept trends</h2>
+        <div className="mt-4 space-y-3">
+          {progress.weakConceptTrends.map((concept) => (
+            <div
+              key={concept.concept}
+              className="flex items-center justify-between gap-3 rounded-lg border border-border px-3 py-3"
+            >
+              <div>
+                <p className="text-sm font-medium">{concept.concept}</p>
+                <p className="text-sm text-muted-foreground">{concept.status}</p>
+              </div>
+              <p className="text-sm text-muted-foreground">{concept.occurrenceCount} hits</p>
+            </div>
+          ))}
         </div>
-      }
-    />
+      </section>
+    </div>
   )
 }

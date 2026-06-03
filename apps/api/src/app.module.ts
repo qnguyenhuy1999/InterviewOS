@@ -11,6 +11,7 @@ import { InterviewModule } from './modules/interview/interview.module'
 import { NotebookModule } from './modules/notebook/notebook.module'
 import { RecommendationsModule } from './modules/recommendations/recommendations.module'
 import { ResumeModule } from './modules/resume/resume.module'
+import { ReviewModule } from './modules/review/review.module'
 import { UsersModule } from './modules/users/users.module'
 
 @Module({
@@ -26,6 +27,7 @@ import { UsersModule } from './modules/users/users.module'
     NotebookModule,
     InterviewModule,
     EnglishNotesModule,
+    ReviewModule,
     ResumeModule,
     RecommendationsModule,
     AnalyticsModule,
