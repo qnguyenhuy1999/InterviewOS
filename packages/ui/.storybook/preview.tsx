@@ -1,4 +1,7 @@
+import '../src/globals.css'
+
 import type { Preview } from '@storybook/react-vite'
+import React from 'react'
 
 const preview: Preview = {
   parameters: {
@@ -8,14 +11,24 @@ const preview: Preview = {
         date: /Date$/i,
       },
     },
-
     a11y: {
-      // 'todo' - show a11y violations in the test UI only
-      // 'error' - fail CI on a11y violations
-      // 'off' - skip a11y checks entirely
       test: 'todo',
     },
+    viewport: {
+      viewports: {
+        mobile: { name: 'Mobile', styles: { width: '375px', height: '812px' } },
+        tablet: { name: 'Tablet', styles: { width: '768px', height: '1024px' } },
+        desktop: { name: 'Desktop', styles: { width: '1440px', height: '900px' } },
+      },
+    },
   },
+  decorators: [
+    (Story) => (
+      <div className="bg-background text-foreground antialiased">
+        <Story />
+      </div>
+    ),
+  ],
 }
 
 export default preview
