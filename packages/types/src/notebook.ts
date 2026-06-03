@@ -24,6 +24,15 @@ export interface TechnicalNote {
   updatedAt: Date
 }
 
+export interface AdvancedLearningSettings {
+  targetRole?: string
+  targetLevel?: ExperienceLevel
+  englishLevel?: EnglishLevel
+  techStack?: string[]
+  interviewGoals?: string[]
+  preferredOutputStyle?: string
+}
+
 export interface TechnicalNoteContentSection {
   heading: string
   content: string
@@ -65,14 +74,7 @@ export interface CreateTechnicalNoteInput {
   title: string
   roughNotes: string
   type?: NoteType
-  advancedSettings?: {
-    targetRole?: string
-    targetLevel?: ExperienceLevel
-    englishLevel?: EnglishLevel
-    techStack?: string[]
-    interviewGoals?: string[]
-    preferredOutputStyle?: string
-  }
+  advancedSettings?: AdvancedLearningSettings
 }
 
 export interface UpdateTechnicalNoteInput extends Partial<CreateTechnicalNoteInput> {

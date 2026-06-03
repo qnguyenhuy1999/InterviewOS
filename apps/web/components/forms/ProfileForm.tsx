@@ -9,7 +9,7 @@ import {
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
-import { absoluteApiPath } from '@/lib/api-client'
+import { apiFetch } from '@/lib/api-client'
 import { parseCommaSeparated } from '@/lib/format'
 
 const experienceLevels = Object.values(ExperienceLevel)
@@ -42,9 +42,8 @@ export function ProfileForm({ initialProfile, mode }: ProfileFormProps) {
     }
 
     try {
-      await fetch(absoluteApiPath('/users/me/profile'), {
+      await apiFetch('/users/me/profile', {
         method: initialProfile ? 'PATCH' : 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       }).then(async (response) => {
         if (!response.ok) {

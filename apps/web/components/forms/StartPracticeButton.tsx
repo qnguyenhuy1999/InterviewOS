@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
-import { absoluteApiPath } from '@/lib/api-client'
+import { apiFetch } from '@/lib/api-client'
 
 export function StartPracticeButton({ generatedQuestionId }: { generatedQuestionId: string }) {
   const router = useRouter()
@@ -12,9 +12,8 @@ export function StartPracticeButton({ generatedQuestionId }: { generatedQuestion
   async function startPractice() {
     setPending(true)
     try {
-      const response = await fetch(absoluteApiPath('/sessions'), {
+      const response = await apiFetch('/sessions', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ generatedQuestionId }),
       })
 

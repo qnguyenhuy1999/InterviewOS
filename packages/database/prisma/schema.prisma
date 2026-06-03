@@ -61,6 +61,7 @@ enum RecommendationStatus {
 model User {
   id                String                  @id @default(cuid())
   email             String                  @unique
+  passwordHash      String?
   name              String?
   avatarUrl         String?
   createdAt         DateTime                @default(now())
@@ -104,8 +105,8 @@ model TechnicalNote {
   type          NoteType        @default(CONCEPT)
   overrideRole  String?
   overrideLevel ExperienceLevel?
-  overrideStack String[]
-  overrideGoals String[]
+  overrideStack String[] @default([])
+  overrideGoals String[] @default([])
   overrideEnglishLevel EnglishLevel?
   preferredOutputStyle String?
   structuredContent Json?
@@ -162,6 +163,12 @@ model InterviewSession {
   status     NoteStatus
   noteId     String?
   sourceQuestionId String?
+  overrideRole String?
+  overrideLevel ExperienceLevel?
+  overrideStack String[] @default([])
+  overrideGoals String[] @default([])
+  overrideEnglishLevel EnglishLevel?
+  preferredOutputStyle String?
   startedAt  DateTime?
   endedAt    DateTime?
   createdAt  DateTime        @default(now())

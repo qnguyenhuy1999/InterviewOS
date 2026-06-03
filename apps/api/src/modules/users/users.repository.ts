@@ -1,25 +1,27 @@
 import type { UpsertUserLearningProfileInput } from '@interviewos/types'
-import { Injectable } from '@nestjs/common'
+import { Injectable, UnauthorizedException } from '@nestjs/common'
 
-import { DEMO_USER_EMAIL, DEMO_USER_NAME } from '../../common/constants/demo-user'
 import { PrismaService } from '../../database/prisma.service'
 
 @Injectable()
 export class UsersRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async ensureUserByEmail(email = DEMO_USER_EMAIL) {
-    return this.prisma.user.upsert({
+  async ensureUserByEmail(email?: string) {
+    if (!email) {
+      throw new UnauthorizedException('Authentication required.')
+    }
+
+    const user = await this.prisma.user.findUnique({
       where: { email },
-      update: {},
-      create: {
-        email,
-        name: DEMO_USER_NAME,
-      },
-      include: {
-        profile: true,
-      },
+      include: { profile: true },
     })
+
+    if (!user) {
+      throw new UnauthorizedException('User account not found.')
+    }
+
+    return user
   }
 
   async findById(userId: string) {

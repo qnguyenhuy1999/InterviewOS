@@ -31,3 +31,12 @@ export interface UpsertUserLearningProfileInput {
   interviewGoals: string[]
   preferredOutputStyle: string
 }
+
+export interface UserLearningProfileDefaults {
+  targetRole: string
+  targetLevel: ExperienceLevel
+  englishLevel: EnglishLevel
+  techStack: string[]
+  interviewGoals: string[]
+  preferredOutputStyle: string
+}

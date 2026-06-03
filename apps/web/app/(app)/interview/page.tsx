@@ -2,15 +2,20 @@ import type { InterviewSession } from '@interviewos/types'
 import Link from 'next/link'
 
 import { EmptyState } from '@/components/empty-states/EmptyState'
-import { apiClient } from '@/lib/api-client'
 import { formatDate } from '@/lib/format'
+import { serverApiClient } from '@/lib/server-api-client'
 
 type SessionListItem = InterviewSession & {
-  questions: Array<{ id: string; question: string; answer: { id: string } | null }>
+  note: { title: string } | null
+  questions: Array<{
+    id: string
+    question: string
+    answer: { id: string; overallScore: number | null; weakConcepts: string[] } | null
+  }>
 }
 
 export default async function InterviewPage() {
-  const sessions = await apiClient<SessionListItem[]>('/sessions').catch(() => [])
+  const sessions = await serverApiClient<SessionListItem[]>('/sessions').catch(() => [])
 
   if (sessions.length === 0) {
     return (
@@ -58,9 +63,18 @@ export default async function InterviewPage() {
               <span className="text-xs text-muted-foreground">{session.status}</span>
             </div>
             <p className="text-sm text-muted-foreground">
+              {session.note?.title ?? 'No source note'} ·{' '}
               {session.questions[0]?.answer ? 'Evaluated' : 'Awaiting answer'} · Created{' '}
-              {formatDate(session.createdAt)}
+              {formatDate(session.createdAt)} ·{' '}
+              {session.questions[0]?.answer?.overallScore
+                ? `Score ${session.questions[0].answer.overallScore}`
+                : 'No score yet'}
             </p>
+            {session.questions[0]?.answer?.weakConcepts.length ? (
+              <p className="text-sm text-muted-foreground">
+                Weak concepts: {session.questions[0].answer.weakConcepts.join(', ')}
+              </p>
+            ) : null}
           </div>
         </Link>
       ))}

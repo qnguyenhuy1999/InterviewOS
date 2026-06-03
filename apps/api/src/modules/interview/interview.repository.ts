@@ -26,6 +26,8 @@ export class InterviewRepository {
         status: 'DRAFT',
         noteId: source.noteId,
         sourceQuestionId: source.generatedQuestionId,
+        overrideStack: [],
+        overrideGoals: [],
         startedAt: new Date(),
         questions: {
           create: {
@@ -104,6 +106,12 @@ export class InterviewRepository {
     sessionId: string,
     questionId: string,
     payload: {
+      overrideRole: string | null
+      overrideLevel: string
+      overrideStack: string[]
+      overrideGoals: string[]
+      overrideEnglishLevel: string
+      preferredOutputStyle: string | null
       rawAnswer: string
       technicalScore: number
       englishScore: number
@@ -122,6 +130,12 @@ export class InterviewRepository {
       data: {
         status: 'PUBLISHED',
         endedAt: new Date(),
+        overrideRole: payload.overrideRole,
+        overrideLevel: payload.overrideLevel as never,
+        overrideStack: payload.overrideStack,
+        overrideGoals: payload.overrideGoals,
+        overrideEnglishLevel: payload.overrideEnglishLevel as never,
+        preferredOutputStyle: payload.preferredOutputStyle,
         questions: {
           update: {
             where: { id: questionId },

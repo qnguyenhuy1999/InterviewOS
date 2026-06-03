@@ -1,32 +1,15 @@
 import { createParamDecorator, type ExecutionContext } from '@nestjs/common'
-import type { FastifyRequest } from 'fastify'
+import { UnauthorizedException } from '@nestjs/common'
 
-import { DEMO_USER_EMAIL } from '../constants/demo-user'
-
-type RequestWithUser = FastifyRequest & {
-  user?: unknown
-}
-
-type CurrentUserPayload = {
-  email: string
-}
+import type { AuthenticatedRequest, AuthenticatedUser } from '../auth/authenticated-request'
 
 export const CurrentUser = createParamDecorator(
-  (_data: unknown, context: ExecutionContext): CurrentUserPayload => {
-    const request = context.switchToHttp().getRequest<RequestWithUser>()
-    const headerValue = request.headers['x-interviewos-user-email']
-    const email =
-      typeof headerValue === 'string' && headerValue.length > 0 ? headerValue : DEMO_USER_EMAIL
-
-    if (
-      request.user &&
-      typeof request.user === 'object' &&
-      'email' in request.user &&
-      typeof request.user.email === 'string'
-    ) {
-      return { email: request.user.email }
+  (_data: unknown, context: ExecutionContext): AuthenticatedUser => {
+    const request = context.switchToHttp().getRequest<AuthenticatedRequest>()
+    if (!request.user) {
+      throw new UnauthorizedException('Authentication required.')
     }
 
-    return { email }
+    return request.user
   },
 )

@@ -2,11 +2,11 @@ import type { TechnicalNote } from '@interviewos/types'
 import Link from 'next/link'
 
 import { EmptyState } from '@/components/empty-states/EmptyState'
-import { apiClient } from '@/lib/api-client'
 import { formatDate } from '@/lib/format'
+import { serverApiClient } from '@/lib/server-api-client'
 
 export default async function NotebookPage() {
-  const notes = await apiClient<TechnicalNote[]>('/notes').catch(() => [])
+  const notes = await serverApiClient<TechnicalNote[]>('/notes').catch(() => [])
 
   if (notes.length === 0) {
     return (

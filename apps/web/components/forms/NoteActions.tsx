@@ -1,9 +1,10 @@
 'use client'
 
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
-import { absoluteApiPath } from '@/lib/api-client'
+import { apiFetch } from '@/lib/api-client'
 
 export function NoteActions({
   noteId,
@@ -24,11 +25,8 @@ export function NoteActions({
     const body = action === 'questions' ? JSON.stringify({ count: 5 }) : undefined
 
     try {
-      const response = await fetch(absoluteApiPath(path), {
+      const response = await apiFetch(path, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body,
       })
 
@@ -47,6 +45,12 @@ export function NoteActions({
   return (
     <div className="space-y-3">
       <div className="flex flex-wrap gap-3">
+        <Link
+          href={`/notebook/${noteId}/edit`}
+          className="rounded-lg border border-border px-4 py-2 text-sm font-medium"
+        >
+          Edit note
+        </Link>
         <button
           type="button"
           disabled={pendingAction !== null}

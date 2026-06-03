@@ -1,4 +1,5 @@
-import type { InterviewType, NoteStatus, QuestionDifficulty } from './enums'
+import type { EnglishLevel, ExperienceLevel, InterviewType, NoteStatus, QuestionDifficulty } from './enums'
+import type { AdvancedLearningSettings } from './notebook'
 
 export interface InterviewSession {
   id: string
@@ -7,6 +8,12 @@ export interface InterviewSession {
   status: NoteStatus
   noteId: string | null
   sourceQuestionId: string | null
+  overrideRole: string | null
+  overrideLevel: ExperienceLevel | null
+  overrideStack: string[]
+  overrideGoals: string[]
+  overrideEnglishLevel: EnglishLevel | null
+  preferredOutputStyle: string | null
   startedAt: Date | null
   endedAt: Date | null
   createdAt: Date
@@ -73,4 +80,5 @@ export interface StartInterviewSessionInput {
 
 export interface SubmitInterviewAnswerInput {
   answer: string
+  advancedSettings?: AdvancedLearningSettings
 }

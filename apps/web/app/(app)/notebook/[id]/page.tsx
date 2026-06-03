@@ -1,9 +1,10 @@
 import type { NoteGeneratedQuestion, TechnicalNote, TechnicalNoteContent } from '@interviewos/types'
+import Link from 'next/link'
 
 import { NoteActions } from '@/components/forms/NoteActions'
 import { StartPracticeButton } from '@/components/forms/StartPracticeButton'
-import { apiClient } from '@/lib/api-client'
 import { formatDate } from '@/lib/format'
+import { serverApiClient } from '@/lib/server-api-client'
 
 type NoteDetail = TechnicalNote & {
   questions: NoteGeneratedQuestion[]
@@ -11,7 +12,7 @@ type NoteDetail = TechnicalNote & {
 
 export default async function NoteDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
-  const note = await apiClient<NoteDetail>(`/notes/${id}`).catch(() => null)
+  const note = await serverApiClient<NoteDetail>(`/notes/${id}`).catch(() => null)
 
   if (!note) {
     return (
@@ -30,6 +31,25 @@ export default async function NoteDetailPage({ params }: { params: Promise<{ id:
         <p className="text-sm text-muted-foreground">
           {note.type.replaceAll('_', ' ')} · Updated {formatDate(note.updatedAt)}
         </p>
+      </div>
+
+      <div className="rounded-xl border border-border bg-card p-4">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <p className="text-sm font-medium">Generation settings</p>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Role: {note.overrideRole ?? 'Onboarding default'} · Level:{' '}
+              {note.overrideLevel ?? 'Onboarding default'} · English:{' '}
+              {note.overrideEnglishLevel ?? 'Onboarding default'}
+            </p>
+          </div>
+          <Link
+            href={`/notebook/${note.id}/edit`}
+            className="rounded-lg border border-border px-3 py-2 text-sm font-medium"
+          >
+            Edit
+          </Link>
+        </div>
       </div>
 
       <div className="rounded-xl border border-border bg-card p-4">

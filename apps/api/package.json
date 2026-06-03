@@ -9,6 +9,7 @@
     "lint": "eslint src"
   },
   "dependencies": {
+    "@fastify/cookie": "^11.0.2",
     "@interviewos/ai": "workspace:*",
     "@interviewos/config": "workspace:*",
     "@interviewos/database": "workspace:*",

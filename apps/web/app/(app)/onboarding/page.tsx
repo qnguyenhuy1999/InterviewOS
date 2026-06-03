@@ -1,10 +1,12 @@
 import type { UserLearningProfile } from '@interviewos/types'
 
 import { ProfileForm } from '@/components/forms/ProfileForm'
-import { apiClient } from '@/lib/api-client'
+import { serverApiClient } from '@/lib/server-api-client'
 
 export default async function OnboardingPage() {
-  const profile = await apiClient<UserLearningProfile | null>('/users/me/profile').catch(() => null)
+  const profile = await serverApiClient<UserLearningProfile | null>('/users/me/profile').catch(
+    () => null,
+  )
 
   return (
     <div className="mx-auto max-w-lg space-y-8">

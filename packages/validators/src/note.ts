@@ -16,6 +16,7 @@ const advancedSettingsSchema = z
     interviewGoals: z.array(z.string().min(1)).optional(),
     preferredOutputStyle: z.string().min(1).optional(),
   })
+  .nullable()
   .optional()
 
 export const noteCreateSchema = z.object({

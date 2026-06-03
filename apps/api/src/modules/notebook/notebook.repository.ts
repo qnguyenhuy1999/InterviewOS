@@ -13,18 +13,20 @@ export class NotebookRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async createNote(userId: string, payload: NoteCreateInput) {
+    const advancedSettings = payload.advancedSettings ?? undefined
+
     return this.prisma.technicalNote.create({
       data: {
         userId,
         title: payload.title,
         rawInput: payload.roughNotes,
         type: payload.type,
-        overrideRole: payload.advancedSettings?.targetRole,
-        overrideLevel: payload.advancedSettings?.targetLevel,
-        overrideStack: payload.advancedSettings?.techStack ?? [],
-        overrideGoals: payload.advancedSettings?.interviewGoals ?? [],
-        overrideEnglishLevel: payload.advancedSettings?.englishLevel,
-        preferredOutputStyle: payload.advancedSettings?.preferredOutputStyle,
+        overrideRole: advancedSettings?.targetRole,
+        overrideLevel: advancedSettings?.targetLevel,
+        overrideStack: advancedSettings?.techStack ?? [],
+        overrideGoals: advancedSettings?.interviewGoals ?? [],
+        overrideEnglishLevel: advancedSettings?.englishLevel,
+        preferredOutputStyle: advancedSettings?.preferredOutputStyle,
       },
       include: {
         sections: true,
@@ -72,6 +74,12 @@ export class NotebookRepository {
   }
 
   async updateNote(userId: string, noteId: string, payload: NoteUpdateInput) {
+    const clearAdvancedSettings = payload.advancedSettings === null
+    const advancedSettings =
+      payload.advancedSettings && payload.advancedSettings !== null
+        ? payload.advancedSettings
+        : undefined
+
     return this.prisma.technicalNote.update({
       where: { id: noteId, userId },
       data: {
@@ -79,12 +87,14 @@ export class NotebookRepository {
         rawInput: payload.roughNotes,
         type: payload.type,
         status: payload.status,
-        overrideRole: payload.advancedSettings?.targetRole,
-        overrideLevel: payload.advancedSettings?.targetLevel,
-        overrideStack: payload.advancedSettings?.techStack,
-        overrideGoals: payload.advancedSettings?.interviewGoals,
-        overrideEnglishLevel: payload.advancedSettings?.englishLevel,
-        preferredOutputStyle: payload.advancedSettings?.preferredOutputStyle,
+        overrideRole: clearAdvancedSettings ? null : advancedSettings?.targetRole,
+        overrideLevel: clearAdvancedSettings ? null : advancedSettings?.targetLevel,
+        overrideStack: clearAdvancedSettings ? [] : advancedSettings?.techStack,
+        overrideGoals: clearAdvancedSettings ? [] : advancedSettings?.interviewGoals,
+        overrideEnglishLevel: clearAdvancedSettings ? null : advancedSettings?.englishLevel,
+        preferredOutputStyle: clearAdvancedSettings
+          ? null
+          : advancedSettings?.preferredOutputStyle,
       },
       include: {
         sections: true,

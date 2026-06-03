@@ -1,4 +1,4 @@
-import { Injectable, NotImplementedException } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 
 import { PrismaService } from '../../database/prisma.service'
 
@@ -6,15 +6,21 @@ import { PrismaService } from '../../database/prisma.service'
 export class AuthRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  findUserForLogin(_payload: Record<string, unknown>) {
-    void this.prisma
-    // Scaffold boundary: future Prisma access for auth belongs here.
-    throw new NotImplementedException()
+  findByEmail(email: string) {
+    return this.prisma.user.findUnique({
+      where: { email },
+      include: { profile: true },
+    })
   }
 
-  createUser(_payload: Record<string, unknown>) {
-    void this.prisma
-    // Scaffold boundary: future Prisma access for auth belongs here.
-    throw new NotImplementedException()
+  createUser(payload: { email: string; passwordHash: string; name?: string }) {
+    return this.prisma.user.create({
+      data: {
+        email: payload.email,
+        passwordHash: payload.passwordHash,
+        name: payload.name ?? null,
+      },
+      include: { profile: true },
+    })
   }
 }

@@ -71,22 +71,44 @@ export class InterviewService {
     }
 
     const input = interviewAnswerSchema.parse(payload)
+    const advancedSettings = input.advancedSettings ?? undefined
+    const targetLevel =
+      advancedSettings?.targetLevel ??
+      session.overrideLevel ??
+      (profile.targetLevel as unknown as ExperienceLevel)
+    const englishLevel =
+      advancedSettings?.englishLevel ??
+      session.overrideEnglishLevel ??
+      (profile.englishLevel as unknown as EnglishLevel)
     const technical = await this.aiGateway.evaluateInterviewAnswer({
       question: primaryQuestion.question,
       answer: input.answer,
       expectedConcepts: primaryQuestion.expectedConcepts,
       sourceSection: primaryQuestion.sourceSection,
-      targetLevel: profile.targetLevel as unknown as ExperienceLevel,
+      targetLevel: targetLevel as ExperienceLevel,
     })
     const english = await this.aiGateway.generateEnglishFeedback({
       text: input.answer,
-      targetLevel: profile.englishLevel as unknown as EnglishLevel,
+      targetLevel: englishLevel as EnglishLevel,
     })
 
     const updatedSession = await this.interviewRepository.saveAnswer(
       session.id,
       primaryQuestion.id,
       {
+        overrideRole: advancedSettings?.targetRole ?? session.overrideRole,
+        overrideLevel: targetLevel as ExperienceLevel,
+        overrideStack:
+          advancedSettings?.techStack && advancedSettings.techStack.length > 0
+            ? advancedSettings.techStack
+            : session.overrideStack,
+        overrideGoals:
+          advancedSettings?.interviewGoals && advancedSettings.interviewGoals.length > 0
+            ? advancedSettings.interviewGoals
+            : session.overrideGoals,
+        overrideEnglishLevel: englishLevel as EnglishLevel,
+        preferredOutputStyle:
+          advancedSettings?.preferredOutputStyle ?? session.preferredOutputStyle,
         rawAnswer: input.answer,
         technicalScore: technical.technicalScore,
         englishScore: technical.englishScore,
