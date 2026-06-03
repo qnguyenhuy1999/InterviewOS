@@ -186,9 +186,11 @@ export const answerFixtures = [
   {
     id: 'a-001',
     questionId: 'q-001',
-    transcript: 'React hooks use a linked list stored on the fiber node to track state between renders...',
+    transcript:
+      'React hooks use a linked list stored on the fiber node to track state between renders...',
     score: 82,
-    feedback: 'Good explanation of the fiber architecture. Could elaborate on the dependency array semantics.',
+    feedback:
+      'Good explanation of the fiber architecture. Could elaborate on the dependency array semantics.',
     evaluatedAt: new Date('2025-02-10T10:15:00'),
   },
   {
@@ -196,7 +198,8 @@ export const answerFixtures = [
     questionId: 'q-002',
     transcript: 'I would use a pub/sub architecture with Kafka for high-throughput delivery...',
     score: 76,
-    feedback: 'Solid approach. Consider discussing fan-out patterns and notification deduplication.',
+    feedback:
+      'Solid approach. Consider discussing fan-out patterns and notification deduplication.',
     evaluatedAt: new Date('2025-02-10T10:35:00'),
   },
 ]

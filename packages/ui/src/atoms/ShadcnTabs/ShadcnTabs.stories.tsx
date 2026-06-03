@@ -81,10 +81,16 @@ export const WithBadge: Story = {
     <Tabs defaultValue="notes" className="w-80">
       <TabsList>
         <TabsTrigger value="notes">
-          Notes <Badge variant="secondary" className="ml-1">47</Badge>
+          Notes{' '}
+          <Badge variant="secondary" className="ml-1">
+            47
+          </Badge>
         </TabsTrigger>
         <TabsTrigger value="sessions">
-          Sessions <Badge variant="secondary" className="ml-1">24</Badge>
+          Sessions{' '}
+          <Badge variant="secondary" className="ml-1">
+            24
+          </Badge>
         </TabsTrigger>
       </TabsList>
       <TabsContent value="notes">
@@ -124,7 +130,9 @@ export const Vertical: Story = {
       <TabsList>
         <TabsTrigger value="notes">Notes</TabsTrigger>
         <TabsTrigger value="sessions">Sessions</TabsTrigger>
-        <TabsTrigger value="settings" disabled>Settings</TabsTrigger>
+        <TabsTrigger value="settings" disabled>
+          Settings
+        </TabsTrigger>
       </TabsList>
       <TabsContent value="notes">
         <p className="text-sm text-muted-foreground">Notes content.</p>

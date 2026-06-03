@@ -10,10 +10,7 @@ import { HttpExceptionFilter } from './common/filters/http-exception.filter'
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor'
 
 async function bootstrap(): Promise<void> {
-  const app = await NestFactory.create<NestFastifyApplication>(
-    AppModule,
-    new FastifyAdapter(),
-  )
+  const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter())
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -24,6 +21,9 @@ async function bootstrap(): Promise<void> {
   )
   app.useGlobalFilters(new HttpExceptionFilter())
   app.useGlobalInterceptors(new LoggingInterceptor())
+  app.enableCors({
+    origin: true,
+  })
 
   const configService = app.get(ConfigService)
   const port = configService.get<number>('port', 3001)

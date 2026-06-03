@@ -36,12 +36,12 @@ Mock / OpenAI Provider
 
 ## Dependency Rules
 
-| Package | Can Import |
-|---------|-----------|
-| `apps/web` | `@interviewos/types`, `@interviewos/validators`, `@interviewos/ui`, `@interviewos/config` |
-| `apps/api` | All packages except `@interviewos/web` |
-| `packages/database` | accessed only by API repositories |
-| `packages/ai` | accessed only by API AI gateway |
+| Package             | Can Import                                                                                |
+| ------------------- | ----------------------------------------------------------------------------------------- |
+| `apps/web`          | `@interviewos/types`, `@interviewos/validators`, `@interviewos/ui`, `@interviewos/config` |
+| `apps/api`          | All packages except `@interviewos/web`                                                    |
+| `packages/database` | accessed only by API repositories                                                         |
+| `packages/ai`       | accessed only by API AI gateway                                                           |
 
 ## API Architecture
 

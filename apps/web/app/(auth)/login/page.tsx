@@ -6,9 +6,7 @@ export default function LoginPage() {
       <div className="w-full max-w-sm space-y-6 px-4">
         <div className="space-y-2 text-center">
           <h1 className="font-heading text-2xl font-bold">Welcome back</h1>
-          <p className="text-sm text-muted-foreground">
-            Sign in to your InterviewOS account
-          </p>
+          <p className="text-sm text-muted-foreground">Sign in to your InterviewOS account</p>
         </div>
         <div className="space-y-4">
           <div className="space-y-2">

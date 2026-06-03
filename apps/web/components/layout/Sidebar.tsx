@@ -40,10 +40,7 @@ export function Sidebar() {
       </button>
 
       {open && (
-        <div
-          className="fixed inset-0 z-40 bg-black/50 md:hidden"
-          onClick={() => setOpen(false)}
-        />
+        <div className="fixed inset-0 z-40 bg-black/50 md:hidden" onClick={() => setOpen(false)} />
       )}
 
       <aside

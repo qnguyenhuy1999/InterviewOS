@@ -1,4 +1,4 @@
-import { Injectable, NotImplementedException } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 
 import { PrismaService } from '../../database/prisma.service'
 
@@ -6,15 +6,33 @@ import { PrismaService } from '../../database/prisma.service'
 export class EnglishNotesRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  findEnglishNotes() {
-    void this.prisma
-    // Scaffold boundary: future Prisma access for english notes belongs here.
-    throw new NotImplementedException()
+  async findEnglishNotes(userId: string) {
+    return this.prisma.englishNote.findMany({
+      where: { userId },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    })
   }
 
-  createEnglishNote(_payload: Record<string, unknown>) {
-    void this.prisma
-    // Scaffold boundary: future Prisma access for english notes belongs here.
-    throw new NotImplementedException()
+  async createEnglishNote(
+    userId: string,
+    payload: {
+      answerId: string
+      originalSentence: string
+      correctedSentence: string
+      naturalVersion: string
+      explanation: string
+      grammarTopic: string
+      recommendedStudyTopics: string[]
+      practicePatterns: string[]
+    },
+  ) {
+    return this.prisma.englishNote.create({
+      data: {
+        userId,
+        ...payload,
+      },
+    })
   }
 }

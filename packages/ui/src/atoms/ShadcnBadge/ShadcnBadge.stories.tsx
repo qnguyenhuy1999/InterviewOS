@@ -31,11 +31,25 @@ export const Outline: Story = { args: { variant: 'outline' } }
 export const Ghost: Story = { args: { variant: 'ghost' } }
 
 export const WithLeadingIcon: Story = {
-  args: { children: (<><CheckCircleIcon /> Published</>) as React.ReactNode, variant: 'default' },
+  args: {
+    children: (
+      <>
+        <CheckCircleIcon /> Published
+      </>
+    ) as React.ReactNode,
+    variant: 'default',
+  },
 }
 
 export const WithTrailingIcon: Story = {
-  args: { children: (<>Failed <XCircleIcon /></>) as React.ReactNode, variant: 'destructive' },
+  args: {
+    children: (
+      <>
+        Failed <XCircleIcon />
+      </>
+    ) as React.ReactNode,
+    variant: 'destructive',
+  },
 }
 
 export const AllVariants: Story = {
@@ -53,9 +67,15 @@ export const AllVariants: Story = {
 export const StatusBadges: Story = {
   render: () => (
     <div className="flex flex-wrap gap-2">
-      <Badge variant="default"><CheckCircleIcon /> Published</Badge>
-      <Badge variant="secondary"><StarIcon /> Draft</Badge>
-      <Badge variant="destructive"><XCircleIcon /> Archived</Badge>
+      <Badge variant="default">
+        <CheckCircleIcon /> Published
+      </Badge>
+      <Badge variant="secondary">
+        <StarIcon /> Draft
+      </Badge>
+      <Badge variant="destructive">
+        <XCircleIcon /> Archived
+      </Badge>
       <Badge variant="outline">Concept</Badge>
     </div>
   ),

@@ -101,16 +101,21 @@ model TechnicalNote {
   title         String
   rawInput      String
   status        NoteStatus      @default(DRAFT)
-  type          NoteType
+  type          NoteType        @default(CONCEPT)
   overrideRole  String?
   overrideLevel ExperienceLevel?
   overrideStack String[]
+  overrideGoals String[]
+  overrideEnglishLevel EnglishLevel?
+  preferredOutputStyle String?
+  structuredContent Json?
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
   deletedAt     DateTime?
   user          User            @relation(fields: [userId], references: [id], onDelete: Cascade)
   sections      TechnicalNoteSection[]
   questions     NoteGeneratedQuestion[]
+  sessions      InterviewSession[]
 
   @@index([userId, status, type, createdAt])
   @@index([userId])
@@ -137,7 +142,11 @@ model NoteGeneratedQuestion {
   id         String             @id @default(cuid())
   noteId     String
   question   String
+  category   String
+  expectedAnswer String?
+  expectedConcepts String[]
   difficulty QuestionDifficulty
+  sourceSection String
   createdAt  DateTime           @default(now())
   updatedAt  DateTime           @updatedAt
   note       TechnicalNote      @relation(fields: [noteId], references: [id], onDelete: Cascade)
@@ -151,12 +160,15 @@ model InterviewSession {
   userId     String
   type       InterviewType
   status     NoteStatus
+  noteId     String?
+  sourceQuestionId String?
   startedAt  DateTime?
   endedAt    DateTime?
   createdAt  DateTime        @default(now())
   updatedAt  DateTime        @updatedAt
   deletedAt  DateTime?
   user       User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  note       TechnicalNote?  @relation(fields: [noteId], references: [id], onDelete: SetNull)
   questions  InterviewQuestion[]
 
   @@index([userId, status, type, createdAt])
@@ -171,7 +183,10 @@ model InterviewQuestion {
   sessionId  String
   order      Int
   question   String
+  category   String
   difficulty QuestionDifficulty
+  expectedConcepts String[]
+  sourceSection String
   topicTags  String[]
   createdAt  DateTime          @default(now())
   updatedAt  DateTime          @updatedAt
@@ -191,6 +206,11 @@ model InterviewAnswer {
   clarityScore   Int?
   overallScore   Int?
   aiFeedback     String?
+  technicalFeedback Json?
+  englishFeedback Json?
+  nextRecommendedQuestion Json?
+  recommendedLearning Json?
+  weakConcepts String[]
   createdAt      DateTime          @default(now())
   updatedAt      DateTime          @updatedAt
   question       InterviewQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
@@ -207,6 +227,7 @@ model EnglishNote {
   originalSentence       String
   correctedSentence      String
   naturalVersion         String
+  explanation            String
   grammarTopic           String
   recommendedStudyTopics String[]
   practicePatterns       String[]
@@ -226,6 +247,7 @@ model UserWeakConcept {
   concept         String
   occurrenceCount Int      @default(1)
   lastSeenAt      DateTime
+  sourceAnswerIds String[]
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -240,6 +262,7 @@ model UserEnglishWeakness {
   topic           String
   occurrenceCount Int      @default(1)
   lastSeenAt      DateTime
+  sourceAnswerIds String[]
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)

@@ -1,18 +1,43 @@
-import { Injectable, NotImplementedException } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 
+import { UsersRepository } from '../users/users.repository'
 import { EnglishNotesRepository } from './english-notes.repository'
+
+type CurrentUserLike = {
+  email?: string
+}
 
 @Injectable()
 export class EnglishNotesService {
-  constructor(private readonly englishNotesRepository: EnglishNotesRepository) {}
+  constructor(
+    private readonly englishNotesRepository: EnglishNotesRepository,
+    private readonly usersRepository: UsersRepository,
+  ) {}
 
-  findEnglishNotes() {
-    void this.englishNotesRepository
-    throw new NotImplementedException()
+  async findEnglishNotes(currentUser: unknown) {
+    const user = await this.usersRepository.ensureUserByEmail(this.resolveEmail(currentUser))
+    return this.englishNotesRepository.findEnglishNotes(user.id)
   }
 
-  createEnglishNote(_payload: Record<string, unknown>) {
-    void this.englishNotesRepository
-    throw new NotImplementedException()
+  async createEnglishNote(currentUser: unknown, payload: Record<string, unknown>) {
+    const user = await this.usersRepository.ensureUserByEmail(this.resolveEmail(currentUser))
+    return this.englishNotesRepository.createEnglishNote(user.id, {
+      answerId: String(payload.answerId ?? ''),
+      originalSentence: String(payload.originalSentence ?? ''),
+      correctedSentence: String(payload.correctedSentence ?? ''),
+      naturalVersion: String(payload.naturalVersion ?? ''),
+      explanation: String(payload.explanation ?? ''),
+      grammarTopic: String(payload.grammarTopic ?? ''),
+      recommendedStudyTopics: Array.isArray(payload.recommendedStudyTopics)
+        ? payload.recommendedStudyTopics.map(String)
+        : [],
+      practicePatterns: Array.isArray(payload.practicePatterns)
+        ? payload.practicePatterns.map(String)
+        : [],
+    })
+  }
+
+  private resolveEmail(currentUser: unknown): string | undefined {
+    return (currentUser as CurrentUserLike | undefined)?.email
   }
 }

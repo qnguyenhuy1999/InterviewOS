@@ -5,12 +5,8 @@ export default function RegisterPage() {
     <div className="flex min-h-screen items-center justify-center">
       <div className="w-full max-w-sm space-y-6 px-4">
         <div className="space-y-2 text-center">
-          <h1 className="font-heading text-2xl font-bold">
-            Create your InterviewOS account
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            Start preparing for your interviews
-          </p>
+          <h1 className="font-heading text-2xl font-bold">Create your InterviewOS account</h1>
+          <p className="text-sm text-muted-foreground">Start preparing for your interviews</p>
         </div>
         <div className="space-y-4">
           <div className="space-y-2">

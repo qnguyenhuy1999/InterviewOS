@@ -21,3 +21,13 @@ export interface UserLearningProfile {
   createdAt: Date
   updatedAt: Date
 }
+
+export interface UpsertUserLearningProfileInput {
+  targetRole: string
+  currentLevel: ExperienceLevel
+  targetLevel: ExperienceLevel
+  englishLevel: EnglishLevel
+  techStack: string[]
+  interviewGoals: string[]
+  preferredOutputStyle: string
+}

@@ -1,4 +1,5 @@
 import type { EnglishLevel, ExperienceLevel, NoteType, QuestionDifficulty } from './enums'
+import type { TechnicalNoteContent } from './notebook'
 
 export interface GenerateTextInput {
   prompt: string
@@ -50,15 +51,18 @@ export interface GenerateTechnicalNoteInput {
   topic: string
   noteType: NoteType
   targetLevel: ExperienceLevel
+  targetRole: string
+  englishLevel: EnglishLevel
   techStack?: string[]
+  interviewGoals?: string[]
+  preferredOutputStyle?: string
   additionalContext?: string
 }
 
 export interface GenerateTechnicalNoteResult {
   title: string
-  content: string
+  content: TechnicalNoteContent
   sections: Array<{ heading: string; content: string }>
-  tags: string[]
 }
 
 export interface ImproveTechnicalNoteInput {
@@ -77,7 +81,7 @@ export interface ImproveTechnicalNoteResult {
 export interface GenerateQuestionsFromNoteInput {
   noteId: string
   title: string
-  content: string
+  content: TechnicalNoteContent
   count?: number
   difficulty?: QuestionDifficulty
 }
@@ -85,23 +89,41 @@ export interface GenerateQuestionsFromNoteInput {
 export interface GenerateQuestionsFromNoteResult {
   questions: Array<{
     question: string
+    category: string
     expectedAnswer: string
     difficulty: QuestionDifficulty
+    expectedConcepts: string[]
+    sourceSection: string
   }>
 }
 
 export interface EvaluateInterviewAnswerInput {
   question: string
   answer: string
-  expectedAnswer?: string
+  expectedConcepts: string[]
+  sourceSection: string
   targetLevel: ExperienceLevel
 }
 
 export interface EvaluateInterviewAnswerResult {
-  score: number
-  feedback: string
+  technicalScore: number
+  englishScore: number
+  clarityScore: number
+  overallScore: number
+  summary: string
   strengths: string[]
   improvements: string[]
+  weakConcepts: string[]
+  nextRecommendedQuestion: {
+    question: string
+    difficulty: QuestionDifficulty
+    reason: string
+  }
+  recommendedLearning: {
+    title: string
+    reason: string
+    action: string
+  }
 }
 
 export interface GenerateEnglishFeedbackInput {
@@ -112,8 +134,16 @@ export interface GenerateEnglishFeedbackInput {
 export interface GenerateEnglishFeedbackResult {
   overallScore: number
   feedback: string
-  grammarIssues: Array<{ original: string; suggestion: string; explanation: string }>
-  vocabularyNotes: string[]
+  notes: Array<{
+    userSentence: string
+    correctedSentence: string
+    naturalVersion: string
+    explanation: string
+    grammarTopic: string
+    recommendedTopics: string[]
+    practicePatterns: string[]
+  }>
+  weakTopics: string[]
 }
 
 export interface RecommendNextLearningInput {
@@ -129,6 +159,7 @@ export interface RecommendNextLearningResult {
     topic: string
     reason: string
     priority: number
+    action: string
   }>
 }
 

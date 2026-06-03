@@ -1,15 +1,45 @@
-import type { NoteStatus, NoteType, QuestionDifficulty } from './enums'
+import type {
+  EnglishLevel,
+  ExperienceLevel,
+  NoteStatus,
+  NoteType,
+  QuestionDifficulty,
+} from './enums'
 
 export interface TechnicalNote {
   id: string
   userId: string
   title: string
-  content: string
-  noteType: NoteType
+  rawInput: string
+  type: NoteType
   status: NoteStatus
-  tags: string[]
+  overrideRole: string | null
+  overrideLevel: ExperienceLevel | null
+  overrideStack: string[]
+  overrideGoals: string[]
+  overrideEnglishLevel: EnglishLevel | null
+  preferredOutputStyle: string | null
+  structuredContent: TechnicalNoteContent | null
   createdAt: Date
   updatedAt: Date
+}
+
+export interface TechnicalNoteContentSection {
+  heading: string
+  content: string
+}
+
+export interface TechnicalNoteContent {
+  purpose: string
+  quickReference: string[]
+  coreConcepts: string[]
+  mentalModel: string
+  productionUsage: string[]
+  practicalExamples: string[]
+  commonPitfalls: string[]
+  debuggingChecklist: string[]
+  productionChecklist: string[]
+  seniorInterviewSignals: string[]
 }
 
 export interface TechnicalNoteSection {
@@ -24,6 +54,36 @@ export interface NoteGeneratedQuestion {
   id: string
   noteId: string
   question: string
-  expectedAnswer: string
+  category: string
+  expectedAnswer: string | null
   difficulty: QuestionDifficulty
+  expectedConcepts: string[]
+  sourceSection: string
+}
+
+export interface CreateTechnicalNoteInput {
+  title: string
+  roughNotes: string
+  type?: NoteType
+  advancedSettings?: {
+    targetRole?: string
+    targetLevel?: ExperienceLevel
+    englishLevel?: EnglishLevel
+    techStack?: string[]
+    interviewGoals?: string[]
+    preferredOutputStyle?: string
+  }
+}
+
+export interface UpdateTechnicalNoteInput extends Partial<CreateTechnicalNoteInput> {
+  status?: NoteStatus
+}
+
+export interface GenerateTechnicalNoteRequest {
+  noteId: string
+}
+
+export interface GenerateQuestionsFromNoteRequest {
+  count?: number
+  difficulty?: QuestionDifficulty
 }

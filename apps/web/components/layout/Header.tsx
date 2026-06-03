@@ -17,8 +17,8 @@ export function Header() {
   const pathname = usePathname()
 
   const title =
-    Object.entries(routeTitles).find(([prefix]) =>
-      pathname === prefix || pathname.startsWith(prefix + '/'),
+    Object.entries(routeTitles).find(
+      ([prefix]) => pathname === prefix || pathname.startsWith(prefix + '/'),
     )?.[1] ?? 'InterviewOS'
 
   return (

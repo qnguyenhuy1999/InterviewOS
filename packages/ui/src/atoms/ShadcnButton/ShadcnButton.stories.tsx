@@ -51,11 +51,23 @@ export const DisabledDestructive: Story = {
 }
 
 export const WithLeadingIcon: Story = {
-  args: { children: (<><PlusIcon /> New Note</>) as React.ReactNode },
+  args: {
+    children: (
+      <>
+        <PlusIcon /> New Note
+      </>
+    ) as React.ReactNode,
+  },
 }
 
 export const WithTrailingIcon: Story = {
-  args: { children: (<>Delete <TrashIcon /></>) as React.ReactNode },
+  args: {
+    children: (
+      <>
+        Delete <TrashIcon />
+      </>
+    ) as React.ReactNode,
+  },
 }
 
 export const IconOnly: Story = {

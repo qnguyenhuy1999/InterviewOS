@@ -50,9 +50,7 @@ export const Success: Story = {
     <Alert className="w-96 border-green-200 bg-green-50 text-green-900 dark:border-green-800 dark:bg-green-900/20 dark:text-green-400">
       <CheckCircle2Icon />
       <AlertTitle>Session complete</AlertTitle>
-      <AlertDescription>
-        Your interview session has been saved. Score: 82/100.
-      </AlertDescription>
+      <AlertDescription>Your interview session has been saved. Score: 82/100.</AlertDescription>
     </Alert>
   ),
 }

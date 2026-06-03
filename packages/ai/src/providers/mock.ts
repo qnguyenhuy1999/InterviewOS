@@ -47,11 +47,55 @@ export class MockAIProvider implements AIProvider {
   async generateTechnicalNote(
     input: GenerateTechnicalNoteInput,
   ): Promise<GenerateTechnicalNoteResult> {
+    const stack = input.techStack?.join(', ') || 'your current stack'
     return {
       title: `Mock: ${input.topic}`,
-      content: 'Mock technical note content.',
-      sections: [{ heading: 'Overview', content: 'Mock section content.' }],
-      tags: [input.topic.toLowerCase()],
+      content: {
+        purpose: `Build interview-ready understanding of ${input.topic} for a ${input.targetRole} role.`,
+        quickReference: [
+          `${input.topic} is most useful when working with ${stack}.`,
+          `Target depth is ${input.targetLevel}.`,
+          `Keep explanations concise and ${input.preferredOutputStyle ?? 'practical'}.`,
+        ],
+        coreConcepts: [
+          `${input.topic} fundamentals`,
+          `${input.topic} tradeoffs`,
+          `${input.topic} production debugging`,
+        ],
+        mentalModel: `${input.topic} works best when you explain the why, the runtime behavior, and the failure modes together.`,
+        productionUsage: [
+          `Use ${input.topic} to solve realistic backend/frontend problems.`,
+          `Tie the explanation back to ${stack}.`,
+        ],
+        practicalExamples: [
+          `Describe a real feature where ${input.topic} improved maintainability.`,
+          `Explain how you would test ${input.topic} under pressure.`,
+        ],
+        commonPitfalls: [
+          `Over-explaining theory without concrete implementation detail.`,
+          `Ignoring edge cases and operational tradeoffs.`,
+        ],
+        debuggingChecklist: [
+          `Confirm the problem statement.`,
+          `Inspect runtime assumptions.`,
+          `State how to verify the fix in production-like conditions.`,
+        ],
+        productionChecklist: [
+          `Define success metrics.`,
+          `Handle observability and rollback.`,
+          `Document failure scenarios.`,
+        ],
+        seniorInterviewSignals: [
+          `Explicit tradeoff discussion.`,
+          `Production-aware debugging mindset.`,
+          `Clear communication matched to interviewer context.`,
+        ],
+      },
+      sections: [
+        { heading: 'Purpose', content: `Why ${input.topic} matters for ${input.targetRole}.` },
+        { heading: 'Core Concepts', content: `The important mental anchors for ${input.topic}.` },
+        { heading: 'Production Usage', content: `How ${input.topic} shows up in shipped systems.` },
+      ],
     }
   }
 
@@ -66,38 +110,68 @@ export class MockAIProvider implements AIProvider {
   }
 
   async generateQuestionsFromNote(
-    _input: GenerateQuestionsFromNoteInput,
+    input: GenerateQuestionsFromNoteInput,
   ): Promise<GenerateQuestionsFromNoteResult> {
+    const sourceSection = input.content.coreConcepts[0] ?? 'Core Concepts'
     return {
       questions: [
         {
-          question: 'Mock question about the topic?',
+          question: `Explain ${input.title} to a senior interviewer and describe when you would avoid it.`,
+          category: 'Deep Understanding',
           expectedAnswer: 'Mock expected answer.',
-          difficulty: QuestionDifficulty.MEDIUM,
+          difficulty: input.difficulty ?? QuestionDifficulty.MEDIUM,
+          expectedConcepts: input.content.coreConcepts.slice(0, 3),
+          sourceSection,
         },
       ],
     }
   }
 
   async evaluateInterviewAnswer(
-    _input: EvaluateInterviewAnswerInput,
+    input: EvaluateInterviewAnswerInput,
   ): Promise<EvaluateInterviewAnswerResult> {
     return {
-      score: 75,
-      feedback: 'Mock feedback: Good answer overall.',
-      strengths: ['Clear explanation'],
-      improvements: ['Add more examples'],
+      technicalScore: 78,
+      englishScore: 81,
+      clarityScore: 80,
+      overallScore: 80,
+      summary: 'Mock feedback: solid answer, but the explanation needs more production detail.',
+      strengths: ['Clear explanation', 'Reasonable structure'],
+      improvements: ['Add one concrete example', 'State tradeoffs earlier'],
+      weakConcepts: input.expectedConcepts.slice(0, 2),
+      nextRecommendedQuestion: {
+        question: `What would break first if ${input.sourceSection} was implemented poorly?`,
+        difficulty: QuestionDifficulty.HARD,
+        reason: 'Pushes the user from conceptual recall into production reasoning.',
+      },
+      recommendedLearning: {
+        title: `${input.sourceSection} review`,
+        reason: 'The answer missed depth in the underlying concept area.',
+        action: 'Review the note checklist and restate the concept in your own words.',
+      },
     }
   }
 
   async generateEnglishFeedback(
-    _input: GenerateEnglishFeedbackInput,
+    input: GenerateEnglishFeedbackInput,
   ): Promise<GenerateEnglishFeedbackResult> {
     return {
       overallScore: 80,
-      feedback: 'Mock feedback: Good English.',
-      grammarIssues: [],
-      vocabularyNotes: ['Consider using more varied vocabulary'],
+      feedback:
+        'Mock feedback: understandable and mostly natural, with a few phrases worth tightening.',
+      notes: [
+        {
+          userSentence: input.text.split('.').find(Boolean)?.trim() ?? input.text,
+          correctedSentence:
+            'I would start by clarifying the tradeoffs before implementing the solution.',
+          naturalVersion: 'I’d first clarify the tradeoffs, then explain how I’d implement it.',
+          explanation: 'This version sounds more direct and natural in spoken interviews.',
+          grammarTopic: 'Sentence clarity',
+          recommendedTopics: ['Concise explanations', 'Transition phrases'],
+          practicePatterns: ['I would start by...', 'The tradeoff is that...'],
+        },
+      ],
+      weakTopics: ['Sentence clarity'],
     }
   }
 
@@ -105,7 +179,14 @@ export class MockAIProvider implements AIProvider {
     _input: RecommendNextLearningInput,
   ): Promise<RecommendNextLearningResult> {
     return {
-      recommendations: [{ topic: 'System Design', reason: 'Common interview topic', priority: 1 }],
+      recommendations: [
+        {
+          topic: 'System Design',
+          reason: 'Common interview topic',
+          priority: 1,
+          action: 'Review one architecture note and answer one follow-up question.',
+        },
+      ],
     }
   }
 

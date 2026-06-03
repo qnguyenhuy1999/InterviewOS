@@ -49,10 +49,7 @@ interface LearningProfile {
 // ---------------------------------------------------------------------------
 // ExperienceLevel → badge variant
 // ---------------------------------------------------------------------------
-const levelVariant: Record<
-  ExperienceLevel,
-  'default' | 'secondary' | 'outline' | 'destructive'
-> = {
+const levelVariant: Record<ExperienceLevel, 'default' | 'secondary' | 'outline' | 'destructive'> = {
   [ExperienceLevel.JUNIOR]: 'outline',
   [ExperienceLevel.MID]: 'secondary',
   [ExperienceLevel.SENIOR]: 'default',
