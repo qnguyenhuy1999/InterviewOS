@@ -1,7 +1,6 @@
-import path from 'path'
-
 import { config as loadEnv } from 'dotenv'
 import type { NextConfig } from 'next'
+import path from 'path'
 
 loadEnv({ path: path.resolve(process.cwd(), '../../.env'), override: false })
 
