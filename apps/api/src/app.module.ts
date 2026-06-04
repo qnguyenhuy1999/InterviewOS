@@ -1,3 +1,5 @@
+import path from 'path'
+
 import { Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
 
@@ -22,6 +24,7 @@ import { UsersModule } from './modules/users/users.module'
     ConfigModule.forRoot({
       isGlobal: true,
       load: [configuration],
+      envFilePath: path.resolve(process.cwd(), '../../.env'),
     }),
     DatabaseModule,
     AIModule,

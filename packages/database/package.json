@@ -12,10 +12,10 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.json && node -e \"const fs=require('node:fs'); const path='dist/generated/prisma/client.js'; const source=fs.readFileSync(path,'utf8'); fs.writeFileSync(path, source.replace(\\\"globalThis['__dirname'] = path.dirname((0, node_url_1.fileURLToPath)(import.meta.url));\\\", \\\"globalThis['__dirname'] = __dirname;\\\"));\"",
-    "db:generate": "prisma generate",
-    "db:migrate": "prisma migrate dev",
-    "db:validate": "prisma validate",
-    "db:seed": "tsx prisma/seed.ts",
+    "db:generate": "dotenv -e ../../.env -- prisma generate",
+    "db:migrate": "dotenv -e ../../.env -- prisma migrate dev",
+    "db:validate": "dotenv -e ../../.env -- prisma validate",
+    "db:seed": "dotenv -e ../../.env -- tsx prisma/seed.ts",
     "typecheck": "tsc --noEmit",
     "lint": "eslint src/"
   },
@@ -28,6 +28,7 @@
   },
   "devDependencies": {
     "@interviewos/tsconfig": "workspace:*",
+    "dotenv-cli": "^8.0.0",
     "prisma": "^7.0.0",
     "ts-node": "^10.9.2",
     "tsx": "^4.20.6",

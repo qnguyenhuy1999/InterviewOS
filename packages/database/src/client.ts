@@ -1,3 +1,9 @@
+import path from 'path'
+
+import { config as loadEnv } from 'dotenv'
+
+loadEnv({ path: path.resolve(__dirname, '../../../.env'), override: false })
+
 import { PrismaPg } from '@prisma/adapter-pg'
 
 import { PrismaClient } from './generated/prisma/client'
