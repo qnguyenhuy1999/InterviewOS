@@ -23,3 +23,11 @@ export interface ReadinessSnapshot {
   computedAt: Date
 }
 
+export interface ReadinessImpactBreakdown {
+  overallDelta: number
+  technicalDelta: number
+  behavioralDelta: number
+  systemDesignDelta: number
+  communicationDelta: number
+  consistencyDelta: number
+}

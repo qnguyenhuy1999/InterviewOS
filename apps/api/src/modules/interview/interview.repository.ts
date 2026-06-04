@@ -70,9 +70,13 @@ export class InterviewRepository {
           },
         },
         note: true,
+        companyMode: true,
+        evaluation: true,
+        summary: true,
+        readinessImpact: true,
       },
       orderBy: {
-        createdAt: 'desc',
+        lastActivityAt: 'desc',
       },
     })
   }
@@ -98,6 +102,10 @@ export class InterviewRepository {
             questions: true,
           },
         },
+        companyMode: true,
+        evaluation: true,
+        summary: true,
+        readinessImpact: true,
       },
     })
   }
@@ -317,6 +325,11 @@ export class InterviewRepository {
       overrideRole: string | null
       overrideLevel: string
       overrideStack: string[]
+      noteId?: string | null
+      sourceQuestionId?: string | null
+      parentSessionId?: string | null
+      version?: number
+      contextSnapshot?: Prisma.InputJsonValue | null
     },
   ) {
     return this.prisma.interviewSession.create({
@@ -326,14 +339,20 @@ export class InterviewRepository {
         mode: input.mode as never,
         status: 'DRAFT',
         companyModeId: input.companyModeId,
+        noteId: input.noteId ?? null,
+        sourceQuestionId: input.sourceQuestionId ?? null,
+        parentSessionId: input.parentSessionId ?? null,
+        version: input.version ?? 1,
         maxTurns: input.maxTurns,
         overrideRole: input.overrideRole,
         overrideLevel: input.overrideLevel as never,
         overrideStack: input.overrideStack,
         overrideGoals: [],
         startedAt: new Date(),
+        lastActivityAt: new Date(),
+        contextSnapshot: input.contextSnapshot ?? undefined,
       },
-      include: { companyMode: true, turns: true },
+      include: { companyMode: true, turns: true, summary: true, readinessImpact: true },
     })
   }
 
@@ -344,18 +363,35 @@ export class InterviewRepository {
     content: string
     decision?: string
     topicTags: string[]
+    reasoning?: string | null
+    references?: Prisma.InputJsonValue | null
+    evaluation?: Prisma.InputJsonValue | null
     aiMetadata: Prisma.InputJsonValue | null
   }) {
-    return this.prisma.interviewTurn.create({
-      data: {
-        sessionId: data.sessionId,
-        turnNumber: data.turnNumber,
-        role: data.role as never,
-        content: data.content,
-        decision: (data.decision ?? null) as never,
-        topicTags: data.topicTags,
-        aiMetadata: (data.aiMetadata ?? null) as never,
-      },
+    return this.prisma.$transaction(async (tx) => {
+      const turn = await tx.interviewTurn.create({
+        data: {
+          sessionId: data.sessionId,
+          turnNumber: data.turnNumber,
+          role: data.role as never,
+          content: data.content,
+          decision: (data.decision ?? null) as never,
+          topicTags: data.topicTags,
+          reasoning: data.reasoning ?? null,
+          references: (data.references ?? null) as never,
+          evaluation: (data.evaluation ?? null) as never,
+          aiMetadata: (data.aiMetadata ?? null) as never,
+        },
+      })
+
+      await tx.interviewSession.update({
+        where: { id: data.sessionId },
+        data: {
+          lastActivityAt: new Date(),
+        },
+      })
+
+      return turn
     })
   }
 
@@ -369,19 +405,82 @@ export class InterviewRepository {
   async incrementCurrentTurnNum(sessionId: string, currentTurnNum: number) {
     return this.prisma.interviewSession.update({
       where: { id: sessionId },
-      data: { currentTurnNum },
+      data: { currentTurnNum, lastActivityAt: new Date() },
     })
   }
 
   async endMultiTurnSession(sessionId: string) {
     return this.prisma.interviewSession.update({
       where: { id: sessionId },
-      data: { status: 'PUBLISHED', endedAt: new Date() },
-      include: { turns: { orderBy: { turnNumber: 'asc' } }, companyMode: true },
+      data: { status: 'PUBLISHED', endedAt: new Date(), lastActivityAt: new Date() },
+      include: {
+        turns: { orderBy: { turnNumber: 'asc' } },
+        companyMode: true,
+        evaluation: true,
+        summary: true,
+        readinessImpact: true,
+      },
     })
   }
 
   async findCompanyModeBySlug(slug: string) {
-    return this.prisma.companyMode.findUnique({ where: { slug, isActive: true } })
+    return this.prisma.companyMode.findFirst({ where: { slug, isActive: true } })
+  }
+
+  async upsertSummary(
+    sessionId: string,
+    data: {
+      headline: string
+      keyTakeaways: string[]
+      strengths: string[]
+      weaknesses: string[]
+      recommendations: string[]
+      generatedFromVersion: number
+      transcript: Prisma.InputJsonValue | null
+    },
+  ) {
+    return this.prisma.interviewSummary.upsert({
+      where: { sessionId },
+      create: { sessionId, ...data, transcript: data.transcript as never },
+      update: { ...data, transcript: data.transcript as never, updatedAt: new Date() },
+    })
+  }
+
+  async upsertReadinessImpact(
+    sessionId: string,
+    userId: string,
+    data: {
+      overallDelta: number
+      technicalDelta: number
+      behavioralDelta: number
+      systemDesignDelta: number
+      communicationDelta: number
+      consistencyDelta: number
+      snapshot: Prisma.InputJsonValue | null
+    },
+  ) {
+    return this.prisma.interviewReadinessImpact.upsert({
+      where: { sessionId },
+      create: {
+        sessionId,
+        userId,
+        overallDelta: data.overallDelta,
+        technicalDelta: data.technicalDelta,
+        behavioralDelta: data.behavioralDelta,
+        systemDesignDelta: data.systemDesignDelta,
+        communicationDelta: data.communicationDelta,
+        consistencyDelta: data.consistencyDelta,
+        snapshot: data.snapshot as never,
+      },
+      update: {
+        overallDelta: data.overallDelta,
+        technicalDelta: data.technicalDelta,
+        behavioralDelta: data.behavioralDelta,
+        systemDesignDelta: data.systemDesignDelta,
+        communicationDelta: data.communicationDelta,
+        consistencyDelta: data.consistencyDelta,
+        snapshot: data.snapshot as never,
+      },
+    })
   }
 }

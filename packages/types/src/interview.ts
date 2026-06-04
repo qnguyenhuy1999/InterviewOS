@@ -1,4 +1,6 @@
+import type { CompanyMode } from './company-mode'
 import type { EnglishLevel, ExperienceLevel, InterviewType, NoteStatus, QuestionDifficulty } from './enums'
+import type { InterviewEvaluation } from './evaluation'
 import type { AdvancedLearningSettings } from './notebook'
 
 export interface InterviewSession {
@@ -14,10 +16,59 @@ export interface InterviewSession {
   overrideGoals: string[]
   overrideEnglishLevel: EnglishLevel | null
   preferredOutputStyle: string | null
+  mode?: 'STANDARD' | 'MULTI_TURN' | 'COMPANY'
+  companyModeId?: string | null
+  parentSessionId?: string | null
+  version?: number
+  maxTurns?: number
+  currentTurnNum?: number
+  lastActivityAt?: Date | null
+  contextSnapshot?: Record<string, unknown> | null
   startedAt: Date | null
   endedAt: Date | null
   createdAt: Date
   updatedAt: Date
+}
+
+export interface InterviewSummary {
+  id: string
+  sessionId: string
+  generatedFromVersion: number
+  headline: string
+  keyTakeaways: string[]
+  strengths: string[]
+  weaknesses: string[]
+  recommendations: string[]
+  transcript: Array<{
+    turnNumber: number
+    role: 'INTERVIEWER' | 'CANDIDATE'
+    content: string
+    decision?: string | null
+  }> | null
+  createdAt: Date
+  updatedAt: Date
+}
+
+export interface InterviewReadinessImpact {
+  id: string
+  sessionId: string
+  userId: string
+  overallDelta: number
+  technicalDelta: number
+  behavioralDelta: number
+  systemDesignDelta: number
+  communicationDelta: number
+  consistencyDelta: number
+  snapshot: Record<string, unknown> | null
+  createdAt: Date
+}
+
+export interface InterviewSessionDetail extends InterviewSession {
+  note?: { title: string | null } | null
+  companyMode?: CompanyMode | null
+  evaluation?: InterviewEvaluation | null
+  summary?: InterviewSummary | null
+  readinessImpact?: InterviewReadinessImpact | null
 }
 
 export interface InterviewQuestion {

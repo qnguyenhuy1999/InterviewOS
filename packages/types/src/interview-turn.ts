@@ -8,6 +8,13 @@ export interface InterviewTurn {
   content: string
   decision: TurnDecision | null
   topicTags: string[]
+  reasoning?: string | null
+  references?: Array<{ label: string; value: string }> | null
+  evaluation?: {
+    strengths?: string[]
+    risks?: string[]
+    confidence?: number | null
+  } | null
   createdAt: Date
 }
 

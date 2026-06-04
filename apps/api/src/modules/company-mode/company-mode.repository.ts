@@ -11,6 +11,6 @@ export class CompanyModeRepository {
   }
 
   findBySlug(slug: string) {
-    return this.prisma.companyMode.findUnique({ where: { slug, isActive: true } })
+    return this.prisma.companyMode.findFirst({ where: { slug, isActive: true } })
   }
 }

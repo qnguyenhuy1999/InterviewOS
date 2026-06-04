@@ -1,3 +1,5 @@
+import type { InterviewEvaluation, InterviewSessionDetail } from '@interviewos/types'
+
 import { formatDate } from '@/lib/format'
 import { serverApiClient } from '@/lib/server-api-client'
 
@@ -8,33 +10,10 @@ type Turn = {
   turnNumber: number
   decision?: string | null
   topicTags?: string[]
+  reasoning?: string | null
 }
 
-type DimensionScore = {
-  name: string
-  score: number
-  feedback?: string
-}
-
-type Evaluation = {
-  id: string
-  status: string
-  overallScore: number | null
-  dimensionScores: DimensionScore[] | null
-  strengths: string[]
-  improvements: string[]
-  coachingNotes: string | null
-  weakConcepts: string[]
-}
-
-type Session = {
-  id: string
-  type: string
-  mode: string | null
-  status: string
-  createdAt: string
-  endedAt: string | null
-}
+type Session = InterviewSessionDetail
 
 function ScoreBar({ label, score }: { label: string; score: number }) {
   return (
@@ -59,7 +38,7 @@ export default async function ReviewPage({ params }: { params: Promise<{ id: str
   const [session, turns, evaluation] = await Promise.all([
     serverApiClient<Session>(`/sessions/${id}`).catch(() => null),
     serverApiClient<Turn[]>(`/sessions/${id}/turns`).catch(() => [] as Turn[]),
-    serverApiClient<Evaluation>(`/sessions/${id}/evaluation`).catch(() => null),
+    serverApiClient<InterviewEvaluation>(`/sessions/${id}/evaluation`).catch(() => null),
   ])
 
   if (!session) {
@@ -71,7 +50,7 @@ export default async function ReviewPage({ params }: { params: Promise<{ id: str
   }
 
   return (
-    <div className="mx-auto max-w-3xl space-y-6">
+    <div className="mx-auto max-w-5xl space-y-6">
       <div className="space-y-1">
         <h2 className="font-heading text-xl font-medium">Session Review</h2>
         <p className="text-sm text-muted-foreground">
@@ -81,74 +60,111 @@ export default async function ReviewPage({ params }: { params: Promise<{ id: str
       </div>
 
       {evaluation ? (
-        <section className="space-y-4 rounded-xl border border-border bg-card p-5">
-          <div className="flex items-start justify-between gap-4">
-            <h3 className="font-heading text-lg font-medium">Evaluation</h3>
-            {evaluation.overallScore != null && (
-              <div className="text-right">
-                <p className="font-heading text-3xl font-medium">{evaluation.overallScore}</p>
-                <p className="text-xs text-muted-foreground">/ 100</p>
+        <section className="grid gap-4 lg:grid-cols-[minmax(0,2fr)_320px]">
+          <div className="space-y-4 rounded-2xl border border-border bg-card p-5">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <h3 className="font-heading text-lg font-medium">Evaluation</h3>
+                {evaluation.summary ? (
+                  <p className="mt-1 text-sm text-muted-foreground">{evaluation.summary}</p>
+                ) : null}
+              </div>
+              {evaluation.overallScore != null && (
+                <div className="text-right">
+                  <p className="font-heading text-3xl font-medium">{evaluation.overallScore}</p>
+                  <p className="text-xs text-muted-foreground">/ 100</p>
+                </div>
+              )}
+            </div>
+
+            {evaluation.rubricScores.length > 0 && (
+              <div className="space-y-3">
+                {evaluation.rubricScores.map((item) => (
+                  <ScoreBar key={item.key} label={item.label} score={item.score} />
+                ))}
+              </div>
+            )}
+
+            {evaluation.evidence.length > 0 && (
+              <div className="space-y-2">
+                <p className="text-sm font-medium">Evidence</p>
+                <div className="space-y-3">
+                  {evaluation.evidence.map((item, index) => (
+                    <div key={`${item.quote}-${index}`} className="rounded-xl border border-border bg-background/60 p-3">
+                      <p className="text-sm font-medium">{item.quote}</p>
+                      <p className="mt-1 text-sm text-muted-foreground">{item.rationale}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {evaluation.weaknesses.length > 0 && (
+              <div className="space-y-2">
+                <p className="text-sm font-medium">Weaknesses</p>
+                <div className="space-y-3">
+                  {evaluation.weaknesses.map((item, index) => (
+                    <div key={`${item.title}-${index}`} className="rounded-xl border border-border bg-background/60 p-3">
+                      <div className="flex items-center justify-between gap-3">
+                        <p className="text-sm font-medium">{item.title}</p>
+                        <span className="text-xs text-muted-foreground">{item.severity}</span>
+                      </div>
+                      <p className="mt-1 text-sm text-muted-foreground">{item.detail}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {evaluation.recommendations.length > 0 && (
+              <div className="space-y-2">
+                <p className="text-sm font-medium">Recommendations</p>
+                <div className="space-y-3">
+                  {evaluation.recommendations.map((item, index) => (
+                    <div key={`${item.title}-${index}`} className="rounded-xl border border-border bg-background/60 p-3">
+                      <div className="flex items-center justify-between gap-3">
+                        <p className="text-sm font-medium">{item.title}</p>
+                        <span className="text-xs text-muted-foreground">{item.priority}</span>
+                      </div>
+                      <p className="mt-1 text-sm text-muted-foreground">{item.detail}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
           </div>
 
-          {evaluation.dimensionScores && evaluation.dimensionScores.length > 0 && (
-            <div className="space-y-3">
-              {evaluation.dimensionScores.map((dim) => (
-                <ScoreBar key={dim.name} label={dim.name} score={dim.score} />
-              ))}
-            </div>
-          )}
+          <aside className="space-y-4">
+            <section className="rounded-2xl border border-border bg-card p-5">
+              <h3 className="font-heading text-base font-medium">Confidence</h3>
+              <p className="mt-3 font-heading text-3xl font-medium">{evaluation.confidence ?? '--'}</p>
+              <p className="text-xs text-muted-foreground">Model confidence</p>
+            </section>
 
-          {evaluation.strengths.length > 0 && (
-            <div className="space-y-2">
-              <p className="text-sm font-medium">Strengths</p>
-              <ul className="space-y-1">
-                {evaluation.strengths.map((s, i) => (
-                  <li key={i} className="flex gap-2 text-sm text-muted-foreground">
-                    <span className="text-green-500">+</span>
-                    {s}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
+            {session.readinessImpact ? (
+              <section className="rounded-2xl border border-border bg-card p-5">
+                <h3 className="font-heading text-base font-medium">Readiness impact</h3>
+                <div className="mt-4 space-y-3 text-sm">
+                  <Metric label="Overall" value={session.readinessImpact.overallDelta} />
+                  <Metric label="Technical" value={session.readinessImpact.technicalDelta} />
+                  <Metric label="Behavioral" value={session.readinessImpact.behavioralDelta} />
+                  <Metric label="System design" value={session.readinessImpact.systemDesignDelta} />
+                  <Metric label="Communication" value={session.readinessImpact.communicationDelta} />
+                </div>
+              </section>
+            ) : null}
 
-          {evaluation.improvements.length > 0 && (
-            <div className="space-y-2">
-              <p className="text-sm font-medium">Areas to improve</p>
-              <ul className="space-y-1">
-                {evaluation.improvements.map((s, i) => (
-                  <li key={i} className="flex gap-2 text-sm text-muted-foreground">
-                    <span className="text-amber-500">↑</span>
-                    {s}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {evaluation.coachingNotes && (
-            <div className="rounded-lg border border-border bg-muted/40 px-4 py-3">
-              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                Coaching note
-              </p>
-              <p className="mt-1 text-sm">{evaluation.coachingNotes}</p>
-            </div>
-          )}
-
-          {evaluation.weakConcepts.length > 0 && (
-            <div className="flex flex-wrap gap-2">
-              {evaluation.weakConcepts.map((c) => (
-                <span
-                  key={c}
-                  className="rounded-full border border-border px-2 py-0.5 text-xs text-muted-foreground"
-                >
-                  {c}
-                </span>
-              ))}
-            </div>
-          )}
+            {session.summary ? (
+              <section className="rounded-2xl border border-border bg-card p-5">
+                <h3 className="font-heading text-base font-medium">Replay summary</h3>
+                <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
+                  {session.summary.keyTakeaways.map((item, index) => (
+                    <li key={`${item}-${index}`}>{item}</li>
+                  ))}
+                </ul>
+              </section>
+            ) : null}
+          </aside>
         </section>
       ) : (
         <section className="rounded-xl border border-dashed border-border p-5 text-center text-sm text-muted-foreground">
@@ -159,7 +175,7 @@ export default async function ReviewPage({ params }: { params: Promise<{ id: str
       )}
 
       <section className="space-y-3">
-        <h3 className="font-heading text-base font-medium">Conversation</h3>
+        <h3 className="font-heading text-base font-medium">Conversation replay</h3>
         {turns.length === 0 ? (
           <p className="text-sm text-muted-foreground">No turns recorded.</p>
         ) : (
@@ -178,20 +194,20 @@ export default async function ReviewPage({ params }: { params: Promise<{ id: str
                 >
                   <p className="whitespace-pre-wrap">{turn.content}</p>
                   <div
-                    className={`mt-1 flex items-center gap-2 text-xs ${
+                    className={`mt-1 flex flex-wrap items-center gap-2 text-xs ${
                       turn.role === 'CANDIDATE'
                         ? 'text-primary-foreground/60'
                         : 'text-muted-foreground'
                     }`}
                   >
                     <span>{turn.role === 'CANDIDATE' ? 'You' : 'Interviewer'}</span>
-                    {turn.topicTags && turn.topicTags.length > 0 && (
-                      <span>· {turn.topicTags.join(', ')}</span>
-                    )}
-                    {turn.decision && turn.decision !== 'CONTINUE' && (
-                      <span>· {turn.decision}</span>
-                    )}
+                    <span>Turn {turn.turnNumber}</span>
+                    {turn.topicTags && turn.topicTags.length > 0 ? <span>{turn.topicTags.join(', ')}</span> : null}
+                    {turn.decision ? <span>{turn.decision}</span> : null}
                   </div>
+                  {turn.reasoning ? (
+                    <p className="mt-2 text-xs opacity-80">Reasoning: {turn.reasoning}</p>
+                  ) : null}
                 </div>
               </div>
             ))}
@@ -201,12 +217,21 @@ export default async function ReviewPage({ params }: { params: Promise<{ id: str
 
       <div className="flex items-center gap-4 text-sm">
         <a href={`/interview/session/${id}`} className="text-primary hover:underline">
-          ← Back to session
+          Back to session
         </a>
         <a href="/interview" className="text-muted-foreground hover:underline">
           All sessions
         </a>
       </div>
+    </div>
+  )
+}
+
+function Metric({ label, value }: { label: string; value: number }) {
+  return (
+    <div className="flex items-center justify-between gap-4">
+      <span className="text-muted-foreground">{label}</span>
+      <span className="font-medium">{value > 0 ? `+${value}` : value}</span>
     </div>
   )
 }

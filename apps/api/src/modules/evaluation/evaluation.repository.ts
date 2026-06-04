@@ -10,7 +10,19 @@ export class EvaluationRepository {
   async createPending(sessionId: string) {
     return this.prisma.interviewEvaluation.upsert({
       where: { sessionId },
-      create: { sessionId, status: 'PENDING', dimensionScores: {}, strengths: [], improvements: [], coachingNotes: [], weakConcepts: [] },
+      create: {
+        sessionId,
+        status: 'PENDING',
+        dimensionScores: {},
+        rubricScores: [],
+        evidence: [],
+        weaknesses: [],
+        recommendations: [],
+        strengths: [],
+        improvements: [],
+        coachingNotes: [],
+        weakConcepts: [],
+      },
       update: { status: 'PENDING' },
     })
   }
@@ -19,9 +31,15 @@ export class EvaluationRepository {
     sessionId: string,
     data: {
       overallScore: number
+      summary?: string | null
+      confidence?: number | null
       dimensionScores: Prisma.InputJsonValue
       starScores?: Prisma.InputJsonValue
       designScores?: Prisma.InputJsonValue
+      rubricScores?: Prisma.InputJsonValue
+      evidence?: Prisma.InputJsonValue
+      weaknesses?: Prisma.InputJsonValue
+      recommendations?: Prisma.InputJsonValue
       strengths: string[]
       improvements: string[]
       coachingNotes: string[]
@@ -31,7 +49,25 @@ export class EvaluationRepository {
   ) {
     return this.prisma.interviewEvaluation.update({
       where: { sessionId },
-      data: { status: 'COMPLETE', ...data, updatedAt: new Date() },
+      data: {
+        status: 'COMPLETE',
+        overallScore: data.overallScore,
+        summary: data.summary ?? null,
+        confidence: data.confidence ?? null,
+        dimensionScores: data.dimensionScores,
+        starScores: data.starScores as never,
+        designScores: data.designScores as never,
+        rubricScores: data.rubricScores as never,
+        evidence: data.evidence as never,
+        weaknesses: data.weaknesses as never,
+        recommendations: data.recommendations as never,
+        strengths: data.strengths,
+        improvements: data.improvements,
+        coachingNotes: data.coachingNotes,
+        weakConcepts: data.weakConcepts,
+        aiMetadata: data.aiMetadata,
+        updatedAt: new Date(),
+      },
     })
   }
 

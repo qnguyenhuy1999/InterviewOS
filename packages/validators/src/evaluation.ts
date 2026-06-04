@@ -10,6 +10,31 @@ const dimensionScoresSchema = z.object({
   confidence: z.number().min(0).max(10),
 })
 
+const evidenceSchema = z.object({
+  quote: z.string().min(1),
+  rationale: z.string().min(1),
+  turnNumber: z.number().int().positive().nullable().optional(),
+})
+
+const weaknessSchema = z.object({
+  title: z.string().min(1),
+  detail: z.string().min(1),
+  severity: z.enum(['LOW', 'MEDIUM', 'HIGH']),
+})
+
+const recommendationSchema = z.object({
+  title: z.string().min(1),
+  detail: z.string().min(1),
+  priority: z.enum(['NOW', 'NEXT', 'LATER']),
+})
+
+const rubricDimensionScoreSchema = z.object({
+  key: z.string().min(1),
+  label: z.string().min(1),
+  score: z.number().min(0).max(100),
+  evidence: z.array(z.string().min(1)),
+})
+
 export const starScoresSchema = z.object({
   situation: z.number().min(0).max(10),
   task: z.number().min(0).max(10),
@@ -30,7 +55,13 @@ export const designScoresSchema = z.object({
 
 export const sessionEvaluationResultSchema = z.object({
   overallScore: z.number().int().min(0).max(100),
+  summary: z.string().min(1).optional(),
+  confidence: z.number().int().min(0).max(100).optional(),
   dimensionScores: dimensionScoresSchema,
+  rubricScores: z.array(rubricDimensionScoreSchema).optional(),
+  evidence: z.array(evidenceSchema).optional(),
+  weaknesses: z.array(weaknessSchema).optional(),
+  recommendations: z.array(recommendationSchema).optional(),
   strengths: z.array(z.string().min(1)),
   improvements: z.array(z.string().min(1)),
   coachingNotes: z.array(z.string().min(1)),

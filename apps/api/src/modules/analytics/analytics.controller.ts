@@ -11,4 +11,9 @@ export class AnalyticsController {
   getProgress(@CurrentUser() currentUser: unknown) {
     return this.analyticsService.getProgress(currentUser)
   }
+
+  @Get('interviews')
+  getInterviewAnalytics(@CurrentUser() currentUser: unknown) {
+    return this.analyticsService.getInterviewAnalytics(currentUser)
+  }
 }

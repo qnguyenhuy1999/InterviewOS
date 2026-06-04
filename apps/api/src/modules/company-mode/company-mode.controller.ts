@@ -2,7 +2,7 @@ import { Controller, Get, Param } from '@nestjs/common'
 
 import { CompanyModeService } from './company-mode.service'
 
-@Controller('company-modes')
+@Controller(['company-modes', 'company-profiles'])
 export class CompanyModeController {
   constructor(private readonly companyModeService: CompanyModeService) {}
 

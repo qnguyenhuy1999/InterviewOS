@@ -1,4 +1,4 @@
-import type { InterviewSession, UserLearningProfile } from '@interviewos/types'
+import type { InterviewSessionDetail, UserLearningProfile } from '@interviewos/types'
 
 import { InterviewAnswerForm } from '@/components/forms/InterviewAnswerForm'
 import { MultiTurnForm } from '@/components/forms/MultiTurnForm'
@@ -11,10 +11,11 @@ type Turn = {
   content: string
   turnNumber: number
   decision?: string | null
+  topicTags?: string[]
+  reasoning?: string | null
 }
 
-type SessionDetail = InterviewSession & {
-  mode?: string | null
+type SessionDetail = InterviewSessionDetail & {
   note: { title: string | null } | null
   questions: Array<{
     id: string
@@ -38,6 +39,21 @@ type SessionDetail = InterviewSession & {
   }>
 }
 
+function ProgressRow({
+  label,
+  value,
+}: {
+  label: string
+  value: string
+}) {
+  return (
+    <div className="flex items-center justify-between gap-4 text-sm">
+      <span className="text-muted-foreground">{label}</span>
+      <span className="font-medium">{value}</span>
+    </div>
+  )
+}
+
 export default async function InterviewSessionPage({
   params,
 }: {
@@ -49,52 +65,77 @@ export default async function InterviewSessionPage({
     serverApiClient<UserLearningProfile | null>('/users/me/profile').catch(() => null),
   ])
 
-  const isMultiTurn =
-    session?.mode === 'MULTI_TURN' || session?.mode === 'COMPANY'
+  const isMultiTurn = session?.mode === 'MULTI_TURN' || session?.mode === 'COMPANY'
 
-  if (isMultiTurn) {
+  if (isMultiTurn && session) {
     const turns = await serverApiClient<Turn[]>(`/sessions/${id}/turns`).catch(() => [] as Turn[])
-    const isComplete = session?.status === 'PUBLISHED'
-    const firstInterviewerTurn = turns.find((t) => t.role === 'INTERVIEWER')
+    const isComplete = session.status === 'PUBLISHED'
+    const completedTurns = turns.filter((turn) => turn.role === 'CANDIDATE').length
+    const maxTurns = session.maxTurns ?? 0
 
     return (
-      <div className="mx-auto max-w-3xl space-y-4">
-        <div className="space-y-1">
-          <h2 className="font-heading text-xl font-medium">Interview Room</h2>
-          <p className="text-sm text-muted-foreground">
-            {session?.type ?? 'Multi-turn'} ·{' '}
-            {session?.mode === 'COMPANY' ? 'Company mode' : 'Practice mode'} · Started{' '}
-            {formatDate(session!.createdAt)}
-          </p>
+      <div className="mx-auto max-w-5xl space-y-6">
+        <div className="grid gap-4 lg:grid-cols-[minmax(0,2fr)_320px]">
+          <section className="space-y-3 rounded-2xl border border-border bg-card p-5">
+            <div className="space-y-1">
+              <h2 className="font-heading text-2xl font-medium">Interview Room</h2>
+              <p className="text-sm text-muted-foreground">
+                {session.type} · {session.mode === 'COMPANY' ? session.companyMode?.name ?? 'Company mode' : 'Practice mode'} · Started {formatDate(session.createdAt)}
+              </p>
+            </div>
+
+            {session.summary?.headline ? (
+              <div className="rounded-xl border border-border bg-background/60 p-4">
+                <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                  Session summary
+                </p>
+                <p className="mt-1 text-sm">{session.summary.headline}</p>
+              </div>
+            ) : null}
+
+            <div className="rounded-xl border border-border bg-background/60 p-4">
+              <MultiTurnForm
+                sessionId={id}
+                initialTurns={turns}
+                isComplete={isComplete}
+              />
+            </div>
+          </section>
+
+          <aside className="space-y-4">
+            <section className="rounded-2xl border border-border bg-card p-5">
+              <h3 className="font-heading text-base font-medium">Progress</h3>
+              <div className="mt-4 space-y-3">
+                <ProgressRow label="Version" value={`v${session.version ?? 1}`} />
+                <ProgressRow label="Status" value={session.status} />
+                <ProgressRow label="Turns" value={maxTurns > 0 ? `${completedTurns}/${maxTurns}` : `${completedTurns}`} />
+                <ProgressRow label="Last activity" value={formatDate(session.lastActivityAt ?? session.updatedAt)} />
+              </div>
+            </section>
+
+            {session.readinessImpact ? (
+              <section className="rounded-2xl border border-border bg-card p-5">
+                <h3 className="font-heading text-base font-medium">Readiness impact</h3>
+                <div className="mt-4 space-y-3">
+                  <ProgressRow label="Overall" value={signed(session.readinessImpact.overallDelta)} />
+                  <ProgressRow label="Technical" value={signed(session.readinessImpact.technicalDelta)} />
+                  <ProgressRow label="Behavioral" value={signed(session.readinessImpact.behavioralDelta)} />
+                  <ProgressRow label="System design" value={signed(session.readinessImpact.systemDesignDelta)} />
+                  <ProgressRow label="Communication" value={signed(session.readinessImpact.communicationDelta)} />
+                </div>
+              </section>
+            ) : null}
+
+            {isComplete ? (
+              <a
+                href={`/interview/session/${id}/review`}
+                className="block rounded-2xl bg-primary px-4 py-3 text-center text-sm font-medium text-primary-foreground"
+              >
+                Open session review
+              </a>
+            ) : null}
+          </aside>
         </div>
-
-        {firstInterviewerTurn && (
-          <div className="rounded-xl border border-border bg-card p-4">
-            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-              First question
-            </p>
-            <p className="mt-1 text-sm">{firstInterviewerTurn.content}</p>
-          </div>
-        )}
-
-        <div className="rounded-xl border border-border bg-card p-4">
-          <MultiTurnForm
-            sessionId={id}
-            initialTurns={turns}
-            isComplete={isComplete ?? false}
-          />
-        </div>
-
-        {isComplete && (
-          <div className="text-center">
-            <a
-              href={`/interview/session/${id}/review`}
-              className="text-sm text-primary underline-offset-4 hover:underline"
-            >
-              View full review →
-            </a>
-          </div>
-        )}
       </div>
     )
   }
@@ -123,8 +164,7 @@ export default async function InterviewSessionPage({
         <h3 className="mb-2 font-heading text-base font-medium">Question</h3>
         <p className="text-sm text-muted-foreground">{question?.question ?? 'Question unavailable'}</p>
         <p className="mt-2 text-xs uppercase tracking-wide text-muted-foreground">
-          {question?.difficulty ?? 'Unknown'} · {question?.category ?? 'Unknown'} ·{' '}
-          {question?.expectedConcepts.join(', ') ?? 'No concepts'}
+          {question?.difficulty ?? 'Unknown'} · {question?.category ?? 'Unknown'} · {question?.expectedConcepts.join(', ') ?? 'No concepts'}
         </p>
       </section>
 
@@ -144,7 +184,7 @@ export default async function InterviewSessionPage({
         ) : null}
 
         <section className="rounded-lg border border-border p-4">
-          <h3 className="mb-2 font-heading text-base font-medium">Technical Feedback</h3>
+          <h3 className="mb-2 font-heading text-base font-medium">Technical feedback</h3>
           {answer?.technicalFeedback ? (
             <div className="space-y-3 text-sm text-muted-foreground">
               <p>{answer.technicalFeedback.summary}</p>
@@ -159,56 +199,11 @@ export default async function InterviewSessionPage({
             </p>
           )}
         </section>
-
-        <section className="rounded-lg border border-border p-4">
-          <h3 className="mb-2 font-heading text-base font-medium">English Feedback</h3>
-          {answer?.englishFeedback ? (
-            <div className="space-y-3 text-sm text-muted-foreground">
-              <p>{answer.englishFeedback.summary}</p>
-              <p>Overall score: {answer.englishFeedback.overallScore}</p>
-              <p>
-                Highlighted topics: {answer.englishFeedback.highlightedTopics.join(', ') || 'None'}
-              </p>
-            </div>
-          ) : (
-            <p className="text-sm text-muted-foreground">
-              English feedback will appear after evaluation.
-            </p>
-          )}
-        </section>
-
-        <section className="rounded-lg border border-border p-4">
-          <h3 className="mb-2 font-heading text-base font-medium">Next Recommended Question</h3>
-          {answer?.nextRecommendedQuestion ? (
-            <div className="space-y-2 text-sm text-muted-foreground">
-              <p>{answer.nextRecommendedQuestion.question}</p>
-              <p>
-                {answer.nextRecommendedQuestion.difficulty} ·{' '}
-                {answer.nextRecommendedQuestion.reason}
-              </p>
-            </div>
-          ) : (
-            <p className="text-sm text-muted-foreground">
-              The next recommended question will appear here.
-            </p>
-          )}
-        </section>
-
-        <section className="rounded-lg border border-border p-4">
-          <h3 className="mb-2 font-heading text-base font-medium">Recommended Learning</h3>
-          {answer?.recommendedLearning ? (
-            <div className="space-y-2 text-sm text-muted-foreground">
-              <p>{answer.recommendedLearning.title}</p>
-              <p>{answer.recommendedLearning.reason}</p>
-              <p>{answer.recommendedLearning.action}</p>
-            </div>
-          ) : (
-            <p className="text-sm text-muted-foreground">
-              Personalized recommendations will appear here.
-            </p>
-          )}
-        </section>
       </div>
     </div>
   )
+}
+
+function signed(value: number) {
+  return value > 0 ? `+${value}` : `${value}`
 }

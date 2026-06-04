@@ -9,7 +9,15 @@ import type {
   TurnDecision,
   TurnRole,
 } from './enums'
-import { DesignDimensionScores, DimensionScores, StarDimensionScores } from './evaluation'
+import {
+  DesignDimensionScores,
+  DimensionScores,
+  EvaluationEvidence,
+  EvaluationRecommendation,
+  EvaluationWeakness,
+  RubricDimensionScore,
+  StarDimensionScores,
+} from './evaluation'
 import type { TechnicalNoteContent } from './notebook'
 
 export interface GenerateTextInput {
@@ -228,6 +236,12 @@ export interface ConductTurnResult {
   nextQuestion: string
   reasoning: string
   topicTags: string[]
+  references?: Array<{ label: string; value: string }>
+  evaluation?: {
+    strengths?: string[]
+    risks?: string[]
+    confidence?: number | null
+  }
 }
 
 export interface BehavioralEvalInput {
@@ -264,7 +278,15 @@ export interface SessionEvalInput {
 
 export interface SessionEvalResult {
   overallScore: number
+  summary?: string
+  confidence?: number
   dimensionScores: DimensionScores
+  starScores?: StarDimensionScores
+  designScores?: DesignDimensionScores
+  rubricScores?: RubricDimensionScore[]
+  evidence?: EvaluationEvidence[]
+  weaknesses?: EvaluationWeakness[]
+  recommendations?: EvaluationRecommendation[]
   strengths: string[]
   improvements: string[]
   coachingNotes: string[]

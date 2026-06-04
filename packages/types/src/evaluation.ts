@@ -27,14 +27,45 @@ export interface DesignDimensionScores {
   architectureDepth: number
 }
 
+export interface EvaluationEvidence {
+  quote: string
+  rationale: string
+  turnNumber?: number | null
+}
+
+export interface EvaluationWeakness {
+  title: string
+  detail: string
+  severity: 'LOW' | 'MEDIUM' | 'HIGH'
+}
+
+export interface EvaluationRecommendation {
+  title: string
+  detail: string
+  priority: 'NOW' | 'NEXT' | 'LATER'
+}
+
+export interface RubricDimensionScore {
+  key: string
+  label: string
+  score: number
+  evidence: string[]
+}
+
 export interface InterviewEvaluation {
   id: string
   sessionId: string
   status: EvaluationStatus
   overallScore: number | null
+  summary: string | null
+  confidence: number | null
   dimensionScores: DimensionScores
   starScores: StarDimensionScores | null
   designScores: DesignDimensionScores | null
+  rubricScores: RubricDimensionScore[]
+  evidence: EvaluationEvidence[]
+  weaknesses: EvaluationWeakness[]
+  recommendations: EvaluationRecommendation[]
   strengths: string[]
   improvements: string[]
   coachingNotes: string[]

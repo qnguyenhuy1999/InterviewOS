@@ -19,6 +19,18 @@ export interface CompanyModeConfig {
   evaluationCriteria: { weights: Partial<Record<string, number>>; rubric: string }
   feedbackStyle: 'DIRECT' | 'COACHING' | 'SOCRATIC'
   questionBank?: string[]
+  emphasis?: {
+    communication?: number
+    ownership?: number
+    technicalDepth?: number
+    productThinking?: number
+    architecture?: number
+  }
+  interviewStyle?: {
+    probingDepth?: 'LOW' | 'MEDIUM' | 'HIGH'
+    expectedPace?: 'STEADY' | 'FAST'
+    prefersBreadth?: boolean
+  }
 }
 
 export interface CompanyMode {
@@ -30,3 +42,6 @@ export interface CompanyMode {
   createdAt: Date
   updatedAt: Date
 }
+
+export type CompanyProfileConfig = CompanyModeConfig
+export type CompanyProfile = CompanyMode

@@ -164,6 +164,8 @@ model User {
   reviewAttempts      ReviewAttempt[]
   learningPathItems   LearningPathItem[]
   readinessSnapshots  ReadinessSnapshot[]
+  readinessImpacts    InterviewReadinessImpact[]
+  interviewAnalytics  InterviewAnalytics[]
 
   @@index([createdAt])
 }
@@ -314,25 +316,35 @@ model InterviewSession {
   preferredOutputStyle String?
   mode           SessionMode       @default(STANDARD)
   companyModeId  String?
+  parentSessionId String?
+  version        Int               @default(1)
   maxTurns       Int               @default(10)
   currentTurnNum Int               @default(0)
   startedAt      DateTime?
   endedAt        DateTime?
+  lastActivityAt DateTime?
+  contextSnapshot Json?
   createdAt      DateTime          @default(now())
   updatedAt      DateTime          @updatedAt
   deletedAt      DateTime?
   user           User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   note           TechnicalNote?    @relation(fields: [noteId], references: [id], onDelete: SetNull)
   companyMode    CompanyMode?      @relation(fields: [companyModeId], references: [id])
+  parentSession  InterviewSession? @relation("InterviewSessionVersions", fields: [parentSessionId], references: [id], onDelete: SetNull)
+  childSessions  InterviewSession[] @relation("InterviewSessionVersions")
   questions      InterviewQuestion[]
   turns          InterviewTurn[]
   evaluation     InterviewEvaluation?
+  summary        InterviewSummary?
+  readinessImpact InterviewReadinessImpact?
 
   @@index([userId, status, type, createdAt])
   @@index([userId])
   @@index([status])
   @@index([type])
   @@index([createdAt])
+  @@index([parentSessionId])
+  @@index([userId, lastActivityAt])
 }
 
 model InterviewQuestion {
@@ -591,6 +603,9 @@ model InterviewTurn {
   content     String
   decision    TurnDecision?
   topicTags   String[]
+  reasoning   String?
+  references  Json?
+  evaluation  Json?
   aiMetadata  Json?
   createdAt   DateTime      @default(now())
   session     InterviewSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
@@ -604,9 +619,15 @@ model InterviewEvaluation {
   sessionId       String           @unique
   status          EvaluationStatus @default(PENDING)
   overallScore    Int?
+  summary         String?
+  confidence      Int?
   dimensionScores Json
   starScores      Json?
   designScores    Json?
+  rubricScores    Json?
+  evidence        Json?
+  weaknesses      Json?
+  recommendations Json?
   strengths       String[]
   improvements    String[]
   coachingNotes   String[]
@@ -618,6 +639,57 @@ model InterviewEvaluation {
 
   @@index([sessionId])
   @@index([status])
+}
+
+model InterviewSummary {
+  id                   String           @id @default(cuid())
+  sessionId            String           @unique
+  generatedFromVersion Int              @default(1)
+  headline             String
+  keyTakeaways         String[]
+  strengths            String[]
+  weaknesses           String[]
+  recommendations      String[]
+  transcript           Json?
+  createdAt            DateTime         @default(now())
+  updatedAt            DateTime         @updatedAt
+  session              InterviewSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId])
+}
+
+model InterviewReadinessImpact {
+  id                 String           @id @default(cuid())
+  sessionId          String           @unique
+  userId             String
+  overallDelta       Int
+  technicalDelta     Int
+  behavioralDelta    Int
+  systemDesignDelta  Int
+  communicationDelta Int
+  consistencyDelta   Int
+  snapshot           Json?
+  createdAt          DateTime         @default(now())
+  session            InterviewSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  user               User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+}
+
+model InterviewAnalytics {
+  id                  String   @id @default(cuid())
+  userId              String
+  interviewsCompleted Int
+  averageScore        Int?
+  strongConcepts      String[]
+  weakConcepts        String[]
+  trend7d             Json?
+  trend30d            Json?
+  trend90d            Json?
+  createdAt           DateTime @default(now())
+  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
 }
 
 model ReadinessSnapshot {

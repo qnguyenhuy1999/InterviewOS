@@ -19,4 +19,20 @@ export const companyModeConfigSchema = z.object({
   }),
   feedbackStyle: z.enum(['DIRECT', 'COACHING', 'SOCRATIC']),
   questionBank: z.array(z.string().min(1)).optional(),
+  emphasis: z
+    .object({
+      communication: z.number().min(0).max(1).optional(),
+      ownership: z.number().min(0).max(1).optional(),
+      technicalDepth: z.number().min(0).max(1).optional(),
+      productThinking: z.number().min(0).max(1).optional(),
+      architecture: z.number().min(0).max(1).optional(),
+    })
+    .optional(),
+  interviewStyle: z
+    .object({
+      probingDepth: z.enum(['LOW', 'MEDIUM', 'HIGH']).optional(),
+      expectedPace: z.enum(['STEADY', 'FAST']).optional(),
+      prefersBreadth: z.boolean().optional(),
+    })
+    .optional(),
 })

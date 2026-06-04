@@ -7,6 +7,10 @@ import { serverApiClient } from '@/lib/server-api-client'
 
 type SessionListItem = InterviewSession & {
   note: { title: string } | null
+  companyMode?: { name: string } | null
+  evaluation?: { overallScore: number | null } | null
+  summary?: { headline: string } | null
+  readinessImpact?: { overallDelta: number } | null
   questions: Array<{
     id: string
     question: string
@@ -49,35 +53,43 @@ export default async function InterviewPage() {
 
   return (
     <div className="space-y-4">
-      {sessions.map((session) => (
-        <Link
-          key={session.id}
-          href={`/interview/session/${session.id}`}
-          className="block rounded-xl border border-border bg-card p-4"
-        >
-          <div className="space-y-2">
-            <div className="flex items-center justify-between gap-3">
-              <h2 className="font-heading text-base font-medium">
-                {session.questions[0]?.question ?? 'Practice session'}
-              </h2>
-              <span className="text-xs text-muted-foreground">{session.status}</span>
-            </div>
-            <p className="text-sm text-muted-foreground">
-              {session.note?.title ?? 'No source note'} ·{' '}
-              {session.questions[0]?.answer ? 'Evaluated' : 'Awaiting answer'} · Created{' '}
-              {formatDate(session.createdAt)} ·{' '}
-              {session.questions[0]?.answer?.overallScore
-                ? `Score ${session.questions[0].answer.overallScore}`
-                : 'No score yet'}
-            </p>
-            {session.questions[0]?.answer?.weakConcepts.length ? (
+      {sessions.map((session) => {
+        const score = session.evaluation?.overallScore ?? session.questions[0]?.answer?.overallScore ?? null
+
+        return (
+          <Link
+            key={session.id}
+            href={`/interview/session/${session.id}`}
+            className="block rounded-xl border border-border bg-card p-4"
+          >
+            <div className="space-y-2">
+              <div className="flex items-center justify-between gap-3">
+                <h2 className="font-heading text-base font-medium">
+                  {session.questions[0]?.question ?? session.summary?.headline ?? 'Practice session'}
+                </h2>
+                <span className="text-xs text-muted-foreground">{session.status}</span>
+              </div>
               <p className="text-sm text-muted-foreground">
-                Weak concepts: {session.questions[0].answer.weakConcepts.join(', ')}
+                {session.companyMode?.name ?? session.note?.title ?? 'Interview session'} · {session.mode ?? 'STANDARD'} · {score != null ? 'Evaluated' : 'In progress'} · Created {formatDate(session.createdAt)} · {score != null ? `Score ${score}` : 'No score yet'}
               </p>
-            ) : null}
-          </div>
-        </Link>
-      ))}
+              {session.summary?.headline ? (
+                <p className="text-sm text-muted-foreground">{session.summary.headline}</p>
+              ) : null}
+              {session.questions[0]?.answer?.weakConcepts.length ? (
+                <p className="text-sm text-muted-foreground">
+                  Weak concepts: {session.questions[0].answer.weakConcepts.join(', ')}
+                </p>
+              ) : null}
+              {session.readinessImpact ? (
+                <p className="text-sm text-muted-foreground">
+                  Readiness impact: {session.readinessImpact.overallDelta > 0 ? '+' : ''}
+                  {session.readinessImpact.overallDelta}
+                </p>
+              ) : null}
+            </div>
+          </Link>
+        )
+      })}
     </div>
   )
 }
