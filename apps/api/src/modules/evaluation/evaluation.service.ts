@@ -10,7 +10,6 @@ import type {
 import { Injectable, NotFoundException } from '@nestjs/common'
 
 import { AIGateway } from '../../ai/ai.gateway'
-import { PrismaService } from '../../database/prisma.service'
 import { EvaluationRepository } from './evaluation.repository'
 
 @Injectable()
@@ -18,13 +17,10 @@ export class EvaluationService {
   constructor(
     private readonly evaluationRepository: EvaluationRepository,
     private readonly aiGateway: AIGateway,
-    private readonly prisma: PrismaService,
   ) {}
 
   async getEvaluation(userId: string, sessionId: string) {
-    const session = await this.prisma.interviewSession.findFirst({
-      where: { id: sessionId, userId, deletedAt: null },
-    })
+    const session = await this.evaluationRepository.findOwnedSession(userId, sessionId)
     if (!session) throw new NotFoundException('Session not found.')
     const evaluation = await this.evaluationRepository.findBySession(sessionId)
     if (!evaluation) throw new NotFoundException('Evaluation not ready yet.')
@@ -32,10 +28,7 @@ export class EvaluationService {
   }
 
   async triggerEvaluation(sessionId: string, userId: string): Promise<void> {
-    const session = await this.prisma.interviewSession.findUnique({
-      where: { id: sessionId },
-      include: { turns: { orderBy: { turnNumber: 'asc' } } },
-    })
+    const session = await this.evaluationRepository.findSessionWithTurns(sessionId)
     if (!session) return
 
     await this.evaluationRepository.createPending(sessionId)
@@ -47,7 +40,7 @@ export class EvaluationService {
         role: t.role as import('@interviewos/types').TurnRole,
         content: t.content,
       }))
-      const profile = await this.prisma.userLearningProfile.findUnique({ where: { userId } })
+      const profile = await this.evaluationRepository.findUserProfile(userId)
 
       const result = await this.aiGateway.generateSessionEvaluation(
         {
@@ -107,7 +100,10 @@ function buildEvidence(conversation: Array<{ role: string; content: string }>) {
     .slice(0, 3)
     .map((item, index) => ({
       quote: item.content.slice(0, 220),
-      rationale: index === 0 ? 'Shows the candidate baseline approach.' : 'Captures a later answer used in the evaluation.',
+      rationale:
+        index === 0
+          ? 'Shows the candidate baseline approach.'
+          : 'Captures a later answer used in the evaluation.',
       turnNumber: index + 1,
     }))
 }

@@ -8,13 +8,10 @@ import {
   type TechnicalNote,
   type UserLearningProfile,
 } from '@interviewos/types'
-import { type NoteFormInput,noteFormSchema } from '@interviewos/validators'
+import { type NoteFormInput, noteFormSchema } from '@interviewos/validators'
 import { useRouter } from 'next/navigation'
 import { type ReactNode, useState } from 'react'
-import {
-  useForm,
-  type UseFormRegisterReturn,
-} from 'react-hook-form'
+import { useForm, type UseFormRegisterReturn } from 'react-hook-form'
 
 import { apiFetch } from '@/lib/api-client'
 import { parseCommaSeparated } from '@/lib/format'
@@ -34,11 +31,11 @@ export function NoteForm({
   const [error, setError] = useState<string | null>(null)
   const hasOverrides = Boolean(
     note?.overrideRole ||
-      note?.overrideLevel ||
-      note?.overrideEnglishLevel ||
-      note?.overrideStack.length ||
-      note?.overrideGoals.length ||
-      note?.preferredOutputStyle,
+    note?.overrideLevel ||
+    note?.overrideEnglishLevel ||
+    note?.overrideStack.length ||
+    note?.overrideGoals.length ||
+    note?.preferredOutputStyle,
   )
   const {
     register,
@@ -50,6 +47,7 @@ export function NoteForm({
     defaultValues: {
       type: note?.type ?? NoteType.CONCEPT,
       title: note?.title ?? '',
+      topic: note?.topic ?? '',
       roughNotes: note?.rawInput ?? '',
       advancedEnabled: hasOverrides,
       targetRole: note?.overrideRole ?? profile?.targetRole ?? '',
@@ -71,6 +69,7 @@ export function NoteForm({
 
     const payload = {
       title: values.title,
+      topic: values.topic.trim() || null,
       roughNotes: values.roughNotes,
       type: values.type,
       advancedSettings: values.advancedEnabled
@@ -135,6 +134,15 @@ export function NoteForm({
           id="title"
           placeholder="e.g. Redis caching strategies"
           {...register('title')}
+          className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
+        />
+      </Field>
+
+      <Field label="Organization topic" error={errors.topic?.message}>
+        <input
+          id="topic"
+          placeholder="e.g. Caching, React, System Design"
+          {...register('topic')}
           className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
         />
       </Field>
@@ -219,21 +227,19 @@ export function NoteForm({
         disabled={isSubmitting}
         className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground disabled:opacity-60"
       >
-        {isSubmitting ? (note ? 'Saving note...' : 'Creating note...') : note ? 'Save note' : 'Create note'}
+        {isSubmitting
+          ? note
+            ? 'Saving note...'
+            : 'Creating note...'
+          : note
+            ? 'Save note'
+            : 'Create note'}
       </button>
     </form>
   )
 }
 
-function Field({
-  label,
-  error,
-  children,
-}: {
-  label: string
-  error?: string
-  children: ReactNode
-}) {
+function Field({ label, error, children }: { label: string; error?: string; children: ReactNode }) {
   return (
     <div className="space-y-2">
       <label className="text-sm font-medium">{label}</label>

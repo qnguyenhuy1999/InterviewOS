@@ -240,6 +240,7 @@ model TechnicalNote {
   id            String          @id @default(cuid())
   userId        String
   title         String
+  topic         String?
   rawInput      String
   status        NoteStatus      @default(DRAFT)
   type          NoteType        @default(CONCEPT)
@@ -261,6 +262,7 @@ model TechnicalNote {
   reviewItems   ReviewItem[]
 
   @@index([userId, status, type, createdAt])
+  @@index([userId, topic])
   @@index([userId])
   @@index([status])
   @@index([type])

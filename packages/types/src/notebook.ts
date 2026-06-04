@@ -10,6 +10,7 @@ export interface TechnicalNote {
   id: string
   userId: string
   title: string
+  topic: string | null
   rawInput: string
   type: NoteType
   status: NoteStatus
@@ -72,6 +73,7 @@ export interface NoteGeneratedQuestion {
 
 export interface CreateTechnicalNoteInput {
   title: string
+  topic?: string | null
   roughNotes: string
   type?: NoteType
   advancedSettings?: AdvancedLearningSettings

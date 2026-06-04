@@ -21,6 +21,7 @@ const advancedSettingsSchema = z
 
 export const noteCreateSchema = z.object({
   title: z.string().min(1).max(200),
+  topic: z.string().trim().max(120).optional().nullable(),
   roughNotes: z.string().min(1),
   type: z.nativeEnum(NoteType).default(NoteType.CONCEPT),
   advancedSettings: advancedSettingsSchema,
@@ -30,13 +31,12 @@ export const noteUpdateSchema = noteCreateSchema.partial().extend({
   status: z.nativeEnum(NoteStatus).optional(),
 })
 
-const csvFieldSchema = z
-  .string()
-  .trim()
+const csvFieldSchema = z.string().trim()
 
 export const noteFormSchema = z
   .object({
     title: z.string().trim().min(1, 'Title is required.').max(200, 'Title is too long.'),
+    topic: z.string().trim().max(120, 'Topic is too long.'),
     roughNotes: z.string().trim().min(1, 'Rough notes are required.'),
     type: z.nativeEnum(NoteType),
     advancedEnabled: z.boolean().default(false),

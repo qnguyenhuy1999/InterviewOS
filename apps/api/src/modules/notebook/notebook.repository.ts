@@ -19,6 +19,7 @@ export class NotebookRepository {
       data: {
         userId,
         title: payload.title,
+        topic: payload.topic?.trim() ? payload.topic.trim() : null,
         rawInput: payload.roughNotes,
         type: payload.type,
         overrideRole: advancedSettings?.targetRole,
@@ -79,11 +80,13 @@ export class NotebookRepository {
       payload.advancedSettings && payload.advancedSettings !== null
         ? payload.advancedSettings
         : undefined
+    const topic = payload.topic
 
     return this.prisma.technicalNote.update({
       where: { id: noteId, userId },
       data: {
         title: payload.title,
+        topic: topic === undefined ? undefined : topic && topic.trim() ? topic.trim() : null,
         rawInput: payload.roughNotes,
         type: payload.type,
         status: payload.status,
@@ -92,9 +95,7 @@ export class NotebookRepository {
         overrideStack: clearAdvancedSettings ? [] : advancedSettings?.techStack,
         overrideGoals: clearAdvancedSettings ? [] : advancedSettings?.interviewGoals,
         overrideEnglishLevel: clearAdvancedSettings ? null : advancedSettings?.englishLevel,
-        preferredOutputStyle: clearAdvancedSettings
-          ? null
-          : advancedSettings?.preferredOutputStyle,
+        preferredOutputStyle: clearAdvancedSettings ? null : advancedSettings?.preferredOutputStyle,
       },
       include: {
         sections: true,

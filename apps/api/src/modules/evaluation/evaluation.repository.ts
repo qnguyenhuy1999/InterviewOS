@@ -7,6 +7,23 @@ import { PrismaService } from '../../database/prisma.service'
 export class EvaluationRepository {
   constructor(private readonly prisma: PrismaService) {}
 
+  findOwnedSession(userId: string, sessionId: string) {
+    return this.prisma.interviewSession.findFirst({
+      where: { id: sessionId, userId, deletedAt: null },
+    })
+  }
+
+  findSessionWithTurns(sessionId: string) {
+    return this.prisma.interviewSession.findUnique({
+      where: { id: sessionId },
+      include: { turns: { orderBy: { turnNumber: 'asc' } } },
+    })
+  }
+
+  findUserProfile(userId: string) {
+    return this.prisma.userLearningProfile.findUnique({ where: { userId } })
+  }
+
   async createPending(sessionId: string) {
     return this.prisma.interviewEvaluation.upsert({
       where: { sessionId },

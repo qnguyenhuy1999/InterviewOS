@@ -7,6 +7,21 @@ import { PrismaService } from '../../database/prisma.service'
 export class ReadinessRepository {
   constructor(private readonly prisma: PrismaService) {}
 
+  async getComputationContext(userId: string) {
+    const [sessions, reviewItems, learningItems] = await Promise.all([
+      this.prisma.interviewSession.findMany({
+        where: { userId, status: 'PUBLISHED', deletedAt: null },
+        include: { evaluation: true },
+        orderBy: { endedAt: 'desc' },
+        take: 20,
+      }),
+      this.prisma.reviewItem.findMany({ where: { userId } }),
+      this.prisma.learningPathItem.findMany({ where: { userId } }),
+    ])
+
+    return { sessions, reviewItems, learningItems }
+  }
+
   async saveSnapshot(
     userId: string,
     data: {

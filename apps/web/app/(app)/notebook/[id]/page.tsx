@@ -38,6 +38,12 @@ export default async function NoteDetailPage({ params }: { params: Promise<{ id:
           {note.type.replaceAll('_', ' ')} | Updated {formatDate(note.updatedAt)} | Status{' '}
           {note.status.replaceAll('_', ' ')}
         </p>
+        <p className="text-sm text-muted-foreground">
+          Topic:{' '}
+          <span className="font-medium text-foreground">
+            {note.topic?.trim() || 'Uncategorized'}
+          </span>
+        </p>
       </div>
 
       <div className="rounded-xl border border-border bg-card p-4">

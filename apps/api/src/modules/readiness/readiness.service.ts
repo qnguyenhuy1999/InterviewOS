@@ -1,16 +1,15 @@
 import type { Prisma } from '@interviewos/database'
 import { Injectable } from '@nestjs/common'
 
-import { PrismaService } from '../../database/prisma.service'
 import { ReadinessRepository } from './readiness.repository'
 
 const WEIGHTS = {
   technicalMastery: 0.25,
-  interviewPerformance: 0.20,
+  interviewPerformance: 0.2,
   behavioralPerformance: 0.15,
   systemDesignPerformance: 0.15,
-  englishCommunication: 0.10,
-  reviewCompletion: 0.10,
+  englishCommunication: 0.1,
+  reviewCompletion: 0.1,
   learningProgress: 0.05,
 } as const
 
@@ -26,10 +25,7 @@ const LABELS: Record<keyof typeof WEIGHTS, string> = {
 
 @Injectable()
 export class ReadinessService {
-  constructor(
-    private readonly readinessRepository: ReadinessRepository,
-    private readonly prisma: PrismaService,
-  ) {}
+  constructor(private readonly readinessRepository: ReadinessRepository) {}
 
   findLatest(userId: string) {
     return this.readinessRepository.findLatest(userId)
@@ -40,40 +36,46 @@ export class ReadinessService {
   }
 
   async computeAndSave(userId: string) {
-    const [sessions, reviewItems, learningItems] = await Promise.all([
-      this.prisma.interviewSession.findMany({
-        where: { userId, status: 'PUBLISHED', deletedAt: null },
-        include: { evaluation: true },
-        orderBy: { endedAt: 'desc' },
-        take: 20,
-      }),
-      this.prisma.reviewItem.findMany({ where: { userId } }),
-      this.prisma.learningPathItem.findMany({ where: { userId } }),
-    ])
+    const { sessions, reviewItems, learningItems } =
+      await this.readinessRepository.getComputationContext(userId)
 
-    const technicalSessions = sessions.filter((s) => s.type === 'TECHNICAL' && s.evaluation?.overallScore != null)
-    const behavioralSessions = sessions.filter((s) => s.type === 'BEHAVIORAL' && s.evaluation?.overallScore != null)
-    const designSessions = sessions.filter((s) => s.type === 'SYSTEM_DESIGN' && s.evaluation?.overallScore != null)
+    const technicalSessions = sessions.filter(
+      (s) => s.type === 'TECHNICAL' && s.evaluation?.overallScore != null,
+    )
+    const behavioralSessions = sessions.filter(
+      (s) => s.type === 'BEHAVIORAL' && s.evaluation?.overallScore != null,
+    )
+    const designSessions = sessions.filter(
+      (s) => s.type === 'SYSTEM_DESIGN' && s.evaluation?.overallScore != null,
+    )
 
-    const avg = (nums: number[]) => nums.length ? nums.reduce((a, b) => a + b, 0) / nums.length / 100 : 0
+    const avg = (nums: number[]) =>
+      nums.length ? nums.reduce((a, b) => a + b, 0) / nums.length / 100 : 0
 
     const dims = {
-      technicalMastery: avg(reviewItems.filter((r) => r.masteryScore > 0).map((r) => r.masteryScore * 100)),
+      technicalMastery: avg(
+        reviewItems.filter((r) => r.masteryScore > 0).map((r) => r.masteryScore * 100),
+      ),
       interviewPerformance: avg(technicalSessions.map((s) => s.evaluation!.overallScore!)),
       behavioralPerformance: avg(behavioralSessions.map((s) => s.evaluation!.overallScore!)),
       systemDesignPerformance: avg(designSessions.map((s) => s.evaluation!.overallScore!)),
       englishCommunication: avg(
         sessions.flatMap((s) => {
-          const ds = s.evaluation?.dimensionScores as { clarity?: number; confidence?: number } | null
-          return ds ? [((ds.clarity ?? 0) + (ds.confidence ?? 0)) / 2 * 10] : []
+          const ds = s.evaluation?.dimensionScores as {
+            clarity?: number
+            confidence?: number
+          } | null
+          return ds ? [(((ds.clarity ?? 0) + (ds.confidence ?? 0)) / 2) * 10] : []
         }),
       ),
-      reviewCompletion: reviewItems.length > 0
-        ? reviewItems.filter((r) => r.masteryScore >= 0.7).length / reviewItems.length
-        : 0,
-      learningProgress: learningItems.length > 0
-        ? learningItems.filter((r) => r.status === 'COMPLETED').length / learningItems.length
-        : 0,
+      reviewCompletion:
+        reviewItems.length > 0
+          ? reviewItems.filter((r) => r.masteryScore >= 0.7).length / reviewItems.length
+          : 0,
+      learningProgress:
+        learningItems.length > 0
+          ? learningItems.filter((r) => r.status === 'COMPLETED').length / learningItems.length
+          : 0,
     }
 
     const overallScore = Math.round(
