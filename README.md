@@ -6,7 +6,7 @@ AI-powered interview preparation platform.
 
 ```bash
 pnpm install
-docker compose up
+docker compose up -d
 pnpm --filter @interviewos/database db:generate
 pnpm --filter @interviewos/database db:migrate
 pnpm --filter @interviewos/database db:seed
@@ -16,7 +16,7 @@ pnpm dev
 Required environment variables:
 
 ```bash
-DATABASE_URL=postgresql://postgres:postgres@localhost:5432/interviewos
+DATABASE_URL=postgresql://postgres:1234@localhost:5432/interviewos
 REDIS_URL=redis://localhost:6379
 JWT_SECRET=replace-with-at-least-32-characters
 WEB_APP_URL=http://localhost:3000
@@ -47,6 +47,7 @@ pnpm --filter @interviewos/web build
 ## Notes
 
 - The API now requires a real authenticated session cookie. The seed script creates `demo@interviewos.dev` with password `Password123!` for local development.
+- Swagger UI is exposed at `http://localhost:3001/swagger` when the API is running.
 - Onboarding values are stored once in `UserLearningProfile` and reused automatically for note generation and interview practice unless Advanced Settings overrides them.
 - The notebook, interview, English notes, and recommendations routes all depend on the API server being available at `NEXT_PUBLIC_API_URL`.
 

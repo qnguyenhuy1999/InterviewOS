@@ -1,4 +1,4 @@
-export { prisma } from './client'
+export { createPrismaAdapter, prisma } from './client'
 export type {
   CompanyMode,
   EnglishLevel,

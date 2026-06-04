@@ -60,7 +60,7 @@ export const noteFormSchema = z
       })
     }
 
-    if (splitCommaSeparated(value.techStack).length === 0) {
+    if (splitCommaSeparated(String(value.techStack)).length === 0) {
       context.addIssue({
         code: z.ZodIssueCode.custom,
         path: ['techStack'],
@@ -68,7 +68,7 @@ export const noteFormSchema = z
       })
     }
 
-    if (splitCommaSeparated(value.interviewGoals).length === 0) {
+    if (splitCommaSeparated(String(value.interviewGoals)).length === 0) {
       context.addIssue({
         code: z.ZodIssueCode.custom,
         path: ['interviewGoals'],

@@ -12,9 +12,15 @@ if (!connectionString) {
   throw new Error('DATABASE_URL is required to initialize PrismaClient.')
 }
 
-const adapter = new PrismaPg({ connectionString })
+export function createPrismaAdapter(databaseUrl = connectionString) {
+  if (!databaseUrl) {
+    throw new Error('DATABASE_URL is required to initialize PrismaClient.')
+  }
 
-export const prisma = globalForPrisma.prisma ?? new PrismaClient({ adapter })
+  return new PrismaPg({ connectionString: databaseUrl })
+}
+
+export const prisma = globalForPrisma.prisma ?? new PrismaClient({ adapter: createPrismaAdapter() })
 
 if (process.env.NODE_ENV !== 'production') {
   globalForPrisma.prisma = prisma

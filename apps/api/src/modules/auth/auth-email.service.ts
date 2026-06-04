@@ -20,8 +20,8 @@ interface AuthEmailProvider {
 export class AuthEmailService {
   private readonly provider: AuthEmailProvider
 
-  constructor(configService: ConfigService) {
-    const provider = configService.get<string>('email.provider', 'console')
+  constructor(private readonly configService: ConfigService) {
+    const provider = this.configService.get<string>('email.provider', 'console')
     this.provider = provider === 'noop' ? new NoopAuthEmailProvider() : new ConsoleAuthEmailProvider()
   }
 

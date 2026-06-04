@@ -132,7 +132,7 @@ export function resumeAnalysisPrompt(input: AnalyzeResumeInput): PromptDefinitio
 export function conductTurnPrompt(input: ConductTurnInput): PromptDefinition {
   const history = input.conversationHistory
     .slice(-8)
-    .map((t) => `[${t.role}] ${t.content}`)
+    .map((t: ConductTurnInput['conversationHistory'][number]) => `[${t.role}] ${t.content}`)
     .join('\n')
   const persona = input.companyModeConfig?.interviewerPersona ?? 'You are a senior technical interviewer.'
   return {
@@ -151,7 +151,9 @@ export function conductTurnPrompt(input: ConductTurnInput): PromptDefinition {
 }
 
 export function behavioralEvalPrompt(input: BehavioralEvalInput): PromptDefinition {
-  const conversation = input.conversation.map((t) => `[${t.role}] ${t.content}`).join('\n')
+  const conversation = input.conversation
+    .map((t: BehavioralEvalInput['conversation'][number]) => `[${t.role}] ${t.content}`)
+    .join('\n')
   return {
     id: promptCatalog.behavioralEval,
     version: 'v1',
@@ -162,7 +164,9 @@ export function behavioralEvalPrompt(input: BehavioralEvalInput): PromptDefiniti
 }
 
 export function systemDesignEvalPrompt(input: SystemDesignEvalInput): PromptDefinition {
-  const conversation = input.conversation.map((t) => `[${t.role}] ${t.content}`).join('\n')
+  const conversation = input.conversation
+    .map((t: SystemDesignEvalInput['conversation'][number]) => `[${t.role}] ${t.content}`)
+    .join('\n')
   return {
     id: promptCatalog.systemDesignEval,
     version: 'v1',
@@ -177,7 +181,9 @@ export function systemDesignEvalPrompt(input: SystemDesignEvalInput): PromptDefi
 }
 
 export function sessionEvaluationPrompt(input: SessionEvalInput): PromptDefinition {
-  const conversation = input.conversation.map((t) => `[${t.role}] ${t.content}`).join('\n')
+  const conversation = input.conversation
+    .map((t: SessionEvalInput['conversation'][number]) => `[${t.role}] ${t.content}`)
+    .join('\n')
   return {
     id: promptCatalog.sessionEvaluation,
     version: 'v1',
