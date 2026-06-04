@@ -1,27 +1,37 @@
 'use client'
 
+import { zodResolver } from '@hookform/resolvers/zod'
+import type { RegisterInput } from '@interviewos/validators'
+import { registerSchema } from '@interviewos/validators'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { type ReactNode, useState } from 'react'
+import { useForm } from 'react-hook-form'
 
 import { apiFetch } from '@/lib/api-client'
 
 export function RegisterForm() {
   const router = useRouter()
-  const [pending, setPending] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<RegisterInput>({
+    resolver: zodResolver(registerSchema),
+    defaultValues: {
+      name: '',
+      email: '',
+      password: '',
+    },
+  })
 
-  async function handleSubmit(formData: FormData) {
-    setPending(true)
+  async function onSubmit(values: RegisterInput) {
     setError(null)
 
     try {
       const response = await apiFetch('/auth/register', {
         method: 'POST',
-        body: JSON.stringify({
-          name: String(formData.get('name') ?? ''),
-          email: String(formData.get('email') ?? ''),
-          password: String(formData.get('password') ?? ''),
-        }),
+        body: JSON.stringify(values),
       })
 
       if (!response.ok) {
@@ -34,54 +44,38 @@ export function RegisterForm() {
       setError(
         submissionError instanceof Error ? submissionError.message : 'Unable to create account.',
       )
-    } finally {
-      setPending(false)
     }
   }
 
   return (
-    <form
-      action={(formData) => {
-        void handleSubmit(formData)
-      }}
-      className="space-y-4"
-    >
-      <div className="space-y-2">
-        <label className="text-sm font-medium" htmlFor="name">
-          Name
-        </label>
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
+      <Field label="Name" error={errors.name?.message}>
         <input
           id="name"
-          name="name"
           type="text"
           placeholder="Your name"
+          {...register('name')}
           className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
         />
-      </div>
-      <div className="space-y-2">
-        <label className="text-sm font-medium" htmlFor="email">
-          Email
-        </label>
+      </Field>
+      <Field label="Email" error={errors.email?.message}>
         <input
           id="email"
-          name="email"
           type="email"
           placeholder="you@example.com"
+          {...register('email')}
           className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
         />
-      </div>
-      <div className="space-y-2">
-        <label className="text-sm font-medium" htmlFor="password">
-          Password
-        </label>
+      </Field>
+      <Field label="Password" error={errors.password?.message}>
         <input
           id="password"
-          name="password"
           type="password"
           placeholder="Create a password"
+          {...register('password')}
           className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
         />
-      </div>
+      </Field>
       {error ? (
         <div className="rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
           {error}
@@ -89,11 +83,29 @@ export function RegisterForm() {
       ) : null}
       <button
         type="submit"
-        disabled={pending}
+        disabled={isSubmitting}
         className="w-full rounded-lg bg-primary py-2 text-sm font-medium text-primary-foreground disabled:opacity-60"
       >
-        {pending ? 'Creating account...' : 'Create account'}
+        {isSubmitting ? 'Creating account...' : 'Create account'}
       </button>
     </form>
+  )
+}
+
+function Field({
+  label,
+  error,
+  children,
+}: {
+  label: string
+  error?: string
+  children: ReactNode
+}) {
+  return (
+    <div className="space-y-2">
+      <label className="text-sm font-medium">{label}</label>
+      {children}
+      {error ? <p className="text-sm text-destructive">{error}</p> : null}
+    </div>
   )
 }

@@ -1,15 +1,12 @@
+import type { AnalyzeResumeResult } from './ai'
 import type { ExperienceLevel } from './enums'
 
-export interface ResumeAnalysis {
+export interface ResumeAnalysis extends AnalyzeResumeResult {
   id: string
   userId: string
   resumeText: string
-  score: number
-  strengths: string[]
-  gaps: string[]
-  recommendations: string[]
-  keySkillsFound: string[]
   targetRole: string
   targetLevel: ExperienceLevel
-  analyzedAt: Date
+  fileName: string | null
+  analyzedAt: Date | string
 }

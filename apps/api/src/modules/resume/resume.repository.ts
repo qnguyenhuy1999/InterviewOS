@@ -1,4 +1,5 @@
-import { Injectable, NotImplementedException } from '@nestjs/common'
+import type { Prisma } from '@interviewos/database'
+import { Injectable } from '@nestjs/common'
 
 import { PrismaService } from '../../database/prisma.service'
 
@@ -6,15 +7,33 @@ import { PrismaService } from '../../database/prisma.service'
 export class ResumeRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  createAnalysis(_payload: Record<string, unknown>) {
-    void this.prisma
-    // Scaffold boundary: future Prisma access for resume belongs here.
-    throw new NotImplementedException()
+  createAnalysis(
+    userId: string,
+    payload: {
+      rawText: string
+      analysisResult: Prisma.InputJsonValue
+      aiMetadata: Prisma.InputJsonValue
+    },
+  ) {
+    return this.prisma.resumeAnalysis.create({
+      data: {
+        userId,
+        rawText: payload.rawText,
+        analysisResult: payload.analysisResult,
+        aiMetadata: payload.aiMetadata,
+      },
+    })
   }
 
-  findLatestAnalysis(_userId: string) {
-    void this.prisma
-    // Scaffold boundary: future Prisma access for resume belongs here.
-    throw new NotImplementedException()
+  findLatestAnalysis(userId: string) {
+    return this.prisma.resumeAnalysis.findFirst({
+      where: {
+        userId,
+        deletedAt: null,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    })
   }
 }

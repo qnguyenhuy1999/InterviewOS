@@ -34,6 +34,7 @@ export const ROUTES = {
     BASE: '/recommendations',
   },
   RESUME: {
-    ANALYZE: '/resume/analyze',
+    UPLOAD: '/resume/upload',
+    LATEST: '/resume/latest',
   },
 } as const

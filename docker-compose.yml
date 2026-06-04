@@ -1,23 +1,4 @@
 services:
-  postgres:
-    image: postgres:16-alpine
-    container_name: interviewos-postgres
-    ports:
-      - '5432:5432'
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: interviewos
-    volumes:
-      - interviewos-postgres:/var/lib/postgresql/data
-    healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U postgres -d interviewos']
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    networks:
-      - interviewos
-
   redis:
     image: redis:7-alpine
     container_name: interviewos-redis
@@ -34,7 +15,6 @@ services:
       - interviewos
 
 volumes:
-  interviewos-postgres:
   interviewos-redis:
 
 networks:

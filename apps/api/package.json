@@ -9,6 +9,7 @@
     "lint": "eslint src"
   },
   "dependencies": {
+    "@fastify/multipart": "^9.3.0",
     "@fastify/cookie": "^11.0.2",
     "@interviewos/ai": "workspace:*",
     "@interviewos/config": "workspace:*",
@@ -20,6 +21,8 @@
     "@nestjs/core": "^11.1.24",
     "@nestjs/platform-fastify": "^11.1.24",
     "fastify": "^5.8.5",
+    "mammoth": "^1.11.0",
+    "pdf-parse": "^2.4.5",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2"
   },

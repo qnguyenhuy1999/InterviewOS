@@ -9,6 +9,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.4.0",
     "@interviewos/config": "workspace:*",
     "@interviewos/types": "workspace:*",
     "@interviewos/ui": "workspace:*",

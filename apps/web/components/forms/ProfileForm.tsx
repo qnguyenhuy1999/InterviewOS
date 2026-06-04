@@ -1,13 +1,22 @@
 'use client'
 
+import { zodResolver } from '@hookform/resolvers/zod'
 import {
   EnglishLevel,
   ExperienceLevel,
   type UpsertUserLearningProfileInput,
   type UserLearningProfile,
 } from '@interviewos/types'
+import {
+  type ProfileUpdateInput,
+  profileUpdateSchema,
+} from '@interviewos/validators'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { type ReactNode, useState } from 'react'
+import {
+  useForm,
+  type UseFormRegisterReturn,
+} from 'react-hook-form'
 
 import { apiFetch } from '@/lib/api-client'
 import { parseCommaSeparated } from '@/lib/format'
@@ -22,23 +31,35 @@ type ProfileFormProps = {
 
 export function ProfileForm({ initialProfile, mode }: ProfileFormProps) {
   const router = useRouter()
-  const [pending, setPending] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<ProfileUpdateInput>({
+    resolver: zodResolver(profileUpdateSchema),
+    defaultValues: {
+      targetRole: initialProfile?.targetRole ?? '',
+      currentLevel: initialProfile?.currentLevel ?? ExperienceLevel.MID,
+      targetLevel: initialProfile?.targetLevel ?? ExperienceLevel.SENIOR,
+      englishLevel: initialProfile?.englishLevel ?? EnglishLevel.INTERMEDIATE,
+      techStack: initialProfile?.techStack.join(', ') ?? '',
+      interviewGoals: initialProfile?.interviewGoals.join(', ') ?? '',
+      preferredOutputStyle: initialProfile?.preferredOutputStyle ?? '',
+    },
+  })
 
-  async function handleSubmit(formData: FormData) {
-    setPending(true)
+  async function onSubmit(values: ProfileUpdateInput) {
     setError(null)
 
     const payload: UpsertUserLearningProfileInput = {
-      targetRole: String(formData.get('targetRole') ?? ''),
-      currentLevel: String(formData.get('currentLevel') ?? ExperienceLevel.MID) as ExperienceLevel,
-      targetLevel: String(formData.get('targetLevel') ?? ExperienceLevel.SENIOR) as ExperienceLevel,
-      englishLevel: String(
-        formData.get('englishLevel') ?? EnglishLevel.INTERMEDIATE,
-      ) as EnglishLevel,
-      techStack: parseCommaSeparated(String(formData.get('techStack') ?? '')),
-      interviewGoals: parseCommaSeparated(String(formData.get('interviewGoals') ?? '')),
-      preferredOutputStyle: String(formData.get('preferredOutputStyle') ?? ''),
+      targetRole: values.targetRole,
+      currentLevel: values.currentLevel,
+      targetLevel: values.targetLevel,
+      englishLevel: values.englishLevel,
+      techStack: parseCommaSeparated(values.techStack),
+      interviewGoals: parseCommaSeparated(values.interviewGoals),
+      preferredOutputStyle: values.preferredOutputStyle,
     }
 
     try {
@@ -57,60 +78,68 @@ export function ProfileForm({ initialProfile, mode }: ProfileFormProps) {
       setError(
         submissionError instanceof Error ? submissionError.message : 'Unable to save profile.',
       )
-    } finally {
-      setPending(false)
     }
   }
 
   return (
-    <form
-      action={(formData) => {
-        void handleSubmit(formData)
-      }}
-      className="space-y-5"
-    >
-      <Field label="Target role" name="targetRole" defaultValue={initialProfile?.targetRole} />
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5" noValidate>
+      <Field label="Target role" error={errors.targetRole?.message}>
+        <input
+          id="targetRole"
+          {...register('targetRole')}
+          className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
+        />
+      </Field>
 
       <div className="grid gap-4 md:grid-cols-2">
         <SelectField
           label="Current level"
           name="currentLevel"
-          defaultValue={initialProfile?.currentLevel ?? ExperienceLevel.MID}
           options={experienceLevels}
+          register={register('currentLevel')}
+          error={errors.currentLevel?.message}
         />
         <SelectField
           label="Target level"
           name="targetLevel"
-          defaultValue={initialProfile?.targetLevel ?? ExperienceLevel.SENIOR}
           options={experienceLevels}
+          register={register('targetLevel')}
+          error={errors.targetLevel?.message}
         />
       </div>
 
       <SelectField
         label="English level"
         name="englishLevel"
-        defaultValue={initialProfile?.englishLevel ?? EnglishLevel.INTERMEDIATE}
         options={englishLevels}
+        register={register('englishLevel')}
+        error={errors.englishLevel?.message}
       />
 
-      <Field
-        label="Tech stack"
-        name="techStack"
-        defaultValue={initialProfile?.techStack.join(', ')}
-        placeholder="TypeScript, React, NestJS"
-      />
-      <Field
-        label="Interview goals"
-        name="interviewGoals"
-        defaultValue={initialProfile?.interviewGoals.join(', ')}
-        placeholder="System design, confidence, senior interviews"
-      />
-      <Field
-        label="Preferred output style"
-        name="preferredOutputStyle"
-        defaultValue={initialProfile?.preferredOutputStyle}
-        placeholder="Concise and practical"
-      />
+      <Field label="Tech stack" error={errors.techStack?.message}>
+        <input
+          id="techStack"
+          placeholder="TypeScript, React, NestJS"
+          {...register('techStack')}
+          className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
+        />
+      </Field>
+      <Field label="Interview goals" error={errors.interviewGoals?.message}>
+        <input
+          id="interviewGoals"
+          placeholder="System design, confidence, senior interviews"
+          {...register('interviewGoals')}
+          className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
+        />
+      </Field>
+      <Field label="Preferred output style" error={errors.preferredOutputStyle?.message}>
+        <input
+          id="preferredOutputStyle"
+          placeholder="Concise and practical"
+          {...register('preferredOutputStyle')}
+          className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
+        />
+      </Field>
 
       {error ? (
         <div className="rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
@@ -120,10 +149,10 @@ export function ProfileForm({ initialProfile, mode }: ProfileFormProps) {
 
       <button
         type="submit"
-        disabled={pending}
+        disabled={isSubmitting}
         className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground disabled:opacity-60"
       >
-        {pending ? 'Saving...' : mode === 'onboarding' ? 'Complete onboarding' : 'Save settings'}
+        {isSubmitting ? 'Saving...' : mode === 'onboarding' ? 'Complete onboarding' : 'Save settings'}
       </button>
     </form>
   )
@@ -131,27 +160,18 @@ export function ProfileForm({ initialProfile, mode }: ProfileFormProps) {
 
 function Field({
   label,
-  name,
-  defaultValue,
-  placeholder,
+  error,
+  children,
 }: {
   label: string
-  name: string
-  defaultValue?: string
-  placeholder?: string
+  error?: string
+  children: ReactNode
 }) {
   return (
     <div className="space-y-2">
-      <label className="text-sm font-medium" htmlFor={name}>
-        {label}
-      </label>
-      <input
-        id={name}
-        name={name}
-        defaultValue={defaultValue}
-        placeholder={placeholder}
-        className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
-      />
+      <label className="text-sm font-medium">{label}</label>
+      {children}
+      {error ? <p className="text-sm text-destructive">{error}</p> : null}
     </div>
   )
 }
@@ -159,13 +179,15 @@ function Field({
 function SelectField({
   label,
   name,
-  defaultValue,
   options,
+  register,
+  error,
 }: {
   label: string
   name: string
-  defaultValue: string
   options: readonly string[]
+  register: UseFormRegisterReturn
+  error?: string
 }) {
   return (
     <div className="space-y-2">
@@ -174,8 +196,7 @@ function SelectField({
       </label>
       <select
         id={name}
-        name={name}
-        defaultValue={defaultValue}
+        {...register}
         className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
       >
         {options.map((option) => (
@@ -184,6 +205,7 @@ function SelectField({
           </option>
         ))}
       </select>
+      {error ? <p className="text-sm text-destructive">{error}</p> : null}
     </div>
   )
 }

@@ -1,6 +1,7 @@
 import 'reflect-metadata'
 
 import fastifyCookie from '@fastify/cookie'
+import fastifyMultipart from '@fastify/multipart'
 import { ValidationPipe } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { NestFactory } from '@nestjs/core'
@@ -13,6 +14,12 @@ import { LoggingInterceptor } from './common/interceptors/logging.interceptor'
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter())
   await app.register(fastifyCookie)
+  await app.register(fastifyMultipart, {
+    limits: {
+      files: 1,
+      fileSize: 5 * 1024 * 1024,
+    },
+  })
 
   app.useGlobalPipes(
     new ValidationPipe({
