@@ -88,3 +88,38 @@ export enum LearningPathItemStatus {
   SNOOZED = 'SNOOZED',
   SKIPPED = 'SKIPPED',
 }
+
+export enum TurnRole {
+  INTERVIEWER = 'INTERVIEWER',
+  CANDIDATE = 'CANDIDATE',
+}
+
+export enum TurnDecision {
+  FOLLOW_UP = 'FOLLOW_UP',
+  DEEP_DIVE = 'DEEP_DIVE',
+  CLARIFY = 'CLARIFY',
+  CHALLENGE = 'CHALLENGE',
+  ESCALATE = 'ESCALATE',
+  ADVANCE = 'ADVANCE',
+  WRAP_UP = 'WRAP_UP',
+  EVALUATE = 'EVALUATE',
+}
+
+export enum SessionMode {
+  STANDARD = 'STANDARD',
+  MULTI_TURN = 'MULTI_TURN',
+  COMPANY = 'COMPANY',
+}
+
+export enum EvaluationStatus {
+  PENDING = 'PENDING',
+  COMPLETE = 'COMPLETE',
+  FAILED = 'FAILED',
+}
+
+export enum StarDimension {
+  SITUATION = 'SITUATION',
+  TASK = 'TASK',
+  ACTION = 'ACTION',
+  RESULT = 'RESULT',
+}

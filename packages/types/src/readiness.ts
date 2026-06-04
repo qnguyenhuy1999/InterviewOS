@@ -1,0 +1,25 @@
+export interface ScoreBreakdown {
+  dimension: string
+  score: number
+  weight: number
+  label: string
+  trend: 'UP' | 'DOWN' | 'STABLE'
+}
+
+export interface ReadinessSnapshot {
+  id: string
+  userId: string
+  overallScore: number
+  confidenceLevel: number
+  technicalMastery: number
+  interviewPerformance: number
+  behavioralPerformance: number
+  systemDesignPerformance: number
+  englishCommunication: number
+  reviewCompletion: number
+  learningProgress: number
+  breakdown: ScoreBreakdown[]
+  improvementTrend: number
+  computedAt: Date
+}
+

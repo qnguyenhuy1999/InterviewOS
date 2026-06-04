@@ -1,4 +1,4 @@
-import type { Prisma } from '@interviewos/database'
+import { Prisma } from '@interviewos/database'
 import { Injectable } from '@nestjs/common'
 
 import { PrismaService } from '../../database/prisma.service'
@@ -303,9 +303,85 @@ export class InterviewRepository {
   async deleteSession(userId: string, sessionId: string) {
     return this.prisma.interviewSession.update({
       where: { id: sessionId, userId },
+      data: { deletedAt: new Date() },
+    })
+  }
+
+  async createMultiTurnSession(
+    userId: string,
+    input: {
+      type: string
+      mode: string
+      companyModeId: string | null
+      maxTurns: number
+      overrideRole: string | null
+      overrideLevel: string
+      overrideStack: string[]
+    },
+  ) {
+    return this.prisma.interviewSession.create({
       data: {
-        deletedAt: new Date(),
+        userId,
+        type: input.type as never,
+        mode: input.mode as never,
+        status: 'DRAFT',
+        companyModeId: input.companyModeId,
+        maxTurns: input.maxTurns,
+        overrideRole: input.overrideRole,
+        overrideLevel: input.overrideLevel as never,
+        overrideStack: input.overrideStack,
+        overrideGoals: [],
+        startedAt: new Date(),
+      },
+      include: { companyMode: true, turns: true },
+    })
+  }
+
+  async createInterviewTurn(data: {
+    sessionId: string
+    turnNumber: number
+    role: string
+    content: string
+    decision?: string
+    topicTags: string[]
+    aiMetadata: Prisma.InputJsonValue | null
+  }) {
+    return this.prisma.interviewTurn.create({
+      data: {
+        sessionId: data.sessionId,
+        turnNumber: data.turnNumber,
+        role: data.role as never,
+        content: data.content,
+        decision: (data.decision ?? null) as never,
+        topicTags: data.topicTags,
+        aiMetadata: (data.aiMetadata ?? null) as never,
       },
     })
+  }
+
+  async findTurnsBySession(sessionId: string) {
+    return this.prisma.interviewTurn.findMany({
+      where: { sessionId },
+      orderBy: { turnNumber: 'asc' },
+    })
+  }
+
+  async incrementCurrentTurnNum(sessionId: string, currentTurnNum: number) {
+    return this.prisma.interviewSession.update({
+      where: { id: sessionId },
+      data: { currentTurnNum },
+    })
+  }
+
+  async endMultiTurnSession(sessionId: string) {
+    return this.prisma.interviewSession.update({
+      where: { id: sessionId },
+      data: { status: 'PUBLISHED', endedAt: new Date() },
+      include: { turns: { orderBy: { turnNumber: 'asc' } }, companyMode: true },
+    })
+  }
+
+  async findCompanyModeBySlug(slug: string) {
+    return this.prisma.companyMode.findUnique({ where: { slug, isActive: true } })
   }
 }

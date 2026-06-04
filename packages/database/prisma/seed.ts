@@ -106,8 +106,94 @@ async function main() {
     },
   })
 
+  const companyModes = [
+    {
+      slug: 'google',
+      name: 'Google',
+      config: {
+        interviewerPersona:
+          'A senior Google engineer. Rigorous, curious, values elegant algorithmic thinking and scalability.',
+        difficultyProfile: { startingDifficulty: 'MEDIUM', escalationRate: 'FAST', maxDifficulty: 'HARD' },
+        followUpBehavior: { maxFollowUpsPerQuestion: 3, challengeThreshold: 0.7, clarificationThreshold: 0.4 },
+        evaluationCriteria: {
+          weights: { problemSolving: 0.35, codeQuality: 0.25, communication: 0.2, systemThinking: 0.2 },
+          rubric: 'Focus on optimal complexity, clean code, and ability to handle follow-ups.',
+        },
+        feedbackStyle: 'DIRECT',
+      },
+    },
+    {
+      slug: 'amazon',
+      name: 'Amazon',
+      config: {
+        interviewerPersona:
+          'An Amazon bar-raiser. Anchors every technical discussion back to Leadership Principles and customer impact.',
+        difficultyProfile: { startingDifficulty: 'MEDIUM', escalationRate: 'MEDIUM', maxDifficulty: 'HARD' },
+        followUpBehavior: { maxFollowUpsPerQuestion: 4, challengeThreshold: 0.6, clarificationThreshold: 0.35 },
+        evaluationCriteria: {
+          weights: { leadershipPrinciples: 0.4, technicalDepth: 0.3, communication: 0.2, ownership: 0.1 },
+          rubric: 'STAR format expected. Evaluate ownership, bias for action, and customer obsession signals.',
+        },
+        feedbackStyle: 'COACHING',
+      },
+    },
+    {
+      slug: 'meta',
+      name: 'Meta',
+      config: {
+        interviewerPersona:
+          'A Meta staff engineer. Interested in systems at scale, product intuition, and move-fast culture.',
+        difficultyProfile: { startingDifficulty: 'MEDIUM', escalationRate: 'MEDIUM', maxDifficulty: 'HARD' },
+        followUpBehavior: { maxFollowUpsPerQuestion: 3, challengeThreshold: 0.65, clarificationThreshold: 0.3 },
+        evaluationCriteria: {
+          weights: { systemDesign: 0.35, codingSpeed: 0.25, productSense: 0.2, communication: 0.2 },
+          rubric: 'Reward pragmatism and shipping instinct. Penalize over-engineering.',
+        },
+        feedbackStyle: 'SOCRATIC',
+      },
+    },
+    {
+      slug: 'startup',
+      name: 'Startup',
+      config: {
+        interviewerPersona:
+          'A founding engineer at an early-stage startup. Values pragmatism, breadth, and ownership over perfection.',
+        difficultyProfile: { startingDifficulty: 'EASY', escalationRate: 'SLOW', maxDifficulty: 'MEDIUM' },
+        followUpBehavior: { maxFollowUpsPerQuestion: 2, challengeThreshold: 0.5, clarificationThreshold: 0.5 },
+        evaluationCriteria: {
+          weights: { practicality: 0.4, breadth: 0.25, teamFit: 0.2, communication: 0.15 },
+          rubric: 'Can they ship? Do they take ownership? Are they collaborative under ambiguity?',
+        },
+        feedbackStyle: 'COACHING',
+      },
+    },
+    {
+      slug: 'enterprise',
+      name: 'Enterprise',
+      config: {
+        interviewerPersona:
+          'A principal engineer at a Fortune 500. Values process, reliability, compliance, and clear communication.',
+        difficultyProfile: { startingDifficulty: 'EASY', escalationRate: 'SLOW', maxDifficulty: 'MEDIUM' },
+        followUpBehavior: { maxFollowUpsPerQuestion: 2, challengeThreshold: 0.55, clarificationThreshold: 0.45 },
+        evaluationCriteria: {
+          weights: { reliability: 0.35, processAdherence: 0.25, communication: 0.25, technicalDepth: 0.15 },
+          rubric: 'Documentation, testing, maintainability, and stakeholder communication matter most.',
+        },
+        feedbackStyle: 'DIRECT',
+      },
+    },
+  ]
+
+  for (const mode of companyModes) {
+    await prisma.companyMode.upsert({
+      where: { slug: mode.slug },
+      update: { name: mode.name, config: mode.config, isActive: true },
+      create: { slug: mode.slug, name: mode.name, config: mode.config, isActive: true },
+    })
+  }
+
   console.log(
-    `Seeded demo user ${user.email} with password Password123!, onboarding profile, and one notebook entry.`,
+    `Seeded demo user ${user.email} with password Password123!, onboarding profile, one notebook entry, and 5 company modes.`,
   )
 }
 

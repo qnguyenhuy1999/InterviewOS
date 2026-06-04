@@ -6,6 +6,10 @@ import type {
   AIResult,
   AnalyzeResumeInput,
   AnalyzeResumeResult,
+  BehavioralEvalInput,
+  BehavioralEvalResult,
+  ConductTurnInput,
+  ConductTurnResult,
   EvaluateInterviewAnswerInput,
   EvaluateInterviewAnswerResult,
   GenerateEnglishFeedbackInput,
@@ -14,8 +18,14 @@ import type {
   GenerateQuestionsFromNoteResult,
   GenerateTechnicalNoteInput,
   GenerateTechnicalNoteResult,
+  ReadinessComputeInput,
+  ReadinessComputeResult,
   RecommendNextLearningInput,
   RecommendNextLearningResult,
+  SessionEvalInput,
+  SessionEvalResult,
+  SystemDesignEvalInput,
+  SystemDesignEvalResult,
 } from '@interviewos/types'
 import { Injectable } from '@nestjs/common'
 
@@ -80,6 +90,41 @@ export class AIGateway {
     context: AIAuditContext,
   ): Promise<AIResult<AnalyzeResumeResult>> {
     return this.run('analyzeResume', context, () => this.gateway.analyzeResume(input))
+  }
+
+  conductInterviewTurn(
+    input: ConductTurnInput,
+    context: AIAuditContext,
+  ): Promise<AIResult<ConductTurnResult>> {
+    return this.run('conductInterviewTurn', context, () => this.gateway.conductInterviewTurn(input))
+  }
+
+  evaluateBehavioralAnswer(
+    input: BehavioralEvalInput,
+    context: AIAuditContext,
+  ): Promise<AIResult<BehavioralEvalResult>> {
+    return this.run('evaluateBehavioralAnswer', context, () => this.gateway.evaluateBehavioralAnswer(input))
+  }
+
+  evaluateSystemDesignTurn(
+    input: SystemDesignEvalInput,
+    context: AIAuditContext,
+  ): Promise<AIResult<SystemDesignEvalResult>> {
+    return this.run('evaluateSystemDesignTurn', context, () => this.gateway.evaluateSystemDesignTurn(input))
+  }
+
+  generateSessionEvaluation(
+    input: SessionEvalInput,
+    context: AIAuditContext,
+  ): Promise<AIResult<SessionEvalResult>> {
+    return this.run('generateSessionEvaluation', context, () => this.gateway.generateSessionEvaluation(input))
+  }
+
+  computeReadinessScore(
+    input: ReadinessComputeInput,
+    context: AIAuditContext,
+  ): Promise<AIResult<ReadinessComputeResult>> {
+    return this.run('computeReadinessScore', context, () => this.gateway.computeReadinessScore(input))
   }
 
   private async run<TResult>(

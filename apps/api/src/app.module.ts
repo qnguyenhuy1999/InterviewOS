@@ -7,7 +7,10 @@ import { DatabaseModule } from './database/database.module'
 import { AnalyticsModule } from './modules/analytics/analytics.module'
 import { AuthModule } from './modules/auth/auth.module'
 import { EnglishNotesModule } from './modules/english-notes/english-notes.module'
+import { CompanyModeModule } from './modules/company-mode/company-mode.module'
+import { EvaluationModule } from './modules/evaluation/evaluation.module'
 import { InterviewModule } from './modules/interview/interview.module'
+import { ReadinessModule } from './modules/readiness/readiness.module'
 import { NotebookModule } from './modules/notebook/notebook.module'
 import { RecommendationsModule } from './modules/recommendations/recommendations.module'
 import { ResumeModule } from './modules/resume/resume.module'
@@ -26,6 +29,9 @@ import { UsersModule } from './modules/users/users.module'
     UsersModule,
     NotebookModule,
     InterviewModule,
+    EvaluationModule,
+    CompanyModeModule,
+    ReadinessModule,
     EnglishNotesModule,
     ReviewModule,
     ResumeModule,

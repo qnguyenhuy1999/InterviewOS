@@ -1,10 +1,20 @@
 import type { InterviewSession, UserLearningProfile } from '@interviewos/types'
 
 import { InterviewAnswerForm } from '@/components/forms/InterviewAnswerForm'
+import { MultiTurnForm } from '@/components/forms/MultiTurnForm'
 import { formatDate } from '@/lib/format'
 import { serverApiClient } from '@/lib/server-api-client'
 
+type Turn = {
+  id: string
+  role: 'CANDIDATE' | 'INTERVIEWER'
+  content: string
+  turnNumber: number
+  decision?: string | null
+}
+
 type SessionDetail = InterviewSession & {
+  mode?: string | null
   note: { title: string | null } | null
   questions: Array<{
     id: string
@@ -38,6 +48,56 @@ export default async function InterviewSessionPage({
     serverApiClient<SessionDetail>(`/sessions/${id}`).catch(() => null),
     serverApiClient<UserLearningProfile | null>('/users/me/profile').catch(() => null),
   ])
+
+  const isMultiTurn =
+    session?.mode === 'MULTI_TURN' || session?.mode === 'COMPANY'
+
+  if (isMultiTurn) {
+    const turns = await serverApiClient<Turn[]>(`/sessions/${id}/turns`).catch(() => [] as Turn[])
+    const isComplete = session?.status === 'PUBLISHED'
+    const firstInterviewerTurn = turns.find((t) => t.role === 'INTERVIEWER')
+
+    return (
+      <div className="mx-auto max-w-3xl space-y-4">
+        <div className="space-y-1">
+          <h2 className="font-heading text-xl font-medium">Interview Room</h2>
+          <p className="text-sm text-muted-foreground">
+            {session?.type ?? 'Multi-turn'} ·{' '}
+            {session?.mode === 'COMPANY' ? 'Company mode' : 'Practice mode'} · Started{' '}
+            {formatDate(session!.createdAt)}
+          </p>
+        </div>
+
+        {firstInterviewerTurn && (
+          <div className="rounded-xl border border-border bg-card p-4">
+            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+              First question
+            </p>
+            <p className="mt-1 text-sm">{firstInterviewerTurn.content}</p>
+          </div>
+        )}
+
+        <div className="rounded-xl border border-border bg-card p-4">
+          <MultiTurnForm
+            sessionId={id}
+            initialTurns={turns}
+            isComplete={isComplete ?? false}
+          />
+        </div>
+
+        {isComplete && (
+          <div className="text-center">
+            <a
+              href={`/interview/session/${id}/review`}
+              className="text-sm text-primary underline-offset-4 hover:underline"
+            >
+              View full review →
+            </a>
+          </div>
+        )}
+      </div>
+    )
+  }
 
   if (!session || !profile) {
     return (

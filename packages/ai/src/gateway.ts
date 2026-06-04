@@ -4,6 +4,10 @@ import type {
   AIResult,
   AnalyzeResumeInput,
   AnalyzeResumeResult,
+  BehavioralEvalInput,
+  BehavioralEvalResult,
+  ConductTurnInput,
+  ConductTurnResult,
   EvaluateInterviewAnswerInput,
   EvaluateInterviewAnswerResult,
   GenerateEnglishFeedbackInput,
@@ -14,15 +18,26 @@ import type {
   GenerateTechnicalNoteResult,
   ImproveTechnicalNoteInput,
   ImproveTechnicalNoteResult,
+  ReadinessComputeInput,
+  ReadinessComputeResult,
   RecommendNextLearningInput,
   RecommendNextLearningResult,
+  SessionEvalInput,
+  SessionEvalResult,
+  SystemDesignEvalInput,
+  SystemDesignEvalResult,
 } from '@interviewos/types'
 import {
+  behavioralEvalResultSchema,
+  conductTurnResultSchema,
   englishFeedbackResultSchema,
   generatedQuestionsResultSchema,
   interviewAnswerResultSchema,
+  readinessSnapshotSchema,
   recommendationResultSchema,
   resumeAnalysisResultSchema,
+  sessionEvaluationResultSchema,
+  systemDesignEvalResultSchema,
   technicalNoteResultSchema,
 } from '@interviewos/validators'
 import { ZodError, type ZodType } from 'zod'
@@ -93,6 +108,26 @@ export class AIGateway {
 
   async analyzeResume(input: AnalyzeResumeInput): Promise<AIResult<AnalyzeResumeResult>> {
     return this.validateResult(this.provider.analyzeResume(input), resumeAnalysisResultSchema)
+  }
+
+  async conductInterviewTurn(input: ConductTurnInput): Promise<AIResult<ConductTurnResult>> {
+    return this.validateResult(this.provider.conductInterviewTurn(input), conductTurnResultSchema)
+  }
+
+  async evaluateBehavioralAnswer(input: BehavioralEvalInput): Promise<AIResult<BehavioralEvalResult>> {
+    return this.validateResult(this.provider.evaluateBehavioralAnswer(input), behavioralEvalResultSchema)
+  }
+
+  async evaluateSystemDesignTurn(input: SystemDesignEvalInput): Promise<AIResult<SystemDesignEvalResult>> {
+    return this.validateResult(this.provider.evaluateSystemDesignTurn(input), systemDesignEvalResultSchema)
+  }
+
+  async generateSessionEvaluation(input: SessionEvalInput): Promise<AIResult<SessionEvalResult>> {
+    return this.validateResult(this.provider.generateSessionEvaluation(input), sessionEvaluationResultSchema)
+  }
+
+  async computeReadinessScore(input: ReadinessComputeInput): Promise<AIResult<ReadinessComputeResult>> {
+    return this.validateResult(this.provider.computeReadinessScore(input), readinessSnapshotSchema as never)
   }
 
   private async validateResult<TResult>(

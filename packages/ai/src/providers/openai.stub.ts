@@ -6,6 +6,10 @@ import type {
   AIResult,
   AnalyzeResumeInput,
   AnalyzeResumeResult,
+  BehavioralEvalInput,
+  BehavioralEvalResult,
+  ConductTurnInput,
+  ConductTurnResult,
   EvaluateInterviewAnswerInput,
   EvaluateInterviewAnswerResult,
   GenerateEnglishFeedbackInput,
@@ -20,8 +24,14 @@ import type {
   GenerateTextResult,
   ImproveTechnicalNoteInput,
   ImproveTechnicalNoteResult,
+  ReadinessComputeInput,
+  ReadinessComputeResult,
   RecommendNextLearningInput,
   RecommendNextLearningResult,
+  SessionEvalInput,
+  SessionEvalResult,
+  SystemDesignEvalInput,
+  SystemDesignEvalResult,
   TextToSpeechInput,
   TextToSpeechResult,
   TranscribeAudioInput,
@@ -29,11 +39,16 @@ import type {
 } from '@interviewos/types'
 
 import {
+  behavioralEvalPrompt,
+  conductTurnPrompt,
   englishFeedbackPrompt,
   generatedQuestionsPrompt,
   interviewEvaluationPrompt,
   learningRecommendationsPrompt,
+  readinessScorePrompt,
   resumeAnalysisPrompt,
+  sessionEvaluationPrompt,
+  systemDesignEvalPrompt,
   technicalNotePrompt,
 } from '../prompts'
 
@@ -198,6 +213,31 @@ export class OpenAIProvider implements AIProvider {
       promptKey: prompt.id,
       promptVersion: prompt.version,
     })
+  }
+
+  async conductInterviewTurn(input: ConductTurnInput): Promise<AIResult<ConductTurnResult>> {
+    const prompt = conductTurnPrompt(input)
+    return this.createStructuredResponse({ instructions: withVersion(prompt), prompt: prompt.prompt, format: { name: 'conduct_turn', schema: conductTurnJsonSchema, version: structuredSchemaVersion }, promptKey: prompt.id, promptVersion: prompt.version })
+  }
+
+  async evaluateBehavioralAnswer(input: BehavioralEvalInput): Promise<AIResult<BehavioralEvalResult>> {
+    const prompt = behavioralEvalPrompt(input)
+    return this.createStructuredResponse({ instructions: withVersion(prompt), prompt: prompt.prompt, format: { name: 'behavioral_eval', schema: behavioralEvalJsonSchema, version: structuredSchemaVersion }, promptKey: prompt.id, promptVersion: prompt.version })
+  }
+
+  async evaluateSystemDesignTurn(input: SystemDesignEvalInput): Promise<AIResult<SystemDesignEvalResult>> {
+    const prompt = systemDesignEvalPrompt(input)
+    return this.createStructuredResponse({ instructions: withVersion(prompt), prompt: prompt.prompt, format: { name: 'system_design_eval', schema: systemDesignEvalJsonSchema, version: structuredSchemaVersion }, promptKey: prompt.id, promptVersion: prompt.version })
+  }
+
+  async generateSessionEvaluation(input: SessionEvalInput): Promise<AIResult<SessionEvalResult>> {
+    const prompt = sessionEvaluationPrompt(input)
+    return this.createStructuredResponse({ instructions: withVersion(prompt), prompt: prompt.prompt, format: { name: 'session_evaluation', schema: sessionEvaluationJsonSchema, version: structuredSchemaVersion }, promptKey: prompt.id, promptVersion: prompt.version })
+  }
+
+  async computeReadinessScore(input: ReadinessComputeInput): Promise<AIResult<ReadinessComputeResult>> {
+    const prompt = readinessScorePrompt(input)
+    return this.createStructuredResponse({ instructions: withVersion(prompt), prompt: prompt.prompt, format: { name: 'readiness_score', schema: readinessScoreJsonSchema, version: structuredSchemaVersion }, promptKey: prompt.id, promptVersion: prompt.version })
   }
 
   async analyzeResume(input: AnalyzeResumeInput): Promise<AIResult<AnalyzeResumeResult>> {
@@ -559,5 +599,62 @@ const resumeAnalysisJsonSchema = {
     gaps: { type: 'array', items: { type: 'string' } },
     recommendations: { type: 'array', items: { type: 'string' } },
     keySkillsFound: { type: 'array', items: { type: 'string' } },
+  },
+} as const
+
+const conductTurnJsonSchema = {
+  type: 'object', additionalProperties: false,
+  required: ['decision', 'nextQuestion', 'reasoning', 'topicTags'],
+  properties: {
+    decision: { type: 'string', enum: ['FOLLOW_UP','DEEP_DIVE','CLARIFY','CHALLENGE','ESCALATE','ADVANCE','WRAP_UP','EVALUATE'] },
+    nextQuestion: { type: 'string' }, reasoning: { type: 'string' },
+    topicTags: { type: 'array', items: { type: 'string' } },
+  },
+} as const
+
+const scoreProps = { type: 'number' } as const
+const behavioralEvalJsonSchema = {
+  type: 'object', additionalProperties: false,
+  required: ['starScores', 'missingDimensions', 'followUpQuestion', 'coachingFeedback'],
+  properties: {
+    starScores: { type: 'object', additionalProperties: false, required: ['situation','task','action','result','overall','completeness'], properties: { situation: scoreProps, task: scoreProps, action: scoreProps, result: scoreProps, overall: scoreProps, completeness: { type: 'string', enum: ['COMPLETE','MISSING_RESULT','MISSING_ACTION','INCOMPLETE'] } } },
+    missingDimensions: { type: 'array', items: { type: 'string' } },
+    followUpQuestion: { type: 'string', nullable: true },
+    coachingFeedback: { type: 'array', items: { type: 'string' } },
+  },
+} as const
+
+const systemDesignEvalJsonSchema = {
+  type: 'object', additionalProperties: false,
+  required: ['designScores','architectureInsights','missedConsiderations','coachingNotes'],
+  properties: {
+    designScores: { type: 'object', additionalProperties: false, required: ['requirementsGathering','scalability','reliability','tradeoffAnalysis','technologyChoices','architectureDepth'], properties: { requirementsGathering: scoreProps, scalability: scoreProps, reliability: scoreProps, tradeoffAnalysis: scoreProps, technologyChoices: scoreProps, architectureDepth: scoreProps } },
+    architectureInsights: { type: 'array', items: { type: 'string' } },
+    missedConsiderations: { type: 'array', items: { type: 'string' } },
+    coachingNotes: { type: 'array', items: { type: 'string' } },
+  },
+} as const
+
+const sessionEvaluationJsonSchema = {
+  type: 'object', additionalProperties: false,
+  required: ['overallScore','dimensionScores','strengths','improvements','coachingNotes','weakConcepts'],
+  properties: {
+    overallScore: { type: 'integer' },
+    dimensionScores: { type: 'object', additionalProperties: false, required: ['correctness','depth','problemSolving','clarity','structure','confidence'], properties: { correctness: scoreProps, depth: scoreProps, problemSolving: scoreProps, clarity: scoreProps, structure: scoreProps, confidence: scoreProps } },
+    strengths: { type: 'array', items: { type: 'string' } },
+    improvements: { type: 'array', items: { type: 'string' } },
+    coachingNotes: { type: 'array', items: { type: 'string' } },
+    weakConcepts: { type: 'array', items: { type: 'string' } },
+  },
+} as const
+
+const readinessScoreJsonSchema = {
+  type: 'object', additionalProperties: false,
+  required: ['overallScore','confidenceLevel','breakdown','improvementAreas'],
+  properties: {
+    overallScore: { type: 'integer' },
+    confidenceLevel: { type: 'number' },
+    breakdown: { type: 'array', items: { type: 'object', additionalProperties: false, required: ['dimension','score','weight','label','trend'], properties: { dimension: { type: 'string' }, score: scoreProps, weight: scoreProps, label: { type: 'string' }, trend: { type: 'string', enum: ['UP','DOWN','STABLE'] } } } },
+    improvementAreas: { type: 'array', items: { type: 'string' } },
   },
 } as const

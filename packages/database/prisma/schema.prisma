@@ -104,6 +104,41 @@ enum AIValidationStatus {
   PROVIDER_ERROR
 }
 
+enum TurnRole {
+  INTERVIEWER
+  CANDIDATE
+}
+
+enum TurnDecision {
+  FOLLOW_UP
+  DEEP_DIVE
+  CLARIFY
+  CHALLENGE
+  ESCALATE
+  ADVANCE
+  WRAP_UP
+  EVALUATE
+}
+
+enum SessionMode {
+  STANDARD
+  MULTI_TURN
+  COMPANY
+}
+
+enum EvaluationStatus {
+  PENDING
+  COMPLETE
+  FAILED
+}
+
+enum StarDimension {
+  SITUATION
+  TASK
+  ACTION
+  RESULT
+}
+
 model User {
   id                String                  @id @default(cuid())
   email             String                  @unique
@@ -125,9 +160,10 @@ model User {
   recommendations   LearningRecommendation[]
   resumes           ResumeAnalysis[]
   aiRequestLogs     AIRequestLog[]
-  reviewItems       ReviewItem[]
-  reviewAttempts    ReviewAttempt[]
-  learningPathItems LearningPathItem[]
+  reviewItems         ReviewItem[]
+  reviewAttempts      ReviewAttempt[]
+  learningPathItems   LearningPathItem[]
+  readinessSnapshots  ReadinessSnapshot[]
 
   @@index([createdAt])
 }
@@ -276,14 +312,21 @@ model InterviewSession {
   overrideGoals String[] @default([])
   overrideEnglishLevel EnglishLevel?
   preferredOutputStyle String?
-  startedAt  DateTime?
-  endedAt    DateTime?
-  createdAt  DateTime        @default(now())
-  updatedAt  DateTime        @updatedAt
-  deletedAt  DateTime?
-  user       User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  note       TechnicalNote?  @relation(fields: [noteId], references: [id], onDelete: SetNull)
-  questions  InterviewQuestion[]
+  mode           SessionMode       @default(STANDARD)
+  companyModeId  String?
+  maxTurns       Int               @default(10)
+  currentTurnNum Int               @default(0)
+  startedAt      DateTime?
+  endedAt        DateTime?
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+  deletedAt      DateTime?
+  user           User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  note           TechnicalNote?    @relation(fields: [noteId], references: [id], onDelete: SetNull)
+  companyMode    CompanyMode?      @relation(fields: [companyModeId], references: [id])
+  questions      InterviewQuestion[]
+  turns          InterviewTurn[]
+  evaluation     InterviewEvaluation?
 
   @@index([userId, status, type, createdAt])
   @@index([userId])
@@ -524,4 +567,75 @@ model LearningPathItem {
 
   @@index([userId, status, availableAt])
   @@index([userId, priorityScore])
+}
+
+model CompanyMode {
+  id        String             @id @default(cuid())
+  slug      String             @unique
+  name      String
+  config    Json
+  isActive  Boolean            @default(true)
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+  sessions  InterviewSession[]
+
+  @@index([slug])
+  @@index([isActive])
+}
+
+model InterviewTurn {
+  id          String        @id @default(cuid())
+  sessionId   String
+  turnNumber  Int
+  role        TurnRole
+  content     String
+  decision    TurnDecision?
+  topicTags   String[]
+  aiMetadata  Json?
+  createdAt   DateTime      @default(now())
+  session     InterviewSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId, turnNumber])
+  @@index([sessionId, role])
+}
+
+model InterviewEvaluation {
+  id              String           @id @default(cuid())
+  sessionId       String           @unique
+  status          EvaluationStatus @default(PENDING)
+  overallScore    Int?
+  dimensionScores Json
+  starScores      Json?
+  designScores    Json?
+  strengths       String[]
+  improvements    String[]
+  coachingNotes   String[]
+  weakConcepts    String[]
+  aiMetadata      Json?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  session         InterviewSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId])
+  @@index([status])
+}
+
+model ReadinessSnapshot {
+  id                      String   @id @default(cuid())
+  userId                  String
+  overallScore            Int
+  confidenceLevel         Float
+  technicalMastery        Float
+  interviewPerformance    Float
+  behavioralPerformance   Float
+  systemDesignPerformance Float
+  englishCommunication    Float
+  reviewCompletion        Float
+  learningProgress        Float
+  breakdown               Json
+  improvementTrend        Float    @default(0)
+  computedAt              DateTime @default(now())
+  user                    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, computedAt])
 }

@@ -6,6 +6,10 @@ import type {
   AIResult,
   AnalyzeResumeInput,
   AnalyzeResumeResult,
+  BehavioralEvalInput,
+  BehavioralEvalResult,
+  ConductTurnInput,
+  ConductTurnResult,
   EvaluateInterviewAnswerInput,
   EvaluateInterviewAnswerResult,
   GenerateEnglishFeedbackInput,
@@ -20,14 +24,20 @@ import type {
   GenerateTextResult,
   ImproveTechnicalNoteInput,
   ImproveTechnicalNoteResult,
+  ReadinessComputeInput,
+  ReadinessComputeResult,
   RecommendNextLearningInput,
   RecommendNextLearningResult,
+  SessionEvalInput,
+  SessionEvalResult,
+  SystemDesignEvalInput,
+  SystemDesignEvalResult,
   TextToSpeechInput,
   TextToSpeechResult,
   TranscribeAudioInput,
   TranscribeAudioResult,
 } from '@interviewos/types'
-import { QuestionDifficulty } from '@interviewos/types'
+import { QuestionDifficulty, StarDimension, TurnDecision } from '@interviewos/types'
 
 import { promptCatalog } from '../prompts'
 
@@ -295,6 +305,85 @@ export class MockAIProvider implements AIProvider {
         schemaVersion: 'v1',
         input,
       },
+    )
+  }
+
+  async conductInterviewTurn(_input: ConductTurnInput): Promise<AIResult<ConductTurnResult>> {
+    return withMetadata(
+      {
+        decision: TurnDecision.FOLLOW_UP,
+        nextQuestion: 'Can you walk me through how you would handle failure scenarios in that design?',
+        reasoning: 'Candidate gave a high-level answer; probing failure modes.',
+        topicTags: ['reliability', 'error-handling'],
+      },
+      'conductInterviewTurn',
+      { promptKey: promptCatalog.conductTurn, promptVersion: 'v1', schemaKey: 'conduct_turn', schemaVersion: 'v1', input: _input },
+    )
+  }
+
+  async evaluateBehavioralAnswer(_input: BehavioralEvalInput): Promise<AIResult<BehavioralEvalResult>> {
+    return withMetadata(
+      {
+        starScores: { situation: 8, task: 7, action: 9, result: 6, overall: 7, completeness: 'MISSING_RESULT' as const },
+        missingDimensions: [StarDimension.RESULT],
+        followUpQuestion: 'What was the measurable outcome of that effort?',
+        coachingFeedback: ['Quantify the result with a metric.'],
+      },
+      'evaluateBehavioralAnswer',
+      { promptKey: promptCatalog.behavioralEval, promptVersion: 'v1', schemaKey: 'behavioral_eval', schemaVersion: 'v1', input: _input },
+    )
+  }
+
+  async evaluateSystemDesignTurn(_input: SystemDesignEvalInput): Promise<AIResult<SystemDesignEvalResult>> {
+    return withMetadata(
+      {
+        designScores: { requirementsGathering: 7, scalability: 6, reliability: 7, tradeoffAnalysis: 5, technologyChoices: 8, architectureDepth: 6 },
+        architectureInsights: ['Good component separation.'],
+        missedConsiderations: ['Cache invalidation strategy not discussed.'],
+        coachingNotes: ['Discuss CAP theorem tradeoffs explicitly.'],
+      },
+      'evaluateSystemDesignTurn',
+      { promptKey: promptCatalog.systemDesignEval, promptVersion: 'v1', schemaKey: 'system_design_eval', schemaVersion: 'v1', input: _input },
+    )
+  }
+
+  async generateSessionEvaluation(_input: SessionEvalInput): Promise<AIResult<SessionEvalResult>> {
+    return withMetadata(
+      {
+        overallScore: 74,
+        dimensionScores: { correctness: 7, depth: 6, problemSolving: 8, clarity: 8, structure: 7, confidence: 7 },
+        strengths: ['Clear communication', 'Good problem decomposition'],
+        improvements: ['Add quantitative estimates', 'Discuss failure modes'],
+        coachingNotes: ['Practice system design with explicit latency targets.'],
+        weakConcepts: ['cache invalidation', 'CAP theorem'],
+      },
+      'generateSessionEvaluation',
+      { promptKey: promptCatalog.sessionEvaluation, promptVersion: 'v1', schemaKey: 'session_evaluation', schemaVersion: 'v1', input: _input },
+    )
+  }
+
+  async computeReadinessScore(input: ReadinessComputeInput): Promise<AIResult<ReadinessComputeResult>> {
+    const score = Math.round(
+      input.technicalMastery * 0.25 * 100 +
+      input.interviewPerformance * 0.20 * 100 +
+      input.behavioralPerformance * 0.15 * 100 +
+      input.systemDesignPerformance * 0.15 * 100 +
+      input.englishCommunication * 0.10 * 100 +
+      input.reviewCompletion * 0.10 * 100 +
+      input.learningProgress * 0.05 * 100,
+    )
+    return withMetadata(
+      {
+        overallScore: score,
+        confidenceLevel: Math.min(input.sessionCount / 10, 1),
+        breakdown: [
+          { dimension: 'technicalMastery', score: input.technicalMastery * 100, weight: 0.25, label: 'Technical Mastery', trend: 'STABLE' as const },
+          { dimension: 'interviewPerformance', score: input.interviewPerformance * 100, weight: 0.20, label: 'Interview Performance', trend: 'STABLE' as const },
+        ],
+        improvementAreas: ['behavioral interviews', 'system design depth'],
+      },
+      'computeReadinessScore',
+      { promptKey: promptCatalog.readinessScore, promptVersion: 'v1', schemaKey: 'readiness_score', schemaVersion: 'v1', input },
     )
   }
 }

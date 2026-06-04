@@ -1,4 +1,15 @@
-import type { EnglishLevel, ExperienceLevel, NoteType, QuestionDifficulty } from './enums'
+import { CompanyModeConfig } from './company-mode'
+import type {
+  EnglishLevel,
+  ExperienceLevel,
+  InterviewType,
+  NoteType,
+  QuestionDifficulty,
+  StarDimension,
+  TurnDecision,
+  TurnRole,
+} from './enums'
+import { DesignDimensionScores, DimensionScores, StarDimensionScores } from './evaluation'
 import type { TechnicalNoteContent } from './notebook'
 
 export interface GenerateTextInput {
@@ -204,22 +215,109 @@ export interface AnalyzeResumeResult {
   keySkillsFound: string[]
 }
 
+export interface ConductTurnInput {
+  sessionType: InterviewType
+  userProfile: { level: ExperienceLevel; role: string; stack: string[] }
+  conversationHistory: Array<{ role: TurnRole; content: string; turnNumber: number }>
+  candidateAnswer: string
+  companyModeConfig?: CompanyModeConfig
+}
+
+export interface ConductTurnResult {
+  decision: TurnDecision
+  nextQuestion: string
+  reasoning: string
+  topicTags: string[]
+}
+
+export interface BehavioralEvalInput {
+  question: string
+  conversation: Array<{ role: TurnRole; content: string }>
+}
+
+export interface BehavioralEvalResult {
+  starScores: StarDimensionScores
+  missingDimensions: StarDimension[]
+  followUpQuestion: string | null
+  coachingFeedback: string[]
+}
+
+export interface SystemDesignEvalInput {
+  question: string
+  conversation: Array<{ role: TurnRole; content: string }>
+  seniorityLevel: ExperienceLevel
+}
+
+export interface SystemDesignEvalResult {
+  designScores: DesignDimensionScores
+  architectureInsights: string[]
+  missedConsiderations: string[]
+  coachingNotes: string[]
+}
+
+export interface SessionEvalInput {
+  sessionType: InterviewType
+  question: string
+  conversation: Array<{ role: TurnRole; content: string }>
+  userProfile: { level: ExperienceLevel; role: string }
+}
+
+export interface SessionEvalResult {
+  overallScore: number
+  dimensionScores: DimensionScores
+  strengths: string[]
+  improvements: string[]
+  coachingNotes: string[]
+  weakConcepts: string[]
+}
+
+export interface ReadinessComputeInput {
+  technicalMastery: number
+  interviewPerformance: number
+  behavioralPerformance: number
+  systemDesignPerformance: number
+  englishCommunication: number
+  reviewCompletion: number
+  learningProgress: number
+  sessionCount: number
+}
+
+export interface ReadinessComputeResult {
+  overallScore: number
+  confidenceLevel: number
+  breakdown: import('./readiness').ScoreBreakdown[]
+  improvementAreas: string[]
+}
+
 export interface AIProvider {
   generateText(input: GenerateTextInput): Promise<AIResult<GenerateTextResult>>
-  generateStructured<T>(input: GenerateStructuredInput<T>): Promise<AIResult<GenerateStructuredResult<T>>>
+  generateStructured<T>(
+    input: GenerateStructuredInput<T>,
+  ): Promise<AIResult<GenerateStructuredResult<T>>>
   transcribeAudio(input: TranscribeAudioInput): Promise<TranscribeAudioResult>
   textToSpeech(input: TextToSpeechInput): Promise<TextToSpeechResult>
-  generateTechnicalNote(input: GenerateTechnicalNoteInput): Promise<AIResult<GenerateTechnicalNoteResult>>
-  improveTechnicalNote(input: ImproveTechnicalNoteInput): Promise<AIResult<ImproveTechnicalNoteResult>>
+  generateTechnicalNote(
+    input: GenerateTechnicalNoteInput,
+  ): Promise<AIResult<GenerateTechnicalNoteResult>>
+  improveTechnicalNote(
+    input: ImproveTechnicalNoteInput,
+  ): Promise<AIResult<ImproveTechnicalNoteResult>>
   generateQuestionsFromNote(
     input: GenerateQuestionsFromNoteInput,
   ): Promise<AIResult<GenerateQuestionsFromNoteResult>>
+  conductInterviewTurn(input: ConductTurnInput): Promise<AIResult<ConductTurnResult>>
+  evaluateBehavioralAnswer(input: BehavioralEvalInput): Promise<AIResult<BehavioralEvalResult>>
+  evaluateSystemDesignTurn(input: SystemDesignEvalInput): Promise<AIResult<SystemDesignEvalResult>>
+  generateSessionEvaluation(input: SessionEvalInput): Promise<AIResult<SessionEvalResult>>
+  computeReadinessScore(input: ReadinessComputeInput): Promise<AIResult<ReadinessComputeResult>>
   evaluateInterviewAnswer(
     input: EvaluateInterviewAnswerInput,
   ): Promise<AIResult<EvaluateInterviewAnswerResult>>
   generateEnglishFeedback(
     input: GenerateEnglishFeedbackInput,
   ): Promise<AIResult<GenerateEnglishFeedbackResult>>
-  recommendNextLearning(input: RecommendNextLearningInput): Promise<AIResult<RecommendNextLearningResult>>
+  recommendNextLearning(
+    input: RecommendNextLearningInput,
+  ): Promise<AIResult<RecommendNextLearningResult>>
   analyzeResume(input: AnalyzeResumeInput): Promise<AIResult<AnalyzeResumeResult>>
 }
