@@ -71,6 +71,16 @@ export interface InterviewSessionDetail extends InterviewSession {
   readinessImpact?: InterviewReadinessImpact | null
 }
 
+export interface InterviewSessionListView
+  extends Pick<InterviewSessionDetail, 'id' | 'type' | 'startedAt' | 'endedAt' | 'note'> {
+  metrics: {
+    overallScore: number | null
+    technicalScore: number | null
+    englishScore: number | null
+    durationMinutes: number
+  }
+}
+
 export interface InterviewQuestion {
   id: string
   sessionId: string

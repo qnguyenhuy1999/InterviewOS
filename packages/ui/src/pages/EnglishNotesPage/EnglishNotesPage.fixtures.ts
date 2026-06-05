@@ -1,0 +1,70 @@
+import { EnglishNoteStatus } from '@interviewos/types'
+
+import type { EnglishNotesFixture } from './EnglishNotesPage.types'
+
+const userId = 'user-001'
+
+export const englishNotesFixture: EnglishNotesFixture = {
+  notes: [
+    {
+      id: 'english-note-1',
+      userId,
+      answerId: 'answer-1',
+      originalSentence: 'I has worked with Redis for five years.',
+      correctedSentence: 'I have worked with Redis for five years.',
+      naturalVersion: "I've worked with Redis for five years.",
+      explanation: 'Use present perfect with "have" for ongoing experience.',
+      grammarTopic: 'Verb tense',
+      recommendedStudyTopics: ['Present perfect', 'Time expressions'],
+      practicePatterns: ['I have worked with...', 'I have built...'],
+      status: EnglishNoteStatus.REVIEWING,
+      createdAt: new Date('2026-06-05T03:15:00.000Z'),
+      updatedAt: new Date('2026-06-05T03:15:00.000Z'),
+    },
+    {
+      id: 'english-note-2',
+      userId,
+      answerId: 'answer-2',
+      originalSentence: 'The system have many bottleneck when traffic spike.',
+      correctedSentence: 'The system has many bottlenecks when traffic spikes.',
+      naturalVersion: 'The system has several bottlenecks when traffic spikes.',
+      explanation: 'Singular subjects take "has"; plural countable nouns need plural forms.',
+      grammarTopic: 'Subject-verb agreement',
+      recommendedStudyTopics: ['Third-person singular', 'Plural nouns'],
+      practicePatterns: ['The service has...', 'The queue grows when...'],
+      status: EnglishNoteStatus.NEEDS_PRACTICE,
+      createdAt: new Date('2026-06-04T08:40:00.000Z'),
+      updatedAt: new Date('2026-06-04T08:40:00.000Z'),
+    },
+    {
+      id: 'english-note-3',
+      userId,
+      answerId: 'answer-3',
+      originalSentence: 'I am responsible to design the retry flow.',
+      correctedSentence: 'I am responsible for designing the retry flow.',
+      naturalVersion: 'I own the retry-flow design.',
+      explanation: 'Use "responsible for" followed by a gerund.',
+      grammarTopic: 'Prepositions',
+      recommendedStudyTopics: ['Responsible for', 'Gerunds after prepositions'],
+      practicePatterns: ['I am responsible for...', 'We are focused on...'],
+      status: EnglishNoteStatus.IMPROVED,
+      createdAt: new Date('2026-06-03T02:20:00.000Z'),
+      updatedAt: new Date('2026-06-03T02:20:00.000Z'),
+    },
+    {
+      id: 'english-note-4',
+      userId,
+      answerId: 'answer-4',
+      originalSentence: 'We discussed about trade-offs in the interview.',
+      correctedSentence: 'We discussed trade-offs in the interview.',
+      naturalVersion: 'We discussed the trade-offs in the interview.',
+      explanation: 'The verb "discuss" does not take "about" here.',
+      grammarTopic: 'Prepositions',
+      recommendedStudyTopics: ['Verb-preposition pairs'],
+      practicePatterns: ['We discussed...', 'We reviewed...'],
+      status: EnglishNoteStatus.MASTERED,
+      createdAt: new Date('2026-06-01T11:05:00.000Z'),
+      updatedAt: new Date('2026-06-01T11:05:00.000Z'),
+    },
+  ],
+}

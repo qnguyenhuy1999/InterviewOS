@@ -1,13 +1,10 @@
-import type { NoteStatus, NoteType, QuestionDifficulty, TechnicalNote } from '@interviewos/types'
+import type { NotebookNoteListItem, NoteStatus, NoteType } from '@interviewos/types'
 
 export type NotebookPageView = 'grid' | 'list'
 
 export type NotebookPageFilterValue<T extends string> = T | 'ALL'
 
-export type NotebookPageNote = TechnicalNote & {
-  questionCount: number
-  difficulty: QuestionDifficulty
-}
+export type NotebookPageNote = NotebookNoteListItem
 
 export type NotebookPageProps = {
   notes?: NotebookPageNote[]

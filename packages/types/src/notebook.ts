@@ -25,6 +25,11 @@ export interface TechnicalNote {
   updatedAt: Date
 }
 
+export interface NotebookNoteListItem extends TechnicalNote {
+  questionCount: number
+  difficulty: QuestionDifficulty
+}
+
 export interface AdvancedLearningSettings {
   targetRole?: string
   targetLevel?: ExperienceLevel
@@ -69,6 +74,23 @@ export interface NoteGeneratedQuestion {
   difficulty: QuestionDifficulty
   expectedConcepts: string[]
   sourceSection: string
+}
+
+export interface TechnicalNoteSummary {
+  id: string
+  title: string
+  topic: string | null
+  type: NoteType
+  status: NoteStatus
+  updatedAt: Date
+  questionCount: number
+}
+
+export interface TechnicalNoteDetailView {
+  note: TechnicalNote
+  questionCount: number
+  generatedQuestions: NoteGeneratedQuestion[]
+  relatedNotes: TechnicalNoteSummary[]
 }
 
 export interface CreateTechnicalNoteInput {

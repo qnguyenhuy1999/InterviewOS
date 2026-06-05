@@ -1,3 +1,10 @@
+import {
+  ExperienceLevel,
+  InterviewType,
+  NoteStatus,
+  NoteType,
+  QuestionDifficulty,
+} from '@interviewos/types'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import React from 'react'
 
@@ -12,13 +19,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../../../components/ui/select'
-import {
-  ExperienceLevel,
-  InterviewType,
-  NoteStatus,
-  NoteType,
-  QuestionDifficulty,
-} from '@interviewos/types'
 
 const meta = {
   title: 'Select',

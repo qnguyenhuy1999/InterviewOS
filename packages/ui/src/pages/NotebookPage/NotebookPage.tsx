@@ -38,12 +38,12 @@ function FilterSelect<T extends string>({
   value,
   options,
   placeholder,
-  getLabel = getEnumLabel,
+  getLabel,
 }: {
   value: NotebookPageFilterValue<T> | string | undefined
   options: readonly NotebookPageFilterValue<T>[]
   placeholder: string
-  getLabel?: (value: T) => string
+  getLabel: (value: T) => string
 }) {
   return (
     <Select value={value ?? 'ALL'}>
@@ -139,11 +139,13 @@ function FilterBar({
           value={selectedStatus}
           options={NOTEBOOK_STATUS_OPTIONS}
           placeholder="All statuses"
+          getLabel={getEnumLabel}
         />
         <FilterSelect
           value={selectedType}
           options={NOTEBOOK_TYPE_OPTIONS}
           placeholder="All types"
+          getLabel={getEnumLabel}
         />
       </div>
 

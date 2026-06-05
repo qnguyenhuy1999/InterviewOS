@@ -1,16 +1,6 @@
-import type { InterviewSessionDetail } from '@interviewos/types'
+import type { InterviewSessionListView } from '@interviewos/types'
 
-export type InterviewPageSession = Pick<
-  InterviewSessionDetail,
-  'id' | 'type' | 'startedAt' | 'endedAt' | 'note'
-> & {
-  metrics: {
-    overallScore: number | null
-    technicalScore: number | null
-    englishScore: number | null
-    durationMinutes: number
-  }
-}
+export type InterviewPageSession = InterviewSessionListView
 
 export type InterviewPageProps = {
   loading?: boolean

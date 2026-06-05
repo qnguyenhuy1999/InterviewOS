@@ -1,3 +1,5 @@
+import type { EnglishNoteStatus } from './enums'
+
 export interface EnglishNote {
   id: string
   userId: string
@@ -9,7 +11,7 @@ export interface EnglishNote {
   grammarTopic: string
   recommendedStudyTopics: string[]
   practicePatterns: string[]
-  status: string
+  status: EnglishNoteStatus
   createdAt: Date
   updatedAt: Date
 }

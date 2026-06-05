@@ -8,7 +8,7 @@ import type {
 export interface ReviewItem {
   id: string
   userId: string
-  type: string
+  type: ReviewItemType
   sourceId: string
   sourceLabel: string
   weaknessScore: number
@@ -17,7 +17,7 @@ export interface ReviewItem {
   reviewIntervalDays: number
   lastReviewedAt: Date | null
   lastFailureAt: Date | null
-  lastRating: string | null
+  lastRating: ReviewRating | null
   metadata?: unknown
   createdAt: Date
   updatedAt: Date
@@ -53,7 +53,7 @@ export interface LearningPathItem {
   title: string
   reason: string
   actionPath: string
-  status: string
+  status: LearningPathItemStatus
   priorityScore: number
   availableAt: Date
   snoozedUntil: Date | null
@@ -76,8 +76,70 @@ export interface DashboardProgress {
   weakConceptTrends: Array<{
     concept: string
     occurrenceCount: number
-    status: string
+    status: WeakConceptStatus
   }>
+}
+
+export interface DashboardMetricView {
+  label: string
+  value: string
+  hint: string
+}
+
+export interface DashboardStudyProgressView {
+  title: string
+  description: string
+  topic: string
+  progressLabel: string
+  progressValue: number
+  ctaLabel: string
+}
+
+export interface DashboardQuickActionView {
+  label: string
+}
+
+export interface DashboardNoteSummaryView {
+  id: string
+  title: string
+  domain: string
+  updatedLabel: string
+  difficulty: 'Hard' | 'Medium' | 'Low'
+}
+
+export interface DashboardWeakConceptView {
+  id: string
+  title: string
+  subtitle: string
+  severity: 'High' | 'Medium' | 'Low'
+}
+
+export interface DashboardInterviewSessionView {
+  id: string
+  score: number
+  title: string
+  meta: string
+  techScore: number
+  englishScore: number
+}
+
+export interface DashboardEnglishImprovementView {
+  id: string
+  title: string
+  subtitle: string
+}
+
+export interface DashboardPageView {
+  greeting: string
+  subtitle: string
+  reviewQueueLabel: string
+  metrics: DashboardMetricView[]
+  studyProgress: DashboardStudyProgressView
+  quickActions: DashboardQuickActionView[]
+  notes: DashboardNoteSummaryView[]
+  weakConcepts: DashboardWeakConceptView[]
+  sessions: DashboardInterviewSessionView[]
+  englishImprovements: DashboardEnglishImprovementView[]
 }
 
 export interface EnglishNoteStatusUpdateInput {
