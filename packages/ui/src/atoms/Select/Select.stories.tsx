@@ -21,7 +21,7 @@ import {
 } from '../../fixtures'
 
 const meta = {
-  title: 'Shadcn/Select',
+  title: 'Select',
   component: Select,
   parameters: { layout: 'centered' },
   tags: ['autodocs'],

@@ -12,7 +12,7 @@ import {
 } from '../../../components/ui/empty'
 
 const meta = {
-  title: 'Shadcn/Empty',
+  title: 'Empty',
   component: Empty,
   parameters: { layout: 'centered' },
   tags: ['autodocs'],

@@ -7,7 +7,7 @@ import { Card, CardContent } from '../../../components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../components/ui/tabs'
 
 const meta = {
-  title: 'Shadcn/Tabs',
+  title: 'Tabs',
   component: Tabs,
   parameters: { layout: 'centered' },
   tags: ['autodocs'],

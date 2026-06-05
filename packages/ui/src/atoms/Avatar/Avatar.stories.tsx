@@ -9,7 +9,7 @@ import {
 } from '../../../components/ui/avatar'
 
 const meta = {
-  title: 'Shadcn/Avatar',
+  title: 'Avatar',
   component: Avatar,
   parameters: { layout: 'centered' },
   tags: ['autodocs'],
