@@ -1,7 +1,8 @@
 import '../src/globals.css'
 
 import type { Preview } from '@storybook/react-vite'
-import React from 'react'
+
+import { TooltipProvider } from '../components/ui/tooltip'
 
 const preview: Preview = {
   parameters: {
@@ -24,9 +25,11 @@ const preview: Preview = {
   },
   decorators: [
     (Story) => (
-      <div className="bg-background text-foreground antialiased">
-        <Story />
-      </div>
+      <TooltipProvider delayDuration={0}>
+        <div className="bg-background text-foreground antialiased">
+          <Story />
+        </div>
+      </TooltipProvider>
     ),
   ],
 }

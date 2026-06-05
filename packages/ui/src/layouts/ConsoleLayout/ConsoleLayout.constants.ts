@@ -1,0 +1,1 @@
+export const CONSOLE_LAYOUT_SEARCH_SHORTCUT = 'K'
