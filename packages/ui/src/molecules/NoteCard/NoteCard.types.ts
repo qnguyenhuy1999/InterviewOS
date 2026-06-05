@@ -1,4 +1,4 @@
-import type { NoteStatus as NoteStatusType, NoteType as NoteTypeType } from '../../fixtures'
+import type { NoteStatus as NoteStatusType, NoteType as NoteTypeType } from '@interviewos/types'
 
 export type Note = {
   id: string

@@ -1,4 +1,4 @@
-import type { QuestionDifficulty } from '../../fixtures'
+import type { QuestionDifficulty } from '@interviewos/types'
 
 export const difficultyVariant: Record<
   QuestionDifficulty,

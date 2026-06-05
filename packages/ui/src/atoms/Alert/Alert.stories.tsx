@@ -13,7 +13,7 @@ const meta = {
   argTypes: {
     variant: {
       control: 'select',
-      options: ['default', 'destructive'],
+      options: ['default', 'success', 'warning', 'error', 'destructive'],
     },
   },
 } satisfies Meta<typeof Alert>
@@ -45,9 +45,21 @@ export const Destructive: Story = {
   ),
 }
 
+export const Error: Story = {
+  render: () => (
+    <Alert variant="error" className="w-96">
+      <AlertCircleIcon />
+      <AlertTitle>Service unavailable</AlertTitle>
+      <AlertDescription>
+        We could not reach the scoring service. Please try again in a few minutes.
+      </AlertDescription>
+    </Alert>
+  ),
+}
+
 export const Success: Story = {
   render: () => (
-    <Alert className="w-96 border-green-200 bg-green-50 text-green-900 dark:border-green-800 dark:bg-green-900/20 dark:text-green-400">
+    <Alert variant="success" className="w-96">
       <CheckCircle2Icon />
       <AlertTitle>Session complete</AlertTitle>
       <AlertDescription>Your interview session has been saved. Score: 82/100.</AlertDescription>
@@ -57,7 +69,7 @@ export const Success: Story = {
 
 export const Warning: Story = {
   render: () => (
-    <Alert className="w-96 border-yellow-200 bg-yellow-50 text-yellow-900 dark:border-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400">
+    <Alert variant="warning" className="w-96">
       <TriangleAlertIcon />
       <AlertTitle>Low score detected</AlertTitle>
       <AlertDescription>

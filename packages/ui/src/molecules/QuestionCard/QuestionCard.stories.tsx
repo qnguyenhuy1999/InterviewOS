@@ -1,7 +1,8 @@
+import { QuestionDifficulty } from '@interviewos/types'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 
-import { answerFixtures, QuestionDifficulty, questionFixtures } from '../../fixtures'
 import QuestionCard from './QuestionCard'
+import { answerFixtures, questionFixtures } from './QuestionCard.fixtures'
 
 const meta = {
   title: 'Molecules/QuestionCard',

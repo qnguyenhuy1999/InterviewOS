@@ -1,4 +1,4 @@
-import type { InterviewType } from '../../fixtures'
+import type { InterviewType } from '@interviewos/types'
 
 export const typeVariant: Record<
   InterviewType,

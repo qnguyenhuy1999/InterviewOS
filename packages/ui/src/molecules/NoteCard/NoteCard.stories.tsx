@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 
-import { manyNotes, noteFixtures } from '../../fixtures'
 import NoteCard from './NoteCard'
+import { manyNotes, noteFixtures } from './NoteCard.fixtures'
 
 const meta = {
   title: 'Molecules/NoteCard',

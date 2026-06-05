@@ -1,7 +1,8 @@
+import { ExperienceLevel } from '@interviewos/types'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 
-import { ExperienceLevel, learningProfileFixture, userFixtures } from '../../fixtures'
 import UserProfileCard from './UserProfileCard'
+import { learningProfileFixture, userFixtures } from './UserProfileCard.fixtures'
 
 const meta = {
   title: 'Molecules/UserProfileCard',

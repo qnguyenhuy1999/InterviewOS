@@ -1,4 +1,4 @@
-import type { QuestionDifficulty as QuestionDifficultyType } from '../../fixtures'
+import type { QuestionDifficulty as QuestionDifficultyType } from '@interviewos/types'
 
 export type Question = {
   id: string

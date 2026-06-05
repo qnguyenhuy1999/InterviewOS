@@ -1,4 +1,4 @@
-import type { InterviewType as InterviewTypeType } from '../../fixtures'
+import type { InterviewType as InterviewTypeType } from '@interviewos/types'
 
 export type InterviewSession = {
   id: string

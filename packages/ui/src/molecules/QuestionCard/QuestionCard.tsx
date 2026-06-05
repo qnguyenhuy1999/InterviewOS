@@ -1,5 +1,3 @@
-import * as React from 'react'
-
 import { Badge } from '../../../components/ui/badge'
 import {
   Card,
@@ -11,11 +9,10 @@ import {
 import { Progress } from '../../../components/ui/progress'
 import { Separator } from '../../../components/ui/separator'
 import { Skeleton } from '../../../components/ui/skeleton'
-
-import type { QuestionCardProps } from './QuestionCard.types'
 import { difficultyVariant } from './QuestionCard.constants'
+import type { QuestionCardProps } from './QuestionCard.types'
 
-export default function Root({ question, answer, loading }: QuestionCardProps) {
+function Root({ question, answer, loading }: QuestionCardProps) {
   if (loading) {
     return (
       <Card className="w-96">
@@ -67,6 +64,4 @@ export default function Root({ question, answer, loading }: QuestionCardProps) {
   )
 }
 
-const QuestionCard = Object.assign(Root, {})
-
-export default QuestionCard
+export default Object.assign(Root, {})

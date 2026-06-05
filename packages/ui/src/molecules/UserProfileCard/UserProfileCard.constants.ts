@@ -1,4 +1,4 @@
-import type { ExperienceLevel } from '../../fixtures'
+import type { ExperienceLevel } from '@interviewos/types'
 
 export const levelVariant: Record<
   ExperienceLevel,

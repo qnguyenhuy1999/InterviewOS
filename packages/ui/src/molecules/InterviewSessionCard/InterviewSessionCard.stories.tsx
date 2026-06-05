@@ -1,7 +1,8 @@
+import { InterviewType } from '@interviewos/types'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 
-import { interviewSessionFixtures, InterviewType } from '../../fixtures'
 import InterviewSessionCard from './InterviewSessionCard'
+import { interviewSessionFixtures } from './InterviewSessionCard.fixtures'
 
 const meta = {
   title: 'Molecules/InterviewSessionCard',

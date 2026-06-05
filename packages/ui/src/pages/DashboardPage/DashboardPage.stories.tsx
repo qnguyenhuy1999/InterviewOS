@@ -1,7 +1,4 @@
-/**
- * DashboardPage — screen-level story composing the main InterviewOS dashboard.
- * Uses shadcn primitives + fixtures. No hardcoded colors — all design tokens.
- */
+import { InterviewType, NoteStatus, NoteType } from '@interviewos/types'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { BookOpenIcon, BrainCircuitIcon, FlameIcon, PlusIcon, TrendingUpIcon } from 'lucide-react'
 import React from 'react'
@@ -28,21 +25,13 @@ import { Separator } from '../../../components/ui/separator'
 import { Skeleton } from '../../../components/ui/skeleton'
 import { Spinner } from '../../../components/ui/spinner'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../components/ui/tabs'
+import { interviewSessionFixtures } from '../../molecules/InterviewSessionCard/InterviewSessionCard.fixtures'
+import { manyNotes, noteFixtures } from '../../molecules/NoteCard/NoteCard.fixtures'
 import {
-  dashboardStats,
-  interviewSessionFixtures,
-  InterviewType,
   learningProfileFixture,
-  manyNotes,
-  noteFixtures,
-  NoteStatus,
-  NoteType,
   userFixtures,
-} from '../../fixtures'
-
-// ---------------------------------------------------------------------------
-// Sub-components
-// ---------------------------------------------------------------------------
+} from '../../molecules/UserProfileCard/UserProfileCard.fixtures'
+import { dashboardStats } from './DashboardPage.fixtures'
 
 function StatCard({
   label,
@@ -82,6 +71,10 @@ function NoteRow({
     [NoteStatus.PUBLISHED]: 'default',
     [NoteStatus.DRAFT]: 'secondary',
     [NoteStatus.ARCHIVED]: 'outline',
+    [NoteStatus.REVIEWING]: 'secondary',
+    [NoteStatus.NEEDS_PRACTICE]: 'outline',
+    [NoteStatus.INTERVIEW_READY]: 'default',
+    [NoteStatus.MASTERED]: 'default',
   }
   return (
     <div className="flex items-center justify-between gap-3 py-2">

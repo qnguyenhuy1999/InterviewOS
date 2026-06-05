@@ -18,7 +18,7 @@ import {
   NoteStatus,
   NoteType,
   QuestionDifficulty,
-} from '../../fixtures'
+} from '@interviewos/types'
 
 const meta = {
   title: 'Select',

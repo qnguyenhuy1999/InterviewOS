@@ -1,4 +1,4 @@
-import type { ExperienceLevel as ExperienceLevelType } from '../../fixtures'
+import type { ExperienceLevel as ExperienceLevelType } from '@interviewos/types'
 
 export type User = {
   id: string

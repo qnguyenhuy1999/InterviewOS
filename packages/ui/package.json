@@ -80,6 +80,7 @@
     "@chromatic-com/storybook": "^5.2.1",
     "@interviewos/eslint-config": "workspace:*",
     "@interviewos/tsconfig": "workspace:*",
+    "@interviewos/types": "workspace:*",
     "@storybook/addon-a11y": "^10.4.1",
     "@storybook/addon-docs": "^10.4.1",
     "@storybook/addon-mcp": "^0.6.0",
