@@ -1,3 +1,10 @@
+import type {
+  LearningPathItemStatus,
+  ReviewItemType,
+  ReviewRating,
+  WeakConceptStatus,
+} from './enums'
+
 export interface ReviewItem {
   id: string
   userId: string
@@ -87,4 +94,42 @@ export interface ReviewRatingInput {
 
 export interface LearningPathActionInput {
   action: 'start' | 'complete' | 'snooze' | 'skip'
+}
+
+export interface ReviewQueueCardView {
+  id: string
+  reviewItemId: string
+  title: string
+  type: ReviewItemType
+  masteryPercent: number
+  weaknessScore: number
+  nextReviewLabel: string
+  lastRating: ReviewRating | null
+  availableRatings: ReviewRating[]
+}
+
+export interface ReviewLearningPathView {
+  id: string
+  title: string
+  detail: string
+  typeLabel: string
+  priorityScore: number
+  status: LearningPathItemStatus
+}
+
+export interface ReviewWeakConceptView {
+  id: string
+  concept: string
+  occurrenceCount: number
+  masteryPercent: number
+  status: WeakConceptStatus
+}
+
+export interface ReviewPageView {
+  title: string
+  subtitle: string
+  dueLabel: string
+  queue: ReviewQueueCardView[]
+  learningPath: ReviewLearningPathView[]
+  weakConcepts: ReviewWeakConceptView[]
 }
