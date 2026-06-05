@@ -31,3 +31,18 @@ export interface ReadinessImpactBreakdown {
   communicationDelta: number
   consistencyDelta: number
 }
+
+export interface ReadinessHistoryView {
+  id: string
+  overallScore: number
+  improvementTrend: number
+  computedAt: Date
+}
+
+export interface ReadinessPageView {
+  title: string
+  subtitle: string
+  recomputeLabel: string
+  latest: ReadinessSnapshot
+  history: ReadinessHistoryView[]
+}

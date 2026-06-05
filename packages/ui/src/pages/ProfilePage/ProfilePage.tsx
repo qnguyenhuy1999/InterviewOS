@@ -1,0 +1,333 @@
+import type * as React from 'react'
+
+import { CheckCircle2Icon, CircleAlertIcon, FileTextIcon, UploadIcon } from 'lucide-react'
+
+import { Badge } from '../../../components/ui/badge'
+import { Button } from '../../../components/ui/button'
+import { Input } from '../../../components/ui/input'
+import { EmptyState, PageHeader, SectionCard } from '../../../components/ui/page'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../components/ui/select'
+import { Skeleton } from '../../../components/ui/skeleton'
+import ConsoleLayout from '../../layouts/ConsoleLayout'
+import { PROFILE_INSIGHT_HEADING_CLASS_NAME } from './ProfilePage.constants'
+import { profileFixture } from './ProfilePage.fixtures'
+import type { ProfilePageProps, ProfileResumeInsight, ProfileSelectOption } from './ProfilePage.types'
+import {
+  getProfileAcceptedFileLabel,
+  getProfileNavigation,
+  getProfileVerifiedBadgeClassName,
+} from './ProfilePage.utils'
+
+function Field({
+  label,
+  value,
+  trailing,
+}: {
+  label: string
+  value: string
+  trailing?: React.ReactNode
+}) {
+  return (
+    <div className="space-y-2">
+      <p className="text-sm font-medium">{label}</p>
+      <div className="flex items-center gap-3">
+        <Input value={value} readOnly className="h-11 rounded-xl px-4 text-sm md:text-base" />
+        {trailing}
+      </div>
+    </div>
+  )
+}
+
+function SelectField({
+  label,
+  value,
+  options,
+}: {
+  label: string
+  value: string
+  options: ProfileSelectOption[]
+}) {
+  return (
+    <div className="space-y-2">
+      <p className="text-sm font-medium">{label}</p>
+      <Select value={value}>
+        <SelectTrigger className="h-11 w-full rounded-xl px-4 text-left">
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          {options.map((option) => (
+            <SelectItem key={option.value} value={option.value}>
+              {option.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
+  )
+}
+
+function TagField({
+  label,
+  items,
+  inputPlaceholder,
+}: {
+  label: string
+  items: string[]
+  inputPlaceholder: string
+}) {
+  return (
+    <div className="space-y-3">
+      <p className="text-sm font-medium">{label}</p>
+      <div className="flex min-h-12 flex-wrap items-center gap-2 rounded-xl border border-input bg-background px-3 py-2">
+        {items.map((item) => (
+          <Badge key={item} variant="secondary" className="h-8 rounded-full px-3 text-sm font-medium">
+            {item}
+          </Badge>
+        ))}
+        <span className="text-sm text-muted-foreground">{inputPlaceholder}</span>
+      </div>
+    </div>
+  )
+}
+
+function ResumeUploadCard({
+  title,
+  description,
+  ctaLabel,
+}: {
+  title: string
+  description: string
+  ctaLabel: string
+}) {
+  return (
+    <div className="flex min-h-[22rem] items-center justify-center rounded-2xl border border-dashed border-border bg-muted/20 p-6">
+      <div className="flex max-w-sm flex-col items-center text-center">
+        <div className="flex size-14 items-center justify-center rounded-full bg-background ring-1 ring-foreground/10">
+          <UploadIcon className="size-7 text-muted-foreground" />
+        </div>
+        <p className="mt-5 text-xl font-semibold tracking-tight">{title}</p>
+        <p className="mt-2 text-sm text-muted-foreground">{description}</p>
+        <Button variant="outline" className="mt-6">
+          {ctaLabel}
+        </Button>
+      </div>
+    </div>
+  )
+}
+
+function InsightList({
+  title,
+  items,
+  tone,
+}: {
+  title: string
+  items: string[]
+  tone: keyof typeof PROFILE_INSIGHT_HEADING_CLASS_NAME
+}) {
+  return (
+    <div className="space-y-2">
+      <p
+        className={`text-xs font-semibold uppercase tracking-[0.14em] ${PROFILE_INSIGHT_HEADING_CLASS_NAME[tone]}`}
+      >
+        {title}
+      </p>
+      <ul className="space-y-1.5 pl-5 text-sm text-foreground">
+        {items.map((item) => (
+          <li key={item} className="list-disc leading-6">
+            {item}
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
+function ResumeInsightCard({ insight }: { insight: ProfileResumeInsight }) {
+  return (
+    <div className="rounded-2xl border border-border/80 bg-background p-5">
+      <div className="flex items-start gap-4">
+        <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-muted text-muted-foreground">
+          <FileTextIcon className="size-6" />
+        </div>
+        <div className="min-w-0">
+          <p className="truncate text-lg font-semibold">{insight.fileName}</p>
+          <p className="text-sm text-muted-foreground">{insight.uploadedLabel}</p>
+        </div>
+      </div>
+
+      <div className="mt-6 space-y-5">
+        <InsightList title="Strengths" items={insight.strengths} tone="strengths" />
+        <InsightList title="Gaps" items={insight.gaps} tone="gaps" />
+        <div className="space-y-3">
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+            Key skills
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {insight.keySkills.map((skill) => (
+              <Badge key={skill} variant="secondary" className="h-8 rounded-full px-3 text-sm font-medium">
+                {skill}
+              </Badge>
+            ))}
+          </div>
+        </div>
+        <InsightList title="Recommendations" items={insight.recommendations} tone="recommendations" />
+      </div>
+    </div>
+  )
+}
+
+function ProfileBody({ profile }: { profile: NonNullable<ProfilePageProps['profile']> }) {
+  const verifiedBadge = (
+    <Badge
+      variant="outline"
+      className={`h-11 rounded-xl px-4 text-sm ${getProfileVerifiedBadgeClassName(
+        profile.account.isEmailVerified,
+      )}`}
+    >
+      {profile.account.isEmailVerified ? (
+        <CheckCircle2Icon className="size-4" />
+      ) : (
+        <CircleAlertIcon className="size-4" />
+      )}
+      {profile.account.verifiedLabel}
+    </Badge>
+  )
+
+  return (
+    <div className="space-y-6">
+      <SectionCard title={profile.account.title} className="py-0">
+        <div className="grid gap-4 md:grid-cols-2">
+          <Field label={profile.account.name.label} value={profile.account.name.value} />
+          <Field
+            label={profile.account.email.label}
+            value={profile.account.email.value}
+            trailing={verifiedBadge}
+          />
+        </div>
+      </SectionCard>
+
+      <SectionCard
+        title={profile.learningProfile.title}
+        description={profile.learningProfile.description}
+        className="py-0"
+      >
+        <div className="space-y-6">
+          <div className="grid gap-4 xl:grid-cols-3">
+            <Field
+              label={profile.learningProfile.targetRole.label}
+              value={profile.learningProfile.targetRole.value}
+            />
+            <SelectField
+              label={profile.learningProfile.currentLevel.label}
+              value={profile.learningProfile.currentLevel.value}
+              options={profile.currentLevelOptions}
+            />
+            <SelectField
+              label={profile.learningProfile.preferredOutputStyle.label}
+              value={profile.learningProfile.preferredOutputStyle.value}
+              options={profile.preferredOutputStyleOptions}
+            />
+          </div>
+
+          <TagField
+            label={profile.learningProfile.techStack.label}
+            items={profile.learningProfile.techStack.items}
+            inputPlaceholder={profile.learningProfile.techStack.inputPlaceholder}
+          />
+
+          <TagField
+            label={profile.learningProfile.interviewGoals.label}
+            items={profile.learningProfile.interviewGoals.items}
+            inputPlaceholder={profile.learningProfile.interviewGoals.inputPlaceholder}
+          />
+        </div>
+      </SectionCard>
+
+      <SectionCard title={profile.resume.title} description={profile.resume.description} className="py-0">
+        <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(320px,0.98fr)]">
+          <ResumeUploadCard
+            title={profile.resume.upload.dropzoneTitle}
+            description={getProfileAcceptedFileLabel(
+              profile.resume.upload.acceptedFileTypes,
+              profile.resume.upload.maxFileSizeMb,
+            )}
+            ctaLabel={profile.resume.upload.ctaLabel}
+          />
+          {profile.resume.latest ? (
+            <ResumeInsightCard insight={profile.resume.latest} />
+          ) : (
+            <EmptyState
+              className="min-h-[22rem] rounded-2xl border border-dashed bg-muted/20"
+              icon={FileTextIcon}
+              title="No resume analysis yet"
+              description={profile.resume.description}
+            />
+          )}
+        </div>
+      </SectionCard>
+    </div>
+  )
+}
+
+function LoadingBody() {
+  return (
+    <div className="space-y-6">
+      <Skeleton className="h-40 rounded-2xl" />
+      <Skeleton className="h-80 rounded-2xl" />
+      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(320px,0.98fr)]">
+        <Skeleton className="h-[26rem] rounded-2xl" />
+        <Skeleton className="h-[26rem] rounded-2xl" />
+      </div>
+    </div>
+  )
+}
+
+function EmptyBody() {
+  return (
+    <EmptyState
+      className="min-h-96"
+      title="No profile data yet"
+      description="Account details, learning preferences, and resume insights will appear here once your profile is configured."
+      action={<Button>Set up profile</Button>}
+    />
+  )
+}
+
+function ErrorBody({ message }: { message: string }) {
+  return (
+    <EmptyState
+      className="min-h-[60vh] border-destructive/20 bg-destructive/5"
+      title={<span className="text-destructive">Failed to load profile</span>}
+      description={message}
+      action={<Button variant="destructive">Retry</Button>}
+    />
+  )
+}
+
+function Root({ loading, empty, error, profile = profileFixture }: ProfilePageProps) {
+  return (
+    <ConsoleLayout title={profile.title} navigation={getProfileNavigation()}>
+      <PageHeader title={profile.title} description={profile.subtitle} />
+      {error ? (
+        <ErrorBody message={error} />
+      ) : loading ? (
+        <LoadingBody />
+      ) : empty ? (
+        <EmptyBody />
+      ) : (
+        <ProfileBody profile={profile} />
+      )}
+    </ConsoleLayout>
+  )
+}
+
+const ProfilePage = Object.assign(Root, {
+  Field,
+  InsightList,
+  ResumeInsightCard,
+  ResumeUploadCard,
+  SelectField,
+  TagField,
+})
+
+export default ProfilePage

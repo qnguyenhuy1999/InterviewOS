@@ -10,3 +10,52 @@ export interface ResumeAnalysis extends AnalyzeResumeResult {
   fileName: string | null
   analyzedAt: Date | string
 }
+
+export interface ResumeUploadAreaView {
+  title: string
+  description: string
+  supportedFormatsLabel: string
+  actionLabel: string
+}
+
+export interface ResumeFileView {
+  id: string
+  fileName: string
+  metadataLabel: string
+  actionLabel: string
+}
+
+export interface ResumeSectionView<TItem> {
+  title: string
+  subtitle: string
+  actionLabel: string
+  items: TItem[]
+}
+
+export interface ResumeAnalysisAttributeView {
+  label: string
+  value: string
+}
+
+export interface ResumeSuggestedTopicView {
+  id: string
+  title: string
+  actionLabel: string
+}
+
+export interface ResumeEmptyStateView {
+  title: string
+  description: string
+  actionLabel: string
+}
+
+export interface ResumePageView {
+  title: string
+  subtitle: string
+  upload: ResumeUploadAreaView
+  currentResume: ResumeSectionView<ResumeFileView>
+  analysis: ResumeSectionView<ResumeAnalysisAttributeView>
+  extractedSkills: ResumeSectionView<string>
+  suggestedTopics: ResumeSectionView<ResumeSuggestedTopicView>
+  emptyState: ResumeEmptyStateView
+}
