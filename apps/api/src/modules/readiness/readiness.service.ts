@@ -1,6 +1,7 @@
 import type { Prisma } from '@interviewos/database'
 import { Injectable } from '@nestjs/common'
 
+import type { PaginationQueryDto } from '../../common/dto/pagination.dto'
 import { ReadinessRepository } from './readiness.repository'
 
 const WEIGHTS = {
@@ -31,8 +32,23 @@ export class ReadinessService {
     return this.readinessRepository.findLatest(userId)
   }
 
-  findHistory(userId: string, limit?: number) {
-    return this.readinessRepository.findHistory(userId, limit)
+  async findHistory(userId: string, query: PaginationQueryDto) {
+    const page = query.page
+    const limit = query.limit
+    const { items, total } = await this.readinessRepository.findHistory(userId, {
+      page,
+      limit,
+    })
+
+    return {
+      items,
+      meta: {
+        page,
+        limit,
+        total,
+        totalPages: total === 0 ? 0 : Math.ceil(total / limit),
+      },
+    }
   }
 
   async computeAndSave(userId: string) {

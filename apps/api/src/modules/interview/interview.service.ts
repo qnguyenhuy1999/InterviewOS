@@ -4,14 +4,14 @@ import { interviewAnswerSchema, startInterviewSessionSchema } from '@interviewos
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
 
 import { AIGateway } from '../../ai/ai.gateway'
+import type { AuthenticatedUser } from '../../common/auth/authenticated-request'
 import { NotebookRepository } from '../notebook/notebook.repository'
 import { ReviewService } from '../review/review.service'
 import { UsersRepository } from '../users/users.repository'
+import type { CreateInterviewSessionDto, SubmitInterviewAnswerDto } from './dto/interview.dto'
 import { InterviewRepository } from './interview.repository'
 
-type CurrentUserLike = {
-  id?: string
-}
+type CurrentUserRef = Pick<AuthenticatedUser, 'id'>
 
 @Injectable()
 export class InterviewService {
@@ -33,8 +33,8 @@ export class InterviewService {
     }
   }
 
-  async createSession(currentUser: unknown, payload: Record<string, unknown>) {
-    const user = await this.usersRepository.ensureUserById(this.resolveUserId(currentUser))
+  async createSession(currentUser: CurrentUserRef, payload: CreateInterviewSessionDto) {
+    const user = await this.usersRepository.ensureUserById(currentUser.id)
     const input = startInterviewSessionSchema.parse(payload)
     const note = await this.findQuestionSource(user.id, input.generatedQuestionId)
 
@@ -49,13 +49,13 @@ export class InterviewService {
     })
   }
 
-  async findSessions(currentUser: unknown) {
-    const user = await this.usersRepository.ensureUserById(this.resolveUserId(currentUser))
+  async findSessions(currentUser: CurrentUserRef) {
+    const user = await this.usersRepository.ensureUserById(currentUser.id)
     return this.interviewRepository.findSessions(user.id)
   }
 
-  async findSessionById(currentUser: unknown, sessionId: string) {
-    const user = await this.usersRepository.ensureUserById(this.resolveUserId(currentUser))
+  async findSessionById(currentUser: CurrentUserRef, sessionId: string) {
+    const user = await this.usersRepository.ensureUserById(currentUser.id)
     const session = await this.interviewRepository.findSessionById(user.id, sessionId)
 
     if (!session) {
@@ -65,8 +65,8 @@ export class InterviewService {
     return session
   }
 
-  async answerQuestion(currentUser: unknown, sessionId: string, payload: Record<string, unknown>) {
-    const user = await this.usersRepository.ensureUserById(this.resolveUserId(currentUser))
+  async answerQuestion(currentUser: CurrentUserRef, sessionId: string, payload: SubmitInterviewAnswerDto) {
+    const user = await this.usersRepository.ensureUserById(currentUser.id)
     const profile = await this.usersRepository.findProfileByUserId(user.id)
     if (!profile) {
       throw new BadRequestException('Complete onboarding before practicing questions.')
@@ -186,12 +186,12 @@ export class InterviewService {
     return this.interviewRepository.findSessionById(user.id, session.id)
   }
 
-  async updateSession(currentUser: unknown, sessionId: string, payload: Record<string, unknown>) {
+  async updateSession(currentUser: CurrentUserRef, sessionId: string, payload: SubmitInterviewAnswerDto) {
     return this.answerQuestion(currentUser, sessionId, payload)
   }
 
-  async deleteSession(currentUser: unknown, sessionId: string) {
-    const user = await this.usersRepository.ensureUserById(this.resolveUserId(currentUser))
+  async deleteSession(currentUser: CurrentUserRef, sessionId: string) {
+    const user = await this.usersRepository.ensureUserById(currentUser.id)
     return this.interviewRepository.deleteSession(user.id, sessionId)
   }
 
@@ -206,10 +206,6 @@ export class InterviewService {
     }
 
     return note
-  }
-
-  private resolveUserId(currentUser: unknown): string | undefined {
-    return (currentUser as CurrentUserLike | undefined)?.id
   }
 
   private toAiMetadataJson(metadata: AIExecutionMetadata): Prisma.InputJsonValue {

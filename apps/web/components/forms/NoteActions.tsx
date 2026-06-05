@@ -22,7 +22,7 @@ export function NoteActions({
     setError(null)
 
     const path = action === 'note' ? `/notes/${noteId}/generate` : `/notes/${noteId}/questions`
-    const body = action === 'questions' ? JSON.stringify({ count: 5 }) : undefined
+    const body = action === 'questions' ? JSON.stringify({ count: 5 }) : JSON.stringify({})
 
     try {
       const response = await apiFetch(path, {

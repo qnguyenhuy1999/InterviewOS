@@ -98,7 +98,6 @@ export function NoteForm({
 
       const savedNote = (await response.json()) as { id: string }
       router.push(`/notebook/${savedNote.id}`)
-      router.refresh()
     } catch (submissionError) {
       setError(
         submissionError instanceof Error

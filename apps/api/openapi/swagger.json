@@ -1,0 +1,4710 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/auth/login": {
+      "post": {
+        "operationId": "AuthController_login",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthSessionResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "interviewos_session": []
+          }
+        ],
+        "summary": "Login with email and password",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "operationId": "AuthController_register",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthSessionResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "interviewos_session": []
+          }
+        ],
+        "summary": "Register a new user account",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "operationId": "AuthController_logout",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthSuccessResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "interviewos_session": []
+          }
+        ],
+        "summary": "Logout the current session",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/auth/logout-all": {
+      "post": {
+        "operationId": "AuthController_logoutAll",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthSuccessResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "interviewos_session": []
+          }
+        ],
+        "summary": "Logout all active sessions",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/auth/me": {
+      "get": {
+        "operationId": "AuthController_me",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthSessionResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "interviewos_session": []
+          }
+        ],
+        "summary": "Get the authenticated session user",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/auth/sessions": {
+      "get": {
+        "operationId": "AuthController_sessions",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ActiveAuthSessionDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "interviewos_session": []
+          }
+        ],
+        "summary": "List active sessions for the current user",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/auth/sessions/{sessionId}": {
+      "delete": {
+        "operationId": "AuthController_revokeSession",
+        "parameters": [
+          {
+            "name": "sessionId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthSuccessResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "interviewos_session": []
+          }
+        ],
+        "summary": "Revoke a specific active session",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/auth/forgot-password": {
+      "post": {
+        "operationId": "AuthController_requestPasswordReset",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestPasswordResetDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForgotPasswordResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "interviewos_session": []
+          }
+        ],
+        "summary": "Request a password reset email",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/auth/reset-password": {
+      "post": {
+        "operationId": "AuthController_resetPassword",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPasswordDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthSuccessResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "interviewos_session": []
+          }
+        ],
+        "summary": "Reset password with a valid reset token",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/auth/email-verification/resend": {
+      "post": {
+        "operationId": "AuthController_resendEmailVerification",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResendEmailVerificationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthSuccessResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "interviewos_session": []
+          }
+        ],
+        "summary": "Resend email verification link",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/auth/email-verification/confirm": {
+      "post": {
+        "operationId": "AuthController_confirmEmailVerification",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfirmEmailVerificationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthSuccessResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "interviewos_session": []
+          }
+        ],
+        "summary": "Confirm email verification token",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/users/me": {
+      "get": {
+        "operationId": "UsersController_findMe",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "interviewos_session": []
+          }
+        ],
+        "summary": "Get the current user profile",
+        "tags": [
+          "users"
+        ]
+      },
+      "patch": {
+        "operationId": "UsersController_updateMe",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "interviewos_session": []
+          }
+        ],
+        "summary": "Update the current user profile",
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/users/me/profile": {
+      "get": {
+        "operationId": "UsersController_getProfile",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/UserLearningProfileResponseDto"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "interviewos_session": []
+          }
+        ],
+        "summary": "Get the current user learning profile",
+        "tags": [
+          "users"
+        ]
+      },
+      "post": {
+        "operationId": "UsersController_createProfile",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpsertUserLearningProfileDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserLearningProfileResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "interviewos_session": []
+          }
+        ],
+        "summary": "Create or replace the current user learning profile",
+        "tags": [
+          "users"
+        ]
+      },
+      "patch": {
+        "operationId": "UsersController_updateProfile",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpsertUserLearningProfileDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserLearningProfileResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "interviewos_session": []
+          }
+        ],
+        "summary": "Update the current user learning profile",
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/notes": {
+      "post": {
+        "operationId": "NotebookController_createNote",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateNoteDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TechnicalNoteDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "interviewos_session": []
+          }
+        ],
+        "summary": "Create a technical note draft",
+        "tags": [
+          "notes"
+        ]
+      },
+      "get": {
+        "operationId": "NotebookController_findNotes",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TechnicalNoteDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "interviewos_session": []
+          }
+        ],
+        "summary": "List the current user technical notes",
+        "tags": [
+          "notes"
+        ]
+      }
+    },
+    "/notes/{noteId}": {
+      "get": {
+        "operationId": "NotebookController_findNoteById",
+        "parameters": [
+          {
+            "name": "noteId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TechnicalNoteDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "interviewos_session": []
+          }
+        ],
+        "summary": "Get a technical note by id",
+        "tags": [
+          "notes"
+        ]
+      },
+      "patch": {
+        "operationId": "NotebookController_updateNote",
+        "parameters": [
+          {
+            "name": "noteId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateNoteDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TechnicalNoteDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "interviewos_session": []
+          }
+        ],
+        "summary": "Update a technical note",
+        "tags": [
+          "notes"
+        ]
+      },
+      "delete": {
+        "operationId": "NotebookController_deleteNote",
+        "parameters": [
+          {
+            "name": "noteId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TechnicalNoteDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "interviewos_session": []
+          }
+        ],
+        "summary": "Archive a technical note",
+        "tags": [
+          "notes"
+        ]
+      }
+    },
+    "/notes/{noteId}/generate": {
+      "post": {
+        "operationId": "NotebookController_generateTechnicalNote",
+        "parameters": [
+          {
+            "name": "noteId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TechnicalNoteDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "interviewos_session": []
+          }
+        ],
+        "summary": "Generate structured content for a technical note",
+        "tags": [
+          "notes"
+        ]
+      }
+    },
+    "/notes/{noteId}/questions": {
+      "post": {
+        "operationId": "NotebookController_generateQuestions",
+        "parameters": [
+          {
+            "name": "noteId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerateQuestionsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TechnicalNoteDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "interviewos_session": []
+          }
+        ],
+        "summary": "Generate interview questions from a technical note",
+        "tags": [
+          "notes"
+        ]
+      }
+    },
+    "/sessions": {
+      "post": {
+        "operationId": "InterviewController_createSession",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateInterviewSessionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InterviewSessionResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "interviewos_session": []
+          }
+        ],
+        "summary": "Create a single-question interview session from a generated note question",
+        "tags": [
+          "interview"
+        ]
+      },
+      "get": {
+        "operationId": "InterviewController_findSessions",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/InterviewSessionResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "interviewos_session": []
+          }
+        ],
+        "summary": "List interview sessions for the current user",
+        "tags": [
+          "interview"
+        ]
+      }
+    },
+    "/sessions/{sessionId}": {
+      "get": {
+        "operationId": "InterviewController_findSessionById",
+        "parameters": [
+          {
+            "name": "sessionId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InterviewSessionResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "interviewos_session": []
+          }
+        ],
+        "summary": "Get an interview session by id",
+        "tags": [
+          "interview"
+        ]
+      },
+      "patch": {
+        "operationId": "InterviewController_updateSession",
+        "parameters": [
+          {
+            "name": "sessionId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitInterviewAnswerDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InterviewSessionResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "interviewos_session": []
+          }
+        ],
+        "summary": "Submit or replace the answer for a single-question interview session",
+        "tags": [
+          "interview"
+        ]
+      },
+      "delete": {
+        "operationId": "InterviewController_deleteSession",
+        "parameters": [
+          {
+            "name": "sessionId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InterviewSessionResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "interviewos_session": []
+          }
+        ],
+        "summary": "Delete an interview session",
+        "tags": [
+          "interview"
+        ]
+      }
+    },
+    "/sessions/{sessionId}/answer": {
+      "post": {
+        "operationId": "InterviewController_answerQuestion",
+        "parameters": [
+          {
+            "name": "sessionId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitInterviewAnswerDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InterviewSessionResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "interviewos_session": []
+          }
+        ],
+        "summary": "Answer the generated question in a single-question interview session",
+        "tags": [
+          "interview"
+        ]
+      }
+    },
+    "/sessions/multi-turn": {
+      "post": {
+        "operationId": "InterviewController_startMultiTurnSession",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StartMultiTurnSessionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InterviewSessionResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "interviewos_session": []
+          }
+        ],
+        "summary": "Start a resumable multi-turn interview session",
+        "tags": [
+          "interview"
+        ]
+      }
+    },
+    "/sessions/{sessionId}/turns": {
+      "post": {
+        "operationId": "InterviewController_submitTurn",
+        "parameters": [
+          {
+            "name": "sessionId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitTurnDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitTurnResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "interviewos_session": []
+          }
+        ],
+        "summary": "Submit one candidate turn in a multi-turn interview session",
+        "tags": [
+          "interview"
+        ]
+      },
+      "get": {
+        "operationId": "InterviewController_getTurns",
+        "parameters": [
+          {
+            "name": "sessionId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/InterviewTurnDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "interviewos_session": []
+          }
+        ],
+        "summary": "Get all turns for a multi-turn interview session",
+        "tags": [
+          "interview"
+        ]
+      }
+    },
+    "/sessions/{sessionId}/end": {
+      "post": {
+        "operationId": "InterviewController_endSession",
+        "parameters": [
+          {
+            "name": "sessionId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InterviewSessionResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "interviewos_session": []
+          }
+        ],
+        "summary": "End a multi-turn interview session and trigger summary/evaluation work",
+        "tags": [
+          "interview"
+        ]
+      }
+    },
+    "/sessions/{sessionId}/evaluation": {
+      "get": {
+        "operationId": "InterviewController_getEvaluation",
+        "parameters": [
+          {
+            "name": "sessionId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InterviewEvaluationDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "interviewos_session": []
+          }
+        ],
+        "summary": "Get the evaluation for an interview session",
+        "tags": [
+          "interview"
+        ]
+      }
+    },
+    "/company-modes": {
+      "get": {
+        "operationId": "CompanyModeController_findAll[0]",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CompanyModeResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "List active company interview modes",
+        "tags": [
+          "company-mode"
+        ]
+      }
+    },
+    "/company-profiles": {
+      "get": {
+        "operationId": "CompanyModeController_findAll[1]",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CompanyModeResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "List active company interview modes",
+        "tags": [
+          "company-mode"
+        ]
+      }
+    },
+    "/company-modes/{slug}": {
+      "get": {
+        "operationId": "CompanyModeController_findBySlug[0]",
+        "parameters": [
+          {
+            "name": "slug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompanyModeResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get a company interview mode by slug",
+        "tags": [
+          "company-mode"
+        ]
+      }
+    },
+    "/company-profiles/{slug}": {
+      "get": {
+        "operationId": "CompanyModeController_findBySlug[1]",
+        "parameters": [
+          {
+            "name": "slug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompanyModeResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get a company interview mode by slug",
+        "tags": [
+          "company-mode"
+        ]
+      }
+    },
+    "/readiness": {
+      "get": {
+        "operationId": "ReadinessController_findLatest",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/ReadinessSnapshotDto"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "interviewos_session": []
+          }
+        ],
+        "summary": "Get the latest readiness snapshot",
+        "tags": [
+          "readiness"
+        ]
+      }
+    },
+    "/readiness/history": {
+      "get": {
+        "operationId": "ReadinessController_findHistory",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 50,
+              "default": 10,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ReadinessSnapshotDto"
+                      }
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/PaginationMetaDto"
+                    }
+                  },
+                  "required": [
+                    "items",
+                    "meta"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "interviewos_session": []
+          }
+        ],
+        "summary": "List readiness snapshots with pagination",
+        "tags": [
+          "readiness"
+        ]
+      }
+    },
+    "/readiness/compute": {
+      "post": {
+        "operationId": "ReadinessController_compute",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReadinessSnapshotDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "interviewos_session": []
+          }
+        ],
+        "summary": "Compute and persist a new readiness snapshot",
+        "tags": [
+          "readiness"
+        ]
+      }
+    },
+    "/english-notes": {
+      "get": {
+        "operationId": "EnglishNotesController_findEnglishNotes",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EnglishNoteResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "interviewos_session": []
+          }
+        ],
+        "summary": "List english improvement notes",
+        "tags": [
+          "english-notes"
+        ]
+      },
+      "post": {
+        "operationId": "EnglishNotesController_createEnglishNote",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateEnglishNoteDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnglishNoteResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "interviewos_session": []
+          }
+        ],
+        "summary": "Create an english improvement note",
+        "tags": [
+          "english-notes"
+        ]
+      }
+    },
+    "/english-notes/{englishNoteId}/status": {
+      "patch": {
+        "operationId": "EnglishNotesController_updateEnglishNoteStatus",
+        "parameters": [
+          {
+            "name": "englishNoteId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateEnglishNoteStatusDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnglishNoteResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "interviewos_session": []
+          }
+        ],
+        "summary": "Update english note status",
+        "tags": [
+          "english-notes"
+        ]
+      }
+    },
+    "/review": {
+      "get": {
+        "operationId": "ReviewController_getReviewQueue",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewQueueResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "interviewos_session": []
+          }
+        ],
+        "summary": "Get the prioritized review queue",
+        "tags": [
+          "review"
+        ]
+      }
+    },
+    "/review/{reviewItemId}/rate": {
+      "post": {
+        "operationId": "ReviewController_rateReviewItem",
+        "parameters": [
+          {
+            "name": "reviewItemId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReviewRatingDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewAttemptDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "interviewos_session": []
+          }
+        ],
+        "summary": "Rate a review item and schedule the next review",
+        "tags": [
+          "review"
+        ]
+      }
+    },
+    "/learning-path": {
+      "get": {
+        "operationId": "ReviewController_getLearningPath",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LearningPathItemResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "interviewos_session": []
+          }
+        ],
+        "summary": "Build the current learning path from review signals",
+        "tags": [
+          "review"
+        ]
+      }
+    },
+    "/learning-path/{itemId}/action": {
+      "post": {
+        "operationId": "ReviewController_updateLearningPathItem",
+        "parameters": [
+          {
+            "name": "itemId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LearningPathActionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LearningPathItemResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "interviewos_session": []
+          }
+        ],
+        "summary": "Update a learning path item status",
+        "tags": [
+          "review"
+        ]
+      }
+    },
+    "/weak-concepts": {
+      "get": {
+        "operationId": "ReviewController_listWeakConcepts",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/WeakConceptResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "interviewos_session": []
+          }
+        ],
+        "summary": "List weak concepts detected from practice sessions",
+        "tags": [
+          "review"
+        ]
+      }
+    },
+    "/weak-concepts/{weakConceptId}/status": {
+      "patch": {
+        "operationId": "ReviewController_updateWeakConceptStatus",
+        "parameters": [
+          {
+            "name": "weakConceptId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WeakConceptStatusDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WeakConceptResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "interviewos_session": []
+          }
+        ],
+        "summary": "Update the status of a weak concept",
+        "tags": [
+          "review"
+        ]
+      }
+    },
+    "/resume/upload": {
+      "post": {
+        "operationId": "ResumeController_upload",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                },
+                "required": [
+                  "file"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResumeAnalysisResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "interviewos_session": []
+          }
+        ],
+        "summary": "Upload a resume file and analyze it against the onboarding target role",
+        "tags": [
+          "resume"
+        ]
+      }
+    },
+    "/resume/latest": {
+      "get": {
+        "operationId": "ResumeController_findLatest",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/ResumeAnalysisResponseDto"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "interviewos_session": []
+          }
+        ],
+        "summary": "Get the latest resume analysis for the current user",
+        "tags": [
+          "resume"
+        ]
+      }
+    },
+    "/recommendations": {
+      "get": {
+        "operationId": "RecommendationsController_getRecommendations",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecommendationSummaryDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "interviewos_session": []
+          }
+        ],
+        "summary": "Get the current learning recommendations summary",
+        "tags": [
+          "recommendations"
+        ]
+      }
+    },
+    "/analytics/progress": {
+      "get": {
+        "operationId": "AnalyticsController_getProgress",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DashboardProgressDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "interviewos_session": []
+          }
+        ],
+        "summary": "Get dashboard progress metrics",
+        "tags": [
+          "analytics"
+        ]
+      }
+    },
+    "/analytics/interviews": {
+      "get": {
+        "operationId": "AnalyticsController_getInterviewAnalytics",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InterviewAnalyticsResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "interviewos_session": []
+          }
+        ],
+        "summary": "Create and return an interview analytics snapshot",
+        "tags": [
+          "analytics"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "InterviewOS API",
+    "description": "REST API for InterviewOS local development and integration testing.",
+    "version": "0.1.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "cookie": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "interviewos_session"
+      }
+    },
+    "schemas": {
+      "AuthenticatedUserDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "sessionId": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "emailVerifiedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "required": [
+          "id",
+          "sessionId",
+          "email",
+          "name",
+          "emailVerifiedAt"
+        ]
+      },
+      "AuthSessionResponseDto": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "$ref": "#/components/schemas/AuthenticatedUserDto"
+          }
+        },
+        "required": [
+          "user"
+        ]
+      },
+      "LoginDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "RegisterDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 128
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "AuthSuccessResponseDto": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "success"
+        ]
+      },
+      "ActiveAuthSessionDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "userAgent": {
+            "type": "string",
+            "nullable": true
+          },
+          "ipAddress": {
+            "type": "string",
+            "nullable": true
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lastSeenAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "isCurrent": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "userAgent",
+          "ipAddress",
+          "expiresAt",
+          "lastSeenAt",
+          "createdAt",
+          "isCurrent"
+        ]
+      },
+      "ForgotPasswordResponseDto": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "success",
+          "message"
+        ]
+      },
+      "RequestPasswordResetDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      },
+      "ResetPasswordDto": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "minLength": 1
+          },
+          "password": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "token",
+          "password"
+        ]
+      },
+      "ResendEmailVerificationDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      },
+      "ConfirmEmailVerificationDto": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "token"
+        ]
+      },
+      "UserDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "emailVerifiedAt": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "email",
+          "emailVerifiedAt",
+          "name",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "UpdateMeDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "UserLearningProfileResponseDto": {
+        "type": "object",
+        "properties": {
+          "targetRole": {
+            "type": "string"
+          },
+          "currentLevel": {
+            "type": "string",
+            "enum": [
+              "JUNIOR",
+              "MID",
+              "SENIOR",
+              "STAFF",
+              "PRINCIPAL"
+            ]
+          },
+          "targetLevel": {
+            "type": "string",
+            "enum": [
+              "JUNIOR",
+              "MID",
+              "SENIOR",
+              "STAFF",
+              "PRINCIPAL"
+            ]
+          },
+          "englishLevel": {
+            "type": "string",
+            "enum": [
+              "BEGINNER",
+              "ELEMENTARY",
+              "INTERMEDIATE",
+              "UPPER_INTERMEDIATE",
+              "ADVANCED",
+              "NATIVE"
+            ]
+          },
+          "techStack": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "interviewGoals": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "preferredOutputStyle": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "targetRole",
+          "currentLevel",
+          "targetLevel",
+          "englishLevel",
+          "techStack",
+          "interviewGoals",
+          "preferredOutputStyle",
+          "id",
+          "userId",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "UpsertUserLearningProfileDto": {
+        "type": "object",
+        "properties": {
+          "targetRole": {
+            "type": "string"
+          },
+          "currentLevel": {
+            "type": "string",
+            "enum": [
+              "JUNIOR",
+              "MID",
+              "SENIOR",
+              "STAFF",
+              "PRINCIPAL"
+            ]
+          },
+          "targetLevel": {
+            "type": "string",
+            "enum": [
+              "JUNIOR",
+              "MID",
+              "SENIOR",
+              "STAFF",
+              "PRINCIPAL"
+            ]
+          },
+          "englishLevel": {
+            "type": "string",
+            "enum": [
+              "BEGINNER",
+              "ELEMENTARY",
+              "INTERMEDIATE",
+              "UPPER_INTERMEDIATE",
+              "ADVANCED",
+              "NATIVE"
+            ]
+          },
+          "techStack": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "interviewGoals": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "preferredOutputStyle": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "targetRole",
+          "currentLevel",
+          "targetLevel",
+          "englishLevel",
+          "techStack",
+          "interviewGoals",
+          "preferredOutputStyle"
+        ]
+      },
+      "TechnicalNoteContentDto": {
+        "type": "object",
+        "properties": {
+          "purpose": {
+            "type": "string"
+          },
+          "quickReference": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "coreConcepts": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "mentalModel": {
+            "type": "string"
+          },
+          "productionUsage": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "practicalExamples": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "commonPitfalls": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "debuggingChecklist": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "productionChecklist": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "seniorInterviewSignals": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "purpose",
+          "quickReference",
+          "coreConcepts",
+          "mentalModel",
+          "productionUsage",
+          "practicalExamples",
+          "commonPitfalls",
+          "debuggingChecklist",
+          "productionChecklist",
+          "seniorInterviewSignals"
+        ]
+      },
+      "TechnicalNoteContentSectionDto": {
+        "type": "object",
+        "properties": {
+          "heading": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "heading",
+          "content"
+        ]
+      },
+      "NoteGeneratedQuestionDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "noteId": {
+            "type": "string"
+          },
+          "question": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "expectedAnswer": {
+            "type": "string",
+            "nullable": true
+          },
+          "difficulty": {
+            "type": "string",
+            "enum": [
+              "EASY",
+              "MEDIUM",
+              "HARD",
+              "EXPERT"
+            ]
+          },
+          "expectedConcepts": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "sourceSection": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "noteId",
+          "question",
+          "category",
+          "expectedAnswer",
+          "difficulty",
+          "expectedConcepts",
+          "sourceSection"
+        ]
+      },
+      "TechnicalNoteDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "topic": {
+            "type": "string",
+            "nullable": true
+          },
+          "rawInput": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "CONCEPT",
+              "ALGORITHM",
+              "SYSTEM_DESIGN",
+              "BEHAVIORAL",
+              "LANGUAGE_SPECIFIC"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "DRAFT",
+              "REVIEWING",
+              "NEEDS_PRACTICE",
+              "INTERVIEW_READY",
+              "MASTERED",
+              "PUBLISHED",
+              "ARCHIVED"
+            ]
+          },
+          "overrideRole": {
+            "type": "string",
+            "nullable": true
+          },
+          "overrideLevel": {
+            "type": "string",
+            "enum": [
+              "JUNIOR",
+              "MID",
+              "SENIOR",
+              "STAFF",
+              "PRINCIPAL"
+            ],
+            "nullable": true
+          },
+          "overrideStack": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "overrideGoals": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "overrideEnglishLevel": {
+            "type": "string",
+            "enum": [
+              "BEGINNER",
+              "ELEMENTARY",
+              "INTERMEDIATE",
+              "UPPER_INTERMEDIATE",
+              "ADVANCED",
+              "NATIVE"
+            ],
+            "nullable": true
+          },
+          "preferredOutputStyle": {
+            "type": "string",
+            "nullable": true
+          },
+          "structuredContent": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TechnicalNoteContentDto"
+              }
+            ]
+          },
+          "sections": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TechnicalNoteContentSectionDto"
+            }
+          },
+          "questions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NoteGeneratedQuestionDto"
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "userId",
+          "title",
+          "topic",
+          "rawInput",
+          "type",
+          "status",
+          "overrideRole",
+          "overrideStack",
+          "overrideGoals",
+          "preferredOutputStyle",
+          "sections",
+          "questions",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "NoteAdvancedSettingsDto": {
+        "type": "object",
+        "properties": {
+          "targetRole": {
+            "type": "string"
+          },
+          "targetLevel": {
+            "type": "string",
+            "enum": [
+              "JUNIOR",
+              "MID",
+              "SENIOR",
+              "STAFF",
+              "PRINCIPAL"
+            ]
+          },
+          "englishLevel": {
+            "type": "string",
+            "enum": [
+              "BEGINNER",
+              "ELEMENTARY",
+              "INTERMEDIATE",
+              "UPPER_INTERMEDIATE",
+              "ADVANCED",
+              "NATIVE"
+            ]
+          },
+          "techStack": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "interviewGoals": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "preferredOutputStyle": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateNoteDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "topic": {
+            "type": "string",
+            "maxLength": 120,
+            "nullable": true
+          },
+          "roughNotes": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "CONCEPT",
+              "ALGORITHM",
+              "SYSTEM_DESIGN",
+              "BEHAVIORAL",
+              "LANGUAGE_SPECIFIC"
+            ],
+            "default": "CONCEPT"
+          },
+          "advancedSettings": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/NoteAdvancedSettingsDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "title",
+          "roughNotes"
+        ]
+      },
+      "UpdateNoteDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "topic": {
+            "type": "string",
+            "maxLength": 120,
+            "nullable": true
+          },
+          "roughNotes": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "CONCEPT",
+              "ALGORITHM",
+              "SYSTEM_DESIGN",
+              "BEHAVIORAL",
+              "LANGUAGE_SPECIFIC"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "DRAFT",
+              "REVIEWING",
+              "NEEDS_PRACTICE",
+              "INTERVIEW_READY",
+              "MASTERED",
+              "PUBLISHED",
+              "ARCHIVED"
+            ]
+          },
+          "advancedSettings": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/NoteAdvancedSettingsDto"
+              }
+            ]
+          }
+        }
+      },
+      "GenerateQuestionsDto": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 10,
+            "default": 5
+          },
+          "difficulty": {
+            "type": "string",
+            "enum": [
+              "EASY",
+              "MEDIUM",
+              "HARD",
+              "EXPERT"
+            ]
+          }
+        }
+      },
+      "InterviewQuestionAnswerDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "questionId": {
+            "type": "string"
+          },
+          "rawAnswer": {
+            "type": "string"
+          },
+          "technicalScore": {
+            "type": "number",
+            "nullable": true
+          },
+          "englishScore": {
+            "type": "number",
+            "nullable": true
+          },
+          "clarityScore": {
+            "type": "number",
+            "nullable": true
+          },
+          "overallScore": {
+            "type": "number",
+            "nullable": true
+          },
+          "aiFeedback": {
+            "type": "string",
+            "nullable": true
+          },
+          "technicalFeedback": {
+            "type": "object",
+            "nullable": true,
+            "additionalProperties": true
+          },
+          "englishFeedback": {
+            "type": "object",
+            "nullable": true,
+            "additionalProperties": true
+          },
+          "nextRecommendedQuestion": {
+            "type": "object",
+            "nullable": true,
+            "additionalProperties": true
+          },
+          "recommendedLearning": {
+            "type": "object",
+            "nullable": true,
+            "additionalProperties": true
+          },
+          "weakConcepts": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "questionId",
+          "rawAnswer",
+          "technicalScore",
+          "englishScore",
+          "clarityScore",
+          "overallScore",
+          "aiFeedback",
+          "technicalFeedback",
+          "englishFeedback",
+          "nextRecommendedQuestion",
+          "recommendedLearning",
+          "weakConcepts",
+          "createdAt"
+        ]
+      },
+      "InterviewQuestionDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "sessionId": {
+            "type": "string"
+          },
+          "question": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "difficulty": {
+            "type": "string",
+            "enum": [
+              "EASY",
+              "MEDIUM",
+              "HARD",
+              "EXPERT"
+            ]
+          },
+          "order": {
+            "type": "number"
+          },
+          "expectedConcepts": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "sourceSection": {
+            "type": "string"
+          },
+          "topicTags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "answer": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/InterviewQuestionAnswerDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "sessionId",
+          "question",
+          "category",
+          "difficulty",
+          "order",
+          "expectedConcepts",
+          "sourceSection",
+          "topicTags"
+        ]
+      },
+      "CompanyModeReferenceDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "slug",
+          "name"
+        ]
+      },
+      "InterviewEvaluationDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "sessionId": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "overallScore": {
+            "type": "number",
+            "nullable": true
+          },
+          "summary": {
+            "type": "string",
+            "nullable": true
+          },
+          "confidence": {
+            "type": "number",
+            "nullable": true
+          },
+          "dimensionScores": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "starScores": {
+            "type": "object",
+            "nullable": true,
+            "additionalProperties": true
+          },
+          "designScores": {
+            "type": "object",
+            "nullable": true,
+            "additionalProperties": true
+          },
+          "rubricScores": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "evidence": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "weaknesses": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "recommendations": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "strengths": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "improvements": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "coachingNotes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "weakConcepts": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "sessionId",
+          "status",
+          "overallScore",
+          "summary",
+          "confidence",
+          "dimensionScores",
+          "starScores",
+          "designScores",
+          "rubricScores",
+          "evidence",
+          "weaknesses",
+          "recommendations",
+          "strengths",
+          "improvements",
+          "coachingNotes",
+          "weakConcepts",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "InterviewSummaryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "sessionId": {
+            "type": "string"
+          },
+          "generatedFromVersion": {
+            "type": "number"
+          },
+          "headline": {
+            "type": "string"
+          },
+          "keyTakeaways": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "strengths": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "weaknesses": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "recommendations": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "transcript": {
+            "nullable": true,
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "sessionId",
+          "generatedFromVersion",
+          "headline",
+          "keyTakeaways",
+          "strengths",
+          "weaknesses",
+          "recommendations",
+          "transcript",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "InterviewReadinessImpactDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "sessionId": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "overallDelta": {
+            "type": "number"
+          },
+          "technicalDelta": {
+            "type": "number"
+          },
+          "behavioralDelta": {
+            "type": "number"
+          },
+          "systemDesignDelta": {
+            "type": "number"
+          },
+          "communicationDelta": {
+            "type": "number"
+          },
+          "consistencyDelta": {
+            "type": "number"
+          },
+          "snapshot": {
+            "type": "object",
+            "nullable": true,
+            "additionalProperties": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "sessionId",
+          "userId",
+          "overallDelta",
+          "technicalDelta",
+          "behavioralDelta",
+          "systemDesignDelta",
+          "communicationDelta",
+          "consistencyDelta",
+          "snapshot",
+          "createdAt"
+        ]
+      },
+      "InterviewSessionResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "TECHNICAL",
+              "BEHAVIORAL",
+              "SYSTEM_DESIGN",
+              "MIXED"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "DRAFT",
+              "REVIEWING",
+              "NEEDS_PRACTICE",
+              "INTERVIEW_READY",
+              "MASTERED",
+              "PUBLISHED",
+              "ARCHIVED"
+            ]
+          },
+          "noteId": {
+            "type": "string",
+            "nullable": true
+          },
+          "sourceQuestionId": {
+            "type": "string",
+            "nullable": true
+          },
+          "overrideRole": {
+            "type": "string",
+            "nullable": true
+          },
+          "overrideLevel": {
+            "type": "string",
+            "enum": [
+              "JUNIOR",
+              "MID",
+              "SENIOR",
+              "STAFF",
+              "PRINCIPAL"
+            ],
+            "nullable": true
+          },
+          "overrideStack": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "overrideGoals": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "overrideEnglishLevel": {
+            "type": "string",
+            "enum": [
+              "BEGINNER",
+              "ELEMENTARY",
+              "INTERMEDIATE",
+              "UPPER_INTERMEDIATE",
+              "ADVANCED",
+              "NATIVE"
+            ],
+            "nullable": true
+          },
+          "preferredOutputStyle": {
+            "type": "string",
+            "nullable": true
+          },
+          "mode": {
+            "type": "string"
+          },
+          "companyModeId": {
+            "type": "string",
+            "nullable": true
+          },
+          "parentSessionId": {
+            "type": "string",
+            "nullable": true
+          },
+          "version": {
+            "type": "number"
+          },
+          "maxTurns": {
+            "type": "number"
+          },
+          "currentTurnNum": {
+            "type": "number"
+          },
+          "lastActivityAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "contextSnapshot": {
+            "type": "object",
+            "nullable": true,
+            "additionalProperties": true
+          },
+          "startedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "endedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "questions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InterviewQuestionDto"
+            }
+          },
+          "note": {
+            "type": "object",
+            "nullable": true,
+            "additionalProperties": true
+          },
+          "companyMode": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CompanyModeReferenceDto"
+              }
+            ]
+          },
+          "evaluation": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/InterviewEvaluationDto"
+              }
+            ]
+          },
+          "summary": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/InterviewSummaryDto"
+              }
+            ]
+          },
+          "readinessImpact": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/InterviewReadinessImpactDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "userId",
+          "type",
+          "status",
+          "noteId",
+          "sourceQuestionId",
+          "overrideRole",
+          "overrideStack",
+          "overrideGoals",
+          "preferredOutputStyle",
+          "companyModeId",
+          "parentSessionId",
+          "lastActivityAt",
+          "contextSnapshot",
+          "startedAt",
+          "endedAt",
+          "createdAt",
+          "updatedAt",
+          "questions",
+          "note"
+        ]
+      },
+      "CreateInterviewSessionDto": {
+        "type": "object",
+        "properties": {
+          "generatedQuestionId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "generatedQuestionId"
+        ]
+      },
+      "InterviewAdvancedSettingsDto": {
+        "type": "object",
+        "properties": {
+          "targetRole": {
+            "type": "string"
+          },
+          "targetLevel": {
+            "type": "string",
+            "enum": [
+              "JUNIOR",
+              "MID",
+              "SENIOR",
+              "STAFF",
+              "PRINCIPAL"
+            ]
+          },
+          "englishLevel": {
+            "type": "string",
+            "enum": [
+              "BEGINNER",
+              "ELEMENTARY",
+              "INTERMEDIATE",
+              "UPPER_INTERMEDIATE",
+              "ADVANCED",
+              "NATIVE"
+            ]
+          },
+          "techStack": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "interviewGoals": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "preferredOutputStyle": {
+            "type": "string"
+          }
+        }
+      },
+      "SubmitInterviewAnswerDto": {
+        "type": "object",
+        "properties": {
+          "answer": {
+            "type": "string"
+          },
+          "advancedSettings": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/InterviewAdvancedSettingsDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "answer"
+        ]
+      },
+      "StartMultiTurnSessionDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "TECHNICAL",
+              "BEHAVIORAL",
+              "SYSTEM_DESIGN",
+              "MIXED"
+            ]
+          },
+          "companyModeSlug": {
+            "type": "string"
+          },
+          "noteId": {
+            "type": "string"
+          },
+          "overrideRole": {
+            "type": "string"
+          },
+          "overrideLevel": {
+            "type": "string",
+            "enum": [
+              "JUNIOR",
+              "MID",
+              "SENIOR",
+              "STAFF",
+              "PRINCIPAL"
+            ]
+          },
+          "overrideStack": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "maxTurns": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 30
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "InterviewTurnReferenceDto": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "label",
+          "value"
+        ]
+      },
+      "InterviewTurnEvaluationDto": {
+        "type": "object",
+        "properties": {
+          "strengths": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "risks": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "confidence": {
+            "type": "number",
+            "nullable": true
+          }
+        }
+      },
+      "InterviewTurnDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "sessionId": {
+            "type": "string"
+          },
+          "turnNumber": {
+            "type": "number"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "INTERVIEWER",
+              "CANDIDATE"
+            ]
+          },
+          "content": {
+            "type": "string"
+          },
+          "decision": {
+            "type": "string",
+            "enum": [
+              "FOLLOW_UP",
+              "DEEP_DIVE",
+              "CLARIFY",
+              "CHALLENGE",
+              "ESCALATE",
+              "ADVANCE",
+              "WRAP_UP",
+              "EVALUATE"
+            ],
+            "nullable": true
+          },
+          "topicTags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "reasoning": {
+            "type": "string",
+            "nullable": true
+          },
+          "references": {
+            "nullable": true,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InterviewTurnReferenceDto"
+            }
+          },
+          "evaluation": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/InterviewTurnEvaluationDto"
+              }
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "sessionId",
+          "turnNumber",
+          "role",
+          "content",
+          "topicTags",
+          "reasoning",
+          "createdAt"
+        ]
+      },
+      "SubmitTurnResponseDto": {
+        "type": "object",
+        "properties": {
+          "candidateTurn": {
+            "$ref": "#/components/schemas/InterviewTurnDto"
+          },
+          "interviewerTurn": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/InterviewTurnDto"
+              }
+            ]
+          },
+          "decision": {
+            "type": "string",
+            "enum": [
+              "FOLLOW_UP",
+              "DEEP_DIVE",
+              "CLARIFY",
+              "CHALLENGE",
+              "ESCALATE",
+              "ADVANCE",
+              "WRAP_UP",
+              "EVALUATE"
+            ]
+          },
+          "turnNumber": {
+            "type": "number"
+          },
+          "isComplete": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "candidateTurn",
+          "decision",
+          "turnNumber",
+          "isComplete"
+        ]
+      },
+      "SubmitTurnDto": {
+        "type": "object",
+        "properties": {
+          "answer": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "answer"
+        ]
+      },
+      "CompanyModeDifficultyProfileDto": {
+        "type": "object",
+        "properties": {
+          "startingDifficulty": {
+            "type": "string"
+          },
+          "escalationRate": {
+            "type": "string",
+            "enum": [
+              "SLOW",
+              "MEDIUM",
+              "FAST"
+            ]
+          },
+          "maxDifficulty": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "startingDifficulty",
+          "escalationRate",
+          "maxDifficulty"
+        ]
+      },
+      "CompanyModeFollowUpBehaviorDto": {
+        "type": "object",
+        "properties": {
+          "maxFollowUpsPerQuestion": {
+            "type": "number"
+          },
+          "challengeThreshold": {
+            "type": "number"
+          },
+          "clarificationThreshold": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "maxFollowUpsPerQuestion",
+          "challengeThreshold",
+          "clarificationThreshold"
+        ]
+      },
+      "CompanyModeConfigDto": {
+        "type": "object",
+        "properties": {
+          "interviewerPersona": {
+            "type": "string"
+          },
+          "difficultyProfile": {
+            "$ref": "#/components/schemas/CompanyModeDifficultyProfileDto"
+          },
+          "followUpBehavior": {
+            "$ref": "#/components/schemas/CompanyModeFollowUpBehaviorDto"
+          },
+          "evaluationCriteria": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "feedbackStyle": {
+            "type": "string"
+          },
+          "questionBank": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "emphasis": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "interviewStyle": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        },
+        "required": [
+          "interviewerPersona",
+          "difficultyProfile",
+          "followUpBehavior",
+          "evaluationCriteria",
+          "feedbackStyle"
+        ]
+      },
+      "CompanyModeResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "config": {
+            "$ref": "#/components/schemas/CompanyModeConfigDto"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "slug",
+          "name",
+          "config",
+          "isActive",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "ReadinessBreakdownDto": {
+        "type": "object",
+        "properties": {
+          "dimension": {
+            "type": "string"
+          },
+          "score": {
+            "type": "number"
+          },
+          "weight": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "trend": {
+            "type": "string",
+            "enum": [
+              "UP",
+              "DOWN",
+              "STABLE"
+            ]
+          }
+        },
+        "required": [
+          "dimension",
+          "score",
+          "weight",
+          "label",
+          "trend"
+        ]
+      },
+      "ReadinessSnapshotDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "overallScore": {
+            "type": "number"
+          },
+          "confidenceLevel": {
+            "type": "number"
+          },
+          "technicalMastery": {
+            "type": "number"
+          },
+          "interviewPerformance": {
+            "type": "number"
+          },
+          "behavioralPerformance": {
+            "type": "number"
+          },
+          "systemDesignPerformance": {
+            "type": "number"
+          },
+          "englishCommunication": {
+            "type": "number"
+          },
+          "reviewCompletion": {
+            "type": "number"
+          },
+          "learningProgress": {
+            "type": "number"
+          },
+          "breakdown": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReadinessBreakdownDto"
+            }
+          },
+          "improvementTrend": {
+            "type": "number"
+          },
+          "computedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "userId",
+          "overallScore",
+          "confidenceLevel",
+          "technicalMastery",
+          "interviewPerformance",
+          "behavioralPerformance",
+          "systemDesignPerformance",
+          "englishCommunication",
+          "reviewCompletion",
+          "learningProgress",
+          "breakdown",
+          "improvementTrend",
+          "computedAt"
+        ]
+      },
+      "PaginationMetaDto": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "number",
+            "minimum": 1
+          },
+          "limit": {
+            "type": "number",
+            "minimum": 1
+          },
+          "total": {
+            "type": "number",
+            "minimum": 0
+          },
+          "totalPages": {
+            "type": "number",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "page",
+          "limit",
+          "total",
+          "totalPages"
+        ]
+      },
+      "EnglishNoteResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "answerId": {
+            "type": "string"
+          },
+          "originalSentence": {
+            "type": "string"
+          },
+          "correctedSentence": {
+            "type": "string"
+          },
+          "naturalVersion": {
+            "type": "string"
+          },
+          "explanation": {
+            "type": "string"
+          },
+          "grammarTopic": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "NEEDS_PRACTICE",
+              "REVIEWING",
+              "IMPROVED",
+              "MASTERED"
+            ]
+          },
+          "recommendedStudyTopics": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "practicePatterns": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "userId",
+          "answerId",
+          "originalSentence",
+          "correctedSentence",
+          "naturalVersion",
+          "explanation",
+          "grammarTopic",
+          "status",
+          "recommendedStudyTopics",
+          "practicePatterns",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "CreateEnglishNoteDto": {
+        "type": "object",
+        "properties": {
+          "answerId": {
+            "type": "string"
+          },
+          "originalSentence": {
+            "type": "string"
+          },
+          "correctedSentence": {
+            "type": "string"
+          },
+          "naturalVersion": {
+            "type": "string"
+          },
+          "explanation": {
+            "type": "string"
+          },
+          "grammarTopic": {
+            "type": "string"
+          },
+          "recommendedStudyTopics": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "practicePatterns": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "answerId",
+          "originalSentence",
+          "correctedSentence",
+          "naturalVersion",
+          "explanation",
+          "grammarTopic",
+          "recommendedStudyTopics",
+          "practicePatterns"
+        ]
+      },
+      "UpdateEnglishNoteStatusDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "NEEDS_PRACTICE",
+              "REVIEWING",
+              "IMPROVED",
+              "MASTERED"
+            ]
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "ReviewItemResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "sourceId": {
+            "type": "string"
+          },
+          "sourceLabel": {
+            "type": "string"
+          },
+          "weaknessScore": {
+            "type": "number"
+          },
+          "masteryScore": {
+            "type": "number"
+          },
+          "nextReviewAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "reviewIntervalDays": {
+            "type": "number"
+          },
+          "lastReviewedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "lastFailureAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "lastRating": {
+            "type": "string",
+            "nullable": true
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "userId",
+          "type",
+          "sourceId",
+          "sourceLabel",
+          "weaknessScore",
+          "masteryScore",
+          "nextReviewAt",
+          "reviewIntervalDays",
+          "lastReviewedAt",
+          "lastFailureAt",
+          "lastRating",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "ReviewQueueEntryDto": {
+        "type": "object",
+        "properties": {
+          "item": {
+            "$ref": "#/components/schemas/ReviewItemResponseDto"
+          },
+          "priorityScore": {
+            "type": "number"
+          },
+          "reasons": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "item",
+          "priorityScore",
+          "reasons"
+        ]
+      },
+      "ReviewQueueResponseDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReviewQueueEntryDto"
+            }
+          },
+          "dueCount": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "items",
+          "dueCount"
+        ]
+      },
+      "ReviewAttemptDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "reviewItemId": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "rating": {
+            "type": "string"
+          },
+          "masteryBefore": {
+            "type": "number"
+          },
+          "masteryAfter": {
+            "type": "number"
+          },
+          "reviewIntervalDays": {
+            "type": "number"
+          },
+          "nextReviewAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "reviewItemId",
+          "userId",
+          "rating",
+          "masteryBefore",
+          "masteryAfter",
+          "reviewIntervalDays",
+          "nextReviewAt",
+          "createdAt"
+        ]
+      },
+      "ReviewRatingDto": {
+        "type": "object",
+        "properties": {
+          "rating": {
+            "type": "string",
+            "enum": [
+              "AGAIN",
+              "HARD",
+              "GOOD",
+              "EASY"
+            ]
+          }
+        },
+        "required": [
+          "rating"
+        ]
+      },
+      "LearningPathItemResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "actionPath": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "priorityScore": {
+            "type": "number"
+          },
+          "availableAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "snoozedUntil": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "startedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "completedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "skippedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "sourceReviewItemId": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "userId",
+          "type",
+          "title",
+          "reason",
+          "actionPath",
+          "status",
+          "priorityScore",
+          "availableAt",
+          "snoozedUntil",
+          "startedAt",
+          "completedAt",
+          "skippedAt",
+          "sourceReviewItemId",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "LearningPathActionDto": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "start",
+              "complete",
+              "snooze",
+              "skip"
+            ]
+          }
+        },
+        "required": [
+          "action"
+        ]
+      },
+      "WeakConceptResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "concept": {
+            "type": "string"
+          },
+          "occurrenceCount": {
+            "type": "number"
+          },
+          "status": {
+            "type": "string"
+          },
+          "lastSeenAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "sourceAnswerIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "userId",
+          "concept",
+          "occurrenceCount",
+          "status",
+          "lastSeenAt",
+          "sourceAnswerIds"
+        ]
+      },
+      "WeakConceptStatusDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "IMPROVING",
+              "RESOLVED",
+              "IGNORED"
+            ]
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "ResumeAnalysisResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "resumeText": {
+            "type": "string"
+          },
+          "score": {
+            "type": "number"
+          },
+          "strengths": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "gaps": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "recommendations": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "keySkillsFound": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "targetRole": {
+            "type": "string"
+          },
+          "targetLevel": {
+            "type": "string",
+            "enum": [
+              "JUNIOR",
+              "MID",
+              "SENIOR",
+              "STAFF",
+              "PRINCIPAL"
+            ]
+          },
+          "fileName": {
+            "type": "string",
+            "nullable": true
+          },
+          "analyzedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "userId",
+          "resumeText",
+          "score",
+          "strengths",
+          "gaps",
+          "recommendations",
+          "keySkillsFound",
+          "targetRole",
+          "targetLevel",
+          "fileName",
+          "analyzedAt"
+        ]
+      },
+      "RecommendationPayloadDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "action": {
+            "type": "string"
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        },
+        "required": [
+          "title",
+          "reason",
+          "action"
+        ]
+      },
+      "LearningRecommendationDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "payload": {
+            "$ref": "#/components/schemas/RecommendationPayloadDto"
+          },
+          "status": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "userId",
+          "type",
+          "payload",
+          "status",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "RecommendationSummaryDto": {
+        "type": "object",
+        "properties": {
+          "nextNoteToReview": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/RecommendationPayloadDto"
+              }
+            ]
+          },
+          "nextQuestionToPractice": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/RecommendationPayloadDto"
+              }
+            ]
+          },
+          "nextEnglishTopic": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/RecommendationPayloadDto"
+              }
+            ]
+          },
+          "nextLearningItem": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/RecommendationPayloadDto"
+              }
+            ]
+          },
+          "persisted": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LearningRecommendationDto"
+            }
+          }
+        },
+        "required": [
+          "persisted"
+        ]
+      },
+      "WeakConceptTrendDto": {
+        "type": "object",
+        "properties": {
+          "concept": {
+            "type": "string"
+          },
+          "occurrenceCount": {
+            "type": "number"
+          },
+          "status": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "concept",
+          "occurrenceCount",
+          "status"
+        ]
+      },
+      "DashboardProgressDto": {
+        "type": "object",
+        "properties": {
+          "interviewReadiness": {
+            "type": "number"
+          },
+          "technicalMastery": {
+            "type": "number"
+          },
+          "englishScore": {
+            "type": "number"
+          },
+          "reviewStreak": {
+            "type": "number"
+          },
+          "questionsPracticed": {
+            "type": "number"
+          },
+          "notesMastered": {
+            "type": "number"
+          },
+          "dueReviews": {
+            "type": "number"
+          },
+          "weakConceptTrends": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WeakConceptTrendDto"
+            }
+          }
+        },
+        "required": [
+          "interviewReadiness",
+          "technicalMastery",
+          "englishScore",
+          "reviewStreak",
+          "questionsPracticed",
+          "notesMastered",
+          "dueReviews",
+          "weakConceptTrends"
+        ]
+      },
+      "AnalyticsTrendDto": {
+        "type": "object",
+        "properties": {
+          "completed": {
+            "type": "number"
+          },
+          "averageScore": {
+            "type": "number",
+            "nullable": true
+          }
+        },
+        "required": [
+          "completed",
+          "averageScore"
+        ]
+      },
+      "InterviewAnalyticsResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "interviewsCompleted": {
+            "type": "number"
+          },
+          "averageScore": {
+            "type": "number",
+            "nullable": true
+          },
+          "weakConcepts": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "strongConcepts": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "trend7d": {
+            "$ref": "#/components/schemas/AnalyticsTrendDto"
+          },
+          "trend30d": {
+            "$ref": "#/components/schemas/AnalyticsTrendDto"
+          },
+          "trend90d": {
+            "$ref": "#/components/schemas/AnalyticsTrendDto"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "userId",
+          "interviewsCompleted",
+          "averageScore",
+          "weakConcepts",
+          "strongConcepts",
+          "trend7d",
+          "trend30d",
+          "trend90d",
+          "createdAt"
+        ]
+      }
+    }
+  }
+}

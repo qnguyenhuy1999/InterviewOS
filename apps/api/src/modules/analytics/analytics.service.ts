@@ -1,8 +1,11 @@
 import { Injectable } from '@nestjs/common'
 
+import type { AuthenticatedUser } from '../../common/auth/authenticated-request'
 import { ReviewService } from '../review/review.service'
 import { UsersRepository } from '../users/users.repository'
 import { AnalyticsRepository } from './analytics.repository'
+
+type CurrentUserRef = Pick<AuthenticatedUser, 'id'>
 
 @Injectable()
 export class AnalyticsService {
@@ -12,12 +15,12 @@ export class AnalyticsService {
     private readonly usersRepository: UsersRepository,
   ) {}
 
-  getProgress(currentUser: unknown) {
+  getProgress(currentUser: CurrentUserRef) {
     return this.reviewService.getDashboardProgress(currentUser)
   }
 
-  async getInterviewAnalytics(currentUser: unknown) {
-    const userId = (await this.usersRepository.ensureUserById((currentUser as { id?: string } | undefined)?.id)).id
+  async getInterviewAnalytics(currentUser: CurrentUserRef) {
+    const userId = (await this.usersRepository.ensureUserById(currentUser.id)).id
     return this.analyticsRepository.createInterviewAnalyticsSnapshot(userId)
   }
 }

@@ -1,34 +1,58 @@
 import { Body, Controller, Get, Patch, Post } from '@nestjs/common'
+import { ApiBody, ApiCookieAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 
+import type { AuthenticatedUser } from '../../common/auth/authenticated-request'
 import { CurrentUser } from '../../common/decorators/current-user.decorator'
+import { ApiEntityResponse, ApiNullableEntityResponse } from '../../common/swagger/swagger-helpers'
+import {
+  UpdateMeDto,
+  UpsertUserLearningProfileDto,
+  UserDto,
+  UserLearningProfileResponseDto,
+} from './dto/users.dto'
 import { UsersService } from './users.service'
 
+@ApiTags('users')
+@ApiCookieAuth('interviewos_session')
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get('me')
-  findMe(@CurrentUser() currentUser: unknown) {
+  @ApiOperation({ summary: 'Get the current user profile' })
+  @ApiEntityResponse(UserDto)
+  findMe(@CurrentUser() currentUser: AuthenticatedUser) {
     return this.usersService.findMe(currentUser)
   }
 
   @Patch('me')
-  updateMe(@CurrentUser() currentUser: unknown, @Body() payload: Record<string, unknown>) {
+  @ApiOperation({ summary: 'Update the current user profile' })
+  @ApiBody({ type: UpdateMeDto })
+  @ApiEntityResponse(UserDto)
+  updateMe(@CurrentUser() currentUser: AuthenticatedUser, @Body() payload: UpdateMeDto) {
     return this.usersService.updateMe(currentUser, payload)
   }
 
   @Get('me/profile')
-  getProfile(@CurrentUser() currentUser: unknown) {
+  @ApiOperation({ summary: 'Get the current user learning profile' })
+  @ApiNullableEntityResponse(UserLearningProfileResponseDto)
+  getProfile(@CurrentUser() currentUser: AuthenticatedUser) {
     return this.usersService.getProfile(currentUser)
   }
 
   @Post('me/profile')
-  createProfile(@CurrentUser() currentUser: unknown, @Body() payload: Record<string, unknown>) {
+  @ApiOperation({ summary: 'Create or replace the current user learning profile' })
+  @ApiBody({ type: UpsertUserLearningProfileDto })
+  @ApiEntityResponse(UserLearningProfileResponseDto, { status: 'created' })
+  createProfile(@CurrentUser() currentUser: AuthenticatedUser, @Body() payload: UpsertUserLearningProfileDto) {
     return this.usersService.upsertProfile(currentUser, payload)
   }
 
   @Patch('me/profile')
-  updateProfile(@CurrentUser() currentUser: unknown, @Body() payload: Record<string, unknown>) {
+  @ApiOperation({ summary: 'Update the current user learning profile' })
+  @ApiBody({ type: UpsertUserLearningProfileDto })
+  @ApiEntityResponse(UserLearningProfileResponseDto)
+  updateProfile(@CurrentUser() currentUser: AuthenticatedUser, @Body() payload: UpsertUserLearningProfileDto) {
     return this.usersService.upsertProfile(currentUser, payload)
   }
 }

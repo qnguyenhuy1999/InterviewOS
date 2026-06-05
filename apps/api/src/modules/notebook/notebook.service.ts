@@ -14,13 +14,13 @@ import {
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
 
 import { AIGateway } from '../../ai/ai.gateway'
+import type { AuthenticatedUser } from '../../common/auth/authenticated-request'
 import { ReviewService } from '../review/review.service'
 import { UsersRepository } from '../users/users.repository'
+import type { CreateNoteDto, GenerateQuestionsDto, UpdateNoteDto } from './dto/notebook.dto'
 import { NotebookRepository } from './notebook.repository'
 
-type CurrentUserLike = {
-  id?: string
-}
+type CurrentUserRef = Pick<AuthenticatedUser, 'id'>
 
 @Injectable()
 export class NotebookService {
@@ -57,19 +57,19 @@ export class NotebookService {
     }
   }
 
-  async createNote(currentUser: unknown, payload: Record<string, unknown>) {
-    const user = await this.usersRepository.ensureUserById(this.resolveUserId(currentUser))
+  async createNote(currentUser: CurrentUserRef, payload: CreateNoteDto) {
+    const user = await this.usersRepository.ensureUserById(currentUser.id)
     const input = noteCreateSchema.parse(payload)
     return this.notebookRepository.createNote(user.id, input)
   }
 
-  async findNotes(currentUser: unknown) {
-    const user = await this.usersRepository.ensureUserById(this.resolveUserId(currentUser))
+  async findNotes(currentUser: CurrentUserRef) {
+    const user = await this.usersRepository.ensureUserById(currentUser.id)
     return this.notebookRepository.findNotes(user.id)
   }
 
-  async findNoteById(currentUser: unknown, noteId: string) {
-    const user = await this.usersRepository.ensureUserById(this.resolveUserId(currentUser))
+  async findNoteById(currentUser: CurrentUserRef, noteId: string) {
+    const user = await this.usersRepository.ensureUserById(currentUser.id)
     const note = await this.notebookRepository.findNoteById(user.id, noteId)
 
     if (!note) {
@@ -79,8 +79,8 @@ export class NotebookService {
     return note
   }
 
-  async updateNote(currentUser: unknown, noteId: string, payload: Record<string, unknown>) {
-    const user = await this.usersRepository.ensureUserById(this.resolveUserId(currentUser))
+  async updateNote(currentUser: CurrentUserRef, noteId: string, payload: UpdateNoteDto) {
+    const user = await this.usersRepository.ensureUserById(currentUser.id)
     const input = noteUpdateSchema.parse(payload)
     const note = await this.notebookRepository.updateNote(user.id, noteId, input)
     await this.reviewActions.syncTechnicalNoteReview({
@@ -93,13 +93,13 @@ export class NotebookService {
     return note
   }
 
-  async deleteNote(currentUser: unknown, noteId: string) {
-    const user = await this.usersRepository.ensureUserById(this.resolveUserId(currentUser))
+  async deleteNote(currentUser: CurrentUserRef, noteId: string) {
+    const user = await this.usersRepository.ensureUserById(currentUser.id)
     return this.notebookRepository.deleteNote(user.id, noteId)
   }
 
-  async generateTechnicalNote(currentUser: unknown, noteId: string) {
-    const user = await this.usersRepository.ensureUserById(this.resolveUserId(currentUser))
+  async generateTechnicalNote(currentUser: CurrentUserRef, noteId: string) {
+    const user = await this.usersRepository.ensureUserById(currentUser.id)
     const note = await this.notebookRepository.findNoteById(user.id, noteId)
 
     if (!note) {
@@ -134,8 +134,8 @@ export class NotebookService {
     return saved
   }
 
-  async generateQuestions(currentUser: unknown, noteId: string, payload: Record<string, unknown>) {
-    const user = await this.usersRepository.ensureUserById(this.resolveUserId(currentUser))
+  async generateQuestions(currentUser: CurrentUserRef, noteId: string, payload: GenerateQuestionsDto) {
+    const user = await this.usersRepository.ensureUserById(currentUser.id)
     const note = await this.notebookRepository.findNoteById(user.id, noteId)
 
     if (!note) {
@@ -180,10 +180,6 @@ export class NotebookService {
       throw new BadRequestException('Complete onboarding before generating AI content.')
     }
     return profile
-  }
-
-  private resolveUserId(currentUser: unknown): string | undefined {
-    return (currentUser as CurrentUserLike | undefined)?.id
   }
 
   private toAiMetadataJson(metadata: AIExecutionMetadata): Prisma.InputJsonValue {

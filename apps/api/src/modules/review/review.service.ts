@@ -8,12 +8,12 @@ import type {
 import { reviewRatingSchema, weakConceptStatusSchema } from '@interviewos/validators'
 import { Injectable, NotFoundException } from '@nestjs/common'
 
+import type { AuthenticatedUser } from '../../common/auth/authenticated-request'
 import { UsersRepository } from '../users/users.repository'
+import type { ReviewRatingDto, WeakConceptStatusDto } from './dto/review.dto'
 import { ReviewRepository } from './review.repository'
 
-type CurrentUserLike = {
-  id?: string
-}
+type CurrentUserRef = Pick<AuthenticatedUser, 'id'>
 
 @Injectable()
 export class ReviewService {
@@ -133,8 +133,8 @@ export class ReviewService {
     )
   }
 
-  async getReviewQueue(currentUser: unknown): Promise<ReviewQueueResponse> {
-    const user = await this.usersRepository.ensureUserById(this.resolveUserId(currentUser))
+  async getReviewQueue(currentUser: CurrentUserRef): Promise<ReviewQueueResponse> {
+    const user = await this.usersRepository.ensureUserById(currentUser.id)
     const profile = await this.usersRepository.findProfileByUserId(user.id)
     const now = new Date()
     const items = await this.reviewRepository.listReviewItems(user.id)
@@ -178,8 +178,8 @@ export class ReviewService {
     }
   }
 
-  async rateReviewItem(currentUser: unknown, reviewItemId: string, payload: Record<string, unknown>) {
-    const user = await this.usersRepository.ensureUserById(this.resolveUserId(currentUser))
+  async rateReviewItem(currentUser: CurrentUserRef, reviewItemId: string, payload: ReviewRatingDto) {
+    const user = await this.usersRepository.ensureUserById(currentUser.id)
     const input = reviewRatingSchema.parse(payload)
     const item = await this.reviewRepository.findReviewItem(user.id, reviewItemId)
 
@@ -202,25 +202,25 @@ export class ReviewService {
     })
   }
 
-  async listWeakConcepts(currentUser: unknown) {
-    const user = await this.usersRepository.ensureUserById(this.resolveUserId(currentUser))
+  async listWeakConcepts(currentUser: CurrentUserRef) {
+    const user = await this.usersRepository.ensureUserById(currentUser.id)
     return this.reviewRepository.listWeakConcepts(user.id)
   }
 
   async updateWeakConceptStatus(
-    currentUser: unknown,
+    currentUser: CurrentUserRef,
     weakConceptId: string,
-    payload: Record<string, unknown>,
+    payload: WeakConceptStatusDto,
   ) {
-    const user = await this.usersRepository.ensureUserById(this.resolveUserId(currentUser))
+    const user = await this.usersRepository.ensureUserById(currentUser.id)
     const input = weakConceptStatusSchema.parse(payload)
     const concept = await this.reviewRepository.updateWeakConceptStatus(user.id, weakConceptId, input.status)
     await this.syncWeakConceptReviews(user.id, [concept as unknown as UserWeakConcept])
     return concept
   }
 
-  async buildLearningPath(currentUser: unknown): Promise<LearningPathItem[]> {
-    const user = await this.usersRepository.ensureUserById(this.resolveUserId(currentUser))
+  async buildLearningPath(currentUser: CurrentUserRef): Promise<LearningPathItem[]> {
+    const user = await this.usersRepository.ensureUserById(currentUser.id)
     const queue = await this.getReviewQueue(user)
     const items = queue.items.slice(0, 6).map((entry) => ({
       type: entry.item.type,
@@ -237,8 +237,12 @@ export class ReviewService {
     return this.reviewRepository.replacePendingLearningPath(user.id, items) as Promise<LearningPathItem[]>
   }
 
-  async updateLearningPathItem(currentUser: unknown, itemId: string, action: 'start' | 'complete' | 'snooze' | 'skip') {
-    const user = await this.usersRepository.ensureUserById(this.resolveUserId(currentUser))
+  async updateLearningPathItem(
+    currentUser: CurrentUserRef,
+    itemId: string,
+    action: 'start' | 'complete' | 'snooze' | 'skip',
+  ) {
+    const user = await this.usersRepository.ensureUserById(currentUser.id)
     const now = new Date()
 
     switch (action) {
@@ -266,8 +270,8 @@ export class ReviewService {
     }
   }
 
-  async getDashboardProgress(currentUser: unknown): Promise<DashboardProgress> {
-    const user = await this.usersRepository.ensureUserById(this.resolveUserId(currentUser))
+  async getDashboardProgress(currentUser: CurrentUserRef): Promise<DashboardProgress> {
+    const user = await this.usersRepository.ensureUserById(currentUser.id)
     const [reviewItems, answers, notesMastered, weakConcepts, attempts, englishNotes] =
       await this.reviewRepository.dashboardContext(user.id, new Date())
 
@@ -308,9 +312,6 @@ export class ReviewService {
     }
   }
 
-  private resolveUserId(currentUser: unknown): string | undefined {
-    return (currentUser as CurrentUserLike | undefined)?.id
-  }
 }
 
 function scheduleReview(masteryScore: number, intervalDays: number, rating: 'AGAIN' | 'HARD' | 'GOOD' | 'EASY') {

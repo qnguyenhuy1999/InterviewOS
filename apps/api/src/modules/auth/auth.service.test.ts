@@ -391,7 +391,7 @@ test('AuthService hashes password reset tokens, enforces single-use, expiry, and
   expiringToken.expiresAt = new Date(Date.now() - 1_000)
 
   await assert.rejects(
-    () => harness.service.resetPassword({ token: lastTokenFromLog(harness.logs), password: 'anotherpass123' }),
+    () => harness.service.resetPassword({ token: lastTokenFromLog(harness.logs)!, password: 'anotherpass123' }),
     BadRequestException,
   )
 })
@@ -425,7 +425,7 @@ test('AuthService hashes email verification tokens and enforces single-use and e
   await assert.rejects(
     () =>
       harness.service.confirmEmailVerification({
-        token: lastTokenFromLog(harness.logs),
+        token: lastTokenFromLog(harness.logs)!,
       }),
     BadRequestException,
   )

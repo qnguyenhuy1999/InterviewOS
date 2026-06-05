@@ -1,13 +1,13 @@
 import { englishNoteStatusSchema } from '@interviewos/validators'
 import { Injectable } from '@nestjs/common'
 
+import type { AuthenticatedUser } from '../../common/auth/authenticated-request'
 import { ReviewService } from '../review/review.service'
 import { UsersRepository } from '../users/users.repository'
+import type { CreateEnglishNoteDto, UpdateEnglishNoteStatusDto } from './dto/english-notes.dto'
 import { EnglishNotesRepository } from './english-notes.repository'
 
-type CurrentUserLike = {
-  id?: string
-}
+type CurrentUserRef = Pick<AuthenticatedUser, 'id'>
 
 @Injectable()
 export class EnglishNotesService {
@@ -17,31 +17,31 @@ export class EnglishNotesService {
     private readonly reviewService: ReviewService,
   ) {}
 
-  async findEnglishNotes(currentUser: unknown) {
-    const user = await this.usersRepository.ensureUserById(this.resolveUserId(currentUser))
+  async findEnglishNotes(currentUser: CurrentUserRef) {
+    const user = await this.usersRepository.ensureUserById(currentUser.id)
     return this.englishNotesRepository.findEnglishNotes(user.id)
   }
 
-  async createEnglishNote(currentUser: unknown, payload: Record<string, unknown>) {
-    const user = await this.usersRepository.ensureUserById(this.resolveUserId(currentUser))
+  async createEnglishNote(currentUser: CurrentUserRef, payload: CreateEnglishNoteDto) {
+    const user = await this.usersRepository.ensureUserById(currentUser.id)
     return this.englishNotesRepository.createEnglishNote(user.id, {
-      answerId: String(payload.answerId ?? ''),
-      originalSentence: String(payload.originalSentence ?? ''),
-      correctedSentence: String(payload.correctedSentence ?? ''),
-      naturalVersion: String(payload.naturalVersion ?? ''),
-      explanation: String(payload.explanation ?? ''),
-      grammarTopic: String(payload.grammarTopic ?? ''),
-      recommendedStudyTopics: Array.isArray(payload.recommendedStudyTopics)
-        ? payload.recommendedStudyTopics.map(String)
-        : [],
-      practicePatterns: Array.isArray(payload.practicePatterns)
-        ? payload.practicePatterns.map(String)
-        : [],
+      answerId: payload.answerId,
+      originalSentence: payload.originalSentence,
+      correctedSentence: payload.correctedSentence,
+      naturalVersion: payload.naturalVersion,
+      explanation: payload.explanation,
+      grammarTopic: payload.grammarTopic,
+      recommendedStudyTopics: payload.recommendedStudyTopics,
+      practicePatterns: payload.practicePatterns,
     })
   }
 
-  async updateEnglishNoteStatus(currentUser: unknown, englishNoteId: string, payload: Record<string, unknown>) {
-    const user = await this.usersRepository.ensureUserById(this.resolveUserId(currentUser))
+  async updateEnglishNoteStatus(
+    currentUser: CurrentUserRef,
+    englishNoteId: string,
+    payload: UpdateEnglishNoteStatusDto,
+  ) {
+    const user = await this.usersRepository.ensureUserById(currentUser.id)
     const input = englishNoteStatusSchema.parse(payload)
     const note = await this.englishNotesRepository.updateStatus(user.id, englishNoteId, input.status)
     await this.reviewService.syncEnglishNoteReviews(user.id, [
@@ -55,7 +55,4 @@ export class EnglishNotesService {
     return note
   }
 
-  private resolveUserId(currentUser: unknown): string | undefined {
-    return (currentUser as CurrentUserLike | undefined)?.id
-  }
 }

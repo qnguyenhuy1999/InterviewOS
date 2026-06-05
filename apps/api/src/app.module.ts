@@ -1,7 +1,6 @@
-import path from 'path'
-
 import { Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
+import path from 'path'
 
 import { AIModule } from './ai/ai.module'
 import configuration from './config/configuration'

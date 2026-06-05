@@ -21,6 +21,14 @@ import type { AuthenticatedUser } from '../../common/auth/authenticated-request'
 import { generateOpaqueToken, hashOpaqueToken, hashPassword, verifyPassword } from './auth.crypto'
 import { AuthRepository } from './auth.repository'
 import { AuthEmailService } from './auth-email.service'
+import type {
+  ConfirmEmailVerificationDto,
+  LoginDto,
+  RegisterDto,
+  RequestPasswordResetDto,
+  ResendEmailVerificationDto,
+  ResetPasswordDto,
+} from './dto/auth.dto'
 
 type SessionContext = {
   userAgent?: string | null
@@ -42,7 +50,7 @@ export class AuthService {
     }
   }
 
-  async login(payload: Record<string, unknown>, context: SessionContext) {
+  async login(payload: LoginDto, context: SessionContext) {
     const input = loginSchema.parse(payload) satisfies LoginInput
     const user = await this.authRepository.findByEmail(input.email.toLowerCase())
 
@@ -53,7 +61,7 @@ export class AuthService {
     return this.createAuthenticatedSession(user, context)
   }
 
-  async register(payload: Record<string, unknown>, context: SessionContext) {
+  async register(payload: RegisterDto, context: SessionContext) {
     const input = registerSchema.parse(payload) satisfies RegisterInput
     const email = input.email.toLowerCase()
     const existingUser = await this.authRepository.findByEmail(email)
@@ -135,7 +143,7 @@ export class AuthService {
     return { success: true }
   }
 
-  async requestPasswordReset(payload: Record<string, unknown>) {
+  async requestPasswordReset(payload: RequestPasswordResetDto) {
     const input = requestPasswordResetSchema.parse(payload)
     const user = await this.authRepository.findByEmail(input.email.toLowerCase())
 
@@ -149,7 +157,7 @@ export class AuthService {
     }
   }
 
-  async resetPassword(payload: Record<string, unknown>) {
+  async resetPassword(payload: ResetPasswordDto) {
     const input = resetPasswordSchema.parse(payload)
     const token = await this.authRepository.findPasswordResetTokenByHash(
       hashOpaqueToken(input.token),
@@ -174,7 +182,7 @@ export class AuthService {
     return { success: true }
   }
 
-  async resendEmailVerification(payload: Record<string, unknown>) {
+  async resendEmailVerification(payload: ResendEmailVerificationDto) {
     const input = resendEmailVerificationSchema.parse(payload)
     const user = await this.authRepository.findByEmail(input.email.toLowerCase())
 
@@ -185,7 +193,7 @@ export class AuthService {
     return { success: true }
   }
 
-  async confirmEmailVerification(payload: Record<string, unknown>) {
+  async confirmEmailVerification(payload: ConfirmEmailVerificationDto) {
     const input = confirmEmailVerificationSchema.parse(payload)
     const token = await this.authRepository.findEmailVerificationTokenByHash(
       hashOpaqueToken(input.token),

@@ -48,12 +48,21 @@ export class ReadinessRepository {
     })
   }
 
-  async findHistory(userId: string, limit = 10) {
-    return this.prisma.readinessSnapshot.findMany({
-      where: { userId },
-      orderBy: { computedAt: 'desc' },
-      take: limit,
-    })
+  async findHistory(userId: string, pagination: { page: number; limit: number }) {
+    const skip = (pagination.page - 1) * pagination.limit
+    const [items, total] = await Promise.all([
+      this.prisma.readinessSnapshot.findMany({
+        where: { userId },
+        orderBy: { computedAt: 'desc' },
+        skip,
+        take: pagination.limit,
+      }),
+      this.prisma.readinessSnapshot.count({
+        where: { userId },
+      }),
+    ])
+
+    return { items, total }
   }
 
   async findLastSnapshot(userId: string) {

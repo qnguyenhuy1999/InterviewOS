@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 
+import { EnglishLevel, ExperienceLevel } from '@interviewos/types'
+
 import { InterviewService } from './interview.service'
 
 test('InterviewService lets session overrides replace saved defaults', async () => {
@@ -123,8 +125,8 @@ test('InterviewService lets session overrides replace saved defaults', async () 
   await service.answerQuestion({ id: 'user-1' }, 'session-1', {
     answer: 'I would start with TTL and selective invalidation.',
     advancedSettings: {
-      targetLevel: 'SENIOR',
-      englishLevel: 'ADVANCED',
+      targetLevel: ExperienceLevel.SENIOR,
+      englishLevel: EnglishLevel.ADVANCED,
       targetRole: 'Staff Engineer',
       techStack: ['Redis', 'PostgreSQL'],
       interviewGoals: ['Deeper tradeoffs'],

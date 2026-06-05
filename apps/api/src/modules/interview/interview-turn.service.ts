@@ -9,12 +9,14 @@ import { startMultiTurnSessionSchema, submitTurnSchema } from '@interviewos/vali
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
 
 import { AIGateway } from '../../ai/ai.gateway'
+import type { AuthenticatedUser } from '../../common/auth/authenticated-request'
 import { EvaluationService } from '../evaluation/evaluation.service'
 import { ReadinessService } from '../readiness/readiness.service'
 import { UsersRepository } from '../users/users.repository'
+import type { StartMultiTurnSessionDto, SubmitTurnDto } from './dto/interview.dto'
 import { InterviewRepository } from './interview.repository'
 
-type CurrentUserLike = { id?: string }
+type CurrentUserRef = Pick<AuthenticatedUser, 'id'>
 
 @Injectable()
 export class InterviewTurnService {
@@ -26,8 +28,8 @@ export class InterviewTurnService {
     private readonly readinessService: ReadinessService,
   ) {}
 
-  async startMultiTurnSession(currentUser: unknown, payload: Record<string, unknown>) {
-    const user = await this.usersRepository.ensureUserById(this.resolveUserId(currentUser))
+  async startMultiTurnSession(currentUser: CurrentUserRef, payload: StartMultiTurnSessionDto) {
+    const user = await this.usersRepository.ensureUserById(currentUser.id)
     const profile = await this.usersRepository.findProfileByUserId(user.id)
     if (!profile) throw new BadRequestException('Complete onboarding before starting an interview.')
 
@@ -85,8 +87,8 @@ export class InterviewTurnService {
     return this.interviewRepository.findSessionById(user.id, session.id)
   }
 
-  async submitTurn(currentUser: unknown, sessionId: string, payload: Record<string, unknown>) {
-    const user = await this.usersRepository.ensureUserById(this.resolveUserId(currentUser))
+  async submitTurn(currentUser: CurrentUserRef, sessionId: string, payload: SubmitTurnDto) {
+    const user = await this.usersRepository.ensureUserById(currentUser.id)
     const profile = await this.usersRepository.findProfileByUserId(user.id)
     if (!profile) throw new BadRequestException('Complete onboarding before practicing.')
 
@@ -172,15 +174,15 @@ export class InterviewTurnService {
     }
   }
 
-  async getTurns(currentUser: unknown, sessionId: string) {
-    const user = await this.usersRepository.ensureUserById(this.resolveUserId(currentUser))
+  async getTurns(currentUser: CurrentUserRef, sessionId: string) {
+    const user = await this.usersRepository.ensureUserById(currentUser.id)
     const session = await this.interviewRepository.findSessionById(user.id, sessionId)
     if (!session) throw new NotFoundException('Interview session not found.')
     return this.interviewRepository.findTurnsBySession(sessionId)
   }
 
-  async endSession(currentUser: unknown, sessionId: string) {
-    const user = await this.usersRepository.ensureUserById(this.resolveUserId(currentUser))
+  async endSession(currentUser: CurrentUserRef, sessionId: string) {
+    const user = await this.usersRepository.ensureUserById(currentUser.id)
     const session = await this.interviewRepository.findSessionById(user.id, sessionId)
     if (!session) throw new NotFoundException('Interview session not found.')
     const previousReadiness = await this.readinessService.findLatest(user.id)
@@ -192,13 +194,9 @@ export class InterviewTurnService {
     return result
   }
 
-  async getEvaluation(currentUser: unknown, sessionId: string) {
-    const user = await this.usersRepository.ensureUserById(this.resolveUserId(currentUser))
+  async getEvaluation(currentUser: CurrentUserRef, sessionId: string) {
+    const user = await this.usersRepository.ensureUserById(currentUser.id)
     return this.evaluationService.getEvaluation(user.id, sessionId)
-  }
-
-  private resolveUserId(currentUser: unknown): string | undefined {
-    return (currentUser as CurrentUserLike | undefined)?.id
   }
 
   private toJsonValue(value: unknown): Prisma.InputJsonValue | null {
