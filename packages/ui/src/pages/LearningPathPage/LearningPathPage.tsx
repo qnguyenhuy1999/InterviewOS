@@ -1,75 +1,73 @@
 import { LearningPathItemStatus } from '@interviewos/types'
 import { CheckCheckIcon, CompassIcon, SparklesIcon } from 'lucide-react'
 
-import { Badge } from '../../../components/ui/badge'
 import { Button } from '../../../components/ui/button'
 import { EmptyState, PageHeader, SectionCard, StatCard } from '../../../components/ui/page'
 import { Progress } from '../../../components/ui/progress'
 import { Skeleton } from '../../../components/ui/skeleton'
 import ConsoleLayout from '../../layouts/ConsoleLayout'
+import { LearningPathListItem } from '../../molecules/LearningPathListItem/LearningPathListItem'
 import { learningPathFixture } from './LearningPathPage.fixtures'
 import type { LearningPathPageProps } from './LearningPathPage.types'
 import {
   formatLearningPathLabel,
+  getLearningPathFocusItem,
   getLearningPathProgress,
   getLearningPathStatusClassName,
   getLearningPathStatusGroups,
   getLearningPathTypeSummaries,
 } from './LearningPathPage.utils'
 
-function LearningPathItemRow({
-  title,
-  reason,
-  actionPath,
-  status,
-  priorityScore,
-  type,
-}: NonNullable<LearningPathPageProps['items']>[number]) {
-  return (
-    <article className="rounded-2xl border border-border/80 bg-background p-4">
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div className="space-y-2">
-          <div className="flex flex-wrap items-center gap-2">
-            <Badge variant="secondary" className="rounded-full px-3 py-1">
-              {formatLearningPathLabel(type)}
-            </Badge>
-            <Badge variant="outline" className={getLearningPathStatusClassName(status)}>
-              {formatLearningPathLabel(status)}
-            </Badge>
-          </div>
-          <p className="text-base font-semibold">{title}</p>
-          <p className="text-sm leading-6 text-muted-foreground">{reason}</p>
-        </div>
-        <div className="text-right">
-          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-            Priority
-          </p>
-          <p className="mt-1 text-2xl font-semibold tracking-tight">{priorityScore}</p>
-        </div>
-      </div>
-      <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-        <p className="text-sm text-muted-foreground">{actionPath}</p>
-        <Button variant="outline" size="sm">
-          Open task
-        </Button>
-      </div>
-    </article>
-  )
-}
-
 function LearningPathBody({ items }: { items: NonNullable<LearningPathPageProps['items']> }) {
   const progress = getLearningPathProgress(items)
   const completedCount = items.filter((item) => item.status === LearningPathItemStatus.COMPLETED).length
   const groups = getLearningPathStatusGroups(items)
   const typeSummaries = getLearningPathTypeSummaries(items)
+  const focusItem = getLearningPathFocusItem(items)
 
   return (
     <div className="space-y-6">
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        <StatCard label="Path items" value={items.length} icon={CompassIcon} />
-        <StatCard label="Completed" value={completedCount} icon={CheckCheckIcon} />
-        <StatCard label="Track progress" value={`${progress}%`} icon={SparklesIcon} />
-        <StatCard label="Item types" value={typeSummaries.length} hint="Grouped from current backend item.type values" />
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-[minmax(0,1.35fr)_repeat(3,minmax(0,1fr))]">
+        {focusItem ? (
+          <div className="rounded-3xl border border-primary/15 bg-[linear-gradient(135deg,color-mix(in_oklch,var(--primary),white_92%)_0%,white_100%)] p-5 shadow-[0_20px_60px_-38px_color-mix(in_oklch,var(--primary),transparent_42%)]">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary/80">
+              Focus next
+            </p>
+            <p className="mt-3 font-heading text-2xl font-semibold tracking-tight">
+              {focusItem.title}
+            </p>
+            <p className="mt-2 text-sm leading-6 text-muted-foreground">{focusItem.reason}</p>
+            <div className="mt-4 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
+              <span className="rounded-full border border-primary/10 bg-white/80 px-3 py-1 font-medium text-foreground">
+                Priority {focusItem.priorityScore}
+              </span>
+              <span>{formatLearningPathLabel(focusItem.type)}</span>
+            </div>
+          </div>
+        ) : null}
+        <StatCard
+          label="Path items"
+          value={items.length}
+          icon={CompassIcon}
+          hint="Total tasks currently scheduled."
+        />
+        <StatCard
+          label="Completed"
+          value={completedCount}
+          icon={CheckCheckIcon}
+          hint="Finished and ready to archive."
+        />
+        <StatCard
+          label="Track progress"
+          value={`${progress}%`}
+          icon={SparklesIcon}
+          hint={`${items.length - completedCount} items still need attention.`}
+        />
+        <StatCard
+          label="Item types"
+          value={typeSummaries.length}
+          hint="Grouped from current backend item.type values."
+        />
       </div>
 
       <SectionCard
@@ -97,7 +95,10 @@ function LearningPathBody({ items }: { items: NonNullable<LearningPathPageProps[
               summary.total === 0 ? 0 : Math.round((summary.completed / summary.total) * 100)
 
             return (
-              <div key={summary.type} className="rounded-2xl border border-border/80 bg-background p-4">
+              <div
+                key={summary.type}
+                className="rounded-2xl border border-border/80 bg-[linear-gradient(180deg,white_0%,color-mix(in_oklch,var(--muted),white_55%)_100%)] p-4"
+              >
                 <p className="text-sm font-semibold">{formatLearningPathLabel(summary.type)}</p>
                 <p className="mt-2 text-2xl font-semibold tracking-tight">
                   {summary.completed}/{summary.total}
@@ -119,7 +120,30 @@ function LearningPathBody({ items }: { items: NonNullable<LearningPathPageProps[
           >
             <div className="space-y-3">
               {group.items.map((item) => (
-                <LearningPathItemRow key={item.id} {...item} />
+                <LearningPathListItem
+                  key={item.id}
+                  badges={[
+                    {
+                      label: formatLearningPathLabel(item.type),
+                      variant: 'secondary',
+                      className: 'rounded-full px-3 py-1',
+                    },
+                    {
+                      label: formatLearningPathLabel(item.status),
+                      variant: 'outline',
+                      className: getLearningPathStatusClassName(item.status),
+                    },
+                  ]}
+                  title={item.title}
+                  description={item.reason}
+                  priorityValue={item.priorityScore}
+                  footer={item.actionPath}
+                  action={
+                    <Button variant="outline" size="sm">
+                      Open task
+                    </Button>
+                  }
+                />
               ))}
             </div>
           </SectionCard>
@@ -196,7 +220,7 @@ function Root({ items = learningPathFixture.items, loading, empty, error }: Lear
 }
 
 const LearningPathPage = Object.assign(Root, {
-  LearningPathItemRow,
+  LearningPathListItem,
 })
 
 export default LearningPathPage

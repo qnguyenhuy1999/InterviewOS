@@ -2,8 +2,8 @@ import type {
   ResumeAnalysisAttributeView,
   ResumeFileView,
   ResumePageView,
-  ResumeUploadAreaView,
   ResumeSuggestedTopicView,
+  ResumeUploadAreaView,
 } from '@interviewos/types'
 
 export type ResumePageProps = {

@@ -1,17 +1,28 @@
+import { CheckCircle2Icon, CircleAlertIcon, FileTextIcon } from 'lucide-react'
 import type * as React from 'react'
-
-import { CheckCircle2Icon, CircleAlertIcon, FileTextIcon, UploadIcon } from 'lucide-react'
 
 import { Badge } from '../../../components/ui/badge'
 import { Button } from '../../../components/ui/button'
 import { Input } from '../../../components/ui/input'
 import { EmptyState, PageHeader, SectionCard } from '../../../components/ui/page'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../../../components/ui/select'
 import { Skeleton } from '../../../components/ui/skeleton'
 import ConsoleLayout from '../../layouts/ConsoleLayout'
+import { TagList } from '../../molecules/TagList/TagList'
+import { FileUploadDropzone } from '../../organisms/FileUploadDropzone/FileUploadDropzone'
 import { PROFILE_INSIGHT_HEADING_CLASS_NAME } from './ProfilePage.constants'
 import { profileFixture } from './ProfilePage.fixtures'
-import type { ProfilePageProps, ProfileResumeInsight, ProfileSelectOption } from './ProfilePage.types'
+import type {
+  ProfilePageProps,
+  ProfileResumeInsight,
+  ProfileSelectOption,
+} from './ProfilePage.types'
 import {
   getProfileAcceptedFileLabel,
   getProfileNavigation,
@@ -79,12 +90,10 @@ function TagField({
     <div className="space-y-3">
       <p className="text-sm font-medium">{label}</p>
       <div className="flex min-h-12 flex-wrap items-center gap-2 rounded-xl border border-input bg-background px-3 py-2">
-        {items.map((item) => (
-          <Badge key={item} variant="secondary" className="h-8 rounded-full px-3 text-sm font-medium">
-            {item}
-          </Badge>
-        ))}
-        <span className="text-sm text-muted-foreground">{inputPlaceholder}</span>
+        <TagList
+          items={items}
+          trailing={<span className="text-sm text-muted-foreground">{inputPlaceholder}</span>}
+        />
       </div>
     </div>
   )
@@ -100,17 +109,53 @@ function ResumeUploadCard({
   ctaLabel: string
 }) {
   return (
-    <div className="flex min-h-[22rem] items-center justify-center rounded-2xl border border-dashed border-border bg-muted/20 p-6">
-      <div className="flex max-w-sm flex-col items-center text-center">
-        <div className="flex size-14 items-center justify-center rounded-full bg-background ring-1 ring-foreground/10">
-          <UploadIcon className="size-7 text-muted-foreground" />
+    <FileUploadDropzone
+      title={title}
+      description={description}
+      actionLabel={ctaLabel}
+      className="border-dashed bg-muted/20 py-0"
+      contentClassName="flex min-h-[22rem] flex-col items-center justify-center gap-5 p-6 text-center"
+    />
+  )
+}
+
+function ProfileHighlights({
+  profile,
+}: {
+  profile: NonNullable<ProfilePageProps['profile']>
+}) {
+  const highlights = [
+    {
+      label: 'Target role',
+      value: profile.learningProfile.targetRole.value,
+      hint: `${profile.learningProfile.currentLevel.label}: ${profile.learningProfile.currentLevel.value}`,
+    },
+    {
+      label: 'Focus areas',
+      value: profile.learningProfile.interviewGoals.items.length,
+      hint: profile.learningProfile.interviewGoals.items.join(' • '),
+    },
+    {
+      label: 'Resume status',
+      value: profile.resume.latest ? 'Analyzed' : 'Missing',
+      hint: profile.resume.latest?.uploadedLabel ?? 'Upload a file to unlock insights',
+    },
+  ]
+
+  return (
+    <div className="grid gap-4 md:grid-cols-3">
+      {highlights.map((item) => (
+        <div
+          key={item.label}
+          className="rounded-3xl border border-border/80 bg-[linear-gradient(180deg,white_0%,color-mix(in_oklch,var(--accent),white_96%)_100%)] p-5 shadow-[0_18px_50px_-38px_rgba(37,99,235,0.45)]"
+        >
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+            {item.label}
+          </p>
+          <p className="mt-3 font-heading text-2xl font-semibold tracking-tight">{item.value}</p>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">{item.hint}</p>
         </div>
-        <p className="mt-5 text-xl font-semibold tracking-tight">{title}</p>
-        <p className="mt-2 text-sm text-muted-foreground">{description}</p>
-        <Button variant="outline" className="mt-6">
-          {ctaLabel}
-        </Button>
-      </div>
+      ))}
     </div>
   )
 }
@@ -162,15 +207,13 @@ function ResumeInsightCard({ insight }: { insight: ProfileResumeInsight }) {
           <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
             Key skills
           </p>
-          <div className="flex flex-wrap gap-2">
-            {insight.keySkills.map((skill) => (
-              <Badge key={skill} variant="secondary" className="h-8 rounded-full px-3 text-sm font-medium">
-                {skill}
-              </Badge>
-            ))}
-          </div>
+          <TagList items={insight.keySkills} />
         </div>
-        <InsightList title="Recommendations" items={insight.recommendations} tone="recommendations" />
+        <InsightList
+          title="Recommendations"
+          items={insight.recommendations}
+          tone="recommendations"
+        />
       </div>
     </div>
   )
@@ -195,6 +238,8 @@ function ProfileBody({ profile }: { profile: NonNullable<ProfilePageProps['profi
 
   return (
     <div className="space-y-6">
+      <ProfileHighlights profile={profile} />
+
       <SectionCard title={profile.account.title} className="py-0">
         <div className="grid gap-4 md:grid-cols-2">
           <Field label={profile.account.name.label} value={profile.account.name.value} />
@@ -243,7 +288,11 @@ function ProfileBody({ profile }: { profile: NonNullable<ProfilePageProps['profi
         </div>
       </SectionCard>
 
-      <SectionCard title={profile.resume.title} description={profile.resume.description} className="py-0">
+      <SectionCard
+        title={profile.resume.title}
+        description={profile.resume.description}
+        className="py-0"
+      >
         <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(320px,0.98fr)]">
           <ResumeUploadCard
             title={profile.resume.upload.dropzoneTitle}
@@ -257,7 +306,7 @@ function ProfileBody({ profile }: { profile: NonNullable<ProfilePageProps['profi
             <ResumeInsightCard insight={profile.resume.latest} />
           ) : (
             <EmptyState
-              className="min-h-[22rem] rounded-2xl border border-dashed bg-muted/20"
+              className="min-h-88 rounded-2xl border border-dashed bg-muted/20"
               icon={FileTextIcon}
               title="No resume analysis yet"
               description={profile.resume.description}
@@ -275,8 +324,8 @@ function LoadingBody() {
       <Skeleton className="h-40 rounded-2xl" />
       <Skeleton className="h-80 rounded-2xl" />
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(320px,0.98fr)]">
-        <Skeleton className="h-[26rem] rounded-2xl" />
-        <Skeleton className="h-[26rem] rounded-2xl" />
+        <Skeleton className="h-104 rounded-2xl" />
+        <Skeleton className="h-104 rounded-2xl" />
       </div>
     </div>
   )

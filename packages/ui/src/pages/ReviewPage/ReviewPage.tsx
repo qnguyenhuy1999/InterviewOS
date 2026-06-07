@@ -33,6 +33,7 @@ import { cn } from '../../../lib/utils'
 import ConsoleLayout from '../../layouts/ConsoleLayout'
 import { consoleLayoutNavigationFixture } from '../../layouts/ConsoleLayout/ConsoleLayout.fixtures'
 import type { ConsoleLayoutNavGroup } from '../../layouts/ConsoleLayout/ConsoleLayout.types'
+import { LearningPathListItem } from '../../molecules/LearningPathListItem/LearningPathListItem'
 import { REVIEW_ITEM_TYPE_LABEL } from './ReviewPage.constants'
 import { reviewPageFixture } from './ReviewPage.fixtures'
 import type { ReviewPageProps } from './ReviewPage.types'
@@ -198,29 +199,20 @@ function ReviewBody({
         </CardHeader>
         <CardContent className="space-y-3 py-4">
           {data.learningPath.map((item) => (
-            <div
+            <LearningPathListItem
               key={item.id}
-              className="flex flex-col gap-4 rounded-xl border bg-background px-4 py-3 md:flex-row md:items-center md:justify-between"
-            >
-              <div className="flex min-w-0 items-start gap-3">
-                <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-muted text-base font-semibold">
-                  {item.priorityScore}
-                </div>
-                <div className="min-w-0 space-y-1">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <Badge
-                      variant="outline"
-                      className="rounded-full px-2.5 py-1 text-[0.7rem] font-semibold uppercase tracking-[0.08em]"
-                    >
-                      {item.typeLabel}
-                    </Badge>
-                    <p className="text-lg font-medium leading-tight">{item.title}</p>
-                  </div>
-                  <p className="text-sm text-muted-foreground">{item.detail}</p>
-                </div>
-              </div>
-              <LearningPathActionButtons status={item.status} />
-            </div>
+              badges={[
+                {
+                  label: item.typeLabel,
+                  variant: 'outline',
+                  className: 'rounded-full px-2.5 py-1 text-[0.7rem] font-semibold uppercase tracking-[0.08em]',
+                },
+              ]}
+              title={item.title}
+              description={item.detail}
+              priorityValue={item.priorityScore}
+              action={<LearningPathActionButtons status={item.status} />}
+            />
           ))}
         </CardContent>
       </Card>

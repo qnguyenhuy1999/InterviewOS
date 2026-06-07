@@ -7,7 +7,7 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-heading: var(--font-sans);
+  --font-heading: 'Geist Variable', sans-serif;
   --font-sans: 'Roboto Variable', sans-serif;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
@@ -174,8 +174,14 @@
   }
   body {
     @apply bg-background text-foreground;
+    background-attachment: fixed;
   }
   html {
     @apply font-sans;
+  }
+
+  ::selection {
+    background: color-mix(in oklch, var(--primary) 22%, white 78%);
+    color: var(--foreground);
   }
 }

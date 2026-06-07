@@ -1,8 +1,4 @@
-import type {
-  NoteGeneratedQuestion,
-  TechnicalNoteDetailView,
-  TechnicalNoteSummary,
-} from '@interviewos/types'
+import type { TechnicalNoteDetailView, TechnicalNoteSummary } from '@interviewos/types'
 import {
   BookOpenTextIcon,
   BrainCircuitIcon,
@@ -16,9 +12,12 @@ import { Button } from '../../../components/ui/button'
 import { EmptyState, PageHeader, SectionCard, StatCard } from '../../../components/ui/page'
 import { Separator } from '../../../components/ui/separator'
 import { Skeleton } from '../../../components/ui/skeleton'
-import { DifficultyBadge, StatusDot } from '../../../components/ui/status'
-import { cn } from '../../../lib/utils'
+import { StatusDot } from '../../../components/ui/status'
 import ConsoleLayout from '../../layouts/ConsoleLayout'
+import { BulletList } from '../../molecules/BulletList/BulletList'
+import { DefinitionList } from '../../molecules/DefinitionList/DefinitionList'
+import { QuestionCard } from '../../molecules/QuestionCard/QuestionCard'
+import { TagList } from '../../molecules/TagList/TagList'
 import {
   getDifficultyTone,
   getEnumLabel,
@@ -35,47 +34,6 @@ import {
   getNotebookDetailTopicLabel,
   getNotebookQuestionConceptSummary,
 } from './NotebookDetailPage.utils'
-
-function DefinitionList({
-  items,
-}: {
-  items: Array<{ label: string; value: string }>
-}) {
-  return (
-    <dl className="space-y-3">
-      {items.map((item) => (
-        <div
-          key={item.label}
-          className="flex items-start justify-between gap-4 border-b border-border/60 pb-3 last:border-b-0 last:pb-0"
-        >
-          <dt className="text-sm text-muted-foreground">{item.label}</dt>
-          <dd className="max-w-[60%] text-right text-sm font-medium text-foreground">
-            {item.value}
-          </dd>
-        </div>
-      ))}
-    </dl>
-  )
-}
-
-function BulletList({
-  items,
-  className,
-}: {
-  items: string[]
-  className?: string
-}) {
-  return (
-    <ul className={cn('space-y-2', className)}>
-      {items.map((item) => (
-        <li key={item} className="flex items-start gap-3 text-sm leading-6 text-foreground">
-          <span className="mt-2 size-1.5 shrink-0 rounded-full bg-primary/80" aria-hidden="true" />
-          <span>{item}</span>
-        </li>
-      ))}
-    </ul>
-  )
-}
 
 function RelatedNoteRow({
   note,
@@ -97,35 +55,6 @@ function RelatedNoteRow({
         </div>
         <p className="mt-1">{note.questionCount} questions</p>
       </div>
-    </div>
-  )
-}
-
-function QuestionCard({
-  question,
-}: {
-  question: NoteGeneratedQuestion
-}) {
-  return (
-    <div className="rounded-xl border border-border/70 bg-background px-4 py-4">
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div className="min-w-0">
-          <p className="text-sm font-medium text-foreground">{question.question}</p>
-          <p className="mt-2 text-sm text-muted-foreground">{question.expectedAnswer}</p>
-        </div>
-        <DifficultyBadge difficulty={getDifficultyTone(question.difficulty)} className="shrink-0" />
-      </div>
-      <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-        <Badge variant="outline" className="rounded-full px-2.5 py-1">
-          {question.category}
-        </Badge>
-        <Badge variant="outline" className="rounded-full px-2.5 py-1">
-          {question.sourceSection}
-        </Badge>
-      </div>
-      <p className="mt-3 text-xs leading-5 text-muted-foreground">
-        Concepts: {getNotebookQuestionConceptSummary(question)}
-      </p>
     </div>
   )
 }
@@ -287,13 +216,7 @@ function NotebookDetailBody({
                   <p className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
                     Goals
                   </p>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    {data.note.overrideGoals.map((goal) => (
-                      <Badge key={goal} variant="secondary" className="rounded-full px-2.5 py-1">
-                        {goal}
-                      </Badge>
-                    ))}
-                  </div>
+                  <TagList items={data.note.overrideGoals} className="mt-3" badgeClassName="px-2.5 py-1" />
                 </div>
               ) : null}
 
@@ -302,13 +225,12 @@ function NotebookDetailBody({
                   <p className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
                     Stack
                   </p>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    {data.note.overrideStack.map((item) => (
-                      <Badge key={item} variant="outline" className="rounded-full px-2.5 py-1">
-                        {item}
-                      </Badge>
-                    ))}
-                  </div>
+                  <TagList
+                    items={data.note.overrideStack}
+                    className="mt-3"
+                    variant="outline"
+                    badgeClassName="px-2.5 py-1"
+                  />
                 </div>
               ) : null}
             </div>
@@ -326,7 +248,14 @@ function NotebookDetailBody({
             {data.generatedQuestions.length > 0 ? (
               <div className="space-y-3">
                 {data.generatedQuestions.map((question) => (
-                  <QuestionCard key={question.id} question={question} />
+                  <QuestionCard
+                    key={question.id}
+                    title={question.question}
+                    description={question.expectedAnswer}
+                    difficulty={getDifficultyTone(question.difficulty)}
+                    badges={[question.category, question.sourceSection]}
+                    footer={`Concepts: ${getNotebookQuestionConceptSummary(question)}`}
+                  />
                 ))}
               </div>
             ) : (

@@ -1,4 +1,4 @@
-import { type LearningPathItem,LearningPathItemStatus } from '@interviewos/types'
+import { type LearningPathItem, LearningPathItemStatus } from '@interviewos/types'
 
 import { LEARNING_PATH_STATUS_GROUPS } from './LearningPathPage.constants'
 
@@ -45,6 +45,16 @@ export function getLearningPathTypeSummaries(items: LearningPathItem[]) {
         .length,
     }))
     .sort((left, right) => right.total - left.total || left.type.localeCompare(right.type))
+}
+
+export function getLearningPathFocusItem(items: LearningPathItem[]) {
+  return [...items]
+    .filter(
+      (item) =>
+        item.status !== LearningPathItemStatus.COMPLETED &&
+        item.status !== LearningPathItemStatus.SKIPPED,
+    )
+    .sort((left, right) => right.priorityScore - left.priorityScore)[0]
 }
 
 export function getLearningPathStatusClassName(status: LearningPathItemStatus): string {

@@ -1,7 +1,6 @@
 import { format, formatDistanceToNowStrict, isToday, isYesterday } from 'date-fns'
-import { MonitorIcon, SmartphoneIcon } from 'lucide-react'
-
 import type { LucideIcon } from 'lucide-react'
+import { MonitorIcon, SmartphoneIcon } from 'lucide-react'
 
 import {
   SESSION_PAGE_ACTIVE_NOW_LABEL,

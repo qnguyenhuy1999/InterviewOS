@@ -1,0 +1,38 @@
+import type * as React from 'react'
+
+import { Badge } from '../../../components/ui/badge'
+import { DifficultyBadge } from '../../../components/ui/status'
+
+type QuestionCardProps = {
+  title: React.ReactNode
+  description?: React.ReactNode
+  difficulty: 'easy' | 'medium' | 'hard'
+  badges?: React.ReactNode[]
+  footer?: React.ReactNode
+}
+
+function QuestionCard({ title, description, difficulty, badges = [], footer }: QuestionCardProps) {
+  return (
+    <div className="rounded-xl border border-border/70 bg-background px-4 py-4">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div className="min-w-0">
+          <p className="text-sm font-medium text-foreground">{title}</p>
+          {description ? <p className="mt-2 text-sm text-muted-foreground">{description}</p> : null}
+        </div>
+        <DifficultyBadge difficulty={difficulty} className="shrink-0" />
+      </div>
+      {badges.length > 0 ? (
+        <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+          {badges.map((badge, index) => (
+            <Badge key={index} variant="outline" className="rounded-full px-2.5 py-1">
+              {badge}
+            </Badge>
+          ))}
+        </div>
+      ) : null}
+      {footer ? <div className="mt-3 text-xs leading-5 text-muted-foreground">{footer}</div> : null}
+    </div>
+  )
+}
+
+export { QuestionCard }

@@ -1,9 +1,9 @@
-import { LogOutIcon } from 'lucide-react'
+import { LaptopMinimalCheckIcon, LogOutIcon, ShieldCheckIcon, TimerResetIcon } from 'lucide-react'
 
 import { Badge } from '../../../components/ui/badge'
 import { Button } from '../../../components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/card'
-import { EmptyState, PageBody, PageHeader } from '../../../components/ui/page'
+import { EmptyState, PageBody, PageHeader, StatCard } from '../../../components/ui/page'
 import { Skeleton } from '../../../components/ui/skeleton'
 import { Spinner } from '../../../components/ui/spinner'
 import ConsoleLayout from '../../layouts/ConsoleLayout'
@@ -62,7 +62,7 @@ function SessionRow({
   const isRevoking = revokingSessionId === session.id
 
   return (
-    <div className="flex flex-col gap-4 py-4 md:flex-row md:items-center md:justify-between">
+    <div className="flex flex-col gap-4 rounded-2xl border border-transparent px-3 py-4 transition-colors hover:border-primary/15 hover:bg-primary/3 md:flex-row md:items-center md:justify-between">
       <div className="flex min-w-0 items-start gap-4">
         <SessionIcon session={session} />
         <SessionMeta session={session} />
@@ -77,6 +77,41 @@ function SessionRow({
           {isRevoking ? 'Revoking...' : 'Revoke'}
         </Button>
       ) : null}
+    </div>
+  )
+}
+
+function SessionHighlights({ sessions }: { sessions: SessionPageSession[] }) {
+  const currentSession = sessions.find((session) => session.isCurrent)
+  const recentSessionCount = sessions.filter((session) => session.lastSeenAt === null).length
+  const uniqueIpCount = new Set(sessions.map((session) => session.ipAddress ?? 'unknown')).size
+
+  return (
+    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <StatCard
+        label="Active devices"
+        value={sessions.length}
+        hint="Browsers or devices currently signed in."
+        icon={LaptopMinimalCheckIcon}
+      />
+      <StatCard
+        label="Current device"
+        value={currentSession ? '1' : '0'}
+        hint={currentSession ? getSessionDevicePresentation(currentSession).deviceLabel : 'No current session detected'}
+        icon={ShieldCheckIcon}
+      />
+      <StatCard
+        label="Recent activity"
+        value={recentSessionCount}
+        hint="Devices seen very recently or active now."
+        icon={TimerResetIcon}
+      />
+      <StatCard
+        label="IPs in use"
+        value={uniqueIpCount}
+        hint={uniqueIpCount > 1 ? 'Multiple networks detected across signed-in devices.' : 'All devices currently share one network.'}
+        icon={ShieldCheckIcon}
+      />
     </div>
   )
 }
@@ -170,7 +205,31 @@ function ReadyBody({
   revokingSessionId?: string | null
   onRevokeSession?: (sessionId: string) => void
 }) {
-  return <SessionsCard sessions={sessions} revokingSessionId={revokingSessionId} onRevokeSession={onRevokeSession} />
+  return (
+    <div className="space-y-6">
+      <SessionHighlights sessions={sessions} />
+
+      <div className="grid gap-6 xl:grid-cols-[minmax(0,1.7fr)_minmax(300px,0.9fr)]">
+        <SessionsCard
+          sessions={sessions}
+          revokingSessionId={revokingSessionId}
+          onRevokeSession={onRevokeSession}
+        />
+        <Card className="gap-0 overflow-hidden py-0">
+          <CardHeader className="border-b py-4">
+            <CardTitle className="text-xl font-semibold">Security tips</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4 py-4 text-sm leading-6 text-muted-foreground">
+            <div className="rounded-2xl border border-primary/10 bg-primary/5 px-4 py-3 text-foreground">
+              Review devices after interviews on shared computers or borrowed phones.
+            </div>
+            <p>Revoke any browser you do not recognize, especially if it has been inactive for several days.</p>
+            <p>Use “Log out everywhere” after rotating credentials or changing your primary auth method.</p>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  )
 }
 
 function Root({

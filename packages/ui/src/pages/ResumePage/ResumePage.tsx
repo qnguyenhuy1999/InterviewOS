@@ -1,8 +1,14 @@
 import { FileTextIcon, RefreshCcwIcon, SparklesIcon, UploadIcon } from 'lucide-react'
 
-import { Badge } from '../../../components/ui/badge'
 import { Button } from '../../../components/ui/button'
-import { Card, CardAction, CardContent, CardHeader, CardTitle } from '../../../components/ui/card'
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '../../../components/ui/card'
 import { EmptyState, PageBody, PageHeader } from '../../../components/ui/page'
 import { Separator } from '../../../components/ui/separator'
 import { Skeleton } from '../../../components/ui/skeleton'
@@ -10,13 +16,14 @@ import { Spinner } from '../../../components/ui/spinner'
 import ConsoleLayout from '../../layouts/ConsoleLayout'
 import { consoleLayoutNavigationFixture } from '../../layouts/ConsoleLayout/ConsoleLayout.fixtures'
 import type { ConsoleLayoutNavGroup } from '../../layouts/ConsoleLayout/ConsoleLayout.types'
+import { TagList } from '../../molecules/TagList/TagList'
+import { FileUploadDropzone } from '../../organisms/FileUploadDropzone/FileUploadDropzone'
 import { resumePageFixture } from './ResumePage.fixtures'
 import type {
   ResumeAnalysisAttribute,
   ResumeCurrentFile,
   ResumePageProps,
   ResumeSuggestedTopic,
-  ResumeUploadArea,
 } from './ResumePage.types'
 
 const resumeNavigationFixture: ConsoleLayoutNavGroup[] = consoleLayoutNavigationFixture.map(
@@ -28,32 +35,6 @@ const resumeNavigationFixture: ConsoleLayoutNavGroup[] = consoleLayoutNavigation
     })),
   }),
 )
-
-function UploadPanel({
-  title,
-  description,
-  supportedFormatsLabel,
-  actionLabel,
-}: ResumeUploadArea) {
-  return (
-    <Card className="border-dashed py-0">
-      <CardContent className="flex min-h-72 flex-col items-center justify-center gap-5 px-6 py-10 text-center">
-        <div className="flex size-16 items-center justify-center rounded-full bg-muted text-muted-foreground">
-          <UploadIcon className="size-7" />
-        </div>
-        <div className="space-y-2">
-          <p className="text-2xl font-semibold tracking-tight">{title}</p>
-          <p className="text-sm text-muted-foreground">{description}</p>
-          <p className="text-base text-muted-foreground">{supportedFormatsLabel}</p>
-        </div>
-        <Button size="lg">
-          <UploadIcon />
-          {actionLabel}
-        </Button>
-      </CardContent>
-    </Card>
-  )
-}
 
 function CurrentResumeRow({ item }: { item: ResumeCurrentFile }) {
   return (
@@ -85,11 +66,57 @@ function AnalysisRow({ item }: { item: ResumeAnalysisAttribute }) {
 
 function TopicRow({ item }: { item: ResumeSuggestedTopic }) {
   return (
-    <div className="flex items-center justify-between gap-3 rounded-xl border bg-background px-4 py-4">
+    <div className="flex items-center justify-between gap-3 rounded-2xl border border-border/80 bg-background px-4 py-4 shadow-[0_16px_40px_-34px_rgba(15,23,42,0.35)]">
       <p className="text-base font-medium">{item.title}</p>
-      <Button variant="link" size="sm" className="h-auto shrink-0 px-0 text-foreground">
+      <Button variant="outline" size="sm" className="shrink-0 rounded-full">
         {item.actionLabel}
       </Button>
+    </div>
+  )
+}
+
+function ResumeHighlights({ data = resumePageFixture }: { data?: ResumePageProps['data'] }) {
+  const matchValue =
+    data.analysis.items.find((item) => item.label.toLowerCase().includes('match'))?.value ?? 'N/A'
+  const summaryItems = [
+    {
+      label: 'Current match',
+      value: matchValue,
+      hint: 'Based on the latest uploaded resume.',
+    },
+    {
+      label: 'Skills detected',
+      value: data.extractedSkills.items.length,
+      hint: 'Pulled from your current experience signals.',
+    },
+    {
+      label: 'Practice suggestions',
+      value: data.suggestedTopics.items.length,
+      hint: 'Ready to convert into focused interview drills.',
+    },
+  ]
+
+  return (
+    <div className="grid gap-4 md:grid-cols-3">
+      {summaryItems.map((item) => (
+        <Card
+          key={item.label}
+          className="gap-3 border border-border/80 bg-[linear-gradient(180deg,white_0%,color-mix(in_oklch,var(--primary),white_95%)_100%)] py-4 shadow-[0_18px_50px_-38px_color-mix(in_oklch,var(--primary),transparent_45%)]"
+          size="sm"
+        >
+          <CardHeader className="gap-2">
+            <CardDescription className="text-xs font-semibold uppercase tracking-[0.16em]">
+              {item.label}
+            </CardDescription>
+            <CardTitle className="font-heading text-3xl font-semibold tracking-tight">
+              {item.value}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="pb-0">
+            <p className="text-sm leading-6 text-muted-foreground">{item.hint}</p>
+          </CardContent>
+        </Card>
+      ))}
     </div>
   )
 }
@@ -97,7 +124,16 @@ function TopicRow({ item }: { item: ResumeSuggestedTopic }) {
 function ResumeBody({ data = resumePageFixture }: { data?: ResumePageProps['data'] }) {
   return (
     <div className="space-y-6">
-      <UploadPanel {...data.upload} />
+      <ResumeHighlights data={data} />
+
+      <FileUploadDropzone
+        title={data.upload.title}
+        description={data.upload.description}
+        supportingText={data.upload.supportedFormatsLabel}
+        actionLabel={data.upload.actionLabel}
+        actionVariant="default"
+        actionSize="lg"
+      />
 
       <div className="grid gap-6 xl:grid-cols-2">
         <Card className="gap-0 py-0">
@@ -149,13 +185,7 @@ function ResumeBody({ data = resumePageFixture }: { data?: ResumePageProps['data
             </div>
           </CardHeader>
           <CardContent className="py-4">
-            <div className="flex flex-wrap gap-2">
-              {data.extractedSkills.items.map((skill) => (
-                <Badge key={skill} variant="secondary" className="rounded-full px-3 py-1 text-sm">
-                  {skill}
-                </Badge>
-              ))}
-            </div>
+            <TagList items={data.extractedSkills.items} badgeClassName="px-3 py-1" />
           </CardContent>
         </Card>
 
@@ -273,7 +303,7 @@ const ResumePage = Object.assign(Root, {
   AnalysisRow,
   CurrentResumeRow,
   TopicRow,
-  UploadPanel,
+  UploadPanel: FileUploadDropzone,
 })
 
 export default ResumePage

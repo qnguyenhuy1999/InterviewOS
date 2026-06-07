@@ -31,11 +31,11 @@ import type { ConsoleLayoutNavGroup, ConsoleLayoutProps } from './ConsoleLayout.
 
 function BrandBlock({ name, tagline }: { name: string; tagline: string }) {
   return (
-    <div className="flex items-center gap-3 px-2 py-2">
-      <div className="flex size-9 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-        <SparklesIcon className="size-4" />
+    <div className="flex items-center gap-3 px-2 py-2 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:gap-0 group-data-[collapsible=icon]:px-0">
+      <div className="flex size-10 shrink-0 items-center justify-center rounded-2xl bg-primary text-primary-foreground group-data-[collapsible=icon]:size-10 group-data-[collapsible=icon]:rounded-2xl">
+        <SparklesIcon className="size-5" />
       </div>
-      <div className="min-w-0">
+      <div className="min-w-0 group-data-[collapsible=icon]:hidden">
         <p className="truncate font-heading text-base font-semibold">{name}</p>
         <p className="truncate text-sm text-muted-foreground">{tagline}</p>
       </div>
@@ -56,7 +56,7 @@ function NavigationGroup({ groups }: { groups: ConsoleLayoutNavGroup[] }) {
               <SidebarMenuItem key={item.label}>
                 <SidebarMenuButton asChild isActive={item.isActive} tooltip={item.label} size="lg">
                   <a href={item.href}>
-                    <Icon />
+                    <Icon className="size-5 shrink-0" />
                     <span>{item.label}</span>
                   </a>
                 </SidebarMenuButton>
@@ -71,10 +71,10 @@ function NavigationGroup({ groups }: { groups: ConsoleLayoutNavGroup[] }) {
 
 function HeaderSearch({ placeholder }: { placeholder: string }) {
   return (
-    <div className="relative w-full max-w-md">
+    <div className="relative w-full max-w-xl">
       <SearchIcon className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
       <Input className="h-10 rounded-xl pl-9 pr-14" placeholder={placeholder} />
-      <div className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2">
+      <div className="pointer-events-none absolute top-1/2 right-3 hidden -translate-y-1/2 sm:block">
         <Kbd>{`Ctrl ${CONSOLE_LAYOUT_SEARCH_SHORTCUT}`}</Kbd>
       </div>
     </div>
@@ -92,7 +92,7 @@ function Root({
 }: ConsoleLayoutProps) {
   return (
     <SidebarProvider defaultOpen>
-      <div className="flex min-h-screen w-full bg-muted/30">
+      <div className="flex min-h-screen w-full">
         <Sidebar collapsible="icon" className="border-r border-sidebar-border/80">
           <SidebarHeader>
             <BrandBlock name={brand.name} tagline={brand.tagline} />
@@ -114,16 +114,15 @@ function Root({
           </SidebarFooter>
         </Sidebar>
 
-        <SidebarInset className="min-h-screen bg-background">
-          <header className="sticky top-0 z-20 border-b bg-background/95 backdrop-blur-sm">
-            <div className="flex min-h-18 items-center gap-3 px-4 md:px-8">
+        <SidebarInset className="min-h-screen bg-transparent">
+          <header className="sticky top-0 z-20 border-b bg-background/88 backdrop-blur-xl">
+            <div className="mx-auto flex min-h-18 w-full max-w-[96rem] flex-col gap-3 px-4 py-3 md:flex-row md:items-center md:px-8">
               <div className="flex min-w-0 items-center gap-3">
                 <SidebarTrigger />
                 <div className="hidden h-6 w-px bg-border md:block" />
-                <h1 className="truncate font-heading text-xl font-semibold">{title}</h1>
+                <h1 className="truncate font-heading text-lg font-semibold md:text-xl">{title}</h1>
               </div>
-              <div className="ml-auto flex items-center gap-3">
-                <HeaderSearch placeholder={searchPlaceholder} />
+              <div className="order-2 flex items-center gap-2 md:order-3 md:gap-3">
                 {headerActions}
                 <Button variant="ghost" size="icon-sm" className="rounded-full">
                   <BellIcon />
@@ -133,10 +132,15 @@ function Root({
                   <AvatarFallback>{account.initials}</AvatarFallback>
                 </Avatar>
               </div>
+              <div className="order-3 w-full md:order-2 md:ml-auto md:max-w-xl">
+                <HeaderSearch placeholder={searchPlaceholder} />
+              </div>
             </div>
           </header>
 
-          <div className={cn('px-4 py-6 md:px-8 md:py-8')}>{children}</div>
+          <div className={cn('mx-auto w-full max-w-[96rem] px-4 py-6 md:px-8 md:py-8')}>
+            {children}
+          </div>
         </SidebarInset>
       </div>
     </SidebarProvider>

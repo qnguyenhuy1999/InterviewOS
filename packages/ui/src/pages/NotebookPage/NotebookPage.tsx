@@ -1,9 +1,10 @@
+import { NoteStatus } from '@interviewos/types'
 import { BookOpenIcon, LayoutGridIcon, ListIcon, PlusIcon, SearchIcon } from 'lucide-react'
 
 import { Button } from '../../../components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/card'
 import { Input } from '../../../components/ui/input'
-import { EmptyState, PageHeader } from '../../../components/ui/page'
+import { EmptyState, PageHeader, StatCard } from '../../../components/ui/page'
 import {
   Select,
   SelectContent,
@@ -13,7 +14,6 @@ import {
 } from '../../../components/ui/select'
 import { DifficultyBadge, StatusDot } from '../../../components/ui/status'
 import { cn } from '../../../lib/utils'
-import ConsoleLayout from '../../layouts/ConsoleLayout'
 import { NOTEBOOK_STATUS_OPTIONS, NOTEBOOK_TYPE_OPTIONS } from './NotebookPage.constants'
 import { notebookFixture } from './NotebookPage.fixtures'
 import type {
@@ -25,7 +25,6 @@ import type {
 import {
   getDifficultyTone,
   getEnumLabel,
-  getNotebookNavigation,
   getNotebookSummary,
   getNotebookTopicOptions,
   getRelativeUpdatedAtLabel,
@@ -67,7 +66,7 @@ function NotebookCard({ note, view }: { note: NotebookPageNote; view: NotebookPa
   return (
     <Card
       className={cn(
-        'gap-0 border border-border/80 py-0 transition-colors hover:border-primary/25',
+        'gap-0 border border-border/80 bg-[linear-gradient(180deg,white_0%,color-mix(in_oklch,var(--muted),white_58%)_100%)] py-0 transition-all hover:-translate-y-0.5 hover:border-primary/25 hover:shadow-[0_20px_60px_-40px_color-mix(in_oklch,var(--primary),transparent_45%)]',
         view === 'list' && 'md:grid md:grid-cols-[minmax(0,1fr)_auto] md:items-center',
       )}
     >
@@ -98,6 +97,44 @@ function NotebookCard({ note, view }: { note: NotebookPageNote; view: NotebookPa
         </div>
       </CardContent>
     </Card>
+  )
+}
+
+function NotebookHighlights({ notes }: { notes: NotebookPageNote[] }) {
+  const readyCount = notes.filter((note) => note.status === NoteStatus.INTERVIEW_READY).length
+  const draftCount = notes.filter((note) => note.status === NoteStatus.DRAFT).length
+  const uniqueTopicCount = new Set(
+    notes.map((note) => note.topic?.trim() || getEnumLabel(note.type)),
+  ).size
+  const totalQuestions = notes.reduce((total, note) => total + note.questionCount, 0)
+
+  return (
+    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <StatCard
+        label="Notes captured"
+        value={notes.length}
+        hint="Technical, behavioral, and system-design note entries."
+        icon={BookOpenIcon}
+      />
+      <StatCard
+        label="Ready to practice"
+        value={readyCount}
+        hint="Notes already shaped for interview drills."
+        icon={LayoutGridIcon}
+      />
+      <StatCard
+        label="Topics covered"
+        value={uniqueTopicCount}
+        hint="Distinct areas represented in your notebook."
+        icon={ListIcon}
+      />
+      <StatCard
+        label="Draft backlog"
+        value={draftCount}
+        hint={`${totalQuestions} generated questions already attached across the notebook.`}
+        icon={PlusIcon}
+      />
+    </div>
   )
 }
 
@@ -232,6 +269,8 @@ function NotebookBody({
 
   return (
     <div className="space-y-6">
+      <NotebookHighlights notes={sourceNotes} />
+
       <FilterBar
         searchValue={searchValue}
         selectedTopic={selectedTopic}
@@ -303,42 +342,31 @@ function Root(props: NotebookPageProps) {
   ).length
 
   return (
-    <ConsoleLayout
-      title="Notebook"
-      navigation={getNotebookNavigation()}
-      headerActions={
-        <Button className="hidden rounded-xl px-4 md:inline-flex">
-          <PlusIcon />
-          New note
-        </Button>
-      }
-    >
-      <div className="space-y-6">
-        <PageHeader
-          title="Notebook"
-          description="Your technical notes, organized by topic. Generate interview questions from any note."
-          actions={
-            <div className="flex items-center gap-3">
-              <div className="hidden rounded-full border border-border bg-card px-3 py-1 text-xs text-muted-foreground md:inline-flex">
-                {readyCount} ready for practice
-              </div>
-              <Button className="rounded-xl md:hidden">
-                <PlusIcon />
-                New note
-              </Button>
+    <>
+      <PageHeader
+        title="Notebook"
+        description="Your technical notes, organized by topic. Generate interview questions from any note."
+        actions={
+          <div className="flex items-center gap-3">
+            <div className="hidden rounded-full border border-border bg-card px-3 py-1 text-xs text-muted-foreground md:inline-flex">
+              {readyCount} ready for practice
             </div>
-          }
-        />
+            <Button className="rounded-xl md:hidden">
+              <PlusIcon />
+              New note
+            </Button>
+          </div>
+        }
+      />
 
-        {props.error ? (
-          <ErrorBody message={props.error} />
-        ) : props.loading ? (
-          <LoadingBody />
-        ) : (
-          <NotebookBody {...props} />
-        )}
-      </div>
-    </ConsoleLayout>
+      {props.error ? (
+        <ErrorBody message={props.error} />
+      ) : props.loading ? (
+        <LoadingBody />
+      ) : (
+        <NotebookBody {...props} />
+      )}
+    </>
   )
 }
 

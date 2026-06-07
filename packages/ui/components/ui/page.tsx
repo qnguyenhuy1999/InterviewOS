@@ -2,14 +2,7 @@ import type * as React from 'react'
 
 import { cn } from '../../lib/utils'
 import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from './card'
-import {
-  Empty,
-  EmptyContent,
-  EmptyDescription,
-  EmptyHeader,
-  EmptyMedia,
-  EmptyTitle,
-} from './empty'
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from './empty'
 
 type PageHeaderProps = Omit<React.ComponentProps<'header'>, 'title'> & {
   title: React.ReactNode
@@ -17,18 +10,12 @@ type PageHeaderProps = Omit<React.ComponentProps<'header'>, 'title'> & {
   actions?: React.ReactNode
 }
 
-function PageHeader({
-  title,
-  description,
-  actions,
-  className,
-  ...props
-}: PageHeaderProps) {
+function PageHeader({ title, description, actions, className, ...props }: PageHeaderProps) {
   return (
     <header
       data-slot="page-header"
       className={cn(
-        'flex flex-col gap-3 border-b bg-background px-4 py-5 md:flex-row md:items-end md:justify-between md:px-8 md:py-6',
+        'flex flex-col gap-3 bg-background md:flex-row md:items-end md:justify-between pb-4 md:pb-6',
         className,
       )}
       {...props}
@@ -55,11 +42,7 @@ function PageHeader({
 
 function PageBody({ className, ...props }: React.ComponentProps<'div'>) {
   return (
-    <div
-      data-slot="page-body"
-      className={cn('px-4 py-6 md:px-8 md:py-8', className)}
-      {...props}
-    />
+    <div data-slot="page-body" className={cn('px-4 py-6 md:px-8 md:py-8', className)} {...props} />
   )
 }
 
@@ -114,7 +97,9 @@ function SectionCard({
         <CardHeader className="border-b py-3">
           <div className="min-w-0">
             {title ? <CardTitle>{title}</CardTitle> : null}
-            {description ? <CardDescription className="text-xs">{description}</CardDescription> : null}
+            {description ? (
+              <CardDescription className="text-xs">{description}</CardDescription>
+            ) : null}
           </div>
           {action ? <CardAction>{action}</CardAction> : null}
         </CardHeader>

@@ -3,6 +3,7 @@ import {
   BrainCircuitIcon,
   LanguagesIcon,
   MicIcon,
+  ShieldCheckIcon,
   ShieldIcon,
   SparklesIcon,
   UserIcon,
@@ -12,7 +13,7 @@ import type * as React from 'react'
 import { Button } from '../../../components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/card'
 import { Input } from '../../../components/ui/input'
-import { EmptyState } from '../../../components/ui/page'
+import { EmptyState, PageHeader, StatCard } from '../../../components/ui/page'
 import {
   Select,
   SelectContent,
@@ -25,9 +26,11 @@ import { Skeleton } from '../../../components/ui/skeleton'
 import { Spinner } from '../../../components/ui/spinner'
 import { Switch } from '../../../components/ui/switch'
 import { cn } from '../../../lib/utils'
+import { FieldLabel } from '../../atoms/FieldLabel/FieldLabel'
 import ConsoleLayout from '../../layouts/ConsoleLayout'
 import { consoleLayoutNavigationFixture } from '../../layouts/ConsoleLayout/ConsoleLayout.fixtures'
 import type { ConsoleLayoutNavGroup } from '../../layouts/ConsoleLayout/ConsoleLayout.types'
+import { SettingsSectionNav } from '../../organisms/SettingsSectionNav/SettingsSectionNav'
 import { settingsPageFixture } from './SettingsPage.fixtures'
 import type { SettingsPageProps, SettingsPageSection } from './SettingsPage.types'
 
@@ -63,51 +66,6 @@ function getActionVariant(intent: SettingsActionIntent): 'default' | 'outline' |
   }
 
   return 'outline'
-}
-
-function SectionNav({
-  sections,
-  activeSectionId,
-  onSectionChange,
-}: {
-  sections: SettingsPageSection[]
-  activeSectionId: SettingsSectionId
-  onSectionChange?: (sectionId: SettingsSectionId) => void
-}) {
-  return (
-    <nav className="flex flex-col gap-1">
-      {sections.map((section) => {
-        const Icon = settingsSectionIcons[section.id]
-        const isActive = section.id === activeSectionId
-
-        return (
-          <button
-            key={section.id}
-            type="button"
-            onClick={() => onSectionChange?.(section.id)}
-            className={cn(
-              'flex items-center gap-3 rounded-xl px-4 py-3 text-left text-base transition-colors',
-              isActive
-                ? 'bg-accent font-medium text-foreground'
-                : 'text-muted-foreground hover:bg-muted/70 hover:text-foreground',
-            )}
-          >
-            <Icon className="size-5 shrink-0" />
-            <span>{section.label}</span>
-          </button>
-        )
-      })}
-    </nav>
-  )
-}
-
-function FieldLabel({ label, description }: { label: string; description?: string }) {
-  return (
-    <div className="space-y-1">
-      <p className="text-base font-medium text-foreground">{label}</p>
-      {description ? <p className="max-w-xs text-sm text-muted-foreground">{description}</p> : null}
-    </div>
-  )
 }
 
 function FieldControl({ field }: { field: SettingsFieldView }) {
@@ -222,6 +180,46 @@ function SectionCard({ section }: { section: SettingsPageSection }) {
   )
 }
 
+function SettingsHighlights({
+  data,
+  activeSection,
+}: {
+  data: NonNullable<SettingsPageProps['data']>
+  activeSection: SettingsPageSection
+}) {
+  const activeSectionIndex = data.sections.findIndex((section) => section.id === activeSection.id) + 1
+  const toggleCount = activeSection.fields.filter((field) => field.kind === 'toggle').length
+
+  return (
+    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <StatCard
+        label="Workspace areas"
+        value={data.sections.length}
+        hint="Settings categories available right now."
+        icon={ShieldCheckIcon}
+      />
+      <StatCard
+        label="Current section"
+        value={`${activeSectionIndex}/${data.sections.length}`}
+        hint={activeSection.label}
+        icon={settingsSectionIcons[activeSection.id]}
+      />
+      <StatCard
+        label="Fields in view"
+        value={activeSection.fields.length}
+        hint="Inputs, toggles, and account actions in this section."
+        icon={SparklesIcon}
+      />
+      <StatCard
+        label="Quick toggles"
+        value={toggleCount}
+        hint={toggleCount > 0 ? 'Behavior defaults you can switch instantly.' : 'This section is mostly static values.'}
+        icon={BrainCircuitIcon}
+      />
+    </div>
+  )
+}
+
 function SettingsBody({
   data,
   activeSectionId,
@@ -245,13 +243,34 @@ function SettingsBody({
   }
 
   return (
-    <div className="grid gap-6 xl:grid-cols-[280px_minmax(0,1fr)] xl:items-start">
-      <SectionNav
-        sections={data.sections}
-        activeSectionId={activeSection.id}
-        onSectionChange={onSectionChange}
-      />
-      <SectionCard section={activeSection} />
+    <div className="space-y-6">
+      <SettingsHighlights data={data} activeSection={activeSection} />
+
+      <div className="grid gap-6 xl:grid-cols-[320px_minmax(0,1fr)] xl:items-start">
+        <div className="space-y-4 xl:sticky xl:top-24">
+          <div className="rounded-3xl border border-primary/15 bg-[linear-gradient(135deg,color-mix(in_oklch,var(--primary),white_92%)_0%,white_100%)] p-5 shadow-[0_20px_60px_-38px_color-mix(in_oklch,var(--primary),transparent_40%)]">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary/80">
+              Active section
+            </p>
+            <p className="mt-3 font-heading text-2xl font-semibold tracking-tight">
+              {activeSection.title}
+            </p>
+            <p className="mt-2 text-sm leading-6 text-muted-foreground">
+              {activeSection.description}
+            </p>
+          </div>
+          <div className="rounded-3xl border border-border/80 bg-card p-3 shadow-[0_20px_60px_-45px_rgba(15,23,42,0.32)]">
+            <SettingsSectionNav
+              sections={data.sections}
+              activeSectionId={activeSection.id}
+              iconMap={settingsSectionIcons}
+              onSectionChange={onSectionChange}
+            />
+          </div>
+        </div>
+
+        <SectionCard section={activeSection} />
+      </div>
     </div>
   )
 }
@@ -292,10 +311,7 @@ function Root({
 }: SettingsPageProps) {
   return (
     <ConsoleLayout title={data.title} navigation={settingsNavigationFixture}>
-      <div className="mb-6 border-b pb-6">
-        <h2 className="font-heading text-4xl font-semibold tracking-tight">{data.title}</h2>
-        <p className="mt-2 text-base text-muted-foreground">{data.subtitle}</p>
-      </div>
+      <PageHeader title={data.title} description={data.subtitle} />
       {error ? (
         <ErrorBody message={error} />
       ) : loading ? (
@@ -320,7 +336,7 @@ function Root({
 
 const SettingsPage = Object.assign(Root, {
   SectionCard,
-  SectionNav,
+  SectionNav: SettingsSectionNav,
 })
 
 export default SettingsPage

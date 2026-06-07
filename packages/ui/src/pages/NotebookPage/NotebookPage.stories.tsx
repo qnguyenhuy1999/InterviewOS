@@ -1,14 +1,34 @@
 import { NoteStatus, NoteType } from '@interviewos/types'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { PlusIcon } from 'lucide-react'
 
+import { Button } from '../../../components/ui/button'
+import ConsoleLayout from '../../layouts/ConsoleLayout'
 import NotebookPage from './NotebookPage'
 import { notebookFixture } from './NotebookPage.fixtures'
+import { getNotebookNavigation } from './NotebookPage.utils'
 
 const meta = {
   title: 'Pages/NotebookPage',
   component: NotebookPage,
   parameters: { layout: 'fullscreen' },
   tags: ['autodocs'],
+  decorators: [
+    (Story) => (
+      <ConsoleLayout
+        title="Notebook"
+        navigation={getNotebookNavigation()}
+        headerActions={
+          <Button className="hidden rounded-xl px-4 md:inline-flex">
+            <PlusIcon />
+            New note
+          </Button>
+        }
+      >
+        <Story />
+      </ConsoleLayout>
+    ),
+  ],
 } satisfies Meta<typeof NotebookPage>
 
 export default meta
