@@ -13,7 +13,6 @@ import { EmptyState, PageHeader, SectionCard, StatCard } from '../../../componen
 import { Separator } from '../../../components/ui/separator'
 import { Skeleton } from '../../../components/ui/skeleton'
 import { StatusDot } from '../../../components/ui/status'
-import ConsoleLayout from '../../layouts/ConsoleLayout'
 import { BulletList } from '../../molecules/BulletList/BulletList'
 import { DefinitionList } from '../../molecules/DefinitionList/DefinitionList'
 import { QuestionCard } from '../../molecules/QuestionCard/QuestionCard'
@@ -30,7 +29,6 @@ import type { NotebookDetailPageProps } from './NotebookDetailPage.types'
 import {
   getNotebookDetailContentSections,
   getNotebookDetailInterviewTargets,
-  getNotebookDetailNavigation,
   getNotebookDetailTopicLabel,
   getNotebookQuestionConceptSummary,
 } from './NotebookDetailPage.utils'
@@ -131,8 +129,12 @@ function StructuredContent({
 
 function NotebookDetailBody({
   data,
+  renderHeaderActions,
+  renderQuestionActions,
 }: {
   data: TechnicalNoteDetailView
+  renderHeaderActions?: NotebookDetailPageProps['renderHeaderActions']
+  renderQuestionActions?: NotebookDetailPageProps['renderQuestionActions']
 }) {
   const topicLabel = getNotebookDetailTopicLabel(data.note)
   const interviewTargets = getNotebookDetailInterviewTargets(data.note)
@@ -150,10 +152,12 @@ function NotebookDetailBody({
             <Badge variant="outline" className="rounded-full px-3 py-1">
               {getEnumLabel(data.note.type)}
             </Badge>
-            <Button size="sm">
-              <FileQuestionIcon />
-              Generate questions
-            </Button>
+            {renderHeaderActions ? renderHeaderActions(data.note) : (
+              <Button size="sm">
+                <FileQuestionIcon />
+                Generate questions
+              </Button>
+            )}
           </>
         }
         className="rounded-2xl border bg-card"
@@ -255,6 +259,7 @@ function NotebookDetailBody({
                     difficulty={getDifficultyTone(question.difficulty)}
                     badges={[question.category, question.sourceSection]}
                     footer={`Concepts: ${getNotebookQuestionConceptSummary(question)}`}
+                    action={renderQuestionActions ? renderQuestionActions(question.id) : undefined}
                   />
                 ))}
               </div>
@@ -347,17 +352,11 @@ function Root({
   loading,
   empty,
   error,
+  renderHeaderActions,
+  renderQuestionActions,
 }: NotebookDetailPageProps) {
   return (
-    <ConsoleLayout
-      title="Notebook"
-      navigation={getNotebookDetailNavigation()}
-      headerActions={
-        <Badge variant="secondary" className="hidden rounded-full px-3 py-1 text-xs md:inline-flex">
-          {data.questionCount} questions ready
-        </Badge>
-      }
-    >
+    <>
       {error ? (
         <ErrorBody message={error} />
       ) : loading ? (
@@ -365,10 +364,14 @@ function Root({
       ) : empty ? (
         <EmptyBody />
       ) : (
-        <NotebookDetailBody data={data} />
+        <NotebookDetailBody
+          data={data}
+          renderHeaderActions={renderHeaderActions}
+          renderQuestionActions={renderQuestionActions}
+        />
       )}
       <Separator className="mt-8 opacity-0" />
-    </ConsoleLayout>
+    </>
   )
 }
 

@@ -1,3 +1,5 @@
+import type * as React from 'react'
+
 export interface EmptyStateProps {
   icon?: React.ReactNode
   title: string

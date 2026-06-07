@@ -27,22 +27,9 @@ import { Spinner } from '../../../components/ui/spinner'
 import { Switch } from '../../../components/ui/switch'
 import { cn } from '../../../lib/utils'
 import { FieldLabel } from '../../atoms/FieldLabel/FieldLabel'
-import ConsoleLayout from '../../layouts/ConsoleLayout'
-import { consoleLayoutNavigationFixture } from '../../layouts/ConsoleLayout/ConsoleLayout.fixtures'
-import type { ConsoleLayoutNavGroup } from '../../layouts/ConsoleLayout/ConsoleLayout.types'
 import { SettingsSectionNav } from '../../organisms/SettingsSectionNav/SettingsSectionNav'
 import { settingsPageFixture } from './SettingsPage.fixtures'
 import type { SettingsPageProps, SettingsPageSection } from './SettingsPage.types'
-
-const settingsNavigationFixture: ConsoleLayoutNavGroup[] = consoleLayoutNavigationFixture.map(
-  (group) => ({
-    ...group,
-    items: group.items.map((item) => ({
-      ...item,
-      isActive: item.label === 'Settings',
-    })),
-  }),
-)
 
 const settingsSectionIcons: Record<
   SettingsSectionId,
@@ -310,7 +297,7 @@ function Root({
   onSectionChange,
 }: SettingsPageProps) {
   return (
-    <ConsoleLayout title={data.title} navigation={settingsNavigationFixture}>
+    <>
       <PageHeader title={data.title} description={data.subtitle} />
       {error ? (
         <ErrorBody message={error} />
@@ -330,7 +317,7 @@ function Root({
         />
       )}
       <Separator className="mt-8 opacity-0" />
-    </ConsoleLayout>
+    </>
   )
 }
 

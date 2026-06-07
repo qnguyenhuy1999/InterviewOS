@@ -13,9 +13,6 @@ import { EmptyState, PageBody, PageHeader } from '../../../components/ui/page'
 import { Separator } from '../../../components/ui/separator'
 import { Skeleton } from '../../../components/ui/skeleton'
 import { Spinner } from '../../../components/ui/spinner'
-import ConsoleLayout from '../../layouts/ConsoleLayout'
-import { consoleLayoutNavigationFixture } from '../../layouts/ConsoleLayout/ConsoleLayout.fixtures'
-import type { ConsoleLayoutNavGroup } from '../../layouts/ConsoleLayout/ConsoleLayout.types'
 import { TagList } from '../../molecules/TagList/TagList'
 import { FileUploadDropzone } from '../../organisms/FileUploadDropzone/FileUploadDropzone'
 import { resumePageFixture } from './ResumePage.fixtures'
@@ -25,16 +22,6 @@ import type {
   ResumePageProps,
   ResumeSuggestedTopic,
 } from './ResumePage.types'
-
-const resumeNavigationFixture: ConsoleLayoutNavGroup[] = consoleLayoutNavigationFixture.map(
-  (group) => ({
-    ...group,
-    items: group.items.map((item) => ({
-      ...item,
-      isActive: item.label === 'Resume',
-    })),
-  }),
-)
 
 function CurrentResumeRow({ item }: { item: ResumeCurrentFile }) {
   return (
@@ -281,7 +268,7 @@ function ErrorBody({ message }: { message: string }) {
 
 function Root({ data = resumePageFixture, loading, empty, error }: ResumePageProps) {
   return (
-    <ConsoleLayout title={data.title} navigation={resumeNavigationFixture}>
+    <>
       <PageHeader title={data.title} description={data.subtitle} />
       <PageBody>
         {error ? (
@@ -295,7 +282,7 @@ function Root({ data = resumePageFixture, loading, empty, error }: ResumePagePro
         )}
       </PageBody>
       <Separator className="mt-8 opacity-0" />
-    </ConsoleLayout>
+    </>
   )
 }
 

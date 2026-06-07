@@ -29,10 +29,6 @@ import {
   TableHeader,
   TableRow,
 } from '../../../components/ui/table'
-import { cn } from '../../../lib/utils'
-import ConsoleLayout from '../../layouts/ConsoleLayout'
-import { consoleLayoutNavigationFixture } from '../../layouts/ConsoleLayout/ConsoleLayout.fixtures'
-import type { ConsoleLayoutNavGroup } from '../../layouts/ConsoleLayout/ConsoleLayout.types'
 import { LearningPathListItem } from '../../molecules/LearningPathListItem/LearningPathListItem'
 import { REVIEW_ITEM_TYPE_LABEL } from './ReviewPage.constants'
 import { reviewPageFixture } from './ReviewPage.fixtures'
@@ -45,16 +41,6 @@ import {
   getWeakConceptActions,
   getWeakConceptStatusClassName,
 } from './ReviewPage.utils'
-
-const reviewNavigationFixture: ConsoleLayoutNavGroup[] = consoleLayoutNavigationFixture.map(
-  (group) => ({
-    ...group,
-    items: group.items.map((item) => ({
-      ...item,
-      isActive: item.label === 'Review',
-    })),
-  }),
-)
 
 function ReviewTypeBadge({ type }: { type: ReviewQueueCardView['type'] }) {
   return (
@@ -319,20 +305,7 @@ function ErrorBody({ message }: { message: string }) {
 
 function Root({ data = reviewPageFixture, loading, empty, error }: ReviewPageProps) {
   return (
-    <ConsoleLayout
-      title={data.title}
-      navigation={reviewNavigationFixture}
-      headerActions={
-        <Badge
-          variant="secondary"
-          className={cn(
-            'hidden rounded-full bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground md:inline-flex',
-          )}
-        >
-          {data.dueLabel}
-        </Badge>
-      }
-    >
+    <>
       <div className="mb-6 border-b pb-6">
         <h2 className="font-heading text-4xl font-semibold tracking-tight">{data.title}</h2>
         <p className="mt-2 text-base text-muted-foreground">{data.subtitle}</p>
@@ -345,7 +318,7 @@ function Root({ data = reviewPageFixture, loading, empty, error }: ReviewPagePro
         <ReviewBody empty={empty} data={data} />
       )}
       <Separator className="mt-8 opacity-0" />
-    </ConsoleLayout>
+    </>
   )
 }
 

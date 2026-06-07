@@ -1,3 +1,5 @@
+import * as React from 'react'
+
 import { BellIcon, SearchIcon, SparklesIcon } from 'lucide-react'
 
 import { Avatar, AvatarFallback } from '../../../components/ui/avatar'
@@ -43,7 +45,15 @@ function BrandBlock({ name, tagline }: { name: string; tagline: string }) {
   )
 }
 
-function NavigationGroup({ groups }: { groups: ConsoleLayoutNavGroup[] }) {
+function NavigationGroup({
+  groups,
+  LinkComponent,
+}: {
+  groups: ConsoleLayoutNavGroup[]
+  LinkComponent?: ConsoleLayoutProps['LinkComponent']
+}) {
+  const LinkEl = (LinkComponent ?? 'a') as React.ElementType
+
   return groups.map((group) => (
     <SidebarGroup key={group.label}>
       <SidebarGroupLabel>{group.label}</SidebarGroupLabel>
@@ -55,10 +65,10 @@ function NavigationGroup({ groups }: { groups: ConsoleLayoutNavGroup[] }) {
             return (
               <SidebarMenuItem key={item.label}>
                 <SidebarMenuButton asChild isActive={item.isActive} tooltip={item.label} size="lg">
-                  <a href={item.href}>
+                  <LinkEl href={item.href}>
                     <Icon className="size-5 shrink-0" />
                     <span>{item.label}</span>
-                  </a>
+                  </LinkEl>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             )
@@ -89,6 +99,7 @@ function Root({
   account = consoleLayoutAccountFixture,
   searchPlaceholder = 'Search or jump to...',
   headerActions,
+  LinkComponent,
 }: ConsoleLayoutProps) {
   return (
     <SidebarProvider defaultOpen>
@@ -98,7 +109,7 @@ function Root({
             <BrandBlock name={brand.name} tagline={brand.tagline} />
           </SidebarHeader>
           <SidebarContent>
-            <NavigationGroup groups={navigation} />
+            <NavigationGroup groups={navigation} LinkComponent={LinkComponent} />
           </SidebarContent>
           <SidebarSeparator />
           <SidebarFooter>

@@ -13,7 +13,6 @@ import {
   SelectValue,
 } from '../../../components/ui/select'
 import { Skeleton } from '../../../components/ui/skeleton'
-import ConsoleLayout from '../../layouts/ConsoleLayout'
 import { TagList } from '../../molecules/TagList/TagList'
 import { FileUploadDropzone } from '../../organisms/FileUploadDropzone/FileUploadDropzone'
 import { PROFILE_INSIGHT_HEADING_CLASS_NAME } from './ProfilePage.constants'
@@ -25,7 +24,6 @@ import type {
 } from './ProfilePage.types'
 import {
   getProfileAcceptedFileLabel,
-  getProfileNavigation,
   getProfileVerifiedBadgeClassName,
 } from './ProfilePage.utils'
 
@@ -355,7 +353,7 @@ function ErrorBody({ message }: { message: string }) {
 
 function Root({ loading, empty, error, profile = profileFixture }: ProfilePageProps) {
   return (
-    <ConsoleLayout title={profile.title} navigation={getProfileNavigation()}>
+    <>
       <PageHeader title={profile.title} description={profile.subtitle} />
       {error ? (
         <ErrorBody message={error} />
@@ -366,7 +364,7 @@ function Root({ loading, empty, error, profile = profileFixture }: ProfilePagePr
       ) : (
         <ProfileBody profile={profile} />
       )}
-    </ConsoleLayout>
+    </>
   )
 }
 

@@ -1,6 +1,12 @@
 import type { LucideIcon } from 'lucide-react'
 import type * as React from 'react'
 
+export type ConsoleLayoutLinkComponent = React.ComponentType<{
+  href: string
+  className?: string
+  children: React.ReactNode
+}>
+
 export type ConsoleLayoutBrand = {
   name: string
   tagline: string
@@ -32,4 +38,5 @@ export type ConsoleLayoutProps = {
   navigation?: ConsoleLayoutNavGroup[]
   searchPlaceholder?: string
   headerActions?: React.ReactNode
+  LinkComponent?: ConsoleLayoutLinkComponent
 }

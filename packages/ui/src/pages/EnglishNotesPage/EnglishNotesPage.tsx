@@ -1,3 +1,5 @@
+import type React from 'react'
+
 import { EnglishNoteStatus } from '@interviewos/types'
 import { BookTextIcon, CheckCircle2Icon, LanguagesIcon } from 'lucide-react'
 
@@ -6,7 +8,6 @@ import { Button } from '../../../components/ui/button'
 import { EmptyState, PageHeader, SectionCard, StatCard } from '../../../components/ui/page'
 import { Progress } from '../../../components/ui/progress'
 import { Skeleton } from '../../../components/ui/skeleton'
-import ConsoleLayout from '../../layouts/ConsoleLayout'
 import { ENGLISH_NOTES_STATUS_LABEL } from './EnglishNotesPage.constants'
 import { englishNotesFixture } from './EnglishNotesPage.fixtures'
 import type { EnglishNotesPageProps } from './EnglishNotesPage.types'
@@ -24,7 +25,10 @@ function EnglishNoteRow({
   explanation,
   status,
   createdAt,
-}: NonNullable<EnglishNotesPageProps['notes']>[number]) {
+  renderActions,
+}: NonNullable<EnglishNotesPageProps['notes']>[number] & {
+  renderActions?: React.ReactNode
+}) {
   return (
     <article className="rounded-2xl border border-border/80 bg-background p-4">
       <div className="flex flex-wrap items-start justify-between gap-3">
@@ -49,16 +53,24 @@ function EnglishNoteRow({
           </div>
           <p className="text-sm leading-6 text-muted-foreground">{explanation}</p>
         </div>
-        <Badge variant="outline" className={getEnglishStatusClassName(status)}>
-          {ENGLISH_NOTES_STATUS_LABEL[status]}
-        </Badge>
+        {renderActions ?? (
+          <Badge variant="outline" className={getEnglishStatusClassName(status)}>
+            {ENGLISH_NOTES_STATUS_LABEL[status]}
+          </Badge>
+        )}
       </div>
       <p className="mt-3 text-xs text-muted-foreground">{getEnglishRelativeDateLabel(createdAt)}</p>
     </article>
   )
 }
 
-function EnglishNotesBody({ notes }: { notes: NonNullable<EnglishNotesPageProps['notes']> }) {
+function EnglishNotesBody({
+  notes,
+  renderNoteActions,
+}: {
+  notes: NonNullable<EnglishNotesPageProps['notes']>
+  renderNoteActions?: EnglishNotesPageProps['renderNoteActions']
+}) {
   const topicGroups = getEnglishTopicGroups(notes)
   const masteryPercentage = getEnglishMasteryPercentage(notes)
   const masteredCount = notes.filter((note) => note.status === EnglishNoteStatus.MASTERED).length
@@ -123,7 +135,11 @@ function EnglishNotesBody({ notes }: { notes: NonNullable<EnglishNotesPageProps[
               </div>
               <div className="space-y-3">
                 {topic.notes.map((note) => (
-                  <EnglishNoteRow key={note.id} {...note} />
+                  <EnglishNoteRow
+                    key={note.id}
+                    {...note}
+                    renderActions={renderNoteActions ? renderNoteActions(note) : undefined}
+                  />
                 ))}
               </div>
             </section>
@@ -175,9 +191,9 @@ function EmptyBody() {
   )
 }
 
-function Root({ notes = englishNotesFixture.notes, loading, empty, error }: EnglishNotesPageProps) {
+function Root({ notes = englishNotesFixture.notes, loading, empty, error, renderNoteActions }: EnglishNotesPageProps) {
   return (
-    <ConsoleLayout title="English notes">
+    <>
       <PageHeader
         title="English notes"
         description="Track spoken-English corrections, study by topic, and close repeated communication gaps."
@@ -194,9 +210,9 @@ function Root({ notes = englishNotesFixture.notes, loading, empty, error }: Engl
       ) : empty || notes.length === 0 ? (
         <EmptyBody />
       ) : (
-        <EnglishNotesBody notes={notes} />
+        <EnglishNotesBody notes={notes} renderNoteActions={renderNoteActions} />
       )}
-    </ConsoleLayout>
+    </>
   )
 }
 

@@ -4,6 +4,7 @@ import type {
   DashboardMetricView,
   DashboardNoteSummaryView,
   DashboardPageView,
+  DashboardProgress,
   DashboardQuickActionView,
   DashboardStudyProgressView,
   DashboardWeakConceptView,
@@ -13,6 +14,19 @@ export type DashboardPageProps = {
   loading?: boolean
   empty?: boolean
   error?: string
+  progress?: DashboardProgress
+  readiness?: {
+    overallScore: number
+    confidenceLevel: number
+    improvementTrend: number
+    breakdown: Array<{
+      dimension: string
+      label: string
+      score: number
+      weight: number
+      trend: 'UP' | 'DOWN' | 'STABLE'
+    }>
+  }
 }
 
 export type DashboardMetric = DashboardMetricView

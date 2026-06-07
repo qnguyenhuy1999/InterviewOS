@@ -5,7 +5,6 @@ import { Button } from '../../../components/ui/button'
 import { EmptyState, PageHeader, SectionCard, StatCard } from '../../../components/ui/page'
 import { Progress } from '../../../components/ui/progress'
 import { Skeleton } from '../../../components/ui/skeleton'
-import ConsoleLayout from '../../layouts/ConsoleLayout'
 import { LearningPathListItem } from '../../molecules/LearningPathListItem/LearningPathListItem'
 import { learningPathFixture } from './LearningPathPage.fixtures'
 import type { LearningPathPageProps } from './LearningPathPage.types'
@@ -18,7 +17,13 @@ import {
   getLearningPathTypeSummaries,
 } from './LearningPathPage.utils'
 
-function LearningPathBody({ items }: { items: NonNullable<LearningPathPageProps['items']> }) {
+function LearningPathBody({
+  items,
+  renderItemActions,
+}: {
+  items: NonNullable<LearningPathPageProps['items']>
+  renderItemActions?: LearningPathPageProps['renderItemActions']
+}) {
   const progress = getLearningPathProgress(items)
   const completedCount = items.filter((item) => item.status === LearningPathItemStatus.COMPLETED).length
   const groups = getLearningPathStatusGroups(items)
@@ -139,9 +144,11 @@ function LearningPathBody({ items }: { items: NonNullable<LearningPathPageProps[
                   priorityValue={item.priorityScore}
                   footer={item.actionPath}
                   action={
-                    <Button variant="outline" size="sm">
-                      Open task
-                    </Button>
+                    renderItemActions ? renderItemActions(item) : (
+                      <Button variant="outline" size="sm">
+                        Open task
+                      </Button>
+                    )
                   }
                 />
               ))}
@@ -194,9 +201,9 @@ function EmptyBody() {
   )
 }
 
-function Root({ items = learningPathFixture.items, loading, empty, error }: LearningPathPageProps) {
+function Root({ items = learningPathFixture.items, loading, empty, error, renderItemActions }: LearningPathPageProps) {
   return (
-    <ConsoleLayout title="Learning path">
+    <>
       <PageHeader
         title="Learning path"
         description="A prioritized queue of what to study next, based on recent weakness signals and review outcomes."
@@ -213,9 +220,9 @@ function Root({ items = learningPathFixture.items, loading, empty, error }: Lear
       ) : empty || items.length === 0 ? (
         <EmptyBody />
       ) : (
-        <LearningPathBody items={items} />
+        <LearningPathBody items={items} renderItemActions={renderItemActions} />
       )}
-    </ConsoleLayout>
+    </>
   )
 }
 

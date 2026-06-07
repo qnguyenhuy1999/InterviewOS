@@ -1,3 +1,5 @@
+import type React from 'react'
+
 import type { LearningPathItem } from '@interviewos/types'
 
 export type LearningPathPageProps = {
@@ -5,6 +7,7 @@ export type LearningPathPageProps = {
   loading?: boolean
   empty?: boolean
   error?: string
+  renderItemActions?: (item: LearningPathItem) => React.ReactNode
 }
 
 export type LearningPathFixture = {

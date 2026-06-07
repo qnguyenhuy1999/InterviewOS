@@ -6,7 +6,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui
 import { EmptyState, PageBody, PageHeader, StatCard } from '../../../components/ui/page'
 import { Skeleton } from '../../../components/ui/skeleton'
 import { Spinner } from '../../../components/ui/spinner'
-import ConsoleLayout from '../../layouts/ConsoleLayout'
 import { SESSION_PAGE_UNKNOWN_IP_LABEL } from './SessionPage.constants'
 import { sessionPageFixture } from './SessionPage.fixtures'
 import type { SessionPageProps, SessionPageSession } from './SessionPage.types'
@@ -245,7 +244,7 @@ function Root({
   const summary = getSessionSummary(sessions)
 
   return (
-    <ConsoleLayout title="Sessions">
+    <>
       <PageHeader
         title="Active sessions"
         description="Devices currently signed in to your account."
@@ -284,7 +283,7 @@ function Root({
           />
         )}
       </PageBody>
-    </ConsoleLayout>
+    </>
   )
 }
 

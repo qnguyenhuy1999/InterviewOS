@@ -8,9 +8,6 @@ import { Progress } from '../../../components/ui/progress'
 import { Separator } from '../../../components/ui/separator'
 import { Skeleton } from '../../../components/ui/skeleton'
 import { cn } from '../../../lib/utils'
-import ConsoleLayout from '../../layouts/ConsoleLayout'
-import { consoleLayoutNavigationFixture } from '../../layouts/ConsoleLayout/ConsoleLayout.fixtures'
-import type { ConsoleLayoutNavGroup } from '../../layouts/ConsoleLayout/ConsoleLayout.types'
 import { READINESS_SCORE_MAX } from './ReadinessPage.constants'
 import { readinessPageFixture } from './ReadinessPage.fixtures'
 import type { ReadinessDimension, ReadinessHistoryItem, ReadinessPageProps } from './ReadinessPage.types'
@@ -22,16 +19,6 @@ import {
   getReadinessTrend,
   getReadinessTrendClassName,
 } from './ReadinessPage.utils'
-
-const readinessNavigationFixture: ConsoleLayoutNavGroup[] = consoleLayoutNavigationFixture.map(
-  (group) => ({
-    ...group,
-    items: group.items.map((item) => ({
-      ...item,
-      isActive: item.label === 'Readiness',
-    })),
-  }),
-)
 
 function ReadinessTrendIcon({ delta }: { delta: number }) {
   const trend = getReadinessTrend(delta)
@@ -247,7 +234,7 @@ function EmptyBody() {
 
 function Root({ data = readinessPageFixture, loading, empty, error }: ReadinessPageProps) {
   return (
-    <ConsoleLayout title={data.title} navigation={readinessNavigationFixture}>
+    <>
       <PageHeader
         title={data.title}
         description={data.subtitle}
@@ -268,7 +255,7 @@ function Root({ data = readinessPageFixture, loading, empty, error }: ReadinessP
         <ReadinessBody data={data} />
       )}
       <Separator className="opacity-0" />
-    </ConsoleLayout>
+    </>
   )
 }
 

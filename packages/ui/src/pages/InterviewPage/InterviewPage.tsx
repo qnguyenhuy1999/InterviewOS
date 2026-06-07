@@ -6,7 +6,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Skeleton } from '../../../components/ui/skeleton'
 import { Spinner } from '../../../components/ui/spinner'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../../components/ui/table'
-import ConsoleLayout from '../../layouts/ConsoleLayout'
 import { INTERVIEW_PAGE_ALL_TOPICS_VALUE, INTERVIEW_PAGE_TYPE_LABELS } from './InterviewPage.constants'
 import { interviewPageFixture } from './InterviewPage.fixtures'
 import type { InterviewPageProps, InterviewPageSession } from './InterviewPage.types'
@@ -242,7 +241,7 @@ function Root({
   onTopicChange,
 }: InterviewPageProps) {
   return (
-    <ConsoleLayout title="Interview sessions">
+    <>
       <PageHeader
         title="Interview sessions"
         description="Run a focused practice round and review your feedback afterwards."
@@ -274,7 +273,7 @@ function Root({
           />
         )}
       </PageBody>
-    </ConsoleLayout>
+    </>
   )
 }
 

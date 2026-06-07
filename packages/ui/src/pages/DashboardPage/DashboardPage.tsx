@@ -1,6 +1,5 @@
 import { LanguagesIcon, MicIcon, NotebookTextIcon, PlusIcon } from 'lucide-react'
 
-import { Badge } from '../../../components/ui/badge'
 import { Button } from '../../../components/ui/button'
 import {
   Card,
@@ -15,7 +14,6 @@ import { Progress } from '../../../components/ui/progress'
 import { Separator } from '../../../components/ui/separator'
 import { Skeleton } from '../../../components/ui/skeleton'
 import { Spinner } from '../../../components/ui/spinner'
-import ConsoleLayout from '../../layouts/ConsoleLayout'
 import { dashboardFixture } from './DashboardPage.fixtures'
 import type {
   DashboardEnglishImprovement,
@@ -25,6 +23,7 @@ import type {
   DashboardPageProps,
   DashboardWeakConcept,
 } from './DashboardPage.types'
+import type { DashboardProgress } from '@interviewos/types'
 import { getDashboardToneClass } from './DashboardPage.utils'
 
 function MetricCard({ metric }: { metric: DashboardMetric }) {
@@ -321,25 +320,108 @@ function ErrorBody({ message }: { message: string }) {
   )
 }
 
-function Root({ loading, empty, error }: DashboardPageProps) {
+const TREND_ICON: Record<string, string> = { UP: '↑', DOWN: '↓', STABLE: '→' }
+const TREND_COLOR: Record<string, string> = {
+  UP: 'text-green-500',
+  DOWN: 'text-red-500',
+  STABLE: 'text-muted-foreground',
+}
+
+function RealDataBody({
+  progress,
+  readiness,
+}: {
+  progress: DashboardProgress
+  readiness?: DashboardPageProps['readiness']
+}) {
+  const metrics: DashboardMetric[] = [
+    { label: 'Interview readiness', value: String(progress.interviewReadiness), hint: '' },
+    { label: 'Technical mastery', value: String(progress.technicalMastery), hint: '' },
+    { label: 'English score', value: String(progress.englishScore), hint: '' },
+    { label: 'Review streak', value: String(progress.reviewStreak), hint: '' },
+    { label: 'Questions practiced', value: String(progress.questionsPracticed), hint: '' },
+    { label: 'Notes mastered', value: String(progress.notesMastered), hint: '' },
+    { label: 'Due reviews', value: String(progress.dueReviews), hint: '' },
+  ]
+
   return (
-    <ConsoleLayout
-      title="Dashboard"
-      headerActions={
-        <Badge variant="secondary" className="hidden rounded-full px-3 py-1 text-xs md:inline-flex">
-          12-day streak
-        </Badge>
-      }
-    >
+    <div className="flex flex-col gap-6">
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        {metrics.map((metric) => (
+          <MetricCard key={metric.label} metric={metric} />
+        ))}
+      </div>
+
+      {readiness && (
+        <Card className="py-0">
+          <CardHeader className="border-b py-4">
+            <div>
+              <CardTitle className="text-xl font-semibold">Interview readiness</CardTitle>
+            </div>
+            <CardAction>
+              <div className="text-right">
+                <p className="font-heading text-2xl font-semibold">{readiness.overallScore}</p>
+                <p
+                  className={`text-xs ${
+                    TREND_COLOR[
+                      readiness.improvementTrend > 0
+                        ? 'UP'
+                        : readiness.improvementTrend < 0
+                          ? 'DOWN'
+                          : 'STABLE'
+                    ]
+                  }`}
+                >
+                  {TREND_ICON[
+                    readiness.improvementTrend > 0
+                      ? 'UP'
+                      : readiness.improvementTrend < 0
+                        ? 'DOWN'
+                        : 'STABLE'
+                  ]}{' '}
+                  {readiness.improvementTrend > 0 ? '+' : ''}
+                  {readiness.improvementTrend} pts
+                </p>
+              </div>
+            </CardAction>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {readiness.breakdown.map((item) => (
+              <div key={item.dimension} className="space-y-1">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-muted-foreground">{item.label}</span>
+                  <span className={`flex items-center gap-1 font-medium ${TREND_COLOR[item.trend]}`}>
+                    <span className="text-xs">{TREND_ICON[item.trend]}</span>
+                    {item.score}
+                  </span>
+                </div>
+                <Progress value={Math.min(item.score, 100)} className="h-1.5" />
+              </div>
+            ))}
+            <p className="pt-1 text-xs text-muted-foreground">
+              Confidence: {Math.round(readiness.confidenceLevel * 100)}%
+            </p>
+          </CardContent>
+        </Card>
+      )}
+    </div>
+  )
+}
+
+function Root({ loading, empty, error, progress, readiness }: DashboardPageProps) {
+  return (
+    <>
       {error ? (
         <ErrorBody message={error} />
       ) : loading ? (
         <LoadingBody />
+      ) : progress ? (
+        <RealDataBody progress={progress} readiness={readiness} />
       ) : (
         <DashboardBody empty={empty} />
       )}
       <Separator className="mt-8 opacity-0" />
-    </ConsoleLayout>
+    </>
   )
 }
 
