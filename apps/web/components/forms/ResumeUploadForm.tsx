@@ -1,5 +1,6 @@
 'use client'
 
+import { API_ROUTES } from '@interviewos/config'
 import type { ResumeAnalysis } from '@interviewos/types'
 import { useRouter } from 'next/navigation'
 import { type FormEvent, useRef, useState } from 'react'
@@ -34,7 +35,7 @@ export function ResumeUploadForm({ initialAnalysis }: ResumeUploadFormProps) {
       const formData = new FormData()
       formData.set('file', file)
 
-      const response = await apiFetch('/resume/upload', {
+      const response = await apiFetch(API_ROUTES.resume.upload, {
         method: 'POST',
         body: formData,
       })

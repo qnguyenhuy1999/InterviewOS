@@ -1,5 +1,6 @@
 'use client'
 
+import { API_ROUTES } from '@interviewos/config'
 import { useState } from 'react'
 
 import { apiFetch } from '@/lib/api-client'
@@ -14,7 +15,7 @@ export function ForgotPasswordForm() {
     setError(null)
 
     try {
-      const response = await apiFetch('/auth/forgot-password', {
+      const response = await apiFetch(API_ROUTES.auth.forgotPassword, {
         method: 'POST',
         body: JSON.stringify({
           email: String(formData.get('email') ?? ''),

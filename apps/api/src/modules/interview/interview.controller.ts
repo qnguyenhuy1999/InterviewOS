@@ -11,8 +11,8 @@ import {
   InterviewTurnDto,
   StartMultiTurnSessionDto,
   SubmitInterviewAnswerDto,
-  SubmitTurnResponseDto,
   SubmitTurnDto,
+  SubmitTurnResponseDto,
 } from './dto/interview.dto'
 import { InterviewService } from './interview.service'
 import { InterviewTurnService } from './interview-turn.service'

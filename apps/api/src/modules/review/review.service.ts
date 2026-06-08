@@ -11,6 +11,7 @@ import {
   ReviewRating as SharedReviewRating,
   WeakConceptStatus as SharedWeakConceptStatus,
 } from '@interviewos/types'
+import { clampScore } from '@interviewos/utils'
 import { reviewRatingSchema, weakConceptStatusSchema } from '@interviewos/validators'
 import { Injectable, NotFoundException } from '@nestjs/common'
 
@@ -301,21 +302,21 @@ export class ReviewService {
 
     const dueReviews = reviewItems.filter((item) => item.nextReviewAt <= new Date()).length
     const interviewReadiness = answers.length
-      ? clamp(
+      ? clampScore(
           Math.round(
             answers.reduce((sum, answer) => sum + (answer.overallScore ?? 0), 0) / answers.length,
           ),
         )
       : 0
     const technicalMastery = reviewItems.length
-      ? clamp(
+      ? clampScore(
           Math.round(
             reviewItems.reduce((sum, item) => sum + item.masteryScore, 0) / reviewItems.length,
           ),
         )
       : 0
     const englishScore = englishNotes.length
-      ? clamp(
+      ? clampScore(
           Math.round(
             (englishNotes.filter((note) => note.status === 'IMPROVED' || note.status === 'MASTERED')
               .length /
@@ -423,28 +424,28 @@ function scheduleReview(
   switch (rating) {
     case 'AGAIN':
       return {
-        masteryScore: clamp(masteryScore - 15),
+        masteryScore: clampScore(masteryScore - 15),
         reviewIntervalDays: 1,
         nextReviewAt: addDays(now, 1),
         weaknessScore: 100,
       }
     case 'HARD':
       return {
-        masteryScore: clamp(masteryScore + 5),
+        masteryScore: clampScore(masteryScore + 5),
         reviewIntervalDays: Math.max(1, Math.round(intervalDays * 1.5)),
         nextReviewAt: addDays(now, Math.max(1, Math.round(intervalDays * 1.5))),
         weaknessScore: Math.max(20, 90 - masteryScore),
       }
     case 'GOOD':
       return {
-        masteryScore: clamp(masteryScore + 12),
+        masteryScore: clampScore(masteryScore + 12),
         reviewIntervalDays: Math.max(2, Math.round(intervalDays * 2)),
         nextReviewAt: addDays(now, Math.max(2, Math.round(intervalDays * 2))),
         weaknessScore: Math.max(10, 75 - masteryScore),
       }
     case 'EASY':
       return {
-        masteryScore: clamp(masteryScore + 20),
+        masteryScore: clampScore(masteryScore + 20),
         reviewIntervalDays: Math.max(4, Math.round(intervalDays * 3)),
         nextReviewAt: addDays(now, Math.max(4, Math.round(intervalDays * 3))),
         weaknessScore: Math.max(0, 55 - masteryScore),
@@ -454,10 +455,6 @@ function scheduleReview(
 
 function addDays(date: Date, days: number) {
   return new Date(date.getTime() + days * 24 * 60 * 60 * 1000)
-}
-
-function clamp(value: number) {
-  return Math.min(100, Math.max(0, value))
 }
 
 function masteryFromNoteStatus(status: string) {

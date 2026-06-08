@@ -1,6 +1,5 @@
-import type React from 'react'
-
 import type { LearningPathItem } from '@interviewos/types'
+import type React from 'react'
 
 export type LearningPathPageProps = {
   items?: LearningPathItem[]

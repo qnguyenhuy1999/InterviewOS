@@ -1,5 +1,6 @@
 'use client'
 
+import { API_ROUTES } from '@interviewos/config'
 import type { AuthenticatedUser } from '@interviewos/types'
 import type { ConsoleLayoutNavGroup } from '@interviewos/ui'
 import { ConsoleLayout, LogoutButton } from '@interviewos/ui'
@@ -75,7 +76,7 @@ export function AppClientLayout({
   }
 
   async function handleLogout() {
-    await apiFetch('/auth/logout', { method: 'POST' })
+    await apiFetch(API_ROUTES.auth.logout, { method: 'POST' })
   }
 
   function handleLogoutSuccess() {

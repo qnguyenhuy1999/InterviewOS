@@ -1,6 +1,6 @@
 import type { EnglishNote } from '@interviewos/types'
 import { EnglishNoteStatus } from '@interviewos/types'
-import { EnglishNotesPage } from '@interviewos/ui'
+import EnglishNotesPage from '@interviewos/ui/pages/EnglishNotesPage'
 
 import { StatusSelect } from '@/components/forms/StatusSelect'
 import { serverApiClient } from '@/lib/server-api-client'

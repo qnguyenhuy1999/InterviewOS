@@ -1,5 +1,5 @@
 import type { ReviewPageView } from '@interviewos/types'
-import { ReviewPage } from '@interviewos/ui'
+import ReviewPage from '@interviewos/ui/pages/ReviewPage'
 
 import { serverApiClient } from '@/lib/server-api-client'
 

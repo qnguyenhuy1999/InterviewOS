@@ -1,5 +1,5 @@
 import type { DashboardProgress } from '@interviewos/types'
-import { DashboardPage } from '@interviewos/ui'
+import DashboardPage from '@interviewos/ui/pages/DashboardPage'
 
 import { serverApiClient } from '@/lib/server-api-client'
 

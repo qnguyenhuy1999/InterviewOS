@@ -1,12 +1,13 @@
+import { API_ROUTES } from '@interviewos/config'
 import type { UserLearningProfile } from '@interviewos/types'
 
 import { NoteForm } from '@/components/forms/NoteForm'
 import { serverApiClient } from '@/lib/server-api-client'
 
 export default async function NewNotebookPage() {
-  const profile = await serverApiClient<UserLearningProfile | null>('/users/me/profile').catch(
-    () => null,
-  )
+  const profile = await serverApiClient<UserLearningProfile | null>(
+    API_ROUTES.users.learningProfile,
+  ).catch(() => null)
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">

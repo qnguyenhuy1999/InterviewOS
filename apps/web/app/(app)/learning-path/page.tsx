@@ -1,5 +1,5 @@
 import type { LearningPathItem } from '@interviewos/types'
-import { LearningPathPage } from '@interviewos/ui'
+import LearningPathPage from '@interviewos/ui/pages/LearningPathPage'
 
 import { LearningPathActions } from '@/components/forms/LearningPathActions'
 import { serverApiClient } from '@/lib/server-api-client'

@@ -1,6 +1,5 @@
-import type React from 'react'
-
 import type { EnglishNote } from '@interviewos/types'
+import type React from 'react'
 
 export type EnglishNotesPageProps = {
   notes?: EnglishNote[]

@@ -1,5 +1,4 @@
 import { Controller, Get, Post, Req } from '@nestjs/common'
-import type { FastifyRequest } from 'fastify'
 import {
   ApiBody,
   ApiConsumes,
@@ -7,6 +6,7 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger'
+import type { FastifyRequest } from 'fastify'
 
 import { CurrentUser } from '../../common/decorators/current-user.decorator'
 import { ApiEntityResponse, ApiNullableEntityResponse } from '../../common/swagger/swagger-helpers'

@@ -1,6 +1,7 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
+import { API_ROUTES } from '@interviewos/config'
 import {
   EnglishLevel,
   ExperienceLevel,
@@ -63,7 +64,7 @@ export function ProfileForm({ initialProfile, mode }: ProfileFormProps) {
     }
 
     try {
-      await apiFetch('/users/me/profile', {
+      await apiFetch(API_ROUTES.users.learningProfile, {
         method: initialProfile ? 'PATCH' : 'POST',
         body: JSON.stringify(payload),
       }).then(async (response) => {

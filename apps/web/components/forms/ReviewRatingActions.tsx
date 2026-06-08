@@ -1,5 +1,6 @@
 'use client'
 
+import { API_ROUTES } from '@interviewos/config'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
@@ -15,7 +16,7 @@ export function ReviewRatingActions({ reviewItemId }: { reviewItemId: string }) 
     setPending(rating)
 
     try {
-      const response = await apiFetch(`/review/${reviewItemId}/rate`, {
+      const response = await apiFetch(API_ROUTES.review.rate(reviewItemId), {
         method: 'POST',
         body: JSON.stringify({ rating }),
       })

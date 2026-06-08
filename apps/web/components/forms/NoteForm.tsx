@@ -1,6 +1,7 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
+import { API_ROUTES } from '@interviewos/config'
 import {
   EnglishLevel,
   ExperienceLevel,
@@ -87,10 +88,13 @@ export function NoteForm({
     }
 
     try {
-      const response = await apiFetch(note ? `/notes/${note.id}` : '/notes', {
+      const response = await apiFetch(
+        note ? API_ROUTES.notes.byId(note.id) : API_ROUTES.notes.list,
+        {
         method: note ? 'PATCH' : 'POST',
         body: JSON.stringify(payload),
-      })
+        },
+      )
 
       if (!response.ok) {
         throw new Error(await response.text())

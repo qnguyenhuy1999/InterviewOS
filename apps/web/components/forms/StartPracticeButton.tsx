@@ -1,5 +1,6 @@
 'use client'
 
+import { API_ROUTES } from '@interviewos/config'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
@@ -12,7 +13,7 @@ export function StartPracticeButton({ generatedQuestionId }: { generatedQuestion
   async function startPractice() {
     setPending(true)
     try {
-      const response = await apiFetch('/sessions', {
+      const response = await apiFetch(API_ROUTES.sessions.list, {
         method: 'POST',
         body: JSON.stringify({ generatedQuestionId }),
       })

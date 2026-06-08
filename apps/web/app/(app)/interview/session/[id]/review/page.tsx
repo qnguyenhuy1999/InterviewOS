@@ -1,5 +1,6 @@
+import { API_ROUTES } from '@interviewos/config'
 import type { InterviewEvaluation, InterviewSessionDetail } from '@interviewos/types'
-import { InterviewReviewPage } from '@interviewos/ui'
+import InterviewReviewPage from '@interviewos/ui/pages/InterviewReviewPage'
 
 import { serverApiClient } from '@/lib/server-api-client'
 
@@ -17,9 +18,9 @@ export default async function ReviewPage({ params }: { params: Promise<{ id: str
   const { id } = await params
 
   const [session, turns, evaluation] = await Promise.all([
-    serverApiClient<InterviewSessionDetail>(`/sessions/${id}`).catch(() => null),
-    serverApiClient<Turn[]>(`/sessions/${id}/turns`).catch(() => [] as Turn[]),
-    serverApiClient<InterviewEvaluation>(`/sessions/${id}/evaluation`).catch(() => null),
+    serverApiClient<InterviewSessionDetail>(API_ROUTES.sessions.byId(id)).catch(() => null),
+    serverApiClient<Turn[]>(API_ROUTES.sessions.turns(id)).catch(() => [] as Turn[]),
+    serverApiClient<InterviewEvaluation>(API_ROUTES.sessions.evaluation(id)).catch(() => null),
   ])
 
   return (

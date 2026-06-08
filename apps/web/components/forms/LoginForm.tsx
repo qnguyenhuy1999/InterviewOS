@@ -1,5 +1,6 @@
 'use client'
 
+import { API_ROUTES } from '@interviewos/config'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
@@ -16,7 +17,7 @@ export function LoginForm() {
     setError(null)
 
     try {
-      const response = await apiFetch('/auth/login', {
+      const response = await apiFetch(API_ROUTES.auth.login, {
         method: 'POST',
         body: JSON.stringify({
           email: String(formData.get('email') ?? ''),

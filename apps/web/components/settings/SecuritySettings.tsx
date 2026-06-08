@@ -1,10 +1,12 @@
 'use client'
 
+import { API_ROUTES } from '@interviewos/config'
 import type { ActiveAuthSession, AuthenticatedUser } from '@interviewos/types'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
 import { apiFetch } from '@/lib/api-client'
+import { formatDate } from '@/lib/format'
 
 type ActionState = {
   message: string | null
@@ -79,7 +81,7 @@ export function SecuritySettings({
                 void runAction(
                   'resend-verification',
                   () =>
-                    apiFetch('/auth/email-verification/resend', {
+                    apiFetch(API_ROUTES.auth.resendEmailVerification, {
                       method: 'POST',
                       body: JSON.stringify({ email: currentUser.email }),
                     }),
@@ -108,7 +110,7 @@ export function SecuritySettings({
             onClick={() => {
               void runAction(
                 'logout-all',
-                () => apiFetch('/auth/logout-all', { method: 'POST' }),
+                () => apiFetch(API_ROUTES.auth.logoutAll, { method: 'POST' }),
                 'All sessions signed out.',
                 () => {
                   window.location.href = '/login'
@@ -153,7 +155,7 @@ export function SecuritySettings({
                   onClick={() => {
                     void runAction(
                       session.id,
-                      () => apiFetch(`/auth/sessions/${session.id}`, { method: 'DELETE' }),
+                      () => apiFetch(API_ROUTES.auth.sessionById(session.id), { method: 'DELETE' }),
                       'Session revoked.',
                     )
                   }}
@@ -179,8 +181,4 @@ export function SecuritySettings({
       ) : null}
     </section>
   )
-}
-
-function formatDate(value: Date | string) {
-  return new Date(value).toLocaleString()
 }

@@ -1,5 +1,6 @@
 'use client'
 
+import { API_ROUTES } from '@interviewos/config'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
@@ -23,7 +24,7 @@ export function ResetPasswordForm({ token }: { token?: string }) {
         throw new Error('Passwords do not match.')
       }
 
-      const response = await apiFetch('/auth/reset-password', {
+      const response = await apiFetch(API_ROUTES.auth.resetPassword, {
         method: 'POST',
         body: JSON.stringify({
           token: token ?? String(formData.get('token') ?? ''),

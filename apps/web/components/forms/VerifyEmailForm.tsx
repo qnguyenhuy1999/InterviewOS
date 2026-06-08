@@ -1,5 +1,6 @@
 'use client'
 
+import { API_ROUTES } from '@interviewos/config'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
@@ -17,7 +18,7 @@ export function VerifyEmailForm({ token }: { token?: string }) {
     setMessage(null)
 
     try {
-      const response = await apiFetch('/auth/email-verification/confirm', {
+      const response = await apiFetch(API_ROUTES.auth.confirmEmailVerification, {
         method: 'POST',
         body: JSON.stringify({
           token: token ?? String(formData.get('token') ?? ''),
@@ -45,7 +46,7 @@ export function VerifyEmailForm({ token }: { token?: string }) {
     setMessage(null)
 
     try {
-      const response = await apiFetch('/auth/email-verification/resend', {
+      const response = await apiFetch(API_ROUTES.auth.resendEmailVerification, {
         method: 'POST',
         body: JSON.stringify({
           email: String(formData.get('email') ?? ''),

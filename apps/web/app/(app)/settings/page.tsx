@@ -1,3 +1,4 @@
+import { API_ROUTES } from '@interviewos/config'
 import type { ActiveAuthSession, AuthSessionResponse, UserLearningProfile } from '@interviewos/types'
 
 import { ProfileForm } from '@/components/forms/ProfileForm'
@@ -6,9 +7,11 @@ import { serverApiClient } from '@/lib/server-api-client'
 
 export default async function SettingsPage() {
   const [profile, session, sessions] = await Promise.all([
-    serverApiClient<UserLearningProfile | null>('/users/me/profile').catch(() => null),
-    serverApiClient<AuthSessionResponse>('/auth/me'),
-    serverApiClient<ActiveAuthSession[]>('/auth/sessions').catch(() => []),
+    serverApiClient<UserLearningProfile | null>(API_ROUTES.users.learningProfile).catch(
+      () => null,
+    ),
+    serverApiClient<AuthSessionResponse>(API_ROUTES.auth.me),
+    serverApiClient<ActiveAuthSession[]>(API_ROUTES.auth.sessions).catch(() => []),
   ])
 
   return (

@@ -1,5 +1,6 @@
 import 'server-only'
 
+import type { ApiErrorResponse } from '@interviewos/types'
 import { headers } from 'next/headers'
 
 function baseUrl() {
@@ -24,8 +25,7 @@ export async function serverApiClient<TResponse>(
   })
 
   if (!response.ok) {
-    const message = await response.text()
-    throw new Error(message || `API request failed with status ${response.status}`)
+    throw await createApiError(response)
   }
 
   if (response.status === 204) {
@@ -33,4 +33,36 @@ export async function serverApiClient<TResponse>(
   }
 
   return response.json() as Promise<TResponse>
+}
+
+async function createApiError(response: Response) {
+  const contentType = response.headers.get('content-type') ?? ''
+
+  if (contentType.includes('application/json')) {
+    const payload = (await response.json()) as Partial<ApiErrorResponse>
+    const message = normalizeApiErrorMessage(payload.message)
+
+    return new Error(message || `API request failed with status ${response.status}`, {
+      cause: payload,
+    })
+  }
+
+  const message = await response.text()
+  return new Error(message || `API request failed with status ${response.status}`)
+}
+
+function normalizeApiErrorMessage(message: ApiErrorResponse['message'] | undefined) {
+  if (typeof message === 'string') {
+    return message
+  }
+
+  if (Array.isArray(message)) {
+    return message.join(', ')
+  }
+
+  if (message && typeof message === 'object') {
+    return JSON.stringify(message)
+  }
+
+  return null
 }

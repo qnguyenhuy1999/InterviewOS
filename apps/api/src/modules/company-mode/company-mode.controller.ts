@@ -2,8 +2,8 @@ import { Controller, Get, Param } from '@nestjs/common'
 import { ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger'
 
 import { ApiArrayResponse, ApiEntityResponse } from '../../common/swagger/swagger-helpers'
-import { CompanyModeResponseDto } from './dto/company-mode.dto'
 import { CompanyModeService } from './company-mode.service'
+import { CompanyModeResponseDto } from './dto/company-mode.dto'
 
 @ApiTags('company-mode')
 @Controller(['company-modes', 'company-profiles'])

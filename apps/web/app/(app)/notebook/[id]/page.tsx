@@ -1,6 +1,6 @@
+import { API_ROUTES } from '@interviewos/config'
 import { NoteStatus, type TechnicalNoteDetailView } from '@interviewos/types'
-
-import { NotebookDetailPage } from '@interviewos/ui'
+import NotebookDetailPage from '@interviewos/ui/pages/NotebookDetailPage'
 
 import { NoteActions } from '@/components/forms/NoteActions'
 import { StartPracticeButton } from '@/components/forms/StartPracticeButton'
@@ -9,7 +9,9 @@ import { serverApiClient } from '@/lib/server-api-client'
 
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
-  const data = await serverApiClient<TechnicalNoteDetailView>(`/notes/${id}`).catch(() => null)
+  const data = await serverApiClient<TechnicalNoteDetailView>(API_ROUTES.notes.byId(id)).catch(
+    () => null,
+  )
 
   return (
     <NotebookDetailPage
@@ -18,7 +20,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
       renderHeaderActions={(note) => (
         <>
           <StatusSelect
-            endpoint={`/notes/${note.id}`}
+            endpoint={API_ROUTES.notes.byId(note.id)}
             value={note.status}
             options={Object.values(NoteStatus)}
           />

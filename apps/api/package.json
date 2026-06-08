@@ -17,6 +17,7 @@
     "@interviewos/config": "workspace:*",
     "@interviewos/database": "workspace:*",
     "@interviewos/types": "workspace:*",
+    "@interviewos/utils": "workspace:*",
     "@interviewos/validators": "workspace:*",
     "@nestjs/common": "^11.1.24",
     "@nestjs/config": "^4.0.4",

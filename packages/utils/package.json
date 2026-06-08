@@ -1,0 +1,30 @@
+{
+  "name": "@interviewos/utils",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./src/index.ts",
+      "require": "./dist/index.js",
+      "default": "./src/index.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src/"
+  },
+  "dependencies": {
+    "date-fns": "^4.4.0",
+    "lodash-es": "^4.17.21"
+  },
+  "devDependencies": {
+    "@interviewos/tsconfig": "workspace:*",
+    "@types/lodash-es": "^4.17.12",
+    "typescript": "^6.0.3"
+  }
+}

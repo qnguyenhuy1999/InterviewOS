@@ -1,5 +1,6 @@
 'use client'
 
+import { API_ROUTES } from '@interviewos/config'
 import {
   EnglishLevel,
   ExperienceLevel,
@@ -50,7 +51,7 @@ export function InterviewAnswerForm({
     const advancedEnabled = formData.get('advancedEnabled') === 'on'
 
     try {
-      const response = await apiFetch(`/sessions/${session.id}/answer`, {
+      const response = await apiFetch(API_ROUTES.sessions.answer(session.id), {
         method: 'POST',
         body: JSON.stringify({
           answer: String(formData.get('answer') ?? ''),

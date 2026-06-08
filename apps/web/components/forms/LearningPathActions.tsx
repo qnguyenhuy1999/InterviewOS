@@ -1,5 +1,6 @@
 'use client'
 
+import { API_ROUTES } from '@interviewos/config'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
@@ -20,7 +21,7 @@ export function LearningPathActions({ itemId }: { itemId: string }) {
     setPending(action)
 
     try {
-      const response = await apiFetch(`/learning-path/${itemId}/action`, {
+      const response = await apiFetch(API_ROUTES.review.learningPathAction(itemId), {
         method: 'POST',
         body: JSON.stringify({ action }),
       })

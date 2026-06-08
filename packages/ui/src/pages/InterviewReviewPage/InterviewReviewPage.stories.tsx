@@ -1,5 +1,5 @@
-import { EvaluationStatus, InterviewType, NoteStatus } from '@interviewos/types'
 import type { InterviewEvaluation } from '@interviewos/types'
+import { EvaluationStatus, InterviewType, NoteStatus } from '@interviewos/types'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 
 import InterviewReviewPage from './InterviewReviewPage'

@@ -1,5 +1,6 @@
 'use client'
 
+import { API_ROUTES } from '@interviewos/config'
 import { useRouter } from 'next/navigation'
 import { useRef, useState } from 'react'
 
@@ -39,7 +40,7 @@ export function MultiTurnForm({
     setError(null)
 
     try {
-      const res = await apiFetch(`/sessions/${sessionId}/turns`, {
+      const res = await apiFetch(API_ROUTES.sessions.turns(sessionId), {
         method: 'POST',
         body: JSON.stringify({ answer }),
       })
@@ -72,7 +73,7 @@ export function MultiTurnForm({
     setEnding(true)
     setError(null)
     try {
-      const res = await apiFetch(`/sessions/${sessionId}/end`, { method: 'POST' })
+      const res = await apiFetch(API_ROUTES.sessions.end(sessionId), { method: 'POST' })
       if (!res.ok) throw new Error(await res.text())
       setComplete(true)
       router.refresh()

@@ -64,6 +64,7 @@ export interface InterviewReadinessImpact {
 }
 
 export interface InterviewSessionDetail extends InterviewSession {
+  questions: Array<InterviewQuestion & { answer?: InterviewAnswer | null }>
   note?: { title: string | null } | null
   companyMode?: CompanyMode | null
   evaluation?: InterviewEvaluation | null

@@ -1,5 +1,6 @@
 'use client'
 
+import { API_ROUTES } from '@interviewos/config'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
@@ -21,7 +22,10 @@ export function NoteActions({
     setPendingAction(action)
     setError(null)
 
-    const path = action === 'note' ? `/notes/${noteId}/generate` : `/notes/${noteId}/questions`
+    const path =
+      action === 'note'
+        ? API_ROUTES.notes.generate(noteId)
+        : API_ROUTES.notes.questions(noteId)
     const body = action === 'questions' ? JSON.stringify({ count: 5 }) : JSON.stringify({})
 
     try {

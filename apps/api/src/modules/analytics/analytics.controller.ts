@@ -5,8 +5,8 @@ import type { AuthenticatedUser } from '../../common/auth/authenticated-request'
 import { CurrentUser } from '../../common/decorators/current-user.decorator'
 import { ApiEntityResponse } from '../../common/swagger/swagger-helpers'
 import { DashboardProgressDto } from '../review/dto/review.dto'
-import { InterviewAnalyticsResponseDto } from './dto/analytics.dto'
 import { AnalyticsService } from './analytics.service'
+import { InterviewAnalyticsResponseDto } from './dto/analytics.dto'
 
 @ApiTags('analytics')
 @ApiCookieAuth('interviewos_session')

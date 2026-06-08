@@ -1,3 +1,4 @@
+import { API_ROUTES } from '@interviewos/config'
 import type { TechnicalNote, UserLearningProfile } from '@interviewos/types'
 
 import { NoteForm } from '@/components/forms/NoteForm'
@@ -6,8 +7,10 @@ import { serverApiClient } from '@/lib/server-api-client'
 export default async function EditNotePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   const [note, profile] = await Promise.all([
-    serverApiClient<TechnicalNote>(`/notes/${id}`).catch(() => null),
-    serverApiClient<UserLearningProfile | null>('/users/me/profile').catch(() => null),
+    serverApiClient<TechnicalNote>(API_ROUTES.notes.byId(id)).catch(() => null),
+    serverApiClient<UserLearningProfile | null>(API_ROUTES.users.learningProfile).catch(
+      () => null,
+    ),
   ])
 
   if (!note) {

@@ -1,10 +1,11 @@
+import { API_ROUTES } from '@interviewos/config'
 import type { NotebookNoteListItem } from '@interviewos/types'
-import { NotebookPage } from '@interviewos/ui'
+import NotebookPage from '@interviewos/ui/pages/NotebookPage'
 
 import { serverApiClient } from '@/lib/server-api-client'
 
 export default async function Page() {
-  const notes = await serverApiClient<NotebookNoteListItem[]>('/notes').catch(
+  const notes = await serverApiClient<NotebookNoteListItem[]>(API_ROUTES.notes.list).catch(
     () => [] as NotebookNoteListItem[],
   )
 

@@ -1,6 +1,7 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
+import { API_ROUTES } from '@interviewos/config'
 import type { RegisterInput } from '@interviewos/validators'
 import { registerSchema } from '@interviewos/validators'
 import { useRouter } from 'next/navigation'
@@ -29,7 +30,7 @@ export function RegisterForm() {
     setError(null)
 
     try {
-      const response = await apiFetch('/auth/register', {
+      const response = await apiFetch(API_ROUTES.auth.register, {
         method: 'POST',
         body: JSON.stringify(values),
       })
