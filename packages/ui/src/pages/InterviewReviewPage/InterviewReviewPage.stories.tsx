@@ -2,6 +2,7 @@ import type { InterviewEvaluation } from '@interviewos/types'
 import { EvaluationStatus, InterviewType, NoteStatus } from '@interviewos/types'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 
+import ConsoleLayout from '../../layouts/ConsoleLayout/ConsoleLayout'
 import InterviewReviewPage from './InterviewReviewPage'
 import type {
   InterviewReviewPageSession,
@@ -148,6 +149,13 @@ const meta = {
   component: InterviewReviewPage,
   parameters: { layout: 'fullscreen' },
   tags: ['autodocs'],
+  decorators: [
+    (Story) => (
+      <ConsoleLayout title="Interviews">
+        <Story />
+      </ConsoleLayout>
+    ),
+  ],
 } satisfies Meta<typeof InterviewReviewPage>
 
 export default meta

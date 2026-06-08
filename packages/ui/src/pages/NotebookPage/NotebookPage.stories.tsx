@@ -13,6 +13,14 @@ const meta = {
   component: NotebookPage,
   parameters: { layout: 'fullscreen' },
   tags: ['autodocs'],
+  args: {
+    state: { kind: 'ready', notes: notebookFixture.notes },
+    actions: {
+      createNoteHref: '#',
+      noteHref: () => '#',
+      retryHref: '#',
+    },
+  },
   decorators: [
     (Story) => (
       <ConsoleLayout
@@ -53,26 +61,28 @@ export const SearchFiltered: Story = {
 
 export const EmptyState: Story = {
   args: {
-    empty: true,
+    state: { kind: 'empty' },
   },
 }
 
 export const EmptyFilters: Story = {
   args: {
-    notes: notebookFixture.notes,
     searchValue: 'kafka',
   },
 }
 
 export const Loading: Story = {
   args: {
-    loading: true,
+    state: { kind: 'loading' },
   },
 }
 
 export const Error: Story = {
   args: {
-    error: 'Unable to connect to the notebook service. Please refresh and try again.',
+    state: {
+      kind: 'error',
+      message: 'Unable to connect to the notebook service. Please refresh and try again.',
+    },
   },
 }
 

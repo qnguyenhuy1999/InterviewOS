@@ -46,7 +46,10 @@ function FilterSelect<T extends string>({
   onValueChange?: (value: NotebookPageFilterValue<T>) => void
 }) {
   return (
-    <Select value={value ?? 'ALL'} onValueChange={(next) => onValueChange?.(next as NotebookPageFilterValue<T>)}>
+    <Select
+      value={value ?? 'ALL'}
+      onValueChange={(next) => onValueChange?.(next as NotebookPageFilterValue<T>)}
+    >
       <SelectTrigger className="w-full min-w-40 bg-card md:w-44">
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
@@ -82,9 +85,7 @@ function NotebookCard({
       <CardHeader className="gap-3 border-b py-4 md:border-b-0">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="min-w-0">
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-              {topicLabel}
-            </p>
+            <p className="text-xs font-semibold uppercase text-muted-foreground">{topicLabel}</p>
             <CardTitle className="mt-2 text-lg font-semibold tracking-tight">
               <a href={noteHref} className="hover:underline">
                 {note.title}
@@ -290,7 +291,11 @@ function NotebookBody({
   | 'onSelectedTypeChange'
   | 'onViewChange'
   | 'onClearFilters'
-> & { state: Extract<NotebookPageProps['state'], { kind: 'ready' }> | Extract<NotebookPageProps['state'], { kind: 'empty' }> }) {
+> & {
+  state:
+    | Extract<NotebookPageProps['state'], { kind: 'ready' }>
+    | Extract<NotebookPageProps['state'], { kind: 'empty' }>
+}) {
   const sourceNotes: NotebookPageNote[] = state.kind === 'ready' ? state.notes : []
   const visibleNotes: NotebookPageNote[] = getVisibleNotebookNotes({
     notes: sourceNotes,

@@ -9,15 +9,15 @@ export interface EmptyStateProps {
 
 export function EmptyState({ icon, title, description, cta }: EmptyStateProps) {
   return (
-    <div className="flex flex-col items-center justify-center gap-4 py-16 text-center">
+    <div className="flex flex-col items-center justify-center gap-3 py-12 text-center">
       {icon && (
-        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted text-muted-foreground">
+        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted text-muted-foreground">
           {icon}
         </div>
       )}
-      <h2 className="font-heading text-xl font-medium">{title}</h2>
+      <h2 className="font-heading text-lg font-medium">{title}</h2>
       <p className="max-w-md text-sm text-muted-foreground">{description}</p>
-      {cta && <div className="mt-2">{cta}</div>}
+      {cta && <div className="mt-1">{cta}</div>}
     </div>
   )
 }

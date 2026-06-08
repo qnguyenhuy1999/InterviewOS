@@ -32,13 +32,13 @@ import type { ConsoleLayoutNavGroup, ConsoleLayoutProps } from './ConsoleLayout.
 
 function BrandBlock({ name, tagline }: { name: string; tagline: string }) {
   return (
-    <div className="flex items-center gap-3 px-2 py-2 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:gap-0 group-data-[collapsible=icon]:px-0">
-      <div className="flex size-10 shrink-0 items-center justify-center rounded-md bg-primary text-primary-foreground group-data-[collapsible=icon]:size-10 group-data-[collapsible=icon]:rounded-md">
-        <SparklesIcon className="size-5" />
+    <div className="flex items-center gap-2.5 px-2 py-1.5 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:gap-0 group-data-[collapsible=icon]:px-0">
+      <div className="flex size-9 shrink-0 items-center justify-center rounded-md bg-primary text-primary-foreground group-data-[collapsible=icon]:size-9 group-data-[collapsible=icon]:rounded-md">
+        <SparklesIcon className="size-4" />
       </div>
       <div className="min-w-0 group-data-[collapsible=icon]:hidden">
-        <p className="truncate font-heading text-base font-semibold">{name}</p>
-        <p className="truncate text-sm text-muted-foreground">{tagline}</p>
+        <p className="truncate font-heading text-sm font-semibold">{name}</p>
+        <p className="truncate text-xs text-muted-foreground">{tagline}</p>
       </div>
     </div>
   )
@@ -82,7 +82,7 @@ function HeaderSearch({ placeholder }: { placeholder: string }) {
   return (
     <div className="relative w-full max-w-xl">
       <SearchIcon className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
-      <Input className="h-10 rounded-xl pl-9 pr-14" placeholder={placeholder} />
+      <Input className="h-9 rounded-xl pl-9 pr-12 text-sm" placeholder={placeholder} />
       <div className="pointer-events-none absolute top-1/2 right-3 hidden -translate-y-1/2 sm:block">
         <Kbd>{`Ctrl ${CONSOLE_LAYOUT_SEARCH_SHORTCUT}`}</Kbd>
       </div>
@@ -112,13 +112,13 @@ function Root({
           </SidebarContent>
           <SidebarSeparator />
           <SidebarFooter>
-            <div className="flex items-center gap-3 rounded-xl px-2 py-2">
+            <div className="flex items-center gap-2.5 rounded-xl px-2 py-1.5">
               <Avatar size="sm">
                 <AvatarFallback>{account.initials}</AvatarFallback>
               </Avatar>
               <div className="min-w-0 group-data-[collapsible=icon]:hidden">
                 <p className="truncate text-sm font-medium">{account.name}</p>
-                <p className="truncate text-sm text-muted-foreground">{account.email}</p>
+                <p className="truncate text-xs text-muted-foreground">{account.email}</p>
               </div>
             </div>
           </SidebarFooter>
@@ -126,13 +126,13 @@ function Root({
 
         <SidebarInset className="min-h-screen bg-transparent">
           <header className="sticky top-0 z-20 border-b bg-background/88 backdrop-blur-xl">
-            <div className="mx-auto flex min-h-18 w-full max-w-[96rem] flex-col gap-3 px-4 py-3 md:flex-row md:items-center md:px-8">
-              <div className="flex min-w-0 items-center gap-3">
+            <div className="mx-auto flex min-h-16 w-full max-w-384 flex-col gap-2.5 px-4 py-2.5 md:flex-row md:items-center md:px-6">
+              <div className="flex min-w-0 items-center gap-2.5">
                 <SidebarTrigger />
                 <div className="hidden h-6 w-px bg-border md:block" />
-                <h1 className="truncate font-heading text-lg font-semibold md:text-xl">{title}</h1>
+                <h1 className="truncate font-heading text-base font-semibold md:text-lg">{title}</h1>
               </div>
-              <div className="order-2 flex items-center gap-2 md:order-3 md:gap-3">
+              <div className="order-2 flex items-center gap-2 md:order-3">
                 {headerActions}
                 <Button variant="ghost" size="icon-sm" className="rounded-full">
                   <BellIcon />

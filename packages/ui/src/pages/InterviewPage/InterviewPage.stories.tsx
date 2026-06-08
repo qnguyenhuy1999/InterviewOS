@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 
+import ConsoleLayout from '../../layouts/ConsoleLayout/ConsoleLayout'
 import InterviewPage from './InterviewPage'
 import { interviewPageFixture } from './InterviewPage.fixtures'
 
@@ -8,59 +9,45 @@ const meta = {
   component: InterviewPage,
   parameters: { layout: 'fullscreen' },
   tags: ['autodocs'],
+  args: {
+    state: {
+      kind: 'ready',
+      sessions: interviewPageFixture.sessions,
+    },
+    actions: {
+      startInterviewHref: '/start-interview',
+      quickStartHref: '/quick-start',
+      reviewHref: (sessionId: string) => `/review/${sessionId}`,
+      retryHref: '/retry',
+    },
+  },
+  decorators: [
+    (Story) => (
+      <ConsoleLayout title="Interviews">
+        <Story />
+      </ConsoleLayout>
+    ),
+  ],
 } satisfies Meta<typeof InterviewPage>
 
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const HappyPath: Story = {
-  args: {
-    sessions: interviewPageFixture.sessions,
-    selectedTopic: interviewPageFixture.selectedTopic,
-  },
-}
-
-export const FilteredByTopic: Story = {
-  args: {
-    sessions: interviewPageFixture.sessions,
-    selectedTopic: 'React internals',
-  },
-}
+export const HappyPath: Story = {}
 
 export const Loading: Story = {
-  args: { loading: true },
+  args: { state: { kind: 'loading' } },
 }
 
 export const EmptyState: Story = {
-  args: { empty: true },
+  args: { state: { kind: 'empty' } },
 }
 
 export const Error: Story = {
   args: {
-    error: 'Unable to load your interview history right now. Please try again.',
+    state: {
+      kind: 'error',
+      message: 'Unable to load your interview history right now. Please try again.',
+    },
   },
-}
-
-export const Mobile: Story = {
-  args: {
-    sessions: interviewPageFixture.sessions,
-    selectedTopic: interviewPageFixture.selectedTopic,
-  },
-  parameters: { viewport: { defaultViewport: 'mobile' } },
-}
-
-export const Tablet: Story = {
-  args: {
-    sessions: interviewPageFixture.sessions,
-    selectedTopic: interviewPageFixture.selectedTopic,
-  },
-  parameters: { viewport: { defaultViewport: 'tablet' } },
-}
-
-export const Desktop: Story = {
-  args: {
-    sessions: interviewPageFixture.sessions,
-    selectedTopic: interviewPageFixture.selectedTopic,
-  },
-  parameters: { viewport: { defaultViewport: 'desktop' } },
 }

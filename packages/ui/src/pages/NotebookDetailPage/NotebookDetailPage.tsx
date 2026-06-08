@@ -130,42 +130,15 @@ function StructuredContent({ data }: { data: TechnicalNoteDetailView }) {
 
 function NotebookDetailBody({
   data,
-  renderHeaderActions,
   renderQuestionActions,
 }: {
   data: TechnicalNoteDetailView
-  renderHeaderActions?: NotebookDetailPageProps['renderHeaderActions']
   renderQuestionActions?: NotebookDetailPageProps['renderQuestionActions']
 }) {
-  const topicLabel = getNotebookDetailTopicLabel(data.note)
   const interviewTargets = getNotebookDetailInterviewTargets(data.note)
 
   return (
     <div className="space-y-6">
-      <PageHeader
-        title={data.note.title}
-        description={getNotebookSummary(data.note)}
-        actions={
-          <>
-            <Badge variant="outline" className="rounded-full px-3 py-1">
-              {topicLabel}
-            </Badge>
-            <Badge variant="outline" className="rounded-full px-3 py-1">
-              {getEnumLabel(data.note.type)}
-            </Badge>
-            {renderHeaderActions ? (
-              renderHeaderActions(data.note)
-            ) : (
-              <Button size="sm">
-                <FileQuestionIcon />
-                Generate questions
-              </Button>
-            )}
-          </>
-        }
-        className="rounded-md border bg-card"
-      />
-
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <StatCard
           label="Status"
@@ -362,8 +335,33 @@ function Root({
   renderHeaderActions,
   renderQuestionActions,
 }: NotebookDetailPageProps) {
+  const topicLabel = getNotebookDetailTopicLabel(data.note)
+
   return (
     <>
+      <PageHeader
+        title={data.note.title}
+        description={getNotebookSummary(data.note)}
+        actions={
+          <>
+            <Badge variant="outline" className="rounded-full px-3 py-1">
+              {topicLabel}
+            </Badge>
+            <Badge variant="outline" className="rounded-full px-3 py-1">
+              {getEnumLabel(data.note.type)}
+            </Badge>
+            {renderHeaderActions ? (
+              renderHeaderActions(data.note)
+            ) : (
+              <Button size="sm">
+                <FileQuestionIcon />
+                Generate questions
+              </Button>
+            )}
+          </>
+        }
+      />
+
       <PageBody>
         {error ? (
           <ErrorBody message={error} />
@@ -372,11 +370,7 @@ function Root({
         ) : empty ? (
           <EmptyBody />
         ) : (
-          <NotebookDetailBody
-            data={data}
-            renderHeaderActions={renderHeaderActions}
-            renderQuestionActions={renderQuestionActions}
-          />
+          <NotebookDetailBody data={data} renderQuestionActions={renderQuestionActions} />
         )}
       </PageBody>
       <Separator className="mt-8 opacity-0" />

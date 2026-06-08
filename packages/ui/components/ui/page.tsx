@@ -15,7 +15,7 @@ function PageHeader({ title, description, actions, className, ...props }: PageHe
     <header
       data-slot="page-header"
       className={cn(
-        'flex flex-col gap-3 bg-background md:flex-row md:items-end md:justify-between pb-4 md:pb-6',
+        'flex flex-col gap-2.5 bg-background px-4 pt-3 md:flex-row md:items-end md:justify-between md:px-6 md:pt-4',
         className,
       )}
       {...props}
@@ -23,16 +23,16 @@ function PageHeader({ title, description, actions, className, ...props }: PageHe
       <div className="min-w-0">
         <div
           data-slot="page-title"
-          className="font-heading text-xl font-semibold tracking-tight md:text-2xl"
+          className="font-heading text-lg font-semibold tracking-tight md:text-xl"
         >
           {title}
         </div>
         {description ? (
-          <p className="mt-1 max-w-2xl text-sm text-muted-foreground">{description}</p>
+          <p className="mt-1 max-w-2xl text-xs text-muted-foreground md:text-sm">{description}</p>
         ) : null}
       </div>
       {actions ? (
-        <div data-slot="page-header-actions" className="flex flex-wrap items-center gap-2">
+        <div data-slot="page-header-actions" className="flex flex-wrap items-center gap-1.5">
           {actions}
         </div>
       ) : null}
@@ -41,7 +41,13 @@ function PageHeader({ title, description, actions, className, ...props }: PageHe
 }
 
 function PageBody({ className, ...props }: React.ComponentProps<'div'>) {
-  return <div data-slot="page-body" className={className} {...props} />
+  return (
+    <div
+      data-slot="page-body"
+      className={cn('flex-1 px-4 py-4 md:px-6 md:py-6', className)}
+      {...props}
+    />
+  )
 }
 
 type EmptyStateProps = Omit<React.ComponentProps<typeof Empty>, 'title'> & {
@@ -60,7 +66,7 @@ function EmptyState({
   ...props
 }: EmptyStateProps) {
   return (
-    <Empty className={cn('rounded-xl border bg-card/40 px-6 py-12', className)} {...props}>
+    <Empty className={cn('rounded-xl border bg-card/40 px-5 py-10', className)} {...props}>
       <EmptyHeader>
         {Icon ? (
           <EmptyMedia variant="icon">
@@ -92,7 +98,7 @@ function SectionCard({
   return (
     <Card className={cn('gap-0 py-0', className)} {...props}>
       {title || description || action ? (
-        <CardHeader className="border-b py-3">
+        <CardHeader className="border-b py-2.5">
           <div className="min-w-0">
             {title ? <CardTitle>{title}</CardTitle> : null}
             {description ? (
@@ -102,7 +108,7 @@ function SectionCard({
           {action ? <CardAction>{action}</CardAction> : null}
         </CardHeader>
       ) : null}
-      <CardContent className="p-4">{children}</CardContent>
+      <CardContent className="p-3.5">{children}</CardContent>
     </Card>
   )
 }
@@ -122,7 +128,7 @@ function StatCard({ label, value, hint, icon: Icon, className, ...props }: StatC
           <CardDescription className="text-xs">{label}</CardDescription>
           {Icon ? <Icon className="size-4 text-muted-foreground" /> : null}
         </div>
-        <CardTitle className="text-2xl font-semibold tracking-tight">{value}</CardTitle>
+        <CardTitle className="text-xl font-semibold tracking-tight">{value}</CardTitle>
       </CardHeader>
       {hint ? (
         <CardContent>

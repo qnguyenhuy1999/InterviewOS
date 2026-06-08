@@ -237,9 +237,7 @@ function SettingsBody({
       <div className="grid gap-6 xl:grid-cols-[320px_minmax(0,1fr)] xl:items-start">
         <div className="space-y-4 xl:sticky xl:top-24">
           <div className="rounded-md border border-primary/15 p-5">
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary/80">
-              Active section
-            </p>
+            <p className="text-xs font-semibold uppercase text-primary/80">Active section</p>
             <p className="mt-3 font-heading text-2xl font-semibold tracking-tight">
               {activeSection.title}
             </p>

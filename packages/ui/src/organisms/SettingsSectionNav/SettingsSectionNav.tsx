@@ -17,7 +17,7 @@ function SettingsSectionNav({
   onSectionChange,
 }: SettingsSectionNavProps) {
   return (
-    <nav className="flex flex-col gap-1">
+    <nav className="flex flex-col gap-0.5">
       {sections.map((section) => {
         const Icon = iconMap[section.id]
         const isActive = section.id === activeSectionId
@@ -28,13 +28,13 @@ function SettingsSectionNav({
             type="button"
             onClick={() => onSectionChange?.(section.id)}
             className={cn(
-              'flex items-center gap-3 rounded-xl px-4 py-3 text-left text-base transition-colors',
+              'flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-left text-sm transition-colors',
               isActive
                 ? 'bg-primary font-medium text-muted'
                 : 'text-muted-foreground hover:bg-muted/70 hover:text-foreground',
             )}
           >
-            <Icon className="size-5 shrink-0" />
+            <Icon className="size-4 shrink-0" />
             <span>{section.label}</span>
           </button>
         )

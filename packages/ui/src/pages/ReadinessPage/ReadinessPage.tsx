@@ -49,7 +49,7 @@ function ReadinessDeltaBadge({ delta }: { delta: number }) {
 
 function DimensionRow({ dimension }: { dimension: ReadinessDimension }) {
   return (
-    <div className="space-y-2">
+    <div className="space-y-1.5">
       <div className="flex items-center justify-between gap-3">
         <div className="min-w-0">
           <p className="text-sm font-medium">{dimension.label}</p>
@@ -66,28 +66,28 @@ function DimensionRow({ dimension }: { dimension: ReadinessDimension }) {
           </span>
         </div>
       </div>
-      <Progress value={dimension.score} className="h-2.5" />
+      <Progress value={dimension.score} className="h-2" />
     </div>
   )
 }
 
 function HistoryRow({ item }: { item: ReadinessHistoryItem }) {
   return (
-    <div className="grid grid-cols-[1.5rem_minmax(0,1fr)] gap-3">
+    <div className="grid grid-cols-[1.25rem_minmax(0,1fr)] gap-2.5">
       <div className="relative flex justify-center">
         <span className="absolute inset-y-0 left-1/2 -translate-x-1/2 border-l border-border/80" />
-        <span className="relative mt-3 inline-flex size-3 rounded-full border-2 border-background bg-primary" />
+        <span className="relative mt-2.5 inline-flex size-2.5 rounded-full border-2 border-background bg-primary" />
       </div>
-      <article className="flex items-center justify-between gap-4 rounded-md border border-border/80 bg-background px-4 py-4">
+      <article className="flex items-center justify-between gap-3 rounded-md border border-border/80 bg-background px-3.5 py-3">
         <div>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-xs text-muted-foreground">
             {getReadinessHistoryDateLabel(item.computedAt)}
           </p>
-          <p className="mt-1 text-3xl font-semibold tracking-tight">{item.overallScore}</p>
+          <p className="mt-0.5 text-2xl font-semibold tracking-tight">{item.overallScore}</p>
         </div>
         <span
           className={cn(
-            'inline-flex items-center justify-center rounded-full p-2',
+            'inline-flex items-center justify-center rounded-full p-1.5',
             getReadinessTrend(item.improvementTrend) === 'UP'
               ? 'text-emerald-600'
               : getReadinessTrend(item.improvementTrend) === 'DOWN'
@@ -110,55 +110,53 @@ function ReadinessBody({ data }: { data: NonNullable<ReadinessPageProps['data']>
   const reviewCompletionPercent = Math.round(data.latest.reviewCompletion * 100)
 
   return (
-    <PageBody className="space-y-6">
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,2fr)_minmax(320px,1fr)]">
+    <>
+      <div className="grid gap-5 xl:grid-cols-[minmax(0,2fr)_minmax(320px,1fr)]">
         <Card className="gap-0 overflow-hidden py-0">
-          <CardHeader className="border-b bg-linear-to-br from-background via-background to-primary/5 py-5">
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+          <CardHeader className="border-b bg-linear-to-br from-background via-background to-primary/5 py-4">
+            <p className="text-xs font-semibold uppercase text-muted-foreground">
               Current readiness
             </p>
-            <div className="flex flex-wrap items-end gap-3">
-              <div className="flex items-end gap-2">
-                <CardTitle className="text-6xl font-semibold tracking-tight">
+            <div className="flex flex-wrap items-end gap-2.5">
+              <div className="flex items-end gap-1.5">
+                <CardTitle className="text-5xl font-semibold tracking-tight">
                   {data.latest.overallScore}
                 </CardTitle>
-                <p className="pb-2 text-xl text-muted-foreground">/ {READINESS_SCORE_MAX}</p>
+                <p className="pb-1.5 text-lg text-muted-foreground">/ {READINESS_SCORE_MAX}</p>
               </div>
               <ReadinessDeltaBadge delta={data.latest.improvementTrend} />
             </div>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-xs text-muted-foreground md:text-sm">
               {getReadinessComputedAtLabel(data.latest.computedAt)}
             </p>
           </CardHeader>
-          <CardContent className="grid gap-4 p-4 md:grid-cols-3">
-            <div className="rounded-md border border-border/80 bg-background p-4">
-              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-                Confidence
-              </p>
-              <p className="mt-2 text-2xl font-semibold tracking-tight">{confidencePercent}%</p>
-              <p className="mt-2 text-sm text-muted-foreground">
+          <CardContent className="grid gap-3.5 p-3.5 md:grid-cols-3">
+            <div className="rounded-md border border-border/80 bg-background p-3.5">
+              <p className="text-xs font-semibold uppercase text-muted-foreground">Confidence</p>
+              <p className="mt-1.5 text-xl font-semibold tracking-tight">{confidencePercent}%</p>
+              <p className="mt-1.5 text-sm text-muted-foreground">
                 Higher confidence means the score is backed by more recent sessions and review data.
               </p>
             </div>
-            <div className="rounded-md border border-border/80 bg-background p-4">
-              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+            <div className="rounded-md border border-border/80 bg-background p-3.5">
+              <p className="text-xs font-semibold uppercase text-muted-foreground">
                 Learning progress
               </p>
-              <p className="mt-2 text-2xl font-semibold tracking-tight">
+              <p className="mt-1.5 text-xl font-semibold tracking-tight">
                 {learningProgressPercent}%
               </p>
-              <p className="mt-2 text-sm text-muted-foreground">
+              <p className="mt-1.5 text-sm text-muted-foreground">
                 Based on how many learning-path items have been completed.
               </p>
             </div>
-            <div className="rounded-md border border-border/80 bg-background p-4">
-              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+            <div className="rounded-md border border-border/80 bg-background p-3.5">
+              <p className="text-xs font-semibold uppercase text-muted-foreground">
                 Review completion
               </p>
-              <p className="mt-2 text-2xl font-semibold tracking-tight">
+              <p className="mt-1.5 text-xl font-semibold tracking-tight">
                 {reviewCompletionPercent}%
               </p>
-              <p className="mt-2 text-sm text-muted-foreground">
+              <p className="mt-1.5 text-sm text-muted-foreground">
                 Measures how much of the review queue has crossed the mastery threshold.
               </p>
             </div>
@@ -166,19 +164,17 @@ function ReadinessBody({ data }: { data: NonNullable<ReadinessPageProps['data']>
         </Card>
 
         <Card className="gap-0 py-0">
-          <CardHeader className="border-b py-5">
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-              Best dimension
-            </p>
-            <CardTitle className="text-4xl font-semibold tracking-tight">
+          <CardHeader className="border-b py-4">
+            <p className="text-xs font-semibold uppercase text-muted-foreground">Best dimension</p>
+            <CardTitle className="text-3xl font-semibold tracking-tight">
               {bestDimension.label}
             </CardTitle>
-            <p className="text-lg text-muted-foreground">
+            <p className="text-base text-muted-foreground">
               {bestDimension.score} / {READINESS_SCORE_MAX}
             </p>
           </CardHeader>
-          <CardContent className="p-4">
-            <Progress value={bestDimension.score} className="h-2.5" />
+          <CardContent className="p-3.5">
+            <Progress value={bestDimension.score} className="h-2" />
           </CardContent>
         </Card>
       </div>
@@ -187,7 +183,7 @@ function ReadinessBody({ data }: { data: NonNullable<ReadinessPageProps['data']>
         title="Dimension breakdown"
         description="Each dimension contributes to the overall readiness score."
       >
-        <div className="space-y-5">
+        <div className="space-y-4">
           {data.latest.breakdown.map((dimension) => (
             <DimensionRow key={dimension.dimension} dimension={dimension} />
           ))}
@@ -198,25 +194,25 @@ function ReadinessBody({ data }: { data: NonNullable<ReadinessPageProps['data']>
         title="History"
         description="Track how your readiness changes after practice, reviews, and interview sessions."
       >
-        <div className="space-y-4">
+        <div className="space-y-3">
           {data.history.map((item) => (
             <HistoryRow key={item.id} item={item} />
           ))}
         </div>
       </SectionCard>
-    </PageBody>
+    </>
   )
 }
 
 function LoadingBody() {
   return (
-    <PageBody className="space-y-6">
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,2fr)_minmax(320px,1fr)]">
-        <Skeleton className="h-72 rounded-md" />
-        <Skeleton className="h-72 rounded-md" />
+    <PageBody className="space-y-5">
+      <div className="grid gap-5 xl:grid-cols-[minmax(0,2fr)_minmax(320px,1fr)]">
+        <Skeleton className="h-64 rounded-md" />
+        <Skeleton className="h-64 rounded-md" />
       </div>
-      <Skeleton className="h-96 rounded-md" />
-      <Skeleton className="h-96 rounded-md" />
+      <Skeleton className="h-88 rounded-md" />
+      <Skeleton className="h-88 rounded-md" />
     </PageBody>
   )
 }

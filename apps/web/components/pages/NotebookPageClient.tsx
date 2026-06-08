@@ -6,7 +6,12 @@ import NotebookPage from '@interviewos/ui/pages/NotebookPage'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { startTransition, useDeferredValue, useEffect, useState } from 'react'
 
-type NotebookPageClientProps = Pick<NotebookPageProps, 'state' | 'actions'> & {
+type NotebookPageClientProps = Pick<NotebookPageProps, 'state'> & {
+  actions: {
+    createNoteHref: string
+    noteHrefBase: string
+    retryHref?: string
+  }
   initialSearchValue?: string
   initialSelectedTopic?: string | 'ALL'
   initialSelectedStatus?: string | null
@@ -78,7 +83,11 @@ export function NotebookPageClient({
   return (
     <NotebookPage
       state={state}
-      actions={actions}
+      actions={{
+        createNoteHref: actions.createNoteHref,
+        noteHref: (noteId) => `${actions.noteHrefBase}/${noteId}`,
+        retryHref: actions.retryHref,
+      }}
       searchValue={searchValue}
       selectedTopic={selectedTopic}
       selectedStatus={selectedStatus}

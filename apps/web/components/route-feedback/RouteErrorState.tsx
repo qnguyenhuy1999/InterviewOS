@@ -16,7 +16,7 @@ export function RouteErrorState({
   backLabel = 'Back',
 }: RouteErrorStateProps) {
   return (
-    <div className="rounded-2xl border border-destructive/20 bg-destructive/5 p-6 text-sm text-foreground">
+    <div className="rounded-2xl border border-destructive/20 bg-destructive/5 p-6 text-sm text-foreground mx-4 my-4 md:mx-6 md:my-6">
       <p className="font-medium text-destructive">{title}</p>
       <p className="mt-2 text-muted-foreground">{message}</p>
       <div className="mt-4 flex flex-wrap gap-3">

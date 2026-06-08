@@ -36,8 +36,8 @@ function Field({
   return (
     <div className="space-y-2">
       <p className="text-sm font-medium">{label}</p>
-      <div className="flex items-center gap-3">
-        <Input value={value} readOnly className="h-11 rounded-xl px-4 text-sm md:text-base" />
+      <div className="flex items-center gap-2.5">
+        <Input value={value} readOnly className="h-9 rounded-xl px-3 text-sm" />
         {trailing}
       </div>
     </div>
@@ -57,7 +57,7 @@ function SelectField({
     <div className="space-y-2">
       <p className="text-sm font-medium">{label}</p>
       <Select value={value}>
-        <SelectTrigger className="h-11 w-full rounded-xl px-4 text-left">
+        <SelectTrigger className="h-9 w-full rounded-xl px-3 text-left text-sm">
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
@@ -82,12 +82,12 @@ function TagField({
   inputPlaceholder: string
 }) {
   return (
-    <div className="space-y-3">
+    <div className="space-y-2">
       <p className="text-sm font-medium">{label}</p>
-      <div className="flex min-h-12 flex-wrap items-center gap-2 rounded-xl border border-input bg-background px-3 py-2">
+      <div className="flex min-h-10 flex-wrap items-center gap-1.5 rounded-xl border border-input bg-background px-3 py-2">
         <TagList
           items={items}
-          trailing={<span className="text-sm text-muted-foreground">{inputPlaceholder}</span>}
+          trailing={<span className="text-xs text-muted-foreground">{inputPlaceholder}</span>}
         />
       </div>
     </div>
@@ -109,7 +109,7 @@ function ResumeUploadCard({
       description={description}
       actionLabel={ctaLabel}
       className="border-dashed bg-muted/20 py-0"
-      contentClassName="flex min-h-[22rem] flex-col items-center justify-center gap-5 p-6 text-center"
+      contentClassName="flex min-h-[18rem] flex-col items-center justify-center gap-4 p-5 text-center"
     />
   )
 }
@@ -136,15 +136,10 @@ function ProfileHighlights({ profile }: { profile: NonNullable<ProfilePageProps[
   return (
     <div className="grid gap-4 md:grid-cols-3">
       {highlights.map((item) => (
-        <div
-          key={item.label}
-          className="rounded-md border border-border/80 bg-[linear-gradient(180deg,white_0%,color-mix(in_oklch,var(--accent),white_96%)_100%)] p-5 shadow-[0_18px_50px_-38px_rgba(37,99,235,0.45)]"
-        >
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-            {item.label}
-          </p>
-          <p className="mt-3 font-heading text-2xl font-semibold tracking-tight">{item.value}</p>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">{item.hint}</p>
+        <div key={item.label} className="rounded-md border border-border/80 p-4">
+          <p className="text-xs font-semibold uppercase text-muted-foreground">{item.label}</p>
+          <p className="mt-2 font-heading text-xl font-semibold tracking-tight">{item.value}</p>
+          <p className="mt-1.5 text-sm leading-6 text-muted-foreground">{item.hint}</p>
         </div>
       ))}
     </div>
@@ -162,9 +157,7 @@ function InsightList({
 }) {
   return (
     <div className="space-y-2">
-      <p
-        className={`text-xs font-semibold uppercase tracking-[0.14em] ${PROFILE_INSIGHT_HEADING_CLASS_NAME[tone]}`}
-      >
+      <p className={`text-xs font-semibold uppercase ${PROFILE_INSIGHT_HEADING_CLASS_NAME[tone]}`}>
         {title}
       </p>
       <ul className="space-y-1.5 pl-5 text-sm text-foreground">
@@ -180,24 +173,22 @@ function InsightList({
 
 function ResumeInsightCard({ insight }: { insight: ProfileResumeInsight }) {
   return (
-    <div className="rounded-md border border-border/80 bg-background p-5">
-      <div className="flex items-start gap-4">
-        <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-muted text-muted-foreground">
-          <FileTextIcon className="size-6" />
+    <div className="rounded-md border border-border/80 bg-background p-4">
+      <div className="flex items-start gap-3">
+        <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-muted text-muted-foreground">
+          <FileTextIcon className="size-5" />
         </div>
         <div className="min-w-0">
-          <p className="truncate text-lg font-semibold">{insight.fileName}</p>
-          <p className="text-sm text-muted-foreground">{insight.uploadedLabel}</p>
+          <p className="truncate text-base font-semibold">{insight.fileName}</p>
+          <p className="text-xs text-muted-foreground">{insight.uploadedLabel}</p>
         </div>
       </div>
 
-      <div className="mt-6 space-y-5">
+      <div className="mt-4 space-y-4">
         <InsightList title="Strengths" items={insight.strengths} tone="strengths" />
         <InsightList title="Gaps" items={insight.gaps} tone="gaps" />
-        <div className="space-y-3">
-          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-            Key skills
-          </p>
+        <div className="space-y-2">
+          <p className="text-xs font-semibold uppercase text-muted-foreground">Key skills</p>
           <TagList items={insight.keySkills} />
         </div>
         <InsightList
@@ -214,7 +205,7 @@ function ProfileBody({ profile }: { profile: NonNullable<ProfilePageProps['profi
   const verifiedBadge = (
     <Badge
       variant="outline"
-      className={`h-11 rounded-xl px-4 text-sm ${getProfileVerifiedBadgeClassName(
+      className={`h-9 rounded-xl px-3 text-sm ${getProfileVerifiedBadgeClassName(
         profile.account.isEmailVerified,
       )}`}
     >
@@ -247,7 +238,7 @@ function ProfileBody({ profile }: { profile: NonNullable<ProfilePageProps['profi
         description={profile.learningProfile.description}
         className="py-0"
       >
-        <div className="space-y-6">
+        <div className="space-y-5">
           <div className="grid gap-4 xl:grid-cols-3">
             <Field
               label={profile.learningProfile.targetRole.label}
@@ -284,7 +275,7 @@ function ProfileBody({ profile }: { profile: NonNullable<ProfilePageProps['profi
         description={profile.resume.description}
         className="py-0"
       >
-        <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(320px,0.98fr)]">
+        <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_minmax(320px,0.98fr)]">
           <ResumeUploadCard
             title={profile.resume.upload.dropzoneTitle}
             description={getProfileAcceptedFileLabel(
@@ -311,12 +302,12 @@ function ProfileBody({ profile }: { profile: NonNullable<ProfilePageProps['profi
 
 function LoadingBody() {
   return (
-    <div className="space-y-6">
-      <Skeleton className="h-40 rounded-md" />
-      <Skeleton className="h-80 rounded-md" />
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(320px,0.98fr)]">
-        <Skeleton className="h-104 rounded-md" />
-        <Skeleton className="h-104 rounded-md" />
+    <div className="space-y-5">
+      <Skeleton className="h-36 rounded-md" />
+      <Skeleton className="h-72 rounded-md" />
+      <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_minmax(320px,0.98fr)]">
+        <Skeleton className="h-96 rounded-md" />
+        <Skeleton className="h-96 rounded-md" />
       </div>
     </div>
   )

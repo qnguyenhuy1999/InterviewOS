@@ -3,7 +3,7 @@
 import { API_ROUTES } from '@interviewos/config'
 import type { AuthenticatedUser } from '@interviewos/types'
 import type { ConsoleLayoutNavGroup } from '@interviewos/ui'
-import { ConsoleLayout, LogoutButton } from '@interviewos/ui'
+import { ConsoleLayout, LogoutButton, TooltipProvider } from '@interviewos/ui'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import type { ReactNode } from 'react'
@@ -51,15 +51,17 @@ export function AppClientLayout({
   }
 
   return (
-    <ConsoleLayout
-      title={title}
-      navigation={navigation}
-      account={account}
-      brand={{ name: 'InterviewOS', tagline: 'Interview preparation' }}
-      LinkComponent={Link}
-      headerActions={<LogoutButton onLogout={handleLogout} onSuccess={handleLogoutSuccess} />}
-    >
-      {children}
-    </ConsoleLayout>
+    <TooltipProvider>
+      <ConsoleLayout
+        title={title}
+        navigation={navigation}
+        account={account}
+        brand={{ name: 'InterviewOS', tagline: 'Interview preparation' }}
+        LinkComponent={Link}
+        headerActions={<LogoutButton onLogout={handleLogout} onSuccess={handleLogoutSuccess} />}
+      >
+        {children}
+      </ConsoleLayout>
+    </TooltipProvider>
   )
 }

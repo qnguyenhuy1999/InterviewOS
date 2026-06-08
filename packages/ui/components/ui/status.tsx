@@ -50,6 +50,10 @@ function DifficultyBadge({
   className,
   ...props
 }: React.ComponentProps<typeof Badge> & { difficulty: Difficulty }) {
+  if (!difficulty) {
+    return null
+  }
+
   return (
     <Badge variant="outline" className={cn(difficultyClassName[difficulty], className)} {...props}>
       {difficulty[0].toUpperCase() + difficulty.slice(1)}

@@ -31,7 +31,7 @@ export default async function Page({
       state={state.kind === 'ready' ? { kind: 'ready', notes: state.data } : state}
       actions={{
         createNoteHref: APP_ROUTES.notebookNew,
-        noteHref: APP_ROUTES.notebookDetail,
+        noteHrefBase: APP_ROUTES.notebook,
         retryHref: APP_ROUTES.notebook,
       }}
       initialSearchValue={params.q}

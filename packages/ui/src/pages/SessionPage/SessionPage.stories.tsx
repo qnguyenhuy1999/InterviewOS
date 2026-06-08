@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 
+import ConsoleLayout from '../../layouts/ConsoleLayout/ConsoleLayout'
 import SessionPage from './SessionPage'
 import { sessionPageFixture } from './SessionPage.fixtures'
 
@@ -8,15 +9,20 @@ const meta = {
   component: SessionPage,
   parameters: { layout: 'fullscreen' },
   tags: ['autodocs'],
+  decorators: [
+    (Story) => (
+      <ConsoleLayout title="Sessions">
+        <Story />
+      </ConsoleLayout>
+    ),
+  ],
 } satisfies Meta<typeof SessionPage>
 
 export default meta
 type Story = StoryObj<typeof meta>
 
 export const HappyPath: Story = {
-  args: {
-    sessions: sessionPageFixture.sessions,
-  },
+  args: { sessions: sessionPageFixture.sessions },
 }
 
 export const RevokingState: Story = {
@@ -48,8 +54,6 @@ export const Error: Story = {
 }
 
 export const Mobile: Story = {
-  args: {
-    sessions: sessionPageFixture.sessions,
-  },
+  args: { sessions: sessionPageFixture.sessions },
   parameters: { viewport: { defaultViewport: 'mobile' } },
 }

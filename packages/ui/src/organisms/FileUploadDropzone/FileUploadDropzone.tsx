@@ -37,25 +37,25 @@ function FileUploadDropzone({
       <CardContent
         className={
           contentClassName ??
-          'relative flex min-h-[18rem] flex-col items-center justify-center gap-5 px-6 py-8 text-center sm:min-h-[20rem] sm:px-8'
+          'relative flex min-h-[16rem] flex-col items-center justify-center gap-4 px-5 py-6 text-center sm:min-h-[18rem] sm:px-6'
         }
       >
         <div
           className="pointer-events-none absolute inset-x-10 top-0 h-24 rounded-b-[2rem] bg-[radial-gradient(circle_at_top,color-mix(in_oklch,var(--primary),white_68%)_0%,transparent_72%)] opacity-70"
           aria-hidden="true"
         />
-        <div className="relative flex size-18 items-center justify-center rounded-[1.75rem] border border-primary/10 bg-white/80 text-primary shadow-sm">
-          <UploadIcon className="size-7" />
+        <div className="relative flex size-14 items-center justify-center rounded-[1.25rem] border border-primary/10 bg-white/80 text-primary shadow-sm">
+          <UploadIcon className="size-5" />
         </div>
-        <div className="relative space-y-3">
-          <p className="text-balance font-heading text-2xl font-semibold tracking-tight sm:text-[2rem]">
+        <div className="relative space-y-2">
+          <p className="text-balance font-heading text-xl font-semibold tracking-tight sm:text-2xl">
             {title}
           </p>
-          <p className="mx-auto max-w-xl text-sm leading-6 text-muted-foreground sm:text-base">
+          <p className="mx-auto max-w-xl text-sm leading-6 text-muted-foreground">
             {description}
           </p>
           {supportingText ? (
-            <p className="inline-flex rounded-full border border-primary/10 bg-white/80 px-3 py-1 text-sm font-medium text-muted-foreground shadow-sm">
+            <p className="inline-flex rounded-full border border-primary/10 bg-white/80 px-2.5 py-0.5 text-xs font-medium text-muted-foreground shadow-sm">
               {supportingText}
             </p>
           ) : null}

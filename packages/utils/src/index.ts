@@ -1,5 +1,3 @@
-import { clamp as clampValue } from 'lodash-es'
-
 export function formatDate(input: string | Date | null | undefined) {
   if (!input) {
     return 'Not available'
@@ -21,5 +19,5 @@ export function parseCommaSeparated(value: string) {
 }
 
 export function clampScore(value: number, minimum = 0, maximum = 100) {
-  return clampValue(Math.round(value), minimum, maximum)
+  return Math.min(Math.max(Math.round(value), minimum), maximum)
 }

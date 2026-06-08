@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 
+import ConsoleLayout from '../../layouts/ConsoleLayout/ConsoleLayout'
 import ProfilePage from './ProfilePage'
 import { profileFixture } from './ProfilePage.fixtures'
 
@@ -8,6 +9,16 @@ const meta = {
   component: ProfilePage,
   parameters: { layout: 'fullscreen' },
   tags: ['autodocs'],
+  args: {
+    profile: profileFixture,
+  },
+  decorators: [
+    (Story) => (
+      <ConsoleLayout title="Profile">
+        <Story />
+      </ConsoleLayout>
+    ),
+  ],
 } satisfies Meta<typeof ProfilePage>
 
 export default meta

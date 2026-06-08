@@ -7,9 +7,9 @@ type FieldLabelProps = {
 
 function FieldLabel({ label, description }: FieldLabelProps) {
   return (
-    <div className="space-y-1">
-      <p className="text-base font-medium text-foreground">{label}</p>
-      {description ? <p className="max-w-xs text-sm text-muted-foreground">{description}</p> : null}
+    <div className="space-y-0.5">
+      <p className="text-sm font-medium text-foreground">{label}</p>
+      {description ? <p className="max-w-xs text-xs text-muted-foreground">{description}</p> : null}
     </div>
   )
 }

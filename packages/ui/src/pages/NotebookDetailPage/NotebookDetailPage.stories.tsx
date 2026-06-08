@@ -1,6 +1,7 @@
 import { NoteStatus } from '@interviewos/types'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 
+import ConsoleLayout from '../../layouts/ConsoleLayout/ConsoleLayout'
 import NotebookDetailPage from './NotebookDetailPage'
 import { notebookDetailFixture } from './NotebookDetailPage.fixtures'
 
@@ -9,6 +10,13 @@ const meta = {
   component: NotebookDetailPage,
   parameters: { layout: 'fullscreen' },
   tags: ['autodocs'],
+  decorators: [
+    (Story) => (
+      <ConsoleLayout title="Interviews">
+        <Story />
+      </ConsoleLayout>
+    ),
+  ],
 } satisfies Meta<typeof NotebookDetailPage>
 
 export default meta

@@ -1,5 +1,6 @@
 import type { InterviewEvaluation } from '@interviewos/types'
 
+import { PageBody, PageHeader } from '../../../components/ui/page'
 import type {
   InterviewReviewPageProps,
   InterviewReviewPageSession,
@@ -261,45 +262,53 @@ function InterviewReviewPage({
   }
 
   return (
-    <div className="mx-auto max-w-5xl space-y-6">
-      <div className="space-y-1">
-        <h2 className="font-heading text-xl font-medium">Session Review</h2>
-        <p className="text-sm text-muted-foreground">
-          {session.type} · Started {formatDate(session.createdAt)}
-          {session.endedAt ? ` · Ended ${formatDate(session.endedAt)}` : ''}
-        </p>
-      </div>
+    <>
+      <PageHeader
+        title="Session Review"
+        description={`${session.type} · Started ${formatDate(session.createdAt)}
+          ${session.endedAt ? ` · Ended ${formatDate(session.endedAt)}` : ''}`}
+      />
 
-      {evaluation ? (
-        <section className="grid gap-4 lg:grid-cols-[minmax(0,2fr)_320px]">
-          <EvaluationPanel evaluation={evaluation} />
-          <EvaluationSidebar evaluation={evaluation} session={session} />
-        </section>
-      ) : (
-        <section className="rounded-xl border border-dashed border-border p-5 text-center text-sm text-muted-foreground">
-          {session.status === 'PUBLISHED'
-            ? 'Evaluation is being generated. Refresh in a moment.'
-            : 'End the session to trigger evaluation.'}
-        </section>
-      )}
-
-      <ConversationReplay turns={turns} />
-
-      {(sessionHref || allSessionsHref) && (
-        <div className="flex items-center gap-4 text-sm">
-          {sessionHref ? (
-            <a href={sessionHref} className="text-primary hover:underline">
-              Back to session
-            </a>
-          ) : null}
-          {allSessionsHref ? (
-            <a href={allSessionsHref} className="text-muted-foreground hover:underline">
-              All sessions
-            </a>
-          ) : null}
+      <PageBody className="space-y-6">
+        <div className="space-y-1">
+          <h2 className="font-heading text-xl font-medium">Session Review</h2>
+          <p className="text-sm text-muted-foreground">
+            {session.type} · Started {formatDate(session.createdAt)}
+            {session.endedAt ? ` · Ended ${formatDate(session.endedAt)}` : ''}
+          </p>
         </div>
-      )}
-    </div>
+
+        {evaluation ? (
+          <section className="grid gap-4 lg:grid-cols-[minmax(0,2fr)_320px]">
+            <EvaluationPanel evaluation={evaluation} />
+            <EvaluationSidebar evaluation={evaluation} session={session} />
+          </section>
+        ) : (
+          <section className="rounded-xl border border-dashed border-border p-5 text-center text-sm text-muted-foreground">
+            {session.status === 'PUBLISHED'
+              ? 'Evaluation is being generated. Refresh in a moment.'
+              : 'End the session to trigger evaluation.'}
+          </section>
+        )}
+
+        <ConversationReplay turns={turns} />
+
+        {(sessionHref || allSessionsHref) && (
+          <div className="flex items-center gap-4 text-sm">
+            {sessionHref ? (
+              <a href={sessionHref} className="text-primary hover:underline">
+                Back to session
+              </a>
+            ) : null}
+            {allSessionsHref ? (
+              <a href={allSessionsHref} className="text-muted-foreground hover:underline">
+                All sessions
+              </a>
+            ) : null}
+          </div>
+        )}
+      </PageBody>
+    </>
   )
 }
 

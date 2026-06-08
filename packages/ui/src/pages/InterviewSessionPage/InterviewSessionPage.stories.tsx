@@ -1,6 +1,7 @@
 import { InterviewType, NoteStatus, QuestionDifficulty } from '@interviewos/types'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 
+import ConsoleLayout from '../../layouts/ConsoleLayout/ConsoleLayout'
 import InterviewSessionPage from './InterviewSessionPage'
 import type {
   InterviewSessionPageSession,
@@ -112,6 +113,13 @@ const meta = {
   component: InterviewSessionPage,
   parameters: { layout: 'fullscreen' },
   tags: ['autodocs'],
+  decorators: [
+    (Story) => (
+      <ConsoleLayout title="Interviews">
+        <Story />
+      </ConsoleLayout>
+    ),
+  ],
 } satisfies Meta<typeof InterviewSessionPage>
 
 export default meta
@@ -156,7 +164,8 @@ export const CompanyModeComplete: Story = {
       status: NoteStatus.PUBLISHED,
       companyMode: { name: 'Stripe Staff Engineer Loop' },
       summary: {
-        headline: 'The panel pushed for concrete tradeoffs between operational simplicity and tenant isolation.',
+        headline:
+          'The panel pushed for concrete tradeoffs between operational simplicity and tenant isolation.',
       },
     },
     turns: [
@@ -177,7 +186,8 @@ export const CompanyModeComplete: Story = {
       {...args}
       renderMultiTurnForm={() => (
         <div className="rounded-xl border border-dashed border-border p-4 text-sm text-muted-foreground">
-          The transcript is read-only after publication. Use the review link to inspect scoring and evidence.
+          The transcript is read-only after publication. Use the review link to inspect scoring and
+          evidence.
         </div>
       )}
     />

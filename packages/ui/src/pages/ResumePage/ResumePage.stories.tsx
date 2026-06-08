@@ -1,12 +1,24 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 
+import ConsoleLayout from '../../layouts/ConsoleLayout/ConsoleLayout'
 import ResumePage from './ResumePage'
+import { resumePageFixture } from './ResumePage.fixtures'
 
 const meta = {
   title: 'Pages/ResumePage',
   component: ResumePage,
   parameters: { layout: 'fullscreen' },
   tags: ['autodocs'],
+  args: {
+    data: resumePageFixture,
+  },
+  decorators: [
+    (Story) => (
+      <ConsoleLayout title="Resume">
+        <Story />
+      </ConsoleLayout>
+    ),
+  ],
 } satisfies Meta<typeof ResumePage>
 
 export default meta

@@ -19,12 +19,12 @@ function TagList({
   trailing,
 }: TagListProps) {
   return (
-    <div className={cn('flex flex-wrap gap-2', className)}>
+    <div className={cn('flex flex-wrap gap-1.5', className)}>
       {items.map((item) => (
         <Badge
           key={item}
           variant={variant}
-          className={cn('h-8 rounded-full px-3 text-sm font-medium', badgeClassName)}
+          className={cn('h-7 rounded-full px-2.5 text-xs font-medium', badgeClassName)}
         >
           {item}
         </Badge>

@@ -38,21 +38,15 @@ function EnglishNoteRow({
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="space-y-3">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-              Original
-            </p>
+            <p className="text-xs font-semibold uppercase text-muted-foreground">Original</p>
             <p className="mt-1 text-sm font-medium">{originalSentence}</p>
           </div>
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-              Corrected
-            </p>
+            <p className="text-xs font-semibold uppercase text-muted-foreground">Corrected</p>
             <p className="mt-1 text-sm">{correctedSentence}</p>
           </div>
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-              Natural version
-            </p>
+            <p className="text-xs font-semibold uppercase text-muted-foreground">Natural version</p>
             <p className="mt-1 text-sm text-muted-foreground">{naturalVersion}</p>
           </div>
           <p className="text-sm leading-6 text-muted-foreground">{explanation}</p>
@@ -205,11 +199,7 @@ function EmptyBody({ startPracticeHref }: { startPracticeHref: string }) {
   )
 }
 
-function Root({
-  state,
-  actions,
-  renderNoteActions,
-}: EnglishNotesPageProps) {
+function Root({ state, actions, renderNoteActions }: EnglishNotesPageProps) {
   return (
     <>
       <PageHeader

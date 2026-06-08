@@ -17,6 +17,7 @@ export type { LogoutButtonProps } from './organisms/LogoutButton/LogoutButton.ty
 export { SettingsSectionNav } from './organisms/SettingsSectionNav/SettingsSectionNav'
 
 // Layouts
+export { TooltipProvider } from '../components/ui/tooltip'
 export { default as ConsoleLayout } from './layouts/ConsoleLayout/ConsoleLayout'
 export type {
   ConsoleLayoutAccount,
