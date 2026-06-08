@@ -47,7 +47,7 @@ function ScoreBar({ label, score }: { label: string; score: number }) {
 
 function EvaluationPanel({ evaluation }: { evaluation: InterviewEvaluation }) {
   return (
-    <div className="space-y-4 rounded-2xl border border-border bg-card p-5">
+    <div className="space-y-4 rounded-md border border-border bg-card p-5">
       <div className="flex items-start justify-between gap-4">
         <div>
           <h3 className="font-heading text-lg font-medium">Evaluation</h3>
@@ -140,27 +140,33 @@ function EvaluationSidebar({
 }) {
   return (
     <aside className="space-y-4">
-      <section className="rounded-2xl border border-border bg-card p-5">
+      <section className="rounded-md border border-border bg-card p-5">
         <h3 className="font-heading text-base font-medium">Confidence</h3>
         <p className="mt-3 font-heading text-3xl font-medium">{evaluation.confidence ?? '--'}</p>
         <p className="text-xs text-muted-foreground">Model confidence</p>
       </section>
 
       {session.readinessImpact ? (
-        <section className="rounded-2xl border border-border bg-card p-5">
+        <section className="rounded-md border border-border bg-card p-5">
           <h3 className="font-heading text-base font-medium">Readiness impact</h3>
           <div className="mt-4 space-y-3">
             <MetricRow label="Overall" value={signed(session.readinessImpact.overallDelta)} />
             <MetricRow label="Technical" value={signed(session.readinessImpact.technicalDelta)} />
             <MetricRow label="Behavioral" value={signed(session.readinessImpact.behavioralDelta)} />
-            <MetricRow label="System design" value={signed(session.readinessImpact.systemDesignDelta)} />
-            <MetricRow label="Communication" value={signed(session.readinessImpact.communicationDelta)} />
+            <MetricRow
+              label="System design"
+              value={signed(session.readinessImpact.systemDesignDelta)}
+            />
+            <MetricRow
+              label="Communication"
+              value={signed(session.readinessImpact.communicationDelta)}
+            />
           </div>
         </section>
       ) : null}
 
       {session.summary ? (
-        <section className="rounded-2xl border border-border bg-card p-5">
+        <section className="rounded-md border border-border bg-card p-5">
           <h3 className="font-heading text-base font-medium">Replay summary</h3>
           <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
             {session.summary.keyTakeaways.map((item, index) => (

@@ -16,7 +16,7 @@ import {
 import { Badge } from '../../../components/ui/badge'
 import { Button } from '../../../components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/card'
-import { EmptyState } from '../../../components/ui/page'
+import { EmptyState, PageBody, PageHeader } from '../../../components/ui/page'
 import { Progress } from '../../../components/ui/progress'
 import { Separator } from '../../../components/ui/separator'
 import { Skeleton } from '../../../components/ui/skeleton'
@@ -191,7 +191,8 @@ function ReviewBody({
                 {
                   label: item.typeLabel,
                   variant: 'outline',
-                  className: 'rounded-full px-2.5 py-1 text-[0.7rem] font-semibold uppercase tracking-[0.08em]',
+                  className:
+                    'rounded-full px-2.5 py-1 text-[0.7rem] font-semibold uppercase tracking-[0.08em]',
                 },
               ]}
               title={item.title}
@@ -306,17 +307,17 @@ function ErrorBody({ message }: { message: string }) {
 function Root({ data = reviewPageFixture, loading, empty, error }: ReviewPageProps) {
   return (
     <>
-      <div className="mb-6 border-b pb-6">
-        <h2 className="font-heading text-4xl font-semibold tracking-tight">{data.title}</h2>
-        <p className="mt-2 text-base text-muted-foreground">{data.subtitle}</p>
-      </div>
-      {error ? (
-        <ErrorBody message={error} />
-      ) : loading ? (
-        <LoadingBody />
-      ) : (
-        <ReviewBody empty={empty} data={data} />
-      )}
+      <PageHeader title={data.title} description={data.subtitle} />
+
+      <PageBody>
+        {error ? (
+          <ErrorBody message={error} />
+        ) : loading ? (
+          <LoadingBody />
+        ) : (
+          <ReviewBody empty={empty} data={data} />
+        )}
+      </PageBody>
       <Separator className="mt-8 opacity-0" />
     </>
   )

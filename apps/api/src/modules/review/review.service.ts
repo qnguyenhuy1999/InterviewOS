@@ -2,8 +2,14 @@ import type { Prisma } from '@interviewos/database'
 import type {
   DashboardProgress,
   LearningPathItem,
+  ReviewItem as ReviewQueueEntryItem,
   ReviewQueueResponse,
   UserWeakConcept,
+} from '@interviewos/types'
+import {
+  ReviewItemType as SharedReviewItemType,
+  ReviewRating as SharedReviewRating,
+  WeakConceptStatus as SharedWeakConceptStatus,
 } from '@interviewos/types'
 import { reviewRatingSchema, weakConceptStatusSchema } from '@interviewos/validators'
 import { Injectable, NotFoundException } from '@nestjs/common'
@@ -63,7 +69,8 @@ export class ReviewService {
           type: 'GENERATED_QUESTION',
           sourceId: question.id,
           sourceLabel: question.question,
-          weaknessScore: question.difficulty === 'HARD' || question.difficulty === 'EXPERT' ? 72 : 55,
+          weaknessScore:
+            question.difficulty === 'HARD' || question.difficulty === 'EXPERT' ? 72 : 55,
           masteryScore: 0,
           nextReviewAt: new Date(),
           reviewIntervalDays: 1,
@@ -118,7 +125,8 @@ export class ReviewService {
           type: 'WEAK_CONCEPT',
           sourceId: concept.id,
           sourceLabel: concept.concept,
-          weaknessScore: concept.status === 'IGNORED' ? 0 : Math.min(100, concept.occurrenceCount * 18),
+          weaknessScore:
+            concept.status === 'IGNORED' ? 0 : Math.min(100, concept.occurrenceCount * 18),
           masteryScore: masteryFromWeakConceptStatus(concept.status),
           nextReviewAt: concept.lastSeenAt,
           reviewIntervalDays: 1,
@@ -155,8 +163,11 @@ export class ReviewService {
         }
 
         if (profile) {
-          const haystack = `${item.sourceLabel} ${JSON.stringify(item.metadata ?? {})}`.toLowerCase()
-          const roleTerms = [profile.targetRole, ...profile.techStack].map((term) => term.toLowerCase())
+          const haystack =
+            `${item.sourceLabel} ${JSON.stringify(item.metadata ?? {})}`.toLowerCase()
+          const roleTerms = [profile.targetRole, ...profile.techStack].map((term) =>
+            term.toLowerCase(),
+          )
           const roleMatches = roleTerms.filter((term) => haystack.includes(term)).length
           if (roleMatches > 0) {
             score += roleMatches * 15
@@ -173,12 +184,19 @@ export class ReviewService {
       .sort((left, right) => right.priorityScore - left.priorityScore)
 
     return {
-      items: ranked,
+      items: ranked.map((entry) => ({
+        ...entry,
+        item: mapReviewQueueItem(entry.item),
+      })),
       dueCount: ranked.filter((item) => item.item.nextReviewAt <= now).length,
     }
   }
 
-  async rateReviewItem(currentUser: CurrentUserRef, reviewItemId: string, payload: ReviewRatingDto) {
+  async rateReviewItem(
+    currentUser: CurrentUserRef,
+    reviewItemId: string,
+    payload: ReviewRatingDto,
+  ) {
     const user = await this.usersRepository.ensureUserById(currentUser.id)
     const input = reviewRatingSchema.parse(payload)
     const item = await this.reviewRepository.findReviewItem(user.id, reviewItemId)
@@ -214,7 +232,11 @@ export class ReviewService {
   ) {
     const user = await this.usersRepository.ensureUserById(currentUser.id)
     const input = weakConceptStatusSchema.parse(payload)
-    const concept = await this.reviewRepository.updateWeakConceptStatus(user.id, weakConceptId, input.status)
+    const concept = await this.reviewRepository.updateWeakConceptStatus(
+      user.id,
+      weakConceptId,
+      input.status,
+    )
     await this.syncWeakConceptReviews(user.id, [concept as unknown as UserWeakConcept])
     return concept
   }
@@ -234,7 +256,9 @@ export class ReviewService {
       } satisfies Prisma.JsonObject,
     }))
 
-    return this.reviewRepository.replacePendingLearningPath(user.id, items) as Promise<LearningPathItem[]>
+    return this.reviewRepository.replacePendingLearningPath(user.id, items) as Promise<
+      LearningPathItem[]
+    >
   }
 
   async updateLearningPathItem(
@@ -284,13 +308,18 @@ export class ReviewService {
         )
       : 0
     const technicalMastery = reviewItems.length
-      ? clamp(Math.round(reviewItems.reduce((sum, item) => sum + item.masteryScore, 0) / reviewItems.length))
+      ? clamp(
+          Math.round(
+            reviewItems.reduce((sum, item) => sum + item.masteryScore, 0) / reviewItems.length,
+          ),
+        )
       : 0
     const englishScore = englishNotes.length
       ? clamp(
           Math.round(
-            englishNotes.filter((note) => note.status === 'IMPROVED' || note.status === 'MASTERED').length /
-              englishNotes.length *
+            (englishNotes.filter((note) => note.status === 'IMPROVED' || note.status === 'MASTERED')
+              .length /
+              englishNotes.length) *
               100,
           ),
         )
@@ -307,14 +336,88 @@ export class ReviewService {
       weakConceptTrends: weakConcepts.slice(0, 6).map((concept) => ({
         concept: concept.concept,
         occurrenceCount: concept.occurrenceCount,
-        status: concept.status,
+        status: mapWeakConceptStatus(concept.status),
       })),
     }
   }
-
 }
 
-function scheduleReview(masteryScore: number, intervalDays: number, rating: 'AGAIN' | 'HARD' | 'GOOD' | 'EASY') {
+function mapReviewQueueItem(item: {
+  id: string
+  userId: string
+  type: string
+  sourceId: string
+  sourceLabel: string
+  weaknessScore: number
+  masteryScore: number
+  nextReviewAt: Date
+  reviewIntervalDays: number
+  lastReviewedAt: Date | null
+  lastFailureAt: Date | null
+  lastRating: string | null
+  metadata: unknown
+  createdAt: Date
+  updatedAt: Date
+}): ReviewQueueEntryItem {
+  return {
+    ...item,
+    type: mapReviewItemType(item.type),
+    lastRating: mapReviewRating(item.lastRating),
+  }
+}
+
+function mapReviewItemType(type: string): SharedReviewItemType {
+  switch (type) {
+    case 'TECHNICAL_NOTE':
+      return SharedReviewItemType.TECHNICAL_NOTE
+    case 'GENERATED_QUESTION':
+      return SharedReviewItemType.GENERATED_QUESTION
+    case 'ENGLISH_NOTE':
+      return SharedReviewItemType.ENGLISH_NOTE
+    case 'WEAK_CONCEPT':
+      return SharedReviewItemType.WEAK_CONCEPT
+    default:
+      throw new Error(`Unsupported review item type: ${type}`)
+  }
+}
+
+function mapReviewRating(rating: string | null): SharedReviewRating | null {
+  switch (rating) {
+    case 'AGAIN':
+      return SharedReviewRating.AGAIN
+    case 'HARD':
+      return SharedReviewRating.HARD
+    case 'GOOD':
+      return SharedReviewRating.GOOD
+    case 'EASY':
+      return SharedReviewRating.EASY
+    case null:
+      return null
+    default:
+      throw new Error(`Unsupported review rating: ${rating}`)
+  }
+}
+
+function mapWeakConceptStatus(status: string): SharedWeakConceptStatus {
+  switch (status) {
+    case 'ACTIVE':
+      return SharedWeakConceptStatus.ACTIVE
+    case 'IMPROVING':
+      return SharedWeakConceptStatus.IMPROVING
+    case 'RESOLVED':
+      return SharedWeakConceptStatus.RESOLVED
+    case 'IGNORED':
+      return SharedWeakConceptStatus.IGNORED
+    default:
+      throw new Error(`Unsupported weak concept status: ${status}`)
+  }
+}
+
+function scheduleReview(
+  masteryScore: number,
+  intervalDays: number,
+  rating: 'AGAIN' | 'HARD' | 'GOOD' | 'EASY',
+) {
   const now = new Date()
 
   switch (rating) {
@@ -406,11 +509,7 @@ function masteryFromWeakConceptStatus(status: string) {
   }
 }
 
-function actionPathForReviewItem(item: {
-  type: string
-  sourceId: string
-  metadata?: unknown
-}) {
+function actionPathForReviewItem(item: { type: string; sourceId: string; metadata?: unknown }) {
   switch (item.type) {
     case 'TECHNICAL_NOTE':
       return `/notebook/${item.sourceId}`
@@ -433,7 +532,9 @@ function computeReviewStreak(dates: Date[]) {
     return 0
   }
 
-  const uniqueDays = Array.from(new Set(dates.map((date) => date.toISOString().slice(0, 10)))).sort().reverse()
+  const uniqueDays = Array.from(new Set(dates.map((date) => date.toISOString().slice(0, 10))))
+    .sort()
+    .reverse()
   let streak = 0
   let cursor = new Date()
 

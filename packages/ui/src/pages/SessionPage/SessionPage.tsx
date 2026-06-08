@@ -36,14 +36,18 @@ function SessionMeta({ session }: { session: SessionPageSession }) {
           {deviceLabel} · {browserLabel}
         </p>
         {session.isCurrent ? (
-          <Badge variant="secondary" className="rounded-full bg-emerald-500/12 px-3 py-1 text-emerald-700">
+          <Badge
+            variant="secondary"
+            className="rounded-full bg-emerald-500/12 px-3 py-1 text-emerald-700"
+          >
             This device
           </Badge>
         ) : null}
       </div>
       <p className="text-sm text-muted-foreground">
         {session.ipAddress ?? SESSION_PAGE_UNKNOWN_IP_LABEL} · Last seen{' '}
-        {formatSessionLastSeenLabel(session.lastSeenAt)} · Since {formatSessionCreatedLabel(session.createdAt)}
+        {formatSessionLastSeenLabel(session.lastSeenAt)} · Since{' '}
+        {formatSessionCreatedLabel(session.createdAt)}
       </p>
     </div>
   )
@@ -61,7 +65,7 @@ function SessionRow({
   const isRevoking = revokingSessionId === session.id
 
   return (
-    <div className="flex flex-col gap-4 rounded-2xl border border-transparent px-3 py-4 transition-colors hover:border-primary/15 hover:bg-primary/3 md:flex-row md:items-center md:justify-between">
+    <div className="flex flex-col gap-4 rounded-md border border-transparent px-3 py-4 transition-colors hover:border-primary/15 hover:bg-primary/3 md:flex-row md:items-center md:justify-between">
       <div className="flex min-w-0 items-start gap-4">
         <SessionIcon session={session} />
         <SessionMeta session={session} />
@@ -96,7 +100,11 @@ function SessionHighlights({ sessions }: { sessions: SessionPageSession[] }) {
       <StatCard
         label="Current device"
         value={currentSession ? '1' : '0'}
-        hint={currentSession ? getSessionDevicePresentation(currentSession).deviceLabel : 'No current session detected'}
+        hint={
+          currentSession
+            ? getSessionDevicePresentation(currentSession).deviceLabel
+            : 'No current session detected'
+        }
         icon={ShieldCheckIcon}
       />
       <StatCard
@@ -108,7 +116,11 @@ function SessionHighlights({ sessions }: { sessions: SessionPageSession[] }) {
       <StatCard
         label="IPs in use"
         value={uniqueIpCount}
-        hint={uniqueIpCount > 1 ? 'Multiple networks detected across signed-in devices.' : 'All devices currently share one network.'}
+        hint={
+          uniqueIpCount > 1
+            ? 'Multiple networks detected across signed-in devices.'
+            : 'All devices currently share one network.'
+        }
         icon={ShieldCheckIcon}
       />
     </div>
@@ -152,7 +164,10 @@ function LoadingBody() {
         </CardHeader>
         <CardContent className="space-y-4 py-4">
           {Array.from({ length: 3 }).map((_, index) => (
-            <div key={index} className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div
+              key={index}
+              className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between"
+            >
               <div className="flex items-start gap-4">
                 <Skeleton className="size-12 rounded-xl" />
                 <div className="space-y-2">
@@ -219,11 +234,17 @@ function ReadyBody({
             <CardTitle className="text-xl font-semibold">Security tips</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4 py-4 text-sm leading-6 text-muted-foreground">
-            <div className="rounded-2xl border border-primary/10 bg-primary/5 px-4 py-3 text-foreground">
+            <div className="rounded-md border border-primary/10 bg-primary/5 px-4 py-3 text-foreground">
               Review devices after interviews on shared computers or borrowed phones.
             </div>
-            <p>Revoke any browser you do not recognize, especially if it has been inactive for several days.</p>
-            <p>Use “Log out everywhere” after rotating credentials or changing your primary auth method.</p>
+            <p>
+              Revoke any browser you do not recognize, especially if it has been inactive for
+              several days.
+            </p>
+            <p>
+              Use “Log out everywhere” after rotating credentials or changing your primary auth
+              method.
+            </p>
           </CardContent>
         </Card>
       </div>
@@ -249,7 +270,12 @@ function Root({
         title="Active sessions"
         description="Devices currently signed in to your account."
         actions={
-          <Button size="lg" variant="destructive" disabled={isLoggingOutEverywhere} onClick={onLogoutEverywhere}>
+          <Button
+            size="lg"
+            variant="destructive"
+            disabled={isLoggingOutEverywhere}
+            onClick={onLogoutEverywhere}
+          >
             <LogOutIcon />
             {isLoggingOutEverywhere ? 'Signing out...' : 'Log out everywhere'}
           </Button>

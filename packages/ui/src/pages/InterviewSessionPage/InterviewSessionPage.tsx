@@ -42,7 +42,7 @@ function InterviewSessionPage({
     return (
       <div className="mx-auto max-w-5xl space-y-6">
         <div className="grid gap-4 lg:grid-cols-[minmax(0,2fr)_320px]">
-          <section className="space-y-3 rounded-2xl border border-border bg-card p-5">
+          <section className="space-y-3 rounded-md border border-border bg-card p-5">
             <div className="space-y-1">
               <h2 className="font-heading text-2xl font-medium">Interview Room</h2>
               <p className="text-sm text-muted-foreground">
@@ -69,7 +69,7 @@ function InterviewSessionPage({
           </section>
 
           <aside className="space-y-4">
-            <section className="rounded-2xl border border-border bg-card p-5">
+            <section className="rounded-md border border-border bg-card p-5">
               <h3 className="font-heading text-base font-medium">Progress</h3>
               <div className="mt-4 space-y-3">
                 <ProgressRow label="Version" value={`v${session.version ?? 1}`} />
@@ -86,14 +86,29 @@ function InterviewSessionPage({
             </section>
 
             {session.readinessImpact ? (
-              <section className="rounded-2xl border border-border bg-card p-5">
+              <section className="rounded-md border border-border bg-card p-5">
                 <h3 className="font-heading text-base font-medium">Readiness impact</h3>
                 <div className="mt-4 space-y-3">
-                  <ProgressRow label="Overall" value={signed(session.readinessImpact.overallDelta)} />
-                  <ProgressRow label="Technical" value={signed(session.readinessImpact.technicalDelta)} />
-                  <ProgressRow label="Behavioral" value={signed(session.readinessImpact.behavioralDelta)} />
-                  <ProgressRow label="System design" value={signed(session.readinessImpact.systemDesignDelta)} />
-                  <ProgressRow label="Communication" value={signed(session.readinessImpact.communicationDelta)} />
+                  <ProgressRow
+                    label="Overall"
+                    value={signed(session.readinessImpact.overallDelta)}
+                  />
+                  <ProgressRow
+                    label="Technical"
+                    value={signed(session.readinessImpact.technicalDelta)}
+                  />
+                  <ProgressRow
+                    label="Behavioral"
+                    value={signed(session.readinessImpact.behavioralDelta)}
+                  />
+                  <ProgressRow
+                    label="System design"
+                    value={signed(session.readinessImpact.systemDesignDelta)}
+                  />
+                  <ProgressRow
+                    label="Communication"
+                    value={signed(session.readinessImpact.communicationDelta)}
+                  />
                 </div>
               </section>
             ) : null}
@@ -101,7 +116,7 @@ function InterviewSessionPage({
             {isComplete ? (
               <a
                 href={`/interview/session/${session.id}/review`}
-                className="block rounded-2xl bg-primary px-4 py-3 text-center text-sm font-medium text-primary-foreground"
+                className="block rounded-md bg-primary px-4 py-3 text-center text-sm font-medium text-primary-foreground"
               >
                 Open session review
               </a>
@@ -127,7 +142,9 @@ function InterviewSessionPage({
 
       <section className="rounded-lg border border-border p-4">
         <h3 className="mb-2 font-heading text-base font-medium">Question</h3>
-        <p className="text-sm text-muted-foreground">{question?.question ?? 'Question unavailable'}</p>
+        <p className="text-sm text-muted-foreground">
+          {question?.question ?? 'Question unavailable'}
+        </p>
         <p className="mt-2 text-xs uppercase tracking-wide text-muted-foreground">
           {question?.difficulty ?? 'Unknown'} · {question?.category ?? 'Unknown'} ·{' '}
           {question?.expectedConcepts.join(', ') ?? 'No concepts'}

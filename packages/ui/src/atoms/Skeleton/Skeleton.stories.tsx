@@ -5,7 +5,7 @@ import { Spinner } from '../../../components/ui/spinner'
 
 // Skeleton meta
 const skeletonMeta = {
-  title: 'Skeleton',
+  title: 'Atoms/Skeleton',
   component: Skeleton,
   parameters: { layout: 'centered' },
   tags: ['autodocs'],

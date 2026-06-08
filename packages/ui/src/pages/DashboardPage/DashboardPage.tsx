@@ -1,3 +1,4 @@
+import type { DashboardProgress } from '@interviewos/types'
 import { LanguagesIcon, MicIcon, NotebookTextIcon, PlusIcon } from 'lucide-react'
 
 import { Button } from '../../../components/ui/button'
@@ -9,7 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from '../../../components/ui/card'
-import { EmptyState } from '../../../components/ui/page'
+import { EmptyState, PageBody } from '../../../components/ui/page'
 import { Progress } from '../../../components/ui/progress'
 import { Separator } from '../../../components/ui/separator'
 import { Skeleton } from '../../../components/ui/skeleton'
@@ -23,7 +24,6 @@ import type {
   DashboardPageProps,
   DashboardWeakConcept,
 } from './DashboardPage.types'
-import type { DashboardProgress } from '@interviewos/types'
 import { getDashboardToneClass } from './DashboardPage.utils'
 
 function MetricCard({ metric }: { metric: DashboardMetric }) {
@@ -372,13 +372,15 @@ function RealDataBody({
                     ]
                   }`}
                 >
-                  {TREND_ICON[
-                    readiness.improvementTrend > 0
-                      ? 'UP'
-                      : readiness.improvementTrend < 0
-                        ? 'DOWN'
-                        : 'STABLE'
-                  ]}{' '}
+                  {
+                    TREND_ICON[
+                      readiness.improvementTrend > 0
+                        ? 'UP'
+                        : readiness.improvementTrend < 0
+                          ? 'DOWN'
+                          : 'STABLE'
+                    ]
+                  }{' '}
                   {readiness.improvementTrend > 0 ? '+' : ''}
                   {readiness.improvementTrend} pts
                 </p>
@@ -390,7 +392,9 @@ function RealDataBody({
               <div key={item.dimension} className="space-y-1">
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-muted-foreground">{item.label}</span>
-                  <span className={`flex items-center gap-1 font-medium ${TREND_COLOR[item.trend]}`}>
+                  <span
+                    className={`flex items-center gap-1 font-medium ${TREND_COLOR[item.trend]}`}
+                  >
                     <span className="text-xs">{TREND_ICON[item.trend]}</span>
                     {item.score}
                   </span>
@@ -410,7 +414,7 @@ function RealDataBody({
 
 function Root({ loading, empty, error, progress, readiness }: DashboardPageProps) {
   return (
-    <>
+    <PageBody>
       {error ? (
         <ErrorBody message={error} />
       ) : loading ? (
@@ -421,7 +425,7 @@ function Root({ loading, empty, error, progress, readiness }: DashboardPageProps
         <DashboardBody empty={empty} />
       )}
       <Separator className="mt-8 opacity-0" />
-    </>
+    </PageBody>
   )
 }
 

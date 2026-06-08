@@ -13,7 +13,7 @@ import type * as React from 'react'
 import { Button } from '../../../components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/card'
 import { Input } from '../../../components/ui/input'
-import { EmptyState, PageHeader, StatCard } from '../../../components/ui/page'
+import { EmptyState, PageBody, PageHeader, StatCard } from '../../../components/ui/page'
 import {
   Select,
   SelectContent,
@@ -118,11 +118,7 @@ function SectionFieldRow({ field }: { field: SettingsFieldView }) {
     >
       <FieldLabel label={field.label} description={field.description} />
       <div
-        className={cn(
-          'min-w-0',
-          isToggle && 'flex items-start',
-          isActions && 'justify-self-start',
-        )}
+        className={cn('min-w-0', isToggle && 'flex items-start', isActions && 'justify-self-start')}
       >
         <FieldControl field={field} />
       </div>
@@ -132,7 +128,7 @@ function SectionFieldRow({ field }: { field: SettingsFieldView }) {
 
 function SectionCard({ section }: { section: SettingsPageSection }) {
   return (
-    <Card className="gap-0 rounded-2xl py-0">
+    <Card className="gap-0 rounded-md py-0">
       <CardHeader className="border-b py-4">
         <div>
           <CardTitle className="text-xl font-semibold">{section.title}</CardTitle>
@@ -174,7 +170,8 @@ function SettingsHighlights({
   data: NonNullable<SettingsPageProps['data']>
   activeSection: SettingsPageSection
 }) {
-  const activeSectionIndex = data.sections.findIndex((section) => section.id === activeSection.id) + 1
+  const activeSectionIndex =
+    data.sections.findIndex((section) => section.id === activeSection.id) + 1
   const toggleCount = activeSection.fields.filter((field) => field.kind === 'toggle').length
 
   return (
@@ -200,7 +197,11 @@ function SettingsHighlights({
       <StatCard
         label="Quick toggles"
         value={toggleCount}
-        hint={toggleCount > 0 ? 'Behavior defaults you can switch instantly.' : 'This section is mostly static values.'}
+        hint={
+          toggleCount > 0
+            ? 'Behavior defaults you can switch instantly.'
+            : 'This section is mostly static values.'
+        }
         icon={BrainCircuitIcon}
       />
     </div>
@@ -235,7 +236,7 @@ function SettingsBody({
 
       <div className="grid gap-6 xl:grid-cols-[320px_minmax(0,1fr)] xl:items-start">
         <div className="space-y-4 xl:sticky xl:top-24">
-          <div className="rounded-3xl border border-primary/15 bg-[linear-gradient(135deg,color-mix(in_oklch,var(--primary),white_92%)_0%,white_100%)] p-5 shadow-[0_20px_60px_-38px_color-mix(in_oklch,var(--primary),transparent_40%)]">
+          <div className="rounded-md border border-primary/15 p-5">
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary/80">
               Active section
             </p>
@@ -246,7 +247,7 @@ function SettingsBody({
               {activeSection.description}
             </p>
           </div>
-          <div className="rounded-3xl border border-border/80 bg-card p-3 shadow-[0_20px_60px_-45px_rgba(15,23,42,0.32)]">
+          <div className="rounded-md border border-border/80 bg-card p-3">
             <SettingsSectionNav
               sections={data.sections}
               activeSectionId={activeSection.id}
@@ -270,7 +271,7 @@ function LoadingBody() {
           <Skeleton key={index} className="h-12 w-full rounded-xl" />
         ))}
       </div>
-      <Card className="min-h-96 items-center justify-center rounded-2xl">
+      <Card className="min-h-96 items-center justify-center rounded-md">
         <Spinner className="size-7" />
       </Card>
     </div>
@@ -299,23 +300,26 @@ function Root({
   return (
     <>
       <PageHeader title={data.title} description={data.subtitle} />
-      {error ? (
-        <ErrorBody message={error} />
-      ) : loading ? (
-        <LoadingBody />
-      ) : empty || data.sections.length === 0 ? (
-        <EmptyState
-          className="min-h-80"
-          title="No settings available"
-          description="Add settings sections to start configuring your workspace."
-        />
-      ) : (
-        <SettingsBody
-          data={data}
-          activeSectionId={activeSectionId}
-          onSectionChange={onSectionChange}
-        />
-      )}
+
+      <PageBody>
+        {error ? (
+          <ErrorBody message={error} />
+        ) : loading ? (
+          <LoadingBody />
+        ) : empty || data.sections.length === 0 ? (
+          <EmptyState
+            className="min-h-80"
+            title="No settings available"
+            description="Add settings sections to start configuring your workspace."
+          />
+        ) : (
+          <SettingsBody
+            data={data}
+            activeSectionId={activeSectionId}
+            onSectionChange={onSectionChange}
+          />
+        )}
+      </PageBody>
       <Separator className="mt-8 opacity-0" />
     </>
   )

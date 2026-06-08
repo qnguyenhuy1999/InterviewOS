@@ -10,7 +10,11 @@ import { Skeleton } from '../../../components/ui/skeleton'
 import { cn } from '../../../lib/utils'
 import { READINESS_SCORE_MAX } from './ReadinessPage.constants'
 import { readinessPageFixture } from './ReadinessPage.fixtures'
-import type { ReadinessDimension, ReadinessHistoryItem, ReadinessPageProps } from './ReadinessPage.types'
+import type {
+  ReadinessDimension,
+  ReadinessHistoryItem,
+  ReadinessPageProps,
+} from './ReadinessPage.types'
 import {
   getBestReadinessDimension,
   getReadinessComputedAtLabel,
@@ -74,9 +78,11 @@ function HistoryRow({ item }: { item: ReadinessHistoryItem }) {
         <span className="absolute inset-y-0 left-1/2 -translate-x-1/2 border-l border-border/80" />
         <span className="relative mt-3 inline-flex size-3 rounded-full border-2 border-background bg-primary" />
       </div>
-      <article className="flex items-center justify-between gap-4 rounded-2xl border border-border/80 bg-background px-4 py-4">
+      <article className="flex items-center justify-between gap-4 rounded-md border border-border/80 bg-background px-4 py-4">
         <div>
-          <p className="text-sm text-muted-foreground">{getReadinessHistoryDateLabel(item.computedAt)}</p>
+          <p className="text-sm text-muted-foreground">
+            {getReadinessHistoryDateLabel(item.computedAt)}
+          </p>
           <p className="mt-1 text-3xl font-semibold tracking-tight">{item.overallScore}</p>
         </div>
         <span
@@ -122,7 +128,7 @@ function ReadinessBody({ data }: { data: NonNullable<ReadinessPageProps['data']>
             </p>
           </CardHeader>
           <CardContent className="grid gap-4 p-4 md:grid-cols-3">
-            <div className="rounded-2xl border border-border/80 bg-background p-4">
+            <div className="rounded-md border border-border/80 bg-background p-4">
               <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
                 Confidence
               </p>
@@ -130,7 +136,7 @@ function ReadinessBody({ data }: { data: NonNullable<ReadinessPageProps['data']>
                 {Math.round(data.latest.confidenceLevel * 100)}%
               </p>
             </div>
-            <div className="rounded-2xl border border-border/80 bg-background p-4">
+            <div className="rounded-md border border-border/80 bg-background p-4">
               <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
                 Learning progress
               </p>
@@ -138,7 +144,7 @@ function ReadinessBody({ data }: { data: NonNullable<ReadinessPageProps['data']>
                 {data.latest.learningProgress}
               </p>
             </div>
-            <div className="rounded-2xl border border-border/80 bg-background p-4">
+            <div className="rounded-md border border-border/80 bg-background p-4">
               <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
                 Review completion
               </p>
@@ -196,11 +202,11 @@ function LoadingBody() {
   return (
     <PageBody className="space-y-6">
       <div className="grid gap-6 xl:grid-cols-[minmax(0,2fr)_minmax(320px,1fr)]">
-        <Skeleton className="h-72 rounded-2xl" />
-        <Skeleton className="h-72 rounded-2xl" />
+        <Skeleton className="h-72 rounded-md" />
+        <Skeleton className="h-72 rounded-md" />
       </div>
-      <Skeleton className="h-96 rounded-2xl" />
-      <Skeleton className="h-96 rounded-2xl" />
+      <Skeleton className="h-96 rounded-md" />
+      <Skeleton className="h-96 rounded-md" />
     </PageBody>
   )
 }
@@ -245,15 +251,18 @@ function Root({ data = readinessPageFixture, loading, empty, error }: ReadinessP
           </Button>
         }
       />
-      {error ? (
-        <ErrorBody message={error} />
-      ) : loading ? (
-        <LoadingBody />
-      ) : empty ? (
-        <EmptyBody />
-      ) : (
-        <ReadinessBody data={data} />
-      )}
+
+      <PageBody>
+        {error ? (
+          <ErrorBody message={error} />
+        ) : loading ? (
+          <LoadingBody />
+        ) : empty ? (
+          <EmptyBody />
+        ) : (
+          <ReadinessBody data={data} />
+        )}
+      </PageBody>
       <Separator className="opacity-0" />
     </>
   )

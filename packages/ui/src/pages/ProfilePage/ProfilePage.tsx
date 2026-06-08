@@ -4,7 +4,7 @@ import type * as React from 'react'
 import { Badge } from '../../../components/ui/badge'
 import { Button } from '../../../components/ui/button'
 import { Input } from '../../../components/ui/input'
-import { EmptyState, PageHeader, SectionCard } from '../../../components/ui/page'
+import { EmptyState, PageBody, PageHeader, SectionCard } from '../../../components/ui/page'
 import {
   Select,
   SelectContent,
@@ -22,10 +22,7 @@ import type {
   ProfileResumeInsight,
   ProfileSelectOption,
 } from './ProfilePage.types'
-import {
-  getProfileAcceptedFileLabel,
-  getProfileVerifiedBadgeClassName,
-} from './ProfilePage.utils'
+import { getProfileAcceptedFileLabel, getProfileVerifiedBadgeClassName } from './ProfilePage.utils'
 
 function Field({
   label,
@@ -117,11 +114,7 @@ function ResumeUploadCard({
   )
 }
 
-function ProfileHighlights({
-  profile,
-}: {
-  profile: NonNullable<ProfilePageProps['profile']>
-}) {
+function ProfileHighlights({ profile }: { profile: NonNullable<ProfilePageProps['profile']> }) {
   const highlights = [
     {
       label: 'Target role',
@@ -145,7 +138,7 @@ function ProfileHighlights({
       {highlights.map((item) => (
         <div
           key={item.label}
-          className="rounded-3xl border border-border/80 bg-[linear-gradient(180deg,white_0%,color-mix(in_oklch,var(--accent),white_96%)_100%)] p-5 shadow-[0_18px_50px_-38px_rgba(37,99,235,0.45)]"
+          className="rounded-md border border-border/80 bg-[linear-gradient(180deg,white_0%,color-mix(in_oklch,var(--accent),white_96%)_100%)] p-5 shadow-[0_18px_50px_-38px_rgba(37,99,235,0.45)]"
         >
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
             {item.label}
@@ -187,7 +180,7 @@ function InsightList({
 
 function ResumeInsightCard({ insight }: { insight: ProfileResumeInsight }) {
   return (
-    <div className="rounded-2xl border border-border/80 bg-background p-5">
+    <div className="rounded-md border border-border/80 bg-background p-5">
       <div className="flex items-start gap-4">
         <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-muted text-muted-foreground">
           <FileTextIcon className="size-6" />
@@ -304,7 +297,7 @@ function ProfileBody({ profile }: { profile: NonNullable<ProfilePageProps['profi
             <ResumeInsightCard insight={profile.resume.latest} />
           ) : (
             <EmptyState
-              className="min-h-88 rounded-2xl border border-dashed bg-muted/20"
+              className="min-h-88 rounded-md border border-dashed bg-muted/20"
               icon={FileTextIcon}
               title="No resume analysis yet"
               description={profile.resume.description}
@@ -319,11 +312,11 @@ function ProfileBody({ profile }: { profile: NonNullable<ProfilePageProps['profi
 function LoadingBody() {
   return (
     <div className="space-y-6">
-      <Skeleton className="h-40 rounded-2xl" />
-      <Skeleton className="h-80 rounded-2xl" />
+      <Skeleton className="h-40 rounded-md" />
+      <Skeleton className="h-80 rounded-md" />
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(320px,0.98fr)]">
-        <Skeleton className="h-104 rounded-2xl" />
-        <Skeleton className="h-104 rounded-2xl" />
+        <Skeleton className="h-104 rounded-md" />
+        <Skeleton className="h-104 rounded-md" />
       </div>
     </div>
   )
@@ -355,15 +348,18 @@ function Root({ loading, empty, error, profile = profileFixture }: ProfilePagePr
   return (
     <>
       <PageHeader title={profile.title} description={profile.subtitle} />
-      {error ? (
-        <ErrorBody message={error} />
-      ) : loading ? (
-        <LoadingBody />
-      ) : empty ? (
-        <EmptyBody />
-      ) : (
-        <ProfileBody profile={profile} />
-      )}
+
+      <PageBody>
+        {error ? (
+          <ErrorBody message={error} />
+        ) : loading ? (
+          <LoadingBody />
+        ) : empty ? (
+          <EmptyBody />
+        ) : (
+          <ProfileBody profile={profile} />
+        )}
+      </PageBody>
     </>
   )
 }

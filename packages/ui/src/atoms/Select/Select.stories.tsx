@@ -21,7 +21,7 @@ import {
 } from '../../../components/ui/select'
 
 const meta = {
-  title: 'Select',
+  title: 'Atoms/Select',
   component: Select,
   parameters: { layout: 'centered' },
   tags: ['autodocs'],

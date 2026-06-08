@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { FieldLabel } from './FieldLabel'
 
 const meta = {
-  title: 'FieldLabel',
+  title: 'Atoms/FieldLabel',
   component: FieldLabel,
   parameters: { layout: 'centered' },
   tags: ['autodocs'],

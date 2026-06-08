@@ -4,7 +4,7 @@ import { BookOpenIcon, LayoutGridIcon, ListIcon, PlusIcon, SearchIcon } from 'lu
 import { Button } from '../../../components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/card'
 import { Input } from '../../../components/ui/input'
-import { EmptyState, PageHeader, StatCard } from '../../../components/ui/page'
+import { EmptyState, PageBody, PageHeader, StatCard } from '../../../components/ui/page'
 import {
   Select,
   SelectContent,
@@ -348,7 +348,7 @@ function Root(props: NotebookPageProps) {
         description="Your technical notes, organized by topic. Generate interview questions from any note."
         actions={
           <div className="flex items-center gap-3">
-            <div className="hidden rounded-full border border-border bg-card px-3 py-1 text-xs text-muted-foreground md:inline-flex">
+            <div className="hidden px-3 py-1 text-xs text-muted-foreground md:inline-flex">
               {readyCount} ready for practice
             </div>
             <Button className="rounded-xl md:hidden">
@@ -359,13 +359,15 @@ function Root(props: NotebookPageProps) {
         }
       />
 
-      {props.error ? (
-        <ErrorBody message={props.error} />
-      ) : props.loading ? (
-        <LoadingBody />
-      ) : (
-        <NotebookBody {...props} />
-      )}
+      <PageBody>
+        {props.error ? (
+          <ErrorBody message={props.error} />
+        ) : props.loading ? (
+          <LoadingBody />
+        ) : (
+          <NotebookBody {...props} />
+        )}
+      </PageBody>
     </>
   )
 }

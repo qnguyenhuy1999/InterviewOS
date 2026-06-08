@@ -28,7 +28,7 @@ function LearningPathListItem({
   action,
 }: LearningPathListItemProps) {
   return (
-    <article className="rounded-2xl border border-border/80 bg-background p-4">
+    <article className="rounded-md border border-border/80 bg-background p-4">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="space-y-2">
           {badges.length > 0 ? (
@@ -41,7 +41,9 @@ function LearningPathListItem({
             </div>
           ) : null}
           <p className="text-base font-semibold">{title}</p>
-          {description ? <p className="text-sm leading-6 text-muted-foreground">{description}</p> : null}
+          {description ? (
+            <p className="text-sm leading-6 text-muted-foreground">{description}</p>
+          ) : null}
         </div>
         <div className="text-right">
           <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
@@ -50,7 +52,7 @@ function LearningPathListItem({
           <p className="mt-1 text-2xl font-semibold tracking-tight">{priorityValue}</p>
         </div>
       </div>
-      {(footer || action) ? (
+      {footer || action ? (
         <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
           <div className="text-sm text-muted-foreground">{footer}</div>
           {action}

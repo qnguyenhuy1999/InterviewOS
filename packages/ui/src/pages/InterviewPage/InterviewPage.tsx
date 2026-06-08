@@ -2,11 +2,27 @@ import { FilterIcon, MicIcon, PlayIcon } from 'lucide-react'
 
 import { Button } from '../../../components/ui/button'
 import { EmptyState, PageBody, PageHeader, StatCard } from '../../../components/ui/page'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../../../components/ui/select'
 import { Skeleton } from '../../../components/ui/skeleton'
 import { Spinner } from '../../../components/ui/spinner'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../../components/ui/table'
-import { INTERVIEW_PAGE_ALL_TOPICS_VALUE, INTERVIEW_PAGE_TYPE_LABELS } from './InterviewPage.constants'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '../../../components/ui/table'
+import {
+  INTERVIEW_PAGE_ALL_TOPICS_VALUE,
+  INTERVIEW_PAGE_TYPE_LABELS,
+} from './InterviewPage.constants'
 import { interviewPageFixture } from './InterviewPage.fixtures'
 import type { InterviewPageProps, InterviewPageSession } from './InterviewPage.types'
 import {
@@ -142,25 +158,42 @@ function InterviewHighlights({ sessions }: { sessions: InterviewPageSession[] })
         )
   const bestSession = sessions.reduce<InterviewPageSession | null>(
     (best, session) =>
-      best === null ||
-      (session.metrics.overallScore ?? 0) > (best.metrics.overallScore ?? 0)
+      best === null || (session.metrics.overallScore ?? 0) > (best.metrics.overallScore ?? 0)
         ? session
         : best,
     null,
   )
-  const totalMinutes = sessions.reduce((total, session) => total + session.metrics.durationMinutes, 0)
+  const totalMinutes = sessions.reduce(
+    (total, session) => total + session.metrics.durationMinutes,
+    0,
+  )
 
   return (
     <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-      <StatCard label="Sessions run" value={totalSessions} hint="Completed practice rounds in this history." icon={MicIcon} />
-      <StatCard label="Average score" value={averageScore} hint="Overall score across the visible sessions." icon={PlayIcon} />
+      <StatCard
+        label="Sessions run"
+        value={totalSessions}
+        hint="Completed practice rounds in this history."
+        icon={MicIcon}
+      />
+      <StatCard
+        label="Average score"
+        value={averageScore}
+        hint="Overall score across the visible sessions."
+        icon={PlayIcon}
+      />
       <StatCard
         label="Best round"
         value={bestSession ? bestSession.metrics.overallScore : 'N/A'}
         hint={bestSession ? getInterviewTopicLabel(bestSession) : 'No scored sessions yet.'}
         icon={FilterIcon}
       />
-      <StatCard label="Practice time" value={`${totalMinutes} min`} hint="Total time spent in interview mode." icon={MicIcon} />
+      <StatCard
+        label="Practice time"
+        value={`${totalMinutes} min`}
+        hint="Total time spent in interview mode."
+        icon={MicIcon}
+      />
     </div>
   )
 }
@@ -220,7 +253,7 @@ function ReadyBody({
   return (
     <div className="space-y-6">
       <InterviewHighlights sessions={visibleSessions.length > 0 ? visibleSessions : sessions} />
-      <div className="rounded-3xl border border-border/80 bg-card p-4 shadow-[0_20px_60px_-46px_rgba(15,23,42,0.28)]">
+      <div className="rounded-md border border-border/80 bg-card p-4 shadow-[0_20px_60px_-46px_rgba(15,23,42,0.28)]">
         <TopicFilter
           sessions={sessions}
           selectedTopic={selectedTopic}

@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { BulletList } from './BulletList'
 
 const meta = {
-  title: 'BulletList',
+  title: 'Molecules/BulletList',
   component: BulletList,
   parameters: { layout: 'centered' },
   tags: ['autodocs'],

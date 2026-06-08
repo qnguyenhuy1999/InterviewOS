@@ -3,12 +3,12 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { QuestionCard } from './QuestionCard'
 
 const meta = {
-  title: 'QuestionCard',
+  title: 'Molecules/QuestionCard',
   component: QuestionCard,
   parameters: { layout: 'centered' },
   tags: ['autodocs'],
   args: {
-    title: 'How would you design a rate limiter for an API?',
+    title: 'Molecules/How would you design a rate limiter for an API?',
     description: 'Discuss request shape, storage, burst handling, and failure modes.',
     difficulty: 'medium',
     badges: ['Backend', 'System design'],
@@ -24,7 +24,7 @@ export const Default: Story = {}
 export const Easy: Story = {
   args: {
     difficulty: 'easy',
-    title: 'What is the difference between props and state?',
+    title: 'Molecules/What is the difference between props and state?',
     badges: ['Fundamentals'],
   },
 }
@@ -32,7 +32,7 @@ export const Easy: Story = {
 export const Hard: Story = {
   args: {
     difficulty: 'hard',
-    title: 'Design a multi-region live collaboration system with conflict resolution.',
+    title: 'Molecules/Design a multi-region live collaboration system with conflict resolution.',
     badges: ['Architecture', 'Scaling', 'Tradeoffs'],
   },
 }
@@ -43,6 +43,6 @@ export const Minimal: Story = {
     badges: [],
     footer: undefined,
     difficulty: 'medium',
-    title: 'Explain useEffect cleanup timing.',
+    title: 'Molecules/Explain useEffect cleanup timing.',
   },
 }

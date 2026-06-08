@@ -41,9 +41,7 @@ function PageHeader({ title, description, actions, className, ...props }: PageHe
 }
 
 function PageBody({ className, ...props }: React.ComponentProps<'div'>) {
-  return (
-    <div data-slot="page-body" className={cn('px-4 py-6 md:px-8 md:py-8', className)} {...props} />
-  )
+  return <div data-slot="page-body" className={className} {...props} />
 }
 
 type EmptyStateProps = Omit<React.ComponentProps<typeof Empty>, 'title'> & {

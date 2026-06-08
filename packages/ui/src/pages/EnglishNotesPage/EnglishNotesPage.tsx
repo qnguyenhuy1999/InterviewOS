@@ -1,11 +1,16 @@
-import type React from 'react'
-
 import { EnglishNoteStatus } from '@interviewos/types'
 import { BookTextIcon, CheckCircle2Icon, LanguagesIcon } from 'lucide-react'
+import type React from 'react'
 
 import { Badge } from '../../../components/ui/badge'
 import { Button } from '../../../components/ui/button'
-import { EmptyState, PageHeader, SectionCard, StatCard } from '../../../components/ui/page'
+import {
+  EmptyState,
+  PageBody,
+  PageHeader,
+  SectionCard,
+  StatCard,
+} from '../../../components/ui/page'
 import { Progress } from '../../../components/ui/progress'
 import { Skeleton } from '../../../components/ui/skeleton'
 import { ENGLISH_NOTES_STATUS_LABEL } from './EnglishNotesPage.constants'
@@ -30,7 +35,7 @@ function EnglishNoteRow({
   renderActions?: React.ReactNode
 }) {
   return (
-    <article className="rounded-2xl border border-border/80 bg-background p-4">
+    <article className="rounded-md border border-border/80 bg-background p-4">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="space-y-3">
           <div>
@@ -94,7 +99,7 @@ function EnglishNotesBody({
       >
         <div className="grid gap-4 xl:grid-cols-2">
           {topicGroups.map((topic) => (
-            <div key={topic.name} className="rounded-2xl border border-border/80 bg-background p-4">
+            <div key={topic.name} className="rounded-md border border-border/80 bg-background p-4">
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <p className="text-base font-semibold">{topic.name}</p>
@@ -155,13 +160,13 @@ function LoadingBody() {
     <div className="space-y-6">
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         {Array.from({ length: 4 }).map((_, index) => (
-          <Skeleton key={index} className="h-28 rounded-2xl" />
+          <Skeleton key={index} className="h-28 rounded-md" />
         ))}
       </div>
-      <Skeleton className="h-56 rounded-2xl" />
+      <Skeleton className="h-56 rounded-md" />
       <div className="space-y-3">
         {Array.from({ length: 3 }).map((_, index) => (
-          <Skeleton key={index} className="h-44 rounded-2xl" />
+          <Skeleton key={index} className="h-44 rounded-md" />
         ))}
       </div>
     </div>
@@ -191,7 +196,13 @@ function EmptyBody() {
   )
 }
 
-function Root({ notes = englishNotesFixture.notes, loading, empty, error, renderNoteActions }: EnglishNotesPageProps) {
+function Root({
+  notes = englishNotesFixture.notes,
+  loading,
+  empty,
+  error,
+  renderNoteActions,
+}: EnglishNotesPageProps) {
   return (
     <>
       <PageHeader
@@ -203,15 +214,18 @@ function Root({ notes = englishNotesFixture.notes, loading, empty, error, render
           </Button>
         }
       />
-      {error ? (
-        <ErrorBody message={error} />
-      ) : loading ? (
-        <LoadingBody />
-      ) : empty || notes.length === 0 ? (
-        <EmptyBody />
-      ) : (
-        <EnglishNotesBody notes={notes} renderNoteActions={renderNoteActions} />
-      )}
+
+      <PageBody>
+        {error ? (
+          <ErrorBody message={error} />
+        ) : loading ? (
+          <LoadingBody />
+        ) : empty || notes.length === 0 ? (
+          <EmptyBody />
+        ) : (
+          <EnglishNotesBody notes={notes} renderNoteActions={renderNoteActions} />
+        )}
+      </PageBody>
     </>
   )
 }

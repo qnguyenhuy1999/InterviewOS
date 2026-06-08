@@ -9,7 +9,13 @@ import {
 
 import { Badge } from '../../../components/ui/badge'
 import { Button } from '../../../components/ui/button'
-import { EmptyState, PageHeader, SectionCard, StatCard } from '../../../components/ui/page'
+import {
+  EmptyState,
+  PageBody,
+  PageHeader,
+  SectionCard,
+  StatCard,
+} from '../../../components/ui/page'
 import { Separator } from '../../../components/ui/separator'
 import { Skeleton } from '../../../components/ui/skeleton'
 import { StatusDot } from '../../../components/ui/status'
@@ -33,11 +39,7 @@ import {
   getNotebookQuestionConceptSummary,
 } from './NotebookDetailPage.utils'
 
-function RelatedNoteRow({
-  note,
-}: {
-  note: TechnicalNoteSummary
-}) {
+function RelatedNoteRow({ note }: { note: TechnicalNoteSummary }) {
   return (
     <div className="flex items-start justify-between gap-4 rounded-xl border border-border/70 bg-background px-4 py-3">
       <div className="min-w-0">
@@ -57,11 +59,7 @@ function RelatedNoteRow({
   )
 }
 
-function StructuredContent({
-  data,
-}: {
-  data: TechnicalNoteDetailView
-}) {
+function StructuredContent({ data }: { data: TechnicalNoteDetailView }) {
   const sections = getNotebookDetailContentSections(data.note.structuredContent)
 
   if (!data.note.structuredContent) {
@@ -116,7 +114,10 @@ function StructuredContent({
 
         <div className="grid gap-4 lg:grid-cols-2">
           {sections.map((section) => (
-            <div key={section.key} className="rounded-xl border border-border/70 bg-background px-4 py-4">
+            <div
+              key={section.key}
+              className="rounded-xl border border-border/70 bg-background px-4 py-4"
+            >
               <p className="text-sm font-semibold text-foreground">{section.title}</p>
               <BulletList items={section.items} className="mt-3" />
             </div>
@@ -152,7 +153,9 @@ function NotebookDetailBody({
             <Badge variant="outline" className="rounded-full px-3 py-1">
               {getEnumLabel(data.note.type)}
             </Badge>
-            {renderHeaderActions ? renderHeaderActions(data.note) : (
+            {renderHeaderActions ? (
+              renderHeaderActions(data.note)
+            ) : (
               <Button size="sm">
                 <FileQuestionIcon />
                 Generate questions
@@ -160,7 +163,7 @@ function NotebookDetailBody({
             )}
           </>
         }
-        className="rounded-2xl border bg-card"
+        className="rounded-md border bg-card"
       />
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
@@ -220,7 +223,11 @@ function NotebookDetailBody({
                   <p className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
                     Goals
                   </p>
-                  <TagList items={data.note.overrideGoals} className="mt-3" badgeClassName="px-2.5 py-1" />
+                  <TagList
+                    items={data.note.overrideGoals}
+                    className="mt-3"
+                    badgeClassName="px-2.5 py-1"
+                  />
                 </div>
               ) : null}
 
@@ -300,7 +307,7 @@ function NotebookDetailBody({
 function LoadingBody() {
   return (
     <div className="space-y-6">
-      <div className="rounded-2xl border bg-card px-4 py-5 md:px-8 md:py-6">
+      <div className="rounded-md border bg-card px-4 py-5 md:px-8 md:py-6">
         <Skeleton className="h-8 w-2/3" />
         <Skeleton className="mt-3 h-4 w-full max-w-2xl" />
         <div className="mt-4 flex flex-wrap gap-2">
@@ -357,19 +364,21 @@ function Root({
 }: NotebookDetailPageProps) {
   return (
     <>
-      {error ? (
-        <ErrorBody message={error} />
-      ) : loading ? (
-        <LoadingBody />
-      ) : empty ? (
-        <EmptyBody />
-      ) : (
-        <NotebookDetailBody
-          data={data}
-          renderHeaderActions={renderHeaderActions}
-          renderQuestionActions={renderQuestionActions}
-        />
-      )}
+      <PageBody>
+        {error ? (
+          <ErrorBody message={error} />
+        ) : loading ? (
+          <LoadingBody />
+        ) : empty ? (
+          <EmptyBody />
+        ) : (
+          <NotebookDetailBody
+            data={data}
+            renderHeaderActions={renderHeaderActions}
+            renderQuestionActions={renderQuestionActions}
+          />
+        )}
+      </PageBody>
       <Separator className="mt-8 opacity-0" />
     </>
   )

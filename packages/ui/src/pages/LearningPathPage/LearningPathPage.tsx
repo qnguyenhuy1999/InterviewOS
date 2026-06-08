@@ -2,7 +2,13 @@ import { LearningPathItemStatus } from '@interviewos/types'
 import { CheckCheckIcon, CompassIcon, SparklesIcon } from 'lucide-react'
 
 import { Button } from '../../../components/ui/button'
-import { EmptyState, PageHeader, SectionCard, StatCard } from '../../../components/ui/page'
+import {
+  EmptyState,
+  PageBody,
+  PageHeader,
+  SectionCard,
+  StatCard,
+} from '../../../components/ui/page'
 import { Progress } from '../../../components/ui/progress'
 import { Skeleton } from '../../../components/ui/skeleton'
 import { LearningPathListItem } from '../../molecules/LearningPathListItem/LearningPathListItem'
@@ -25,7 +31,9 @@ function LearningPathBody({
   renderItemActions?: LearningPathPageProps['renderItemActions']
 }) {
   const progress = getLearningPathProgress(items)
-  const completedCount = items.filter((item) => item.status === LearningPathItemStatus.COMPLETED).length
+  const completedCount = items.filter(
+    (item) => item.status === LearningPathItemStatus.COMPLETED,
+  ).length
   const groups = getLearningPathStatusGroups(items)
   const typeSummaries = getLearningPathTypeSummaries(items)
   const focusItem = getLearningPathFocusItem(items)
@@ -34,7 +42,7 @@ function LearningPathBody({
     <div className="space-y-6">
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-[minmax(0,1.35fr)_repeat(3,minmax(0,1fr))]">
         {focusItem ? (
-          <div className="rounded-3xl border border-primary/15 bg-[linear-gradient(135deg,color-mix(in_oklch,var(--primary),white_92%)_0%,white_100%)] p-5 shadow-[0_20px_60px_-38px_color-mix(in_oklch,var(--primary),transparent_42%)]">
+          <div className="rounded-md border border-primary/15 bg-[linear-gradient(135deg,color-mix(in_oklch,var(--primary),white_92%)_0%,white_100%)] p-5 shadow-[0_20px_60px_-38px_color-mix(in_oklch,var(--primary),transparent_42%)]">
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary/80">
               Focus next
             </p>
@@ -102,7 +110,7 @@ function LearningPathBody({
             return (
               <div
                 key={summary.type}
-                className="rounded-2xl border border-border/80 bg-[linear-gradient(180deg,white_0%,color-mix(in_oklch,var(--muted),white_55%)_100%)] p-4"
+                className="rounded-md border border-border/80 bg-[linear-gradient(180deg,white_0%,color-mix(in_oklch,var(--muted),white_55%)_100%)] p-4"
               >
                 <p className="text-sm font-semibold">{formatLearningPathLabel(summary.type)}</p>
                 <p className="mt-2 text-2xl font-semibold tracking-tight">
@@ -144,7 +152,9 @@ function LearningPathBody({
                   priorityValue={item.priorityScore}
                   footer={item.actionPath}
                   action={
-                    renderItemActions ? renderItemActions(item) : (
+                    renderItemActions ? (
+                      renderItemActions(item)
+                    ) : (
                       <Button variant="outline" size="sm">
                         Open task
                       </Button>
@@ -165,13 +175,13 @@ function LoadingBody() {
     <div className="space-y-6">
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         {Array.from({ length: 4 }).map((_, index) => (
-          <Skeleton key={index} className="h-28 rounded-2xl" />
+          <Skeleton key={index} className="h-28 rounded-md" />
         ))}
       </div>
-      <Skeleton className="h-36 rounded-2xl" />
+      <Skeleton className="h-36 rounded-md" />
       <div className="space-y-3">
         {Array.from({ length: 3 }).map((_, index) => (
-          <Skeleton key={index} className="h-40 rounded-2xl" />
+          <Skeleton key={index} className="h-40 rounded-md" />
         ))}
       </div>
     </div>
@@ -201,7 +211,13 @@ function EmptyBody() {
   )
 }
 
-function Root({ items = learningPathFixture.items, loading, empty, error, renderItemActions }: LearningPathPageProps) {
+function Root({
+  items = learningPathFixture.items,
+  loading,
+  empty,
+  error,
+  renderItemActions,
+}: LearningPathPageProps) {
   return (
     <>
       <PageHeader
@@ -213,15 +229,18 @@ function Root({ items = learningPathFixture.items, loading, empty, error, render
           </Button>
         }
       />
-      {error ? (
-        <ErrorBody message={error} />
-      ) : loading ? (
-        <LoadingBody />
-      ) : empty || items.length === 0 ? (
-        <EmptyBody />
-      ) : (
-        <LearningPathBody items={items} renderItemActions={renderItemActions} />
-      )}
+
+      <PageBody>
+        {error ? (
+          <ErrorBody message={error} />
+        ) : loading ? (
+          <LoadingBody />
+        ) : empty || items.length === 0 ? (
+          <EmptyBody />
+        ) : (
+          <LearningPathBody items={items} renderItemActions={renderItemActions} />
+        )}
+      </PageBody>
     </>
   )
 }

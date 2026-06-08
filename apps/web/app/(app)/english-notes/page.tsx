@@ -1,5 +1,5 @@
-import { EnglishNoteStatus } from '@interviewos/types'
 import type { EnglishNote } from '@interviewos/types'
+import { EnglishNoteStatus } from '@interviewos/types'
 import { EnglishNotesPage } from '@interviewos/ui'
 
 import { StatusSelect } from '@/components/forms/StatusSelect'

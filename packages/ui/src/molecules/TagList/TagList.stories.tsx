@@ -4,7 +4,7 @@ import { Button } from '../../../components/ui/button'
 import { TagList } from './TagList'
 
 const meta = {
-  title: 'TagList',
+  title: 'Molecules/TagList',
   component: TagList,
   parameters: { layout: 'centered' },
   tags: ['autodocs'],

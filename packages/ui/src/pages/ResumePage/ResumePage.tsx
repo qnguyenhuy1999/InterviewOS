@@ -53,7 +53,7 @@ function AnalysisRow({ item }: { item: ResumeAnalysisAttribute }) {
 
 function TopicRow({ item }: { item: ResumeSuggestedTopic }) {
   return (
-    <div className="flex items-center justify-between gap-3 rounded-2xl border border-border/80 bg-background px-4 py-4 shadow-[0_16px_40px_-34px_rgba(15,23,42,0.35)]">
+    <div className="flex items-center justify-between gap-3 rounded-md border border-border/80 bg-background px-4 py-4 shadow-[0_16px_40px_-34px_rgba(15,23,42,0.35)]">
       <p className="text-base font-medium">{item.title}</p>
       <Button variant="outline" size="sm" className="shrink-0 rounded-full">
         {item.actionLabel}

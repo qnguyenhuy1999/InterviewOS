@@ -4,12 +4,12 @@ import { Button } from '../../../components/ui/button'
 import { LearningPathListItem } from './LearningPathListItem'
 
 const meta = {
-  title: 'LearningPathListItem',
+  title: 'Molecules/LearningPathListItem',
   component: LearningPathListItem,
   parameters: { layout: 'centered' },
   tags: ['autodocs'],
   args: {
-    title: 'System design fundamentals',
+    title: 'Molecules/System design fundamentals',
     description: 'Build a strong baseline for architecture interviews with structured practice.',
     priorityValue: 'A1',
     footer: '12 lessons, 4 checkpoints, 2 mock interviews',

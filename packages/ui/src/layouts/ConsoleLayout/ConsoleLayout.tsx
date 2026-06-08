@@ -1,6 +1,5 @@
-import * as React from 'react'
-
 import { BellIcon, SearchIcon, SparklesIcon } from 'lucide-react'
+import * as React from 'react'
 
 import { Avatar, AvatarFallback } from '../../../components/ui/avatar'
 import { Button } from '../../../components/ui/button'
@@ -34,7 +33,7 @@ import type { ConsoleLayoutNavGroup, ConsoleLayoutProps } from './ConsoleLayout.
 function BrandBlock({ name, tagline }: { name: string; tagline: string }) {
   return (
     <div className="flex items-center gap-3 px-2 py-2 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:gap-0 group-data-[collapsible=icon]:px-0">
-      <div className="flex size-10 shrink-0 items-center justify-center rounded-2xl bg-primary text-primary-foreground group-data-[collapsible=icon]:size-10 group-data-[collapsible=icon]:rounded-2xl">
+      <div className="flex size-10 shrink-0 items-center justify-center rounded-md bg-primary text-primary-foreground group-data-[collapsible=icon]:size-10 group-data-[collapsible=icon]:rounded-md">
         <SparklesIcon className="size-5" />
       </div>
       <div className="min-w-0 group-data-[collapsible=icon]:hidden">
@@ -149,9 +148,7 @@ function Root({
             </div>
           </header>
 
-          <div className={cn('mx-auto w-full max-w-[96rem] px-4 py-6 md:px-8 md:py-8')}>
-            {children}
-          </div>
+          <div className={cn('mx-auto w-full max-w-384')}>{children}</div>
         </SidebarInset>
       </div>
     </SidebarProvider>

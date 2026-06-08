@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { DefinitionList } from './DefinitionList'
 
 const meta = {
-  title: 'DefinitionList',
+  title: 'Molecules/DefinitionList',
   component: DefinitionList,
   parameters: { layout: 'centered' },
   tags: ['autodocs'],
