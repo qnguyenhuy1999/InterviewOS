@@ -21,6 +21,7 @@ function ProgressRow({ label, value }: { label: string; value: string }) {
 function InterviewSessionPage({
   session,
   turns = [],
+  reviewHref,
   renderMultiTurnForm,
   renderAnswerForm,
 }: InterviewSessionPageProps) {
@@ -113,9 +114,9 @@ function InterviewSessionPage({
               </section>
             ) : null}
 
-            {isComplete ? (
+            {isComplete && reviewHref ? (
               <a
-                href={`/interview/session/${session.id}/review`}
+                href={reviewHref}
                 className="block rounded-md bg-primary px-4 py-3 text-center text-sm font-medium text-primary-foreground"
               >
                 Open session review

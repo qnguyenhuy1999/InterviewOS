@@ -5,18 +5,21 @@ import NotebookDetailPage from '@interviewos/ui/pages/NotebookDetailPage'
 import { NoteActions } from '@/components/forms/NoteActions'
 import { StartPracticeButton } from '@/components/forms/StartPracticeButton'
 import { StatusSelect } from '@/components/forms/StatusSelect'
+import { loadRouteData } from '@/lib/route-state'
 import { serverApiClient } from '@/lib/server-api-client'
 
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
-  const data = await serverApiClient<TechnicalNoteDetailView>(API_ROUTES.notes.byId(id)).catch(
-    () => null,
+  const state = await loadRouteData(
+    () => serverApiClient<TechnicalNoteDetailView>(API_ROUTES.notes.byId(id)),
+    { fallbackMessage: 'Unable to load this notebook entry.' },
   )
 
   return (
     <NotebookDetailPage
-      data={data ?? undefined}
-      empty={!data}
+      data={state.kind === 'ready' ? state.data : undefined}
+      empty={state.kind === 'empty'}
+      error={state.kind === 'error' ? state.message : undefined}
       renderHeaderActions={(note) => (
         <>
           <StatusSelect

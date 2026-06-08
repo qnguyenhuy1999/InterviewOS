@@ -105,12 +105,15 @@ function HistoryRow({ item }: { item: ReadinessHistoryItem }) {
 
 function ReadinessBody({ data }: { data: NonNullable<ReadinessPageProps['data']> }) {
   const bestDimension = getBestReadinessDimension(data.latest.breakdown)
+  const confidencePercent = Math.round(data.latest.confidenceLevel * 100)
+  const learningProgressPercent = Math.round(data.latest.learningProgress * 100)
+  const reviewCompletionPercent = Math.round(data.latest.reviewCompletion * 100)
 
   return (
     <PageBody className="space-y-6">
       <div className="grid gap-6 xl:grid-cols-[minmax(0,2fr)_minmax(320px,1fr)]">
         <Card className="gap-0 overflow-hidden py-0">
-          <CardHeader className="border-b bg-gradient-to-br from-background via-background to-primary/5 py-5">
+          <CardHeader className="border-b bg-linear-to-br from-background via-background to-primary/5 py-5">
             <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
               Current readiness
             </p>
@@ -132,8 +135,9 @@ function ReadinessBody({ data }: { data: NonNullable<ReadinessPageProps['data']>
               <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
                 Confidence
               </p>
-              <p className="mt-2 text-2xl font-semibold tracking-tight">
-                {Math.round(data.latest.confidenceLevel * 100)}%
+              <p className="mt-2 text-2xl font-semibold tracking-tight">{confidencePercent}%</p>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Higher confidence means the score is backed by more recent sessions and review data.
               </p>
             </div>
             <div className="rounded-md border border-border/80 bg-background p-4">
@@ -141,7 +145,10 @@ function ReadinessBody({ data }: { data: NonNullable<ReadinessPageProps['data']>
                 Learning progress
               </p>
               <p className="mt-2 text-2xl font-semibold tracking-tight">
-                {data.latest.learningProgress}
+                {learningProgressPercent}%
+              </p>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Based on how many learning-path items have been completed.
               </p>
             </div>
             <div className="rounded-md border border-border/80 bg-background p-4">
@@ -149,7 +156,10 @@ function ReadinessBody({ data }: { data: NonNullable<ReadinessPageProps['data']>
                 Review completion
               </p>
               <p className="mt-2 text-2xl font-semibold tracking-tight">
-                {data.latest.reviewCompletion}
+                {reviewCompletionPercent}%
+              </p>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Measures how much of the review queue has crossed the mastery threshold.
               </p>
             </div>
           </CardContent>
@@ -238,17 +248,25 @@ function EmptyBody() {
   )
 }
 
-function Root({ data = readinessPageFixture, loading, empty, error }: ReadinessPageProps) {
+function Root({
+  data = readinessPageFixture,
+  loading,
+  empty,
+  error,
+  renderRecomputeAction,
+}: ReadinessPageProps) {
   return (
     <>
       <PageHeader
         title={data.title}
         description={data.subtitle}
         actions={
-          <Button size="lg">
-            <RotateCcwIcon className="size-4" />
-            {data.recomputeLabel}
-          </Button>
+          renderRecomputeAction ?? (
+            <Button size="lg">
+              <RotateCcwIcon className="size-4" />
+              {data.recomputeLabel}
+            </Button>
+          )
         }
       />
 

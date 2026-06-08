@@ -108,19 +108,24 @@ function ResumeHighlights({ data = resumePageFixture }: { data?: ResumePageProps
   )
 }
 
-function ResumeBody({ data = resumePageFixture }: { data?: ResumePageProps['data'] }) {
+function ResumeBody({
+  data = resumePageFixture,
+  renderUploadArea,
+}: Pick<ResumePageProps, 'data' | 'renderUploadArea'>) {
   return (
     <div className="space-y-6">
       <ResumeHighlights data={data} />
 
-      <FileUploadDropzone
-        title={data.upload.title}
-        description={data.upload.description}
-        supportingText={data.upload.supportedFormatsLabel}
-        actionLabel={data.upload.actionLabel}
-        actionVariant="default"
-        actionSize="lg"
-      />
+      {renderUploadArea ?? (
+        <FileUploadDropzone
+          title={data.upload.title}
+          description={data.upload.description}
+          supportingText={data.upload.supportedFormatsLabel}
+          actionLabel={data.upload.actionLabel}
+          actionVariant="default"
+          actionSize="lg"
+        />
+      )}
 
       <div className="grid gap-6 xl:grid-cols-2">
         <Card className="gap-0 py-0">
@@ -164,6 +169,21 @@ function ResumeBody({ data = resumePageFixture }: { data?: ResumePageProps['data
       </div>
 
       <div className="grid gap-6 xl:grid-cols-2">
+        <StringListSection
+          title={data.strengths.title}
+          subtitle={data.strengths.subtitle}
+          items={data.strengths.items}
+        />
+        <StringListSection
+          title={data.gaps.title}
+          subtitle={data.gaps.subtitle}
+          items={data.gaps.items}
+        />
+        <StringListSection
+          title={data.improvements.title}
+          subtitle={data.improvements.subtitle}
+          items={data.improvements.items}
+        />
         <Card className="gap-0 py-0">
           <CardHeader className="border-b py-4">
             <div>
@@ -172,7 +192,13 @@ function ResumeBody({ data = resumePageFixture }: { data?: ResumePageProps['data
             </div>
           </CardHeader>
           <CardContent className="py-4">
-            <TagList items={data.extractedSkills.items} badgeClassName="px-3 py-1" />
+            {data.extractedSkills.items.length > 0 ? (
+              <TagList items={data.extractedSkills.items} badgeClassName="px-3 py-1" />
+            ) : (
+              <p className="text-sm text-muted-foreground">
+                No skills were extracted from the latest resume analysis.
+              </p>
+            )}
           </CardContent>
         </Card>
 
@@ -190,13 +216,69 @@ function ResumeBody({ data = resumePageFixture }: { data?: ResumePageProps['data
             </CardAction>
           </CardHeader>
           <CardContent className="space-y-3 py-4">
-            {data.suggestedTopics.items.map((item) => (
-              <TopicRow key={item.id} item={item} />
-            ))}
+            {data.suggestedTopics.items.length > 0 ? (
+              data.suggestedTopics.items.map((item) => <TopicRow key={item.id} item={item} />)
+            ) : (
+              <p className="text-sm text-muted-foreground">
+                No tailored practice topics are available from this analysis yet.
+              </p>
+            )}
           </CardContent>
         </Card>
       </div>
+
+      <div className="grid gap-6 xl:grid-cols-2">
+        {data.missingKeywords ? (
+          <StringListSection
+            title={data.missingKeywords.title}
+            subtitle={data.missingKeywords.subtitle}
+            items={data.missingKeywords.items}
+          />
+        ) : null}
+        {data.bulletRewriteSuggestions ? (
+          <StringListSection
+            title={data.bulletRewriteSuggestions.title}
+            subtitle={data.bulletRewriteSuggestions.subtitle}
+            items={data.bulletRewriteSuggestions.items}
+          />
+        ) : null}
+        {data.interviewPreparation ? (
+          <StringListSection
+            title={data.interviewPreparation.title}
+            subtitle={data.interviewPreparation.subtitle}
+            items={data.interviewPreparation.items}
+          />
+        ) : null}
+      </div>
     </div>
+  )
+}
+
+function StringListSection({
+  title,
+  subtitle,
+  items,
+}: {
+  title: string
+  subtitle: string
+  items: string[]
+}) {
+  if (items.length === 0) {
+    return null
+  }
+
+  return (
+    <Card className="gap-0 py-0">
+      <CardHeader className="border-b py-4">
+        <div>
+          <CardTitle className="text-xl font-semibold">{title}</CardTitle>
+          <p className="text-sm text-muted-foreground">{subtitle}</p>
+        </div>
+      </CardHeader>
+      <CardContent className="py-4">
+        <TagList items={items} badgeClassName="px-3 py-1" />
+      </CardContent>
+    </Card>
   )
 }
 
@@ -243,14 +325,17 @@ function LoadingBody() {
   )
 }
 
-function EmptyBody({ data = resumePageFixture }: { data?: ResumePageProps['data'] }) {
+function EmptyBody({
+  data = resumePageFixture,
+  emptyAction,
+}: Pick<ResumePageProps, 'data' | 'emptyAction'>) {
   return (
     <EmptyState
       className="min-h-80"
       icon={UploadIcon}
       title={data.emptyState.title}
       description={data.emptyState.description}
-      action={<Button>{data.emptyState.actionLabel}</Button>}
+      action={emptyAction ?? <Button>{data.emptyState.actionLabel}</Button>}
     />
   )
 }
@@ -266,7 +351,7 @@ function ErrorBody({ message }: { message: string }) {
   )
 }
 
-function Root({ data = resumePageFixture, loading, empty, error }: ResumePageProps) {
+function Root({ data = resumePageFixture, loading, empty, error, renderUploadArea, emptyAction }: ResumePageProps) {
   return (
     <>
       <PageHeader title={data.title} description={data.subtitle} />
@@ -276,9 +361,9 @@ function Root({ data = resumePageFixture, loading, empty, error }: ResumePagePro
         ) : loading ? (
           <LoadingBody />
         ) : empty ? (
-          <EmptyBody data={data} />
+          <EmptyBody data={data} emptyAction={emptyAction} />
         ) : (
-          <ResumeBody data={data} />
+          <ResumeBody data={data} renderUploadArea={renderUploadArea} />
         )}
       </PageBody>
       <Separator className="mt-8 opacity-0" />

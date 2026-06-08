@@ -185,6 +185,7 @@ export interface ReviewWeakConceptView {
   occurrenceCount: number
   masteryPercent: number
   status: WeakConceptStatus
+  lastSeenAt?: Date | string | null
 }
 
 export interface ReviewPageView {

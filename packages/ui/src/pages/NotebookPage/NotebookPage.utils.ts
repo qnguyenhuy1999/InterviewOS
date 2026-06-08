@@ -7,7 +7,6 @@ import { NOTEBOOK_DIFFICULTY_TONE, NOTEBOOK_STATUS_DOT } from './NotebookPage.co
 import type {
   NotebookPageFilterValue,
   NotebookPageNote,
-  NotebookPageProps,
 } from './NotebookPage.types'
 
 export function getNotebookNavigation(): ConsoleLayoutNavGroup[] {
@@ -56,17 +55,21 @@ export function getVisibleNotebookNotes({
   selectedTopic = 'ALL',
   selectedStatus = 'ALL',
   selectedType = 'ALL',
-}: Pick<
-  NotebookPageProps,
-  'notes' | 'empty' | 'searchValue' | 'selectedTopic' | 'selectedStatus' | 'selectedType'
->) {
+}: {
+  notes: NotebookPageNote[]
+  empty: boolean
+  searchValue?: string
+  selectedTopic?: string | 'ALL'
+  selectedStatus?: NotebookPageFilterValue<NoteStatus>
+  selectedType?: NotebookPageFilterValue<NoteType>
+}) {
   if (empty) {
     return []
   }
 
   const normalizedSearch = searchValue?.trim().toLowerCase() ?? ''
 
-  return (notes ?? []).filter((note) => {
+  return notes.filter((note) => {
     const topicLabel = normalizeTopic(note.topic) ?? getEnumLabel(note.type)
 
     if (

@@ -33,6 +33,24 @@ export const resumePageFixture: ResumePageFixture = {
       { label: 'Match for target', value: '82%' },
     ],
   },
+  strengths: {
+    title: 'Strengths',
+    subtitle: 'Areas that already align well with your target role.',
+    actionLabel: 'Review strengths',
+    items: ['TypeScript', 'System thinking', 'Backend ownership'],
+  },
+  gaps: {
+    title: 'Gaps',
+    subtitle: 'Signals to close before your next round of interviews.',
+    actionLabel: 'Review gaps',
+    items: ['Cloud scaling stories', 'Security examples'],
+  },
+  improvements: {
+    title: 'Suggested improvements',
+    subtitle: 'Concrete changes that improve the resume and your interview story.',
+    actionLabel: 'Review improvements',
+    items: ['Add impact metrics to platform work', 'Clarify leadership scope on recent projects'],
+  },
   extractedSkills: {
     title: 'Extracted skills',
     subtitle: 'Detected from the current resume analysis.',
@@ -61,6 +79,14 @@ export const resumePageFixture: ResumePageFixture = {
       { id: 'topic-4', title: 'Postgres transaction isolation', actionLabel: 'Practice' },
       { id: 'topic-5', title: 'Designing a notification service', actionLabel: 'Practice' },
     ],
+  },
+  missingKeywords: null,
+  bulletRewriteSuggestions: null,
+  interviewPreparation: {
+    title: 'Interview preparation suggestions',
+    subtitle: 'Use these prompts to prepare examples and sharpen your story.',
+    actionLabel: 'Review prep',
+    items: ['Prepare a STAR example for scaling incidents', 'Review tradeoffs behind your Redis caching decisions'],
   },
   emptyState: {
     title: 'No resume uploaded yet',

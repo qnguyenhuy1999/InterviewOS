@@ -71,3 +71,23 @@ export function getLearningPathStatusClassName(status: LearningPathItemStatus): 
       return 'border-warning/30 bg-warning-soft text-warning'
   }
 }
+
+export function getLearningPathEstimatedTimeLabel(item: LearningPathItem): string {
+  const metadata = (item as LearningPathItem & { metadata?: unknown }).metadata
+
+  if (metadata && typeof metadata === 'object') {
+    const record = metadata as Record<string, unknown>
+    const estimatedMinutes =
+      typeof record.estimatedMinutes === 'number'
+        ? record.estimatedMinutes
+        : typeof record.estimatedTimeMinutes === 'number'
+          ? record.estimatedTimeMinutes
+          : null
+
+    if (estimatedMinutes && estimatedMinutes > 0) {
+      return `${estimatedMinutes} min`
+    }
+  }
+
+  return 'Flexible pacing'
+}

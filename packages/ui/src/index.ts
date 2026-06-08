@@ -54,7 +54,7 @@ export type { LearningPathPageProps } from './pages/LearningPathPage/LearningPat
 export { default as NotebookDetailPage } from './pages/NotebookDetailPage/NotebookDetailPage'
 export type { NotebookDetailPageProps } from './pages/NotebookDetailPage/NotebookDetailPage.types'
 export { default as NotebookPage } from './pages/NotebookPage/NotebookPage'
-export type { NotebookPageProps } from './pages/NotebookPage/NotebookPage.types'
+export type { NotebookPageProps, NotebookPageView } from './pages/NotebookPage/NotebookPage.types'
 export { default as ProfilePage } from './pages/ProfilePage/ProfilePage'
 export type { ProfilePageProps } from './pages/ProfilePage/ProfilePage.types'
 export { default as ReadinessPage } from './pages/ReadinessPage/ReadinessPage'

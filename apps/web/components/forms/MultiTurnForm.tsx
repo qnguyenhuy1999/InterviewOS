@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useRef, useState } from 'react'
 
 import { apiFetch } from '@/lib/api-client'
+import { APP_ROUTES } from '@/lib/app-routes'
 
 type Turn = {
   id: string
@@ -132,7 +133,7 @@ export function MultiTurnForm({
             Session complete. Your evaluation is being generated.
           </p>
           <a
-            href={`/interview/session/${sessionId}/review`}
+            href={APP_ROUTES.interviewReview(sessionId)}
             className="inline-block rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
           >
             View review

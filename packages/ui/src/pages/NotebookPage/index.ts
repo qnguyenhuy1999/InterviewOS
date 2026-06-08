@@ -1,2 +1,2 @@
 export { default } from './NotebookPage'
-export type { NotebookPageProps } from './NotebookPage.types'
+export type { NotebookPageProps, NotebookPageView } from './NotebookPage.types'

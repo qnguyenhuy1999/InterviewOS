@@ -1,5 +1,4 @@
-import type { DashboardProgress } from '@interviewos/types'
-import { LanguagesIcon, MicIcon, NotebookTextIcon, PlusIcon } from 'lucide-react'
+import { LanguagesIcon, MicIcon, NotebookTextIcon, SparklesIcon } from 'lucide-react'
 
 import { Button } from '../../../components/ui/button'
 import {
@@ -15,16 +14,33 @@ import { Progress } from '../../../components/ui/progress'
 import { Separator } from '../../../components/ui/separator'
 import { Skeleton } from '../../../components/ui/skeleton'
 import { Spinner } from '../../../components/ui/spinner'
-import { dashboardFixture } from './DashboardPage.fixtures'
 import type {
-  DashboardEnglishImprovement,
-  DashboardInterviewSession,
   DashboardMetric,
-  DashboardNoteSummary,
+  DashboardPageActions,
   DashboardPageProps,
-  DashboardWeakConcept,
+  DashboardPageState,
 } from './DashboardPage.types'
-import { getDashboardToneClass } from './DashboardPage.utils'
+
+function ActionLinkButton({
+  href,
+  label,
+  icon,
+  variant = 'outline',
+}: {
+  href: string
+  label: string
+  icon: React.ReactNode
+  variant?: 'default' | 'outline'
+}) {
+  return (
+    <Button asChild variant={variant} size="lg" className="justify-center">
+      <a href={href}>
+        {icon}
+        {label}
+      </a>
+    </Button>
+  )
+}
 
 function MetricCard({ metric }: { metric: DashboardMetric }) {
   return (
@@ -42,266 +58,14 @@ function MetricCard({ metric }: { metric: DashboardMetric }) {
   )
 }
 
-function NoteRow({ note }: { note: DashboardNoteSummary }) {
-  const tone = note.difficulty === 'Hard' ? 'high' : note.difficulty === 'Medium' ? 'medium' : 'low'
-
-  return (
-    <div className="flex items-center justify-between gap-3 py-4">
-      <div className="flex min-w-0 items-start gap-3">
-        <span
-          className="mt-2 inline-flex size-1.5 shrink-0 rounded-full bg-primary/80"
-          aria-hidden="true"
-        />
-        <div className="min-w-0">
-          <p className="truncate text-base font-medium">{note.title}</p>
-          <p className="text-sm text-muted-foreground">
-            {note.domain} - {note.updatedLabel}
-          </p>
-        </div>
-      </div>
-      <span className={getDashboardToneClass(tone)}>{note.difficulty}</span>
-    </div>
-  )
-}
-
-function WeakConceptRow({ concept }: { concept: DashboardWeakConcept }) {
-  const tone =
-    concept.severity === 'High' ? 'high' : concept.severity === 'Medium' ? 'medium' : 'low'
-
-  return (
-    <div className="flex items-start justify-between gap-3 py-4">
-      <div>
-        <p className="text-base font-medium">{concept.title}</p>
-        <p className="text-sm text-muted-foreground">{concept.subtitle}</p>
-      </div>
-      <span className={getDashboardToneClass(tone)}>{concept.severity}</span>
-    </div>
-  )
-}
-
-function SessionRow({ session }: { session: DashboardInterviewSession }) {
-  return (
-    <div className="flex items-center justify-between gap-3 py-4">
-      <div className="flex min-w-0 items-center gap-3">
-        <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-muted text-sm font-semibold">
-          {session.score}
-        </div>
-        <div className="min-w-0">
-          <p className="truncate text-base font-medium">{session.title}</p>
-          <p className="text-sm text-muted-foreground">{session.meta}</p>
-        </div>
-      </div>
-      <div className="shrink-0 text-right text-sm text-muted-foreground">
-        <p>
-          Tech <span className="font-medium text-foreground">{session.techScore}</span>
-        </p>
-        <p>
-          EN <span className="font-medium text-foreground">{session.englishScore}</span>
-        </p>
-      </div>
-    </div>
-  )
-}
-
-function EnglishImprovementRow({ improvement }: { improvement: DashboardEnglishImprovement }) {
-  return (
-    <div className="flex items-start gap-3 py-4">
-      <div className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground">
-        <LanguagesIcon className="size-4" />
-      </div>
-      <div>
-        <p className="text-base font-medium">{improvement.title}</p>
-        <p className="text-sm text-muted-foreground">{improvement.subtitle}</p>
-      </div>
-    </div>
-  )
-}
-
-function DashboardBody({ empty }: { empty?: boolean }) {
-  const progressItems = [
-    {
-      title: dashboardFixture.studyProgress.topic,
-      progressLabel: dashboardFixture.studyProgress.progressLabel,
-      progressValue: dashboardFixture.studyProgress.progressValue,
-    },
-    {
-      title: 'Node.js event loop',
-      progressLabel: '35%',
-      progressValue: 35,
-    },
-    {
-      title: 'System design - rate limiter',
-      progressLabel: '20%',
-      progressValue: 20,
-    },
-  ]
-
-  return (
-    <div className="flex flex-col gap-6">
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,2.1fr)_minmax(320px,1fr)]">
-        <Card className="py-0">
-          <CardHeader className="border-b py-4">
-            <div>
-              <CardTitle className="text-xl font-semibold">Continue studying</CardTitle>
-              <CardDescription className="text-sm">
-                {dashboardFixture.studyProgress.description}
-              </CardDescription>
-            </div>
-            <CardAction>
-              <Button variant="link" size="sm" className="h-auto px-0">
-                {dashboardFixture.studyProgress.ctaLabel}
-              </Button>
-            </CardAction>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {progressItems.map((item) => (
-              <div key={item.title} className="space-y-2">
-                <div className="flex items-center justify-between gap-3">
-                  <p className="text-base font-medium">{item.title}</p>
-                  <p className="text-sm text-muted-foreground">{item.progressLabel}</p>
-                </div>
-                <Progress value={item.progressValue} className="h-2" />
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-
-        <Card className="py-0">
-          <CardHeader className="border-b py-4">
-            <CardTitle className="text-xl font-semibold">Quick actions</CardTitle>
-          </CardHeader>
-          <CardContent className="flex flex-col gap-3 py-4">
-            {dashboardFixture.quickActions.map((action, index) => (
-              <Button
-                key={action.label}
-                variant={index === 0 ? 'default' : 'outline'}
-                size="lg"
-                className="justify-center"
-              >
-                {index === 0 ? <PlusIcon /> : index === 1 ? <MicIcon /> : <NotebookTextIcon />}
-                {action.label}
-              </Button>
-            ))}
-          </CardContent>
-        </Card>
-      </div>
-
-      {empty ? (
-        <EmptyState
-          className="min-h-80"
-          title="No dashboard activity yet"
-          description="Start a note, review queue, or interview session to populate this workspace."
-          action={<Button>Create first activity</Button>}
-        />
-      ) : (
-        <div className="grid gap-6 xl:grid-cols-[minmax(0,2fr)_minmax(320px,0.95fr)]">
-          <div className="space-y-6">
-            <Card className="py-0">
-              <CardHeader className="border-b py-4">
-                <CardTitle className="text-xl font-semibold">Recent notes</CardTitle>
-                <CardAction>
-                  <Button variant="link" size="sm" className="h-auto px-0">
-                    All notes
-                  </Button>
-                </CardAction>
-              </CardHeader>
-              <CardContent className="divide-y">
-                {dashboardFixture.notes.map((note) => (
-                  <NoteRow key={note.id} note={note} />
-                ))}
-              </CardContent>
-            </Card>
-
-            <Card className="py-0">
-              <CardHeader className="border-b py-4">
-                <CardTitle className="text-xl font-semibold">Recent interview sessions</CardTitle>
-                <CardAction>
-                  <Button variant="link" size="sm" className="h-auto px-0">
-                    All sessions
-                  </Button>
-                </CardAction>
-              </CardHeader>
-              <CardContent className="divide-y">
-                {dashboardFixture.sessions.map((session) => (
-                  <SessionRow key={session.id} session={session} />
-                ))}
-              </CardContent>
-            </Card>
-          </div>
-
-          <div className="space-y-6">
-            <Card className="py-0">
-              <CardHeader className="border-b py-4">
-                <div>
-                  <CardTitle className="text-xl font-semibold">Weak concepts</CardTitle>
-                  <CardDescription className="text-sm">
-                    Where you&apos;ve struggled across sessions.
-                  </CardDescription>
-                </div>
-              </CardHeader>
-              <CardContent className="divide-y">
-                {dashboardFixture.weakConcepts.map((concept) => (
-                  <WeakConceptRow key={concept.id} concept={concept} />
-                ))}
-              </CardContent>
-            </Card>
-
-            <Card className="py-0">
-              <CardHeader className="border-b py-4">
-                <CardTitle className="text-xl font-semibold">English improvements</CardTitle>
-                <CardAction>
-                  <Button variant="link" size="sm" className="h-auto px-0">
-                    View all
-                  </Button>
-                </CardAction>
-              </CardHeader>
-              <CardContent className="divide-y">
-                {dashboardFixture.englishImprovements.map((improvement) => (
-                  <EnglishImprovementRow key={improvement.id} improvement={improvement} />
-                ))}
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      )}
-    </div>
-  )
-}
-
 function LoadingBody() {
   return (
     <div className="flex flex-col gap-6">
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,2.1fr)_minmax(320px,1fr)]">
-        <Card className="py-0">
-          <CardHeader className="border-b py-4">
-            <Skeleton className="h-5 w-40" />
-            <Skeleton className="h-4 w-32" />
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {Array.from({ length: 3 }).map((_, index) => (
-              <div key={index} className="space-y-2">
-                <div className="flex items-center justify-between gap-3">
-                  <Skeleton className="h-4 w-40" />
-                  <Skeleton className="h-4 w-10" />
-                </div>
-                <Skeleton className="h-2 w-full" />
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-
-        <Card className="py-0">
-          <CardHeader className="border-b py-4">
-            <Skeleton className="h-5 w-32" />
-          </CardHeader>
-          <CardContent className="space-y-3 py-4">
-            {Array.from({ length: 3 }).map((_, index) => (
-              <Skeleton key={index} className="h-9 w-full" />
-            ))}
-          </CardContent>
-        </Card>
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        {Array.from({ length: 4 }).map((_, index) => (
+          <Skeleton key={index} className="h-28 rounded-md" />
+        ))}
       </div>
-
       <Card className="min-h-64 items-center justify-center">
         <Spinner className="size-7" />
       </Card>
@@ -309,120 +73,259 @@ function LoadingBody() {
   )
 }
 
-function ErrorBody({ message }: { message: string }) {
+function ErrorBody({ message, retryHref }: { message: string; retryHref?: string }) {
   return (
     <EmptyState
       className="min-h-[60vh] border-destructive/20 bg-destructive/5"
       title={<span className="text-destructive">Failed to load dashboard</span>}
       description={message}
-      action={<Button variant="destructive">Retry</Button>}
+      action={
+        retryHref ? (
+          <Button asChild variant="destructive">
+            <a href={retryHref}>Retry</a>
+          </Button>
+        ) : undefined
+      }
     />
   )
 }
 
-const TREND_ICON: Record<string, string> = { UP: '↑', DOWN: '↓', STABLE: '→' }
-const TREND_COLOR: Record<string, string> = {
-  UP: 'text-green-500',
-  DOWN: 'text-red-500',
-  STABLE: 'text-muted-foreground',
+function EmptyBody({ actions }: { actions: DashboardPageActions }) {
+  return (
+    <div className="flex flex-col gap-6">
+      <Card className="py-0">
+        <CardHeader className="border-b py-4">
+          <CardTitle className="text-xl font-semibold">Quick actions</CardTitle>
+          <CardDescription>Start the learning loop with a real workflow.</CardDescription>
+        </CardHeader>
+        <CardContent className="grid gap-3 py-4 md:grid-cols-2 xl:grid-cols-4">
+          <ActionLinkButton
+            href={actions.createNoteHref}
+            label="Create note"
+            icon={<NotebookTextIcon />}
+            variant="default"
+          />
+          <ActionLinkButton
+            href={actions.startInterviewHref}
+            label="Start interview"
+            icon={<MicIcon />}
+          />
+          <ActionLinkButton
+            href={actions.reviewQueueHref}
+            label="Review queue"
+            icon={<SparklesIcon />}
+          />
+          <ActionLinkButton
+            href={actions.englishNotesHref}
+            label="English notes"
+            icon={<LanguagesIcon />}
+          />
+        </CardContent>
+      </Card>
+
+      <EmptyState
+        className="min-h-80"
+        title="No dashboard activity yet"
+        description="Create a note, start an interview, or open the review queue to generate your first progress signals."
+        action={
+          <Button asChild>
+            <a href={actions.createNoteHref}>Create first note</a>
+          </Button>
+        }
+      />
+    </div>
+  )
 }
 
-function RealDataBody({
-  progress,
-  readiness,
-}: {
-  progress: DashboardProgress
-  readiness?: DashboardPageProps['readiness']
-}) {
-  const metrics: DashboardMetric[] = [
-    { label: 'Interview readiness', value: String(progress.interviewReadiness), hint: '' },
-    { label: 'Technical mastery', value: String(progress.technicalMastery), hint: '' },
-    { label: 'English score', value: String(progress.englishScore), hint: '' },
-    { label: 'Review streak', value: String(progress.reviewStreak), hint: '' },
-    { label: 'Questions practiced', value: String(progress.questionsPracticed), hint: '' },
-    { label: 'Notes mastered', value: String(progress.notesMastered), hint: '' },
-    { label: 'Due reviews', value: String(progress.dueReviews), hint: '' },
+const TREND_LABEL: Record<'UP' | 'DOWN' | 'STABLE', string> = {
+  UP: 'Improving',
+  DOWN: 'Dropping',
+  STABLE: 'Stable',
+}
+
+function getDashboardMetrics(state: Extract<DashboardPageState, { kind: 'ready' }>): DashboardMetric[] {
+  return [
+    {
+      label: 'Interview readiness',
+      value: String(state.progress.interviewReadiness),
+      hint: 'Based on completed interviews and your latest readiness snapshot.',
+    },
+    {
+      label: 'Technical mastery',
+      value: String(state.progress.technicalMastery),
+      hint: 'Weighted from reviewed notes and weak-concept status.',
+    },
+    {
+      label: 'English score',
+      value: String(state.progress.englishScore),
+      hint: 'Based on spoken feedback captured during interview practice.',
+    },
+    {
+      label: 'Review streak',
+      value: String(state.progress.reviewStreak),
+      hint: `${state.progress.dueReviews} review items currently due.`,
+    },
+    {
+      label: 'Questions practiced',
+      value: String(state.progress.questionsPracticed),
+      hint: 'Completed interview answers across your current history.',
+    },
+    {
+      label: 'Notes mastered',
+      value: String(state.progress.notesMastered),
+      hint: 'Notebook entries that have graduated past review.',
+    },
   ]
+}
+
+function ReadyBody({
+  state,
+  actions,
+}: {
+  state: Extract<DashboardPageState, { kind: 'ready' }>
+  actions: DashboardPageActions
+}) {
+  const metrics = getDashboardMetrics(state)
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {metrics.map((metric) => (
           <MetricCard key={metric.label} metric={metric} />
         ))}
       </div>
 
-      {readiness && (
+      <div className="grid gap-6 xl:grid-cols-[minmax(0,1.3fr)_minmax(320px,0.9fr)]">
         <Card className="py-0">
           <CardHeader className="border-b py-4">
             <div>
-              <CardTitle className="text-xl font-semibold">Interview readiness</CardTitle>
+              <CardTitle className="text-xl font-semibold">Weak concepts to revisit</CardTitle>
+              <CardDescription>
+                Focus the topics that are still dragging recent interview performance.
+              </CardDescription>
             </div>
             <CardAction>
-              <div className="text-right">
-                <p className="font-heading text-2xl font-semibold">{readiness.overallScore}</p>
-                <p
-                  className={`text-xs ${
-                    TREND_COLOR[
-                      readiness.improvementTrend > 0
-                        ? 'UP'
-                        : readiness.improvementTrend < 0
-                          ? 'DOWN'
-                          : 'STABLE'
-                    ]
-                  }`}
-                >
-                  {
-                    TREND_ICON[
-                      readiness.improvementTrend > 0
-                        ? 'UP'
-                        : readiness.improvementTrend < 0
-                          ? 'DOWN'
-                          : 'STABLE'
-                    ]
-                  }{' '}
-                  {readiness.improvementTrend > 0 ? '+' : ''}
-                  {readiness.improvementTrend} pts
-                </p>
-              </div>
+              <Button asChild variant="link" size="sm" className="h-auto px-0">
+                <a href={actions.reviewQueueHref}>Open review queue</a>
+              </Button>
             </CardAction>
           </CardHeader>
-          <CardContent className="space-y-3">
-            {readiness.breakdown.map((item) => (
-              <div key={item.dimension} className="space-y-1">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">{item.label}</span>
-                  <span
-                    className={`flex items-center gap-1 font-medium ${TREND_COLOR[item.trend]}`}
-                  >
-                    <span className="text-xs">{TREND_ICON[item.trend]}</span>
-                    {item.score}
-                  </span>
+          <CardContent className="divide-y">
+            {state.progress.weakConceptTrends.length > 0 ? (
+              state.progress.weakConceptTrends.map((concept) => (
+                <div key={concept.concept} className="flex items-center justify-between gap-3 py-4">
+                  <div>
+                    <p className="text-base font-medium">{concept.concept}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {concept.occurrenceCount} recent misses
+                    </p>
+                  </div>
+                  <div className="text-right text-sm">
+                    <p className="font-medium">{concept.status.replaceAll('_', ' ')}</p>
+                    <p className="text-muted-foreground">
+                      {TREND_LABEL[concept.status === 'ACTIVE' ? 'DOWN' : concept.status === 'RESOLVED' ? 'UP' : 'STABLE']}
+                    </p>
+                  </div>
                 </div>
-                <Progress value={Math.min(item.score, 100)} className="h-1.5" />
+              ))
+            ) : (
+              <div className="py-4 text-sm text-muted-foreground">
+                No weak concepts are currently tracked. Keep practicing to generate sharper signals.
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        <div className="space-y-6">
+          <Card className="py-0">
+            <CardHeader className="border-b py-4">
+              <CardTitle className="text-xl font-semibold">Quick actions</CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-col gap-3 py-4">
+              <ActionLinkButton
+                href={actions.createNoteHref}
+                label="Create note"
+                icon={<NotebookTextIcon />}
+                variant="default"
+              />
+              <ActionLinkButton
+                href={actions.startInterviewHref}
+                label="Start interview"
+                icon={<MicIcon />}
+              />
+              <ActionLinkButton
+                href={actions.quickStartHref}
+                label="Quick start"
+                icon={<MicIcon />}
+              />
+              <ActionLinkButton
+                href={actions.reviewQueueHref}
+                label="Review queue"
+                icon={<SparklesIcon />}
+              />
+            </CardContent>
+          </Card>
+
+          <Card className="py-0">
+            <CardHeader className="border-b py-4">
+              <CardTitle className="text-xl font-semibold">Navigation</CardTitle>
+            </CardHeader>
+            <CardContent className="grid gap-3 py-4">
+              <ActionLinkButton href={actions.allNotesHref} label="All notes" icon={<NotebookTextIcon />} />
+              <ActionLinkButton href={actions.allSessionsHref} label="All sessions" icon={<MicIcon />} />
+              <ActionLinkButton href={actions.englishNotesHref} label="English notes" icon={<LanguagesIcon />} />
+              <ActionLinkButton href={actions.readinessHref} label="Readiness" icon={<SparklesIcon />} />
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+
+      {state.readiness ? (
+        <Card className="py-0">
+          <CardHeader className="border-b py-4">
+            <div>
+              <CardTitle className="text-xl font-semibold">Readiness snapshot</CardTitle>
+              <CardDescription>
+                A current roll-up of the areas feeding your overall interview readiness.
+              </CardDescription>
+            </div>
+            <CardAction>
+              <Button asChild variant="link" size="sm" className="h-auto px-0">
+                <a href={actions.readinessHref}>Open readiness</a>
+              </Button>
+            </CardAction>
+          </CardHeader>
+          <CardContent className="space-y-3 py-4">
+            {state.readiness.breakdown.map((item) => (
+              <div key={item.dimension} className="space-y-1">
+                <div className="flex items-center justify-between gap-3 text-sm">
+                  <span className="text-muted-foreground">{item.label}</span>
+                  <span className="font-medium">{item.score}</span>
+                </div>
+                <Progress value={Math.min(item.score, 100)} className="h-2" />
               </div>
             ))}
             <p className="pt-1 text-xs text-muted-foreground">
-              Confidence: {Math.round(readiness.confidenceLevel * 100)}%
+              Confidence: {Math.round(state.readiness.confidenceLevel * 100)}%
             </p>
           </CardContent>
         </Card>
-      )}
+      ) : null}
     </div>
   )
 }
 
-function Root({ loading, empty, error, progress, readiness }: DashboardPageProps) {
+function Root({ state, actions }: DashboardPageProps) {
   return (
     <PageBody>
-      {error ? (
-        <ErrorBody message={error} />
-      ) : loading ? (
+      {state.kind === 'loading' ? (
         <LoadingBody />
-      ) : progress ? (
-        <RealDataBody progress={progress} readiness={readiness} />
+      ) : state.kind === 'error' ? (
+        <ErrorBody message={state.message} retryHref={actions.retryHref} />
+      ) : state.kind === 'empty' ? (
+        <EmptyBody actions={actions} />
       ) : (
-        <DashboardBody empty={empty} />
+        <ReadyBody state={state} actions={actions} />
       )}
       <Separator className="mt-8 opacity-0" />
     </PageBody>
@@ -430,11 +333,7 @@ function Root({ loading, empty, error, progress, readiness }: DashboardPageProps
 }
 
 const DashboardPage = Object.assign(Root, {
-  EnglishImprovementRow,
   MetricCard,
-  NoteRow,
-  SessionRow,
-  WeakConceptRow,
 })
 
 export default DashboardPage

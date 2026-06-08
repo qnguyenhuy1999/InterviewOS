@@ -1,0 +1,2 @@
+Senior TypeScript engineer focused on backend systems, PostgreSQL, Redis, and interview preparation.
+Built internal tooling, API platforms, and production support workflows across SaaS products.

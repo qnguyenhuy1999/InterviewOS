@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
 import { apiFetch } from '@/lib/api-client'
+import { APP_ROUTES } from '@/lib/app-routes'
 
 export function StartPracticeButton({ generatedQuestionId }: { generatedQuestionId: string }) {
   const router = useRouter()
@@ -23,7 +24,7 @@ export function StartPracticeButton({ generatedQuestionId }: { generatedQuestion
       }
 
       const session = (await response.json()) as { id: string }
-      router.push(`/interview/session/${session.id}`)
+      router.push(APP_ROUTES.interviewSession(session.id))
       router.refresh()
     } finally {
       setPending(false)

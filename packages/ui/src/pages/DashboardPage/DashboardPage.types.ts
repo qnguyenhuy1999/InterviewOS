@@ -1,32 +1,45 @@
 import type {
-  DashboardEnglishImprovementView,
-  DashboardInterviewSessionView,
   DashboardMetricView,
-  DashboardNoteSummaryView,
   DashboardPageView,
   DashboardProgress,
-  DashboardQuickActionView,
-  DashboardStudyProgressView,
-  DashboardWeakConceptView,
 } from '@interviewos/types'
 
+export type DashboardPageState =
+  | { kind: 'loading' }
+  | { kind: 'empty' }
+  | { kind: 'error'; message: string }
+  | {
+      kind: 'ready'
+      progress: DashboardProgress
+      readiness?: {
+        overallScore: number
+        confidenceLevel: number
+        improvementTrend: number
+        breakdown: Array<{
+          dimension: string
+          label: string
+          score: number
+          weight: number
+          trend: 'UP' | 'DOWN' | 'STABLE'
+        }>
+      }
+    }
+
+export type DashboardPageActions = {
+  createNoteHref: string
+  startInterviewHref: string
+  quickStartHref: string
+  allNotesHref: string
+  allSessionsHref: string
+  englishNotesHref: string
+  reviewQueueHref: string
+  readinessHref: string
+  retryHref?: string
+}
+
 export type DashboardPageProps = {
-  loading?: boolean
-  empty?: boolean
-  error?: string
-  progress?: DashboardProgress
-  readiness?: {
-    overallScore: number
-    confidenceLevel: number
-    improvementTrend: number
-    breakdown: Array<{
-      dimension: string
-      label: string
-      score: number
-      weight: number
-      trend: 'UP' | 'DOWN' | 'STABLE'
-    }>
-  }
+  state: DashboardPageState
+  actions: DashboardPageActions
 }
 
 export type DashboardMetric = DashboardMetricView
@@ -41,13 +54,6 @@ export type DashboardPrimaryAction = {
   description: string
   ctaLabel: string
 }
-
-export type DashboardStudyProgress = DashboardStudyProgressView
-export type DashboardQuickAction = DashboardQuickActionView
-export type DashboardNoteSummary = DashboardNoteSummaryView
-export type DashboardWeakConcept = DashboardWeakConceptView
-export type DashboardInterviewSession = DashboardInterviewSessionView
-export type DashboardEnglishImprovement = DashboardEnglishImprovementView
 
 export type DashboardFixture = DashboardPageView & {
   focusChips: DashboardFocusChip[]

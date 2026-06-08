@@ -23,8 +23,7 @@ import {
   INTERVIEW_PAGE_ALL_TOPICS_VALUE,
   INTERVIEW_PAGE_TYPE_LABELS,
 } from './InterviewPage.constants'
-import { interviewPageFixture } from './InterviewPage.fixtures'
-import type { InterviewPageProps, InterviewPageSession } from './InterviewPage.types'
+import type { InterviewPageActions, InterviewPageProps, InterviewPageSession } from './InterviewPage.types'
 import {
   filterInterviewSessions,
   formatInterviewDateLabel,
@@ -66,7 +65,13 @@ function TopicFilter({
   )
 }
 
-function SessionRow({ session }: { session: InterviewPageSession }) {
+function SessionRow({
+  session,
+  reviewHref,
+}: {
+  session: InterviewPageSession
+  reviewHref: string
+}) {
   const topicLabel = getInterviewTopicLabel(session)
   const typeLabel = INTERVIEW_PAGE_TYPE_LABELS[session.type]
   const dateLabel = formatInterviewDateLabel(session.startedAt)
@@ -100,15 +105,21 @@ function SessionRow({ session }: { session: InterviewPageSession }) {
         {durationLabel}
       </TableCell>
       <TableCell className="px-5 py-5 text-right">
-        <Button variant="link" size="sm" className="h-auto px-0 font-medium text-foreground">
-          Review
+        <Button asChild variant="link" size="sm" className="h-auto px-0 font-medium text-foreground">
+          <a href={reviewHref}>Review</a>
         </Button>
       </TableCell>
     </TableRow>
   )
 }
 
-function SessionsTable({ sessions }: { sessions: InterviewPageSession[] }) {
+function SessionsTable({
+  sessions,
+  actions,
+}: {
+  sessions: InterviewPageSession[]
+  actions: InterviewPageActions
+}) {
   return (
     <div className="overflow-hidden rounded-xl border bg-card ring-1 ring-foreground/10">
       <Table>
@@ -139,7 +150,7 @@ function SessionsTable({ sessions }: { sessions: InterviewPageSession[] }) {
         </TableHeader>
         <TableBody>
           {sessions.map((session) => (
-            <SessionRow key={session.id} session={session} />
+            <SessionRow key={session.id} session={session} reviewHref={actions.reviewHref(session.id)} />
           ))}
         </TableBody>
       </Table>
@@ -217,59 +228,85 @@ function LoadingBody() {
   )
 }
 
-function EmptyBody() {
+function EmptyBody({ actions }: { actions: InterviewPageActions }) {
   return (
     <EmptyState
       className="min-h-80"
       title="No interview sessions yet"
       description="Start a focused practice round to generate session feedback and score history."
-      action={<Button>Start first interview</Button>}
+      action={
+        <Button asChild>
+          <a href={actions.startInterviewHref}>Start first interview</a>
+        </Button>
+      }
     />
   )
 }
 
-function ErrorBody({ message }: { message: string }) {
+function ErrorBody({ message, retryHref }: { message: string; retryHref?: string }) {
   return (
     <EmptyState
       className="min-h-[60vh] border-destructive/20 bg-destructive/5"
       title={<span className="text-destructive">Failed to load interview sessions</span>}
       description={message}
-      action={<Button variant="destructive">Retry</Button>}
+      action={
+        retryHref ? (
+          <Button asChild variant="destructive">
+            <a href={retryHref}>Retry</a>
+          </Button>
+        ) : undefined
+      }
     />
   )
 }
 
 function ReadyBody({
-  sessions,
+  state,
+  actions,
   selectedTopic,
   onTopicChange,
 }: {
-  sessions: InterviewPageSession[]
+  state: Extract<InterviewPageProps['state'], { kind: 'ready' }>
+  actions: InterviewPageActions
   selectedTopic: string
   onTopicChange?: (topic: string) => void
 }) {
+  const { sessions } = state
   const visibleSessions = filterInterviewSessions(sessions, selectedTopic)
 
   return (
     <div className="space-y-6">
       <InterviewHighlights sessions={visibleSessions.length > 0 ? visibleSessions : sessions} />
-      <div className="rounded-md border border-border/80 bg-card p-4 shadow-[0_20px_60px_-46px_rgba(15,23,42,0.28)]">
-        <TopicFilter
-          sessions={sessions}
-          selectedTopic={selectedTopic}
-          onTopicChange={onTopicChange}
+      {onTopicChange ? (
+        <div className="rounded-md border border-border/80 bg-card p-4 shadow-[0_20px_60px_-46px_rgba(15,23,42,0.28)]">
+          <TopicFilter
+            sessions={sessions}
+            selectedTopic={selectedTopic}
+            onTopicChange={onTopicChange}
+          />
+        </div>
+      ) : null}
+      {visibleSessions.length === 0 ? (
+        <EmptyState
+          className="min-h-72"
+          title="No sessions match this topic"
+          description="Clear the filter or start a new interview to build more history."
+          action={
+            <Button asChild>
+              <a href={actions.startInterviewHref}>Start interview</a>
+            </Button>
+          }
         />
-      </div>
-      {visibleSessions.length === 0 ? <EmptyBody /> : <SessionsTable sessions={visibleSessions} />}
+      ) : (
+        <SessionsTable sessions={visibleSessions} actions={actions} />
+      )}
     </div>
   )
 }
 
 function Root({
-  loading,
-  empty,
-  error,
-  sessions = interviewPageFixture.sessions,
+  state,
+  actions,
   selectedTopic = INTERVIEW_PAGE_ALL_TOPICS_VALUE,
   onTopicChange,
 }: InterviewPageProps) {
@@ -280,27 +317,32 @@ function Root({
         description="Run a focused practice round and review your feedback afterwards."
         actions={
           <>
-            <Button variant="outline" size="lg">
-              <MicIcon />
-              New interview
+            <Button asChild variant="outline" size="lg">
+              <a href={actions.startInterviewHref}>
+                <MicIcon />
+                New interview
+              </a>
             </Button>
-            <Button size="lg">
-              <PlayIcon />
-              Quick start
+            <Button asChild size="lg">
+              <a href={actions.quickStartHref}>
+                <PlayIcon />
+                Quick start
+              </a>
             </Button>
           </>
         }
       />
       <PageBody>
-        {error ? (
-          <ErrorBody message={error} />
-        ) : loading ? (
+        {state.kind === 'error' ? (
+          <ErrorBody message={state.message} retryHref={actions.retryHref} />
+        ) : state.kind === 'loading' ? (
           <LoadingBody />
-        ) : empty ? (
-          <EmptyBody />
+        ) : state.kind === 'empty' ? (
+          <EmptyBody actions={actions} />
         ) : (
           <ReadyBody
-            sessions={sessions}
+            state={state}
+            actions={actions}
             selectedTopic={selectedTopic}
             onTopicChange={onTopicChange}
           />

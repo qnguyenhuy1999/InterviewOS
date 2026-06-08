@@ -15,7 +15,6 @@ import {
 import { DifficultyBadge, StatusDot } from '../../../components/ui/status'
 import { cn } from '../../../lib/utils'
 import { NOTEBOOK_STATUS_OPTIONS, NOTEBOOK_TYPE_OPTIONS } from './NotebookPage.constants'
-import { notebookFixture } from './NotebookPage.fixtures'
 import type {
   NotebookPageFilterValue,
   NotebookPageNote,
@@ -38,14 +37,16 @@ function FilterSelect<T extends string>({
   options,
   placeholder,
   getLabel,
+  onValueChange,
 }: {
   value: NotebookPageFilterValue<T> | string | undefined
   options: readonly NotebookPageFilterValue<T>[]
   placeholder: string
   getLabel: (value: T) => string
+  onValueChange?: (value: NotebookPageFilterValue<T>) => void
 }) {
   return (
-    <Select value={value ?? 'ALL'}>
+    <Select value={value ?? 'ALL'} onValueChange={(next) => onValueChange?.(next as NotebookPageFilterValue<T>)}>
       <SelectTrigger className="w-full min-w-40 bg-card md:w-44">
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
@@ -60,7 +61,15 @@ function FilterSelect<T extends string>({
   )
 }
 
-function NotebookCard({ note, view }: { note: NotebookPageNote; view: NotebookPageView }) {
+function NotebookCard({
+  note,
+  view,
+  noteHref,
+}: {
+  note: NotebookPageNote
+  view: NotebookPageView
+  noteHref: string
+}) {
   const topicLabel = note.topic?.trim() || getEnumLabel(note.type)
 
   return (
@@ -77,7 +86,9 @@ function NotebookCard({ note, view }: { note: NotebookPageNote; view: NotebookPa
               {topicLabel}
             </p>
             <CardTitle className="mt-2 text-lg font-semibold tracking-tight">
-              {note.title}
+              <a href={noteHref} className="hover:underline">
+                {note.title}
+              </a>
             </CardTitle>
             <p className="mt-2 text-sm leading-6 text-muted-foreground">
               {getNotebookSummary(note)}
@@ -145,6 +156,12 @@ function FilterBar({
   selectedType,
   topicOptions,
   view,
+  onSearchValueChange,
+  onSelectedTopicChange,
+  onSelectedStatusChange,
+  onSelectedTypeChange,
+  onViewChange,
+  onClearFilters,
 }: {
   searchValue?: string
   selectedTopic?: string | 'ALL'
@@ -152,7 +169,20 @@ function FilterBar({
   selectedType?: NotebookPageFilterValue<import('@interviewos/types').NoteType>
   topicOptions: readonly string[]
   view: NotebookPageView
+  onSearchValueChange?: NotebookPageProps['onSearchValueChange']
+  onSelectedTopicChange?: NotebookPageProps['onSelectedTopicChange']
+  onSelectedStatusChange?: NotebookPageProps['onSelectedStatusChange']
+  onSelectedTypeChange?: NotebookPageProps['onSelectedTypeChange']
+  onViewChange?: NotebookPageProps['onViewChange']
+  onClearFilters?: NotebookPageProps['onClearFilters']
 }) {
+  const needsPracticeActive = selectedStatus === NoteStatus.NEEDS_PRACTICE
+  const hasActiveFilters =
+    (searchValue?.trim().length ?? 0) > 0 ||
+    (selectedTopic ?? 'ALL') !== 'ALL' ||
+    (selectedStatus ?? 'ALL') !== 'ALL' ||
+    (selectedType ?? 'ALL') !== 'ALL'
+
   return (
     <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
       <div className="grid gap-3 md:flex md:flex-1 md:flex-wrap">
@@ -161,7 +191,7 @@ function FilterBar({
           <Input
             type="search"
             value={searchValue ?? ''}
-            readOnly
+            onChange={(event) => onSearchValueChange?.(event.target.value)}
             placeholder="Search notes..."
             className="h-10 rounded-xl bg-card pl-9"
           />
@@ -171,19 +201,39 @@ function FilterBar({
           options={topicOptions}
           placeholder="All topics"
           getLabel={(value) => value}
+          onValueChange={(value) => onSelectedTopicChange?.(value)}
         />
         <FilterSelect
           value={selectedStatus}
           options={NOTEBOOK_STATUS_OPTIONS}
           placeholder="All statuses"
           getLabel={getEnumLabel}
+          onValueChange={onSelectedStatusChange}
         />
         <FilterSelect
           value={selectedType}
           options={NOTEBOOK_TYPE_OPTIONS}
           placeholder="All types"
           getLabel={getEnumLabel}
+          onValueChange={onSelectedTypeChange}
         />
+        <div className="flex flex-wrap items-center gap-2">
+          <Button
+            type="button"
+            variant={needsPracticeActive ? 'default' : 'outline'}
+            size="sm"
+            onClick={() =>
+              onSelectedStatusChange?.(needsPracticeActive ? 'ALL' : NoteStatus.NEEDS_PRACTICE)
+            }
+          >
+            Needs practice
+          </Button>
+          {hasActiveFilters ? (
+            <Button type="button" variant="ghost" size="sm" onClick={onClearFilters}>
+              Clear filters
+            </Button>
+          ) : null}
+        </div>
       </div>
 
       <div className="inline-flex items-center self-end rounded-xl border border-border bg-card p-1">
@@ -192,6 +242,7 @@ function FilterBar({
           size="icon-sm"
           className="rounded-lg"
           aria-pressed={view === 'grid'}
+          onClick={() => onViewChange?.('grid')}
         >
           <LayoutGridIcon />
           <span className="sr-only">Grid view</span>
@@ -201,6 +252,7 @@ function FilterBar({
           size="icon-sm"
           className="rounded-lg"
           aria-pressed={view === 'list'}
+          onClick={() => onViewChange?.('list')}
         >
           <ListIcon />
           <span className="sr-only">List view</span>
@@ -211,18 +263,38 @@ function FilterBar({
 }
 
 function NotebookBody({
-  notes,
-  empty,
+  state,
+  actions,
   searchValue,
   selectedTopic,
   selectedStatus,
   selectedType,
   view = 'grid',
-}: NotebookPageProps) {
-  const sourceNotes = notes ?? notebookFixture.notes
-  const visibleNotes = getVisibleNotebookNotes({
+  onSearchValueChange,
+  onSelectedTopicChange,
+  onSelectedStatusChange,
+  onSelectedTypeChange,
+  onViewChange,
+  onClearFilters,
+}: Pick<
+  NotebookPageProps,
+  | 'actions'
+  | 'searchValue'
+  | 'selectedTopic'
+  | 'selectedStatus'
+  | 'selectedType'
+  | 'view'
+  | 'onSearchValueChange'
+  | 'onSelectedTopicChange'
+  | 'onSelectedStatusChange'
+  | 'onSelectedTypeChange'
+  | 'onViewChange'
+  | 'onClearFilters'
+> & { state: Extract<NotebookPageProps['state'], { kind: 'ready' }> | Extract<NotebookPageProps['state'], { kind: 'empty' }> }) {
+  const sourceNotes: NotebookPageNote[] = state.kind === 'ready' ? state.notes : []
+  const visibleNotes: NotebookPageNote[] = getVisibleNotebookNotes({
     notes: sourceNotes,
-    empty,
+    empty: state.kind === 'empty',
     searchValue,
     selectedTopic,
     selectedStatus,
@@ -230,7 +302,7 @@ function NotebookBody({
   })
   const topicOptions = getNotebookTopicOptions(sourceNotes)
 
-  if (empty) {
+  if (state.kind === 'empty') {
     return (
       <EmptyState
         className="min-h-96"
@@ -238,9 +310,11 @@ function NotebookBody({
         title="No notes yet"
         description="Create your first note to start building your interview knowledge base."
         action={
-          <Button>
-            <PlusIcon />
-            Create note
+          <Button asChild>
+            <a href={actions.createNoteHref}>
+              <PlusIcon />
+              Create note
+            </a>
           </Button>
         }
       />
@@ -257,6 +331,12 @@ function NotebookBody({
           selectedType={selectedType}
           topicOptions={topicOptions}
           view={view}
+          onSearchValueChange={onSearchValueChange}
+          onSelectedTopicChange={onSelectedTopicChange}
+          onSelectedStatusChange={onSelectedStatusChange}
+          onSelectedTypeChange={onSelectedTypeChange}
+          onViewChange={onViewChange}
+          onClearFilters={onClearFilters}
         />
         <EmptyState
           className="min-h-80"
@@ -278,6 +358,12 @@ function NotebookBody({
         selectedType={selectedType}
         topicOptions={topicOptions}
         view={view}
+        onSearchValueChange={onSearchValueChange}
+        onSelectedTopicChange={onSelectedTopicChange}
+        onSelectedStatusChange={onSelectedStatusChange}
+        onSelectedTypeChange={onSelectedTypeChange}
+        onViewChange={onViewChange}
+        onClearFilters={onClearFilters}
       />
       <div
         className={cn(
@@ -286,7 +372,12 @@ function NotebookBody({
         )}
       >
         {visibleNotes.map((note) => (
-          <NotebookCard key={note.id} note={note} view={view} />
+          <NotebookCard
+            key={note.id}
+            note={note}
+            view={view}
+            noteHref={actions.noteHref(note.id)}
+          />
         ))}
       </div>
     </div>
@@ -322,24 +413,33 @@ function LoadingBody() {
   )
 }
 
-function ErrorBody({ message }: { message: string }) {
+function ErrorBody({ message, retryHref }: { message: string; retryHref?: string }) {
   return (
     <EmptyState
       className="min-h-128 border-destructive/20 bg-destructive/5"
       title={<span className="text-destructive">Failed to load notebook</span>}
       description={message}
-      action={<Button variant="destructive">Retry</Button>}
+      action={
+        retryHref ? (
+          <Button asChild variant="destructive">
+            <a href={retryHref}>Retry</a>
+          </Button>
+        ) : undefined
+      }
     />
   )
 }
 
 function Root(props: NotebookPageProps) {
-  const activeNotes = props.notes ?? notebookFixture.notes
-  const readyCount = activeNotes.filter((note) =>
-    isSelectedFilter(props.selectedStatus, 'ALL')
-      ? note.status === 'INTERVIEW_READY'
-      : note.status === props.selectedStatus,
-  ).length
+  const activeNotes = props.state.kind === 'ready' ? props.state.notes : []
+  const readyCount =
+    props.state.kind === 'ready'
+      ? activeNotes.filter((note) =>
+          isSelectedFilter(props.selectedStatus, 'ALL')
+            ? note.status === 'INTERVIEW_READY'
+            : note.status === props.selectedStatus,
+        ).length
+      : 0
 
   return (
     <>
@@ -351,21 +451,37 @@ function Root(props: NotebookPageProps) {
             <div className="hidden px-3 py-1 text-xs text-muted-foreground md:inline-flex">
               {readyCount} ready for practice
             </div>
-            <Button className="rounded-xl md:hidden">
-              <PlusIcon />
-              New note
+            <Button asChild className="rounded-xl md:hidden">
+              <a href={props.actions.createNoteHref}>
+                <PlusIcon />
+                New note
+              </a>
             </Button>
           </div>
         }
       />
 
       <PageBody>
-        {props.error ? (
-          <ErrorBody message={props.error} />
-        ) : props.loading ? (
+        {props.state.kind === 'error' ? (
+          <ErrorBody message={props.state.message} retryHref={props.actions.retryHref} />
+        ) : props.state.kind === 'loading' ? (
           <LoadingBody />
         ) : (
-          <NotebookBody {...props} />
+          <NotebookBody
+            state={props.state}
+            actions={props.actions}
+            searchValue={props.searchValue}
+            selectedTopic={props.selectedTopic}
+            selectedStatus={props.selectedStatus}
+            selectedType={props.selectedType}
+            view={props.view}
+            onSearchValueChange={props.onSearchValueChange}
+            onSelectedTopicChange={props.onSelectedTopicChange}
+            onSelectedStatusChange={props.onSelectedStatusChange}
+            onSelectedTypeChange={props.onSelectedTypeChange}
+            onViewChange={props.onViewChange}
+            onClearFilters={props.onClearFilters}
+          />
         )}
       </PageBody>
     </>

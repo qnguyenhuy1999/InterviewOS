@@ -14,7 +14,6 @@ import {
 import { Progress } from '../../../components/ui/progress'
 import { Skeleton } from '../../../components/ui/skeleton'
 import { ENGLISH_NOTES_STATUS_LABEL } from './EnglishNotesPage.constants'
-import { englishNotesFixture } from './EnglishNotesPage.fixtures'
 import type { EnglishNotesPageProps } from './EnglishNotesPage.types'
 import {
   getEnglishMasteryPercentage,
@@ -31,7 +30,7 @@ function EnglishNoteRow({
   status,
   createdAt,
   renderActions,
-}: NonNullable<EnglishNotesPageProps['notes']>[number] & {
+}: Extract<EnglishNotesPageProps['state'], { kind: 'ready' }>['notes'][number] & {
   renderActions?: React.ReactNode
 }) {
   return (
@@ -73,7 +72,7 @@ function EnglishNotesBody({
   notes,
   renderNoteActions,
 }: {
-  notes: NonNullable<EnglishNotesPageProps['notes']>
+  notes: Extract<EnglishNotesPageProps['state'], { kind: 'ready' }>['notes']
   renderNoteActions?: EnglishNotesPageProps['renderNoteActions']
 }) {
   const topicGroups = getEnglishTopicGroups(notes)
@@ -173,34 +172,42 @@ function LoadingBody() {
   )
 }
 
-function ErrorBody({ message }: { message: string }) {
+function ErrorBody({ message, retryHref }: { message: string; retryHref?: string }) {
   return (
     <EmptyState
       className="min-h-128 border-destructive/20 bg-destructive/5"
       title={<span className="text-destructive">Failed to load English notes</span>}
       description={message}
-      action={<Button variant="destructive">Retry</Button>}
+      action={
+        retryHref ? (
+          <Button asChild variant="destructive">
+            <a href={retryHref}>Retry</a>
+          </Button>
+        ) : undefined
+      }
     />
   )
 }
 
-function EmptyBody() {
+function EmptyBody({ startPracticeHref }: { startPracticeHref: string }) {
   return (
     <EmptyState
       className="min-h-96"
       icon={LanguagesIcon}
       title="No English corrections yet"
       description="Complete an interview session to start collecting targeted English feedback."
-      action={<Button>Start practice</Button>}
+      action={
+        <Button asChild>
+          <a href={startPracticeHref}>Start practice</a>
+        </Button>
+      }
     />
   )
 }
 
 function Root({
-  notes = englishNotesFixture.notes,
-  loading,
-  empty,
-  error,
+  state,
+  actions,
   renderNoteActions,
 }: EnglishNotesPageProps) {
   return (
@@ -209,21 +216,21 @@ function Root({
         title="English notes"
         description="Track spoken-English corrections, study by topic, and close repeated communication gaps."
         actions={
-          <Button variant="outline" size="lg">
-            Review latest
+          <Button asChild variant="outline" size="lg">
+            <a href={actions.reviewLatestHref}>Review latest</a>
           </Button>
         }
       />
 
       <PageBody>
-        {error ? (
-          <ErrorBody message={error} />
-        ) : loading ? (
+        {state.kind === 'error' ? (
+          <ErrorBody message={state.message} retryHref={actions.retryHref} />
+        ) : state.kind === 'loading' ? (
           <LoadingBody />
-        ) : empty || notes.length === 0 ? (
-          <EmptyBody />
+        ) : state.kind === 'empty' ? (
+          <EmptyBody startPracticeHref={actions.startPracticeHref} />
         ) : (
-          <EnglishNotesBody notes={notes} renderNoteActions={renderNoteActions} />
+          <EnglishNotesBody notes={state.notes} renderNoteActions={renderNoteActions} />
         )}
       </PageBody>
     </>

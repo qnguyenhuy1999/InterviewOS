@@ -12,5 +12,8 @@
     "hooks/**/*",
     ".storybook/**/*",
     "vite.config.ts"
+  ],
+  "exclude": [
+    "src/**/*.stories.tsx"
   ]
 }

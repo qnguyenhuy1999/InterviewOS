@@ -47,6 +47,7 @@ export type InterviewSessionPageProps = {
   turns?: InterviewSessionPageTurn[]
   loading?: boolean
   error?: string
+  reviewHref?: string
   renderMultiTurnForm?: (params: {
     sessionId: string
     turns: InterviewSessionPageTurn[]

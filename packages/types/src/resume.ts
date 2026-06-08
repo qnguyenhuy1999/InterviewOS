@@ -55,7 +55,13 @@ export interface ResumePageView {
   upload: ResumeUploadAreaView
   currentResume: ResumeSectionView<ResumeFileView>
   analysis: ResumeSectionView<ResumeAnalysisAttributeView>
+  strengths: ResumeSectionView<string>
+  gaps: ResumeSectionView<string>
+  improvements: ResumeSectionView<string>
   extractedSkills: ResumeSectionView<string>
   suggestedTopics: ResumeSectionView<ResumeSuggestedTopicView>
+  missingKeywords?: ResumeSectionView<string> | null
+  bulletRewriteSuggestions?: ResumeSectionView<string> | null
+  interviewPreparation?: ResumeSectionView<string> | null
   emptyState: ResumeEmptyStateView
 }

@@ -28,9 +28,10 @@ const englishLevels = Object.values(EnglishLevel)
 type ProfileFormProps = {
   initialProfile: UserLearningProfile | null
   mode: 'onboarding' | 'settings'
+  redirectTo?: string
 }
 
-export function ProfileForm({ initialProfile, mode }: ProfileFormProps) {
+export function ProfileForm({ initialProfile, mode, redirectTo }: ProfileFormProps) {
   const router = useRouter()
   const [error, setError] = useState<string | null>(null)
   const {
@@ -73,7 +74,7 @@ export function ProfileForm({ initialProfile, mode }: ProfileFormProps) {
         }
       })
 
-      router.push(mode === 'onboarding' ? '/notebook' : '/settings')
+      router.push(redirectTo ?? (mode === 'onboarding' ? '/notebook' : '/settings'))
       router.refresh()
     } catch (submissionError) {
       setError(

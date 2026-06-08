@@ -26,4 +26,6 @@ export type InterviewReviewPageProps = {
   evaluation?: InterviewEvaluation | null
   loading?: boolean
   error?: string
+  sessionHref?: string
+  allSessionsHref?: string
 }

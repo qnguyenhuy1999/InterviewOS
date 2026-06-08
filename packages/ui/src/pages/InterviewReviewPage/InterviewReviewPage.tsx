@@ -232,6 +232,8 @@ function InterviewReviewPage({
   evaluation,
   loading,
   error,
+  sessionHref,
+  allSessionsHref,
 }: InterviewReviewPageProps) {
   if (loading) {
     return (
@@ -282,6 +284,21 @@ function InterviewReviewPage({
       )}
 
       <ConversationReplay turns={turns} />
+
+      {(sessionHref || allSessionsHref) && (
+        <div className="flex items-center gap-4 text-sm">
+          {sessionHref ? (
+            <a href={sessionHref} className="text-primary hover:underline">
+              Back to session
+            </a>
+          ) : null}
+          {allSessionsHref ? (
+            <a href={allSessionsHref} className="text-muted-foreground hover:underline">
+              All sessions
+            </a>
+          ) : null}
+        </div>
+      )}
     </div>
   )
 }

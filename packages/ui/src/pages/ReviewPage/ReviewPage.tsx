@@ -7,6 +7,7 @@ import type {
 import {
   CircleCheckIcon,
   Clock3Icon,
+  HistoryIcon,
   PlayIcon,
   RotateCcwIcon,
   SkipForwardIcon,
@@ -61,7 +62,13 @@ function ReviewRatingBadge({ rating }: { rating: ReviewRating | null }) {
   )
 }
 
-function ReviewQueueCard({ item }: { item: ReviewQueueCardView }) {
+function ReviewQueueCard({
+  item,
+  renderRatingActions,
+}: {
+  item: ReviewQueueCardView
+  renderRatingActions?: React.ReactNode
+}) {
   return (
     <Card className="gap-0 border py-0 shadow-sm">
       <CardHeader className="gap-4 border-b py-4">
@@ -89,11 +96,12 @@ function ReviewQueueCard({ item }: { item: ReviewQueueCardView }) {
         </div>
       </CardHeader>
       <CardContent className="grid grid-cols-2 gap-3 py-4 sm:grid-cols-4">
-        {item.availableRatings.map((rating) => (
-          <Button key={rating} variant="outline" className="justify-center uppercase">
-            {rating}
-          </Button>
-        ))}
+        {renderRatingActions ??
+          item.availableRatings.map((rating) => (
+            <Button key={rating} variant="outline" className="justify-center uppercase">
+              {rating}
+            </Button>
+          ))}
       </CardContent>
     </Card>
   )
@@ -151,28 +159,44 @@ function WeakConceptActions({ concept }: { concept: ReviewWeakConceptView }) {
 }
 
 function ReviewBody({
-  empty,
-  data = reviewPageFixture,
+  state,
+  startStudyHref,
+  renderRatingActions,
+  renderLearningPathActions,
+  renderWeakConceptActions,
 }: {
-  empty?: boolean
-  data?: ReviewPageProps['data']
+  state: Extract<ReviewPageProps['state'], { kind: 'ready' }> | Extract<ReviewPageProps['state'], { kind: 'empty' }>
+  startStudyHref: string
+  renderRatingActions?: ReviewPageProps['renderRatingActions']
+  renderLearningPathActions?: ReviewPageProps['renderLearningPathActions']
+  renderWeakConceptActions?: ReviewPageProps['renderWeakConceptActions']
 }) {
-  if (empty) {
+  if (state.kind === 'empty') {
     return (
       <EmptyState
         className="min-h-80"
         title="No reviews scheduled yet"
         description="Finish an interview, notebook session, or English drill to build your first review queue."
-        action={<Button>Start a study session</Button>}
+        action={
+          <Button asChild>
+            <a href={startStudyHref}>Start a study session</a>
+          </Button>
+        }
       />
     )
   }
+
+  const { data } = state
 
   return (
     <div className="flex flex-col gap-6">
       <div className="grid gap-4 xl:grid-cols-3">
         {data.queue.map((item) => (
-          <ReviewQueueCard key={item.id} item={item} />
+          <ReviewQueueCard
+            key={item.id}
+            item={item}
+            renderRatingActions={renderRatingActions ? renderRatingActions(item) : undefined}
+          />
         ))}
       </div>
 
@@ -198,7 +222,13 @@ function ReviewBody({
               title={item.title}
               description={item.detail}
               priorityValue={item.priorityScore}
-              action={<LearningPathActionButtons status={item.status} />}
+              action={
+                renderLearningPathActions ? (
+                  renderLearningPathActions(item)
+                ) : (
+                  <LearningPathActionButtons status={item.status} />
+                )
+              }
             />
           ))}
         </CardContent>
@@ -221,6 +251,7 @@ function ReviewBody({
                 <TableHead>Occurrences</TableHead>
                 <TableHead>Mastery</TableHead>
                 <TableHead>Status</TableHead>
+                <TableHead>Last seen</TableHead>
                 <TableHead className="text-right">Action</TableHead>
               </TableRow>
             </TableHeader>
@@ -238,7 +269,14 @@ function ReviewBody({
                     </span>
                   </TableCell>
                   <TableCell>
-                    <WeakConceptActions concept={concept} />
+                    <WeakConceptLastSeen concept={concept} />
+                  </TableCell>
+                  <TableCell>
+                    {renderWeakConceptActions ? (
+                      renderWeakConceptActions(concept)
+                    ) : (
+                      <WeakConceptActions concept={concept} />
+                    )}
                   </TableCell>
                 </TableRow>
               ))}
@@ -293,29 +331,66 @@ function LoadingBody() {
   )
 }
 
-function ErrorBody({ message }: { message: string }) {
+function ErrorBody({ message, retryHref }: { message: string; retryHref?: string }) {
   return (
     <EmptyState
       className="min-h-[60vh] border-destructive/20 bg-destructive/5"
       title={<span className="text-destructive">Failed to load review queue</span>}
       description={message}
-      action={<Button variant="destructive">Retry</Button>}
+      action={
+        retryHref ? (
+          <Button asChild variant="destructive">
+            <a href={retryHref}>Retry</a>
+          </Button>
+        ) : undefined
+      }
     />
   )
 }
 
-function Root({ data = reviewPageFixture, loading, empty, error }: ReviewPageProps) {
+function WeakConceptLastSeen({ concept }: { concept: ReviewWeakConceptView }) {
+  if (!concept.lastSeenAt) {
+    return <span className="text-sm text-muted-foreground">Unknown</span>
+  }
+
+  const date = concept.lastSeenAt instanceof Date ? concept.lastSeenAt : new Date(concept.lastSeenAt)
+  const label = Number.isNaN(date.getTime()) ? 'Unknown' : date.toLocaleDateString()
+
+  return (
+    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+      <HistoryIcon className="size-4" />
+      <span>{label}</span>
+    </div>
+  )
+}
+
+function Root({
+  state,
+  retryHref,
+  startStudyHref,
+  renderRatingActions,
+  renderLearningPathActions,
+  renderWeakConceptActions,
+}: ReviewPageProps) {
+  const headerData = state.kind === 'ready' ? state.data : reviewPageFixture
+
   return (
     <>
-      <PageHeader title={data.title} description={data.subtitle} />
+      <PageHeader title={headerData.title} description={headerData.subtitle} />
 
       <PageBody>
-        {error ? (
-          <ErrorBody message={error} />
-        ) : loading ? (
+        {state.kind === 'error' ? (
+          <ErrorBody message={state.message} retryHref={retryHref} />
+        ) : state.kind === 'loading' ? (
           <LoadingBody />
         ) : (
-          <ReviewBody empty={empty} data={data} />
+          <ReviewBody
+            state={state}
+            startStudyHref={startStudyHref}
+            renderRatingActions={renderRatingActions}
+            renderLearningPathActions={renderLearningPathActions}
+            renderWeakConceptActions={renderWeakConceptActions}
+          />
         )}
       </PageBody>
       <Separator className="mt-8 opacity-0" />

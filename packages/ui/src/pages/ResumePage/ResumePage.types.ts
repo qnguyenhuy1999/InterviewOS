@@ -5,12 +5,15 @@ import type {
   ResumeSuggestedTopicView,
   ResumeUploadAreaView,
 } from '@interviewos/types'
+import type React from 'react'
 
 export type ResumePageProps = {
   data?: ResumePageView
   loading?: boolean
   empty?: boolean
   error?: string
+  renderUploadArea?: React.ReactNode
+  emptyAction?: React.ReactNode
 }
 
 export type ResumeCurrentFile = ResumeFileView
