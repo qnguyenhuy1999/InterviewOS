@@ -1,10 +1,17 @@
 import 'server-only'
 
-import type { ApiErrorResponse } from '@interviewos/types'
 import { headers } from 'next/headers'
 
-function baseUrl() {
-  return process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001'
+import { createApiError } from './api-error'
+
+const SESSION_COOKIE_NAME = process.env.SESSION_COOKIE_NAME ?? 'interviewos_session'
+
+function baseUrl(): string {
+  const url = process.env.NEXT_PUBLIC_API_URL
+  if (!url) {
+    throw new Error('NEXT_PUBLIC_API_URL is required but not configured')
+  }
+  return url
 }
 
 export async function serverApiClient<TResponse>(
@@ -12,14 +19,18 @@ export async function serverApiClient<TResponse>(
   init?: RequestInit,
 ): Promise<TResponse> {
   const requestHeaders = await headers()
-  const cookie = requestHeaders.get('cookie')
+  const allCookies = requestHeaders.get('cookie')
+  const sessionCookie = allCookies
+    ?.split(';')
+    .map((c) => c.trim())
+    .find((c) => c.startsWith(`${SESSION_COOKIE_NAME}=`))
 
   const response = await fetch(`${baseUrl()}${path}`, {
     cache: 'no-store',
     ...init,
     headers: {
       'Content-Type': 'application/json',
-      ...(cookie ? { cookie } : {}),
+      ...(sessionCookie ? { cookie: sessionCookie } : {}),
       ...init?.headers,
     },
   })
@@ -33,36 +44,4 @@ export async function serverApiClient<TResponse>(
   }
 
   return response.json() as Promise<TResponse>
-}
-
-async function createApiError(response: Response) {
-  const contentType = response.headers.get('content-type') ?? ''
-
-  if (contentType.includes('application/json')) {
-    const payload = (await response.json()) as Partial<ApiErrorResponse>
-    const message = normalizeApiErrorMessage(payload.message)
-
-    return new Error(message || `API request failed with status ${response.status}`, {
-      cause: payload,
-    })
-  }
-
-  const message = await response.text()
-  return new Error(message || `API request failed with status ${response.status}`)
-}
-
-function normalizeApiErrorMessage(message: ApiErrorResponse['message'] | undefined) {
-  if (typeof message === 'string') {
-    return message
-  }
-
-  if (Array.isArray(message)) {
-    return message.join(', ')
-  }
-
-  if (message && typeof message === 'object') {
-    return JSON.stringify(message)
-  }
-
-  return null
 }

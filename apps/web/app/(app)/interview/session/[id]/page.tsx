@@ -13,8 +13,15 @@ import { requireLearningProfile } from '@/lib/learning-profile-guard'
 import { loadRouteData } from '@/lib/route-state'
 import { serverApiClient } from '@/lib/server-api-client'
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
+
+  if (!UUID_RE.test(id)) {
+    return <InterviewSessionPage error="Invalid session ID." />
+  }
+
   const profile = await requireLearningProfile({
     reason: 'Complete onboarding before continuing an interview session.',
     next: APP_ROUTES.interviewSession(id),

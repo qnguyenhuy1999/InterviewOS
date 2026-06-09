@@ -29,7 +29,7 @@ export async function requireLearningProfile({
   }
 
   const params = new URLSearchParams({ reason })
-  if (next) {
+  if (next && (next === '/' || /^\/[^/\\]/.test(next))) {
     params.set('next', next)
   }
 

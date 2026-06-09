@@ -18,6 +18,7 @@ export function StatusSelect({
   const [pending, setPending] = useState(false)
 
   async function updateStatus(nextValue: string) {
+    if (!endpoint.startsWith('/')) return
     setPending(true)
 
     try {

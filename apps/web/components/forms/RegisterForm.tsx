@@ -5,10 +5,11 @@ import { API_ROUTES } from '@interviewos/config'
 import type { RegisterInput } from '@interviewos/validators'
 import { registerSchema } from '@interviewos/validators'
 import { useRouter } from 'next/navigation'
-import { type ReactNode, useState } from 'react'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 
-import { apiFetch } from '@/lib/api-client'
+import { apiFetch, createApiError } from '@/lib/api-client'
+import { Field } from './Field'
 
 export function RegisterForm() {
   const router = useRouter()
@@ -36,7 +37,7 @@ export function RegisterForm() {
       })
 
       if (!response.ok) {
-        throw new Error(await response.text())
+        throw await createApiError(response)
       }
 
       router.push('/onboarding')
@@ -93,20 +94,3 @@ export function RegisterForm() {
   )
 }
 
-function Field({
-  label,
-  error,
-  children,
-}: {
-  label: string
-  error?: string
-  children: ReactNode
-}) {
-  return (
-    <div className="space-y-2">
-      <label className="text-sm font-medium">{label}</label>
-      {children}
-      {error ? <p className="text-sm text-destructive">{error}</p> : null}
-    </div>
-  )
-}

@@ -38,11 +38,11 @@ class ConsoleAuthEmailProvider implements AuthEmailProvider {
   private readonly logger = new Logger(ConsoleAuthEmailProvider.name)
 
   async sendVerificationEmail(payload: VerificationEmail) {
-    this.logger.log(`Email verification link for ${payload.email}: ${payload.link}`)
+    this.logger.log(`Verification email requested for ${payload.email}`)
   }
 
   async sendPasswordResetEmail(payload: PasswordResetEmail) {
-    this.logger.log(`Password reset link for ${payload.email}: ${payload.link}`)
+    this.logger.log(`Password reset email requested for ${payload.email}`)
   }
 }
 

@@ -13,9 +13,7 @@ import { ReviewService } from '../review/review.service'
 import { UsersRepository } from '../users/users.repository'
 import { RecommendationsRepository } from './recommendations.repository'
 
-type CurrentUserLike = {
-  id?: string
-}
+type CurrentUserRef = { id: string }
 
 @Injectable()
 export class RecommendationsService {
@@ -32,8 +30,8 @@ export class RecommendationsService {
     }
   }
 
-  async getRecommendations(currentUser: unknown): Promise<RecommendationSummary> {
-    const user = await this.usersRepository.ensureUserById(this.resolveUserId(currentUser))
+  async getRecommendations(currentUser: CurrentUserRef): Promise<RecommendationSummary> {
+    const user = await this.usersRepository.ensureUserById(currentUser.id)
     const profile = await this.usersRepository.findProfileByUserId(user.id)
     const context = await this.recommendationsRepository.getSourceContext(user.id)
     const queue = await this.reviewActions.getReviewQueue(user)
@@ -104,10 +102,6 @@ export class RecommendationsService {
         payload: item.payload as unknown as RecommendationPayload,
       })) as LearningRecommendation[],
     }
-  }
-
-  private resolveUserId(currentUser: unknown): string | undefined {
-    return (currentUser as CurrentUserLike | undefined)?.id
   }
 
   private toAiMetadataJson(metadata: AIExecutionMetadata): Prisma.InputJsonValue {

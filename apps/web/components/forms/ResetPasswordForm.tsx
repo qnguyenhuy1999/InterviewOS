@@ -4,7 +4,7 @@ import { API_ROUTES } from '@interviewos/config'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
-import { apiFetch } from '@/lib/api-client'
+import { apiFetch, createApiError } from '@/lib/api-client'
 
 export function ResetPasswordForm({ token }: { token?: string }) {
   const router = useRouter()
@@ -33,10 +33,11 @@ export function ResetPasswordForm({ token }: { token?: string }) {
       })
 
       if (!response.ok) {
-        throw new Error(await response.text())
+        throw await createApiError(response)
       }
 
       setSuccess(true)
+      await new Promise<void>((resolve) => setTimeout(resolve, 1500))
       router.push('/login')
       router.refresh()
     } catch (submissionError) {

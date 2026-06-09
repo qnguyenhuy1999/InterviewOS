@@ -13,13 +13,14 @@ import {
   profileUpdateSchema,
 } from '@interviewos/validators'
 import { useRouter } from 'next/navigation'
-import { type ReactNode, useState } from 'react'
+import { useState } from 'react'
 import {
   useForm,
   type UseFormRegisterReturn,
 } from 'react-hook-form'
 
-import { apiFetch } from '@/lib/api-client'
+import { apiFetch, createApiError } from '@/lib/api-client'
+import { Field } from './Field'
 import { parseCommaSeparated } from '@/lib/format'
 
 const experienceLevels = Object.values(ExperienceLevel)
@@ -70,7 +71,7 @@ export function ProfileForm({ initialProfile, mode, redirectTo }: ProfileFormPro
         body: JSON.stringify(payload),
       }).then(async (response) => {
         if (!response.ok) {
-          throw new Error(await response.text())
+          throw await createApiError(response)
         }
       })
 
@@ -157,24 +158,6 @@ export function ProfileForm({ initialProfile, mode, redirectTo }: ProfileFormPro
         {isSubmitting ? 'Saving...' : mode === 'onboarding' ? 'Complete onboarding' : 'Save settings'}
       </button>
     </form>
-  )
-}
-
-function Field({
-  label,
-  error,
-  children,
-}: {
-  label: string
-  error?: string
-  children: ReactNode
-}) {
-  return (
-    <div className="space-y-2">
-      <label className="text-sm font-medium">{label}</label>
-      {children}
-      {error ? <p className="text-sm text-destructive">{error}</p> : null}
-    </div>
   )
 }
 

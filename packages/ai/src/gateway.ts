@@ -32,6 +32,7 @@ import {
   conductTurnResultSchema,
   englishFeedbackResultSchema,
   generatedQuestionsResultSchema,
+  improveTechnicalNoteResultSchema,
   interviewAnswerResultSchema,
   readinessSnapshotSchema,
   recommendationResultSchema,
@@ -67,7 +68,10 @@ export class AIGateway {
   async improveTechnicalNote(
     input: ImproveTechnicalNoteInput,
   ): Promise<AIResult<ImproveTechnicalNoteResult>> {
-    return this.provider.improveTechnicalNote(input)
+    return this.validateResult(
+      this.provider.improveTechnicalNote(input),
+      improveTechnicalNoteResultSchema,
+    )
   }
 
   async generateQuestionsFromNote(

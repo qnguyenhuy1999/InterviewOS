@@ -18,8 +18,15 @@ export class LoggingInterceptor implements NestInterceptor {
     const response = http.getResponse<FastifyReply>()
 
     return next.handle().pipe(
-      tap(() => {
-        this.logger.log(`${request.method} ${request.url} ${response.statusCode}`)
+      tap({
+        next: () => {
+          this.logger.log(`${request.method} ${request.url} ${response.statusCode}`)
+        },
+        error: (err: unknown) => {
+          this.logger.error(
+            `${request.method} ${request.url} - ${err instanceof Error ? err.message : 'Unknown error'}`,
+          )
+        },
       }),
     )
   }

@@ -2,12 +2,17 @@ import Link from 'next/link'
 
 import { ResetPasswordForm } from '@/components/forms/ResetPasswordForm'
 
+function isValidResetToken(token: string | undefined): token is string {
+  return typeof token === 'string' && /^[0-9a-f]{64}$/.test(token)
+}
+
 export default async function ResetPasswordPage({
   searchParams,
 }: {
   searchParams: Promise<{ token?: string }>
 }) {
   const params = await searchParams
+  const token = isValidResetToken(params.token) ? params.token : undefined
 
   return (
     <div className="flex min-h-screen items-center justify-center">
@@ -18,7 +23,7 @@ export default async function ResetPasswordPage({
             Reset tokens are single-use and expire automatically.
           </p>
         </div>
-        <ResetPasswordForm token={params.token} />
+        <ResetPasswordForm token={token} />
         <p className="text-center text-sm text-muted-foreground">
           Need another link?{' '}
           <Link href="/forgot-password" className="text-primary hover:underline">

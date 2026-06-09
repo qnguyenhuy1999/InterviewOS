@@ -125,26 +125,9 @@ export class OpenAIProvider implements AIProvider {
   }
 
   async improveTechnicalNote(
-    input: ImproveTechnicalNoteInput,
+    _input: ImproveTechnicalNoteInput,
   ): Promise<AIResult<ImproveTechnicalNoteResult>> {
-    return {
-      result: {
-        title: input.title,
-        content: input.content,
-        improvements: ['No automatic improvement flow is configured in this phase.'],
-      },
-      metadata: buildMetadata({
-        provider: 'openai',
-        model: this.options.model,
-        promptKey: 'technical-note-improvement',
-        promptVersion: 'v1',
-        schemaKey: 'technical_note_improvement',
-        schemaVersion: structuredSchemaVersion,
-        input,
-        generatedAt: new Date(),
-        latencyMs: 0,
-      }),
-    }
+    throw new Error('improveTechnicalNote is not implemented')
   }
 
   async generateQuestionsFromNote(
@@ -325,7 +308,6 @@ export class OpenAIProvider implements AIProvider {
     promptVersion: string
   }): Promise<AIResult<TResult>> {
     const startedAt = Date.now()
-    const generatedAt = new Date()
     const response = await fetch(`${trimTrailingSlash(this.options.baseUrl)}/responses`, {
       method: 'POST',
       headers: {
@@ -351,11 +333,10 @@ export class OpenAIProvider implements AIProvider {
     })
 
     if (!response.ok) {
-      throw new Error(
-        `OpenAI request failed with status ${response.status}: ${await response.text()}`,
-      )
+      throw new Error(`OpenAI request failed with status ${response.status}`)
     }
 
+    const generatedAt = new Date()
     const payload = (await response.json()) as OpenAICompatiblePayload
     const refusal = payload.output
       ?.flatMap((item) => item.content ?? [])
@@ -469,7 +450,11 @@ function extractStructuredResult(payload: OpenAICompatiblePayload): unknown | un
     return undefined
   }
 
-  return unwrapStructuredPayload(JSON.parse(outputText))
+  try {
+    return unwrapStructuredPayload(JSON.parse(outputText))
+  } catch {
+    throw new Error('AI response contained malformed JSON')
+  }
 }
 
 function extractOutputText(output: OpenAIResponsesPayload['output']): string | undefined {

@@ -35,26 +35,23 @@ type SessionContext = {
   ipAddress?: string | null
 }
 
+const DUMMY_HASH = `00000000-0000-0000-0000-000000000000:${'00'.repeat(64)}`
+
 @Injectable()
 export class AuthService {
-  private readonly authEmail: Pick<AuthEmailService, 'sendPasswordResetEmail' | 'sendVerificationEmail'>
-
   constructor(
     private readonly authRepository: AuthRepository,
     private readonly configService: ConfigService,
-    authEmailService?: AuthEmailService,
-  ) {
-    this.authEmail = authEmailService ?? {
-      sendPasswordResetEmail: async () => {},
-      sendVerificationEmail: async () => {},
-    }
-  }
+    private readonly authEmail: AuthEmailService,
+  ) {}
 
   async login(payload: LoginDto, context: SessionContext) {
     const input = loginSchema.parse(payload) satisfies LoginInput
     const user = await this.authRepository.findByEmail(input.email.toLowerCase())
 
-    if (!user?.passwordHash || !verifyPassword(input.password, user.passwordHash)) {
+    const passwordHash = user?.passwordHash ?? DUMMY_HASH
+    const passwordValid = verifyPassword(input.password, passwordHash)
+    if (!user?.passwordHash || !passwordValid) {
       throw new UnauthorizedException('Invalid email or password.')
     }
 

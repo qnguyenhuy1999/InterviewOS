@@ -174,14 +174,8 @@ export class AuthController {
 }
 
 function requestContext(request: AuthenticatedRequest) {
-  const forwardedFor = request.headers['x-forwarded-for']
-  const ipAddress =
-    typeof forwardedFor === 'string'
-      ? forwardedFor.split(',')[0]?.trim()
-      : request.ip
-
   return {
     userAgent: typeof request.headers['user-agent'] === 'string' ? request.headers['user-agent'] : null,
-    ipAddress: ipAddress ?? null,
+    ipAddress: request.ip ?? null,
   }
 }

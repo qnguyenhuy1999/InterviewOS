@@ -77,11 +77,12 @@ export class ReadinessService {
       systemDesignPerformance: avg(designSessions.map((s) => s.evaluation!.overallScore!)),
       englishCommunication: avg(
         sessions.flatMap((s) => {
-          const ds = s.evaluation?.dimensionScores as {
-            clarity?: number
-            confidence?: number
-          } | null
-          return ds ? [(((ds.clarity ?? 0) + (ds.confidence ?? 0)) / 2) * 10] : []
+          const raw = s.evaluation?.dimensionScores
+          if (!raw || typeof raw !== 'object') return []
+          const ds = raw as Record<string, unknown>
+          const clarity = typeof ds.clarity === 'number' ? ds.clarity : 0
+          const confidence = typeof ds.confidence === 'number' ? ds.confidence : 0
+          return [((clarity + confidence) / 2) * 10]
         }),
       ),
       reviewCompletion:

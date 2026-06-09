@@ -1,5 +1,5 @@
 import type { Prisma } from '@interviewos/database'
-import type { AIExecutionMetadata, EnglishLevel, ExperienceLevel } from '@interviewos/types'
+import type { AIExecutionMetadata, EnglishLevel, ExperienceLevel, UserWeakConcept } from '@interviewos/types'
 import { interviewAnswerSchema, startInterviewSessionSchema } from '@interviewos/validators'
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
 
@@ -37,15 +37,16 @@ export class InterviewService {
     const user = await this.usersRepository.ensureUserById(currentUser.id)
     const input = startInterviewSessionSchema.parse(payload)
     const note = await this.findQuestionSource(user.id, input.generatedQuestionId)
+    const questionData = noteQuestion(note, input.generatedQuestionId)
 
     return this.interviewRepository.createSessionFromGeneratedQuestion(user.id, {
       noteId: note.id,
       generatedQuestionId: input.generatedQuestionId,
-      question: noteQuestion(note, input.generatedQuestionId).question,
-      difficulty: noteQuestion(note, input.generatedQuestionId).difficulty,
-      category: noteQuestion(note, input.generatedQuestionId).category,
-      expectedConcepts: noteQuestion(note, input.generatedQuestionId).expectedConcepts,
-      sourceSection: noteQuestion(note, input.generatedQuestionId).sourceSection,
+      question: questionData.question,
+      difficulty: questionData.difficulty,
+      category: questionData.category,
+      expectedConcepts: questionData.expectedConcepts,
+      sourceSection: questionData.sourceSection,
     })
   }
 
@@ -181,7 +182,7 @@ export class InterviewService {
       })),
       this.toAiMetadataJson(english.metadata),
     )
-    await this.reviewActions.syncWeakConceptReviews(user.id, weakConcepts as never)
+    await this.reviewActions.syncWeakConceptReviews(user.id, weakConcepts as unknown as UserWeakConcept[])
 
     return this.interviewRepository.findSessionById(user.id, session.id)
   }

@@ -1,5 +1,5 @@
 import type { EnglishNoteStatus } from '@interviewos/database'
-import { Injectable } from '@nestjs/common'
+import { Injectable, NotFoundException } from '@nestjs/common'
 
 import { PrismaService } from '../../database/prisma.service'
 
@@ -29,6 +29,15 @@ export class EnglishNotesRepository {
       practicePatterns: string[]
     },
   ) {
+    const answer = await this.prisma.interviewAnswer.findFirst({
+      where: { id: payload.answerId, question: { session: { userId } } },
+      select: { id: true },
+    })
+
+    if (!answer) {
+      throw new NotFoundException('Answer not found.')
+    }
+
     return this.prisma.englishNote.create({
       data: {
         userId,

@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
-import { apiFetch } from '@/lib/api-client'
+import { apiFetch, createApiError } from '@/lib/api-client'
 
 export function LoginForm() {
   const router = useRouter()
@@ -26,7 +26,7 @@ export function LoginForm() {
       })
 
       if (!response.ok) {
-        throw new Error(await response.text())
+        throw await createApiError(response)
       }
 
       router.push('/dashboard')
