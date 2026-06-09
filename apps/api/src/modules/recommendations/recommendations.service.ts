@@ -1,6 +1,7 @@
 import type { Prisma } from '@interviewos/database'
 import type {
   AIExecutionMetadata,
+  AuthenticatedUser,
   ExperienceLevel,
   LearningRecommendation,
   RecommendationPayload,
@@ -12,8 +13,6 @@ import { AIGateway } from '../../ai/ai.gateway'
 import { ReviewService } from '../review/review.service'
 import { UsersRepository } from '../users/users.repository'
 import { RecommendationsRepository } from './recommendations.repository'
-
-type CurrentUserRef = { id: string }
 
 @Injectable()
 export class RecommendationsService {
@@ -30,22 +29,25 @@ export class RecommendationsService {
     }
   }
 
-  async getRecommendations(currentUser: CurrentUserRef): Promise<RecommendationSummary> {
+  async getRecommendations(currentUser: AuthenticatedUser): Promise<RecommendationSummary> {
     const user = await this.usersRepository.ensureUserById(currentUser.id)
     const profile = await this.usersRepository.findProfileByUserId(user.id)
     const context = await this.recommendationsRepository.getSourceContext(user.id)
     const queue = await this.reviewActions.getReviewQueue(user)
 
     const nextReview = queue.items[0]?.item
-    const nextNoteToReview = nextReview?.type === 'TECHNICAL_NOTE'
-      ? recommendation(
-          'Review note',
-          `Overdue note review for ${nextReview.sourceLabel}.`,
-          `/notebook/${nextReview.sourceId}`,
-        )
-      : null
+    const nextNoteToReview =
+      nextReview?.type === 'TECHNICAL_NOTE'
+        ? recommendation(
+            'Review note',
+            `Overdue note review for ${nextReview.sourceLabel}.`,
+            `/notebook/${nextReview.sourceId}`,
+          )
+        : null
 
-    const nextQuestionReview = queue.items.find((item) => item.item.type === 'GENERATED_QUESTION')?.item
+    const nextQuestionReview = queue.items.find(
+      (item) => item.item.type === 'GENERATED_QUESTION',
+    )?.item
 
     const nextQuestionToPractice = nextQuestionReview
       ? recommendation(
@@ -64,13 +66,16 @@ export class RecommendationsService {
       : null
 
     const aiNext = profile
-      ? await this.aiGateway.recommendNextLearning({
-          userId: user.id,
-          currentLevel: profile.currentLevel as unknown as ExperienceLevel,
-          techStack: profile.techStack,
-          recentTopics: context.notes.slice(0, 3).map((note) => note.title),
-          weakConcepts: context.weakConcepts.slice(0, 5).map((item) => item.concept),
-        }, { userId: user.id })
+      ? await this.aiGateway.recommendNextLearning(
+          {
+            userId: user.id,
+            currentLevel: profile.currentLevel as unknown as ExperienceLevel,
+            techStack: profile.techStack,
+            recentTopics: context.notes.slice(0, 3).map((note) => note.title),
+            weakConcepts: context.weakConcepts.slice(0, 5).map((item) => item.concept),
+          },
+          { userId: user.id },
+        )
       : null
 
     const nextLearningItem = aiNext?.result.recommendations[0]

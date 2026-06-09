@@ -1,13 +1,28 @@
-import type { InterviewSessionPageProps } from './InterviewSessionPage.types'
-
-function formatDate(d: string | Date | null | undefined): string {
-  if (!d) return 'Unknown'
-  return new Date(d).toLocaleDateString()
-}
-
-function signed(value: number): string {
-  return value > 0 ? `+${value}` : `${value}`
-}
+import { Button } from '../../../components/ui/button'
+import { EmptyState, PageBody, PageHeader, SectionCard } from '../../../components/ui/page'
+import { Skeleton } from '../../../components/ui/skeleton'
+import {
+  INTERVIEW_SESSION_PAGE_DEFAULT_RETRY_LABEL,
+  INTERVIEW_SESSION_PAGE_EMPTY_DESCRIPTION,
+  INTERVIEW_SESSION_PAGE_EMPTY_TITLE,
+  INTERVIEW_SESSION_PAGE_ERROR_TITLE,
+  INTERVIEW_SESSION_PAGE_TITLE,
+} from './InterviewSessionPage.constants'
+import { interviewSessionPageFixture } from './InterviewSessionPage.fixtures'
+import type {
+  InterviewSessionPageProps,
+  InterviewSessionPageSession,
+  InterviewSessionPageTurn,
+} from './InterviewSessionPage.types'
+import {
+  formatInterviewSessionDateLabel,
+  formatInterviewSessionSignedValue,
+  getInterviewSessionCompletedTurns,
+  getInterviewSessionHeaderDescription,
+  getInterviewSessionReviewLabel,
+  getInterviewSessionState,
+  isMultiTurnInterviewSession,
+} from './InterviewSessionPage.utils'
 
 function ProgressRow({ label, value }: { label: string; value: string }) {
   return (
@@ -18,157 +33,152 @@ function ProgressRow({ label, value }: { label: string; value: string }) {
   )
 }
 
-function InterviewSessionPage({
+function MultiTurnBody({
   session,
-  turns = [],
+  turns,
   reviewHref,
   renderMultiTurnForm,
-  renderAnswerForm,
-}: InterviewSessionPageProps) {
-  if (!session) {
-    return (
-      <div className="rounded-xl border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive">
-        Unable to load this interview session.
-      </div>
-    )
-  }
+}: {
+  session: InterviewSessionPageSession
+  turns: InterviewSessionPageTurn[]
+  reviewHref?: string
+  renderMultiTurnForm?: InterviewSessionPageProps['renderMultiTurnForm']
+}) {
+  const isComplete = session.status === 'PUBLISHED'
+  const completedTurns = getInterviewSessionCompletedTurns(session, turns)
+  const maxTurns = session.maxTurns ?? 0
 
-  const isMultiTurn = session.mode === 'MULTI_TURN' || session.mode === 'COMPANY'
-
-  if (isMultiTurn) {
-    const isComplete = session.status === 'PUBLISHED'
-    const completedTurns = turns.filter((t) => t.role === 'CANDIDATE').length
-    const maxTurns = session.maxTurns ?? 0
-
-    return (
-      <div className="mx-auto max-w-5xl space-y-6">
-        <div className="grid gap-4 lg:grid-cols-[minmax(0,2fr)_320px]">
-          <section className="space-y-3 rounded-md border border-border bg-card p-5">
-            <div className="space-y-1">
-              <h2 className="font-heading text-2xl font-medium">Interview Room</h2>
-              <p className="text-sm text-muted-foreground">
-                {session.type} ·{' '}
-                {session.mode === 'COMPANY'
-                  ? (session.companyMode?.name ?? 'Company mode')
-                  : 'Practice mode'}{' '}
-                · Started {formatDate(session.createdAt)}
+  return (
+    <div className="grid gap-6 xl:grid-cols-[minmax(0,1.7fr)_320px]">
+      <SectionCard
+        title="Interview room"
+        description={getInterviewSessionHeaderDescription(session)}
+      >
+        <div className="space-y-4">
+          {session.summary?.headline ? (
+            <div className="rounded-md border border-border/80 bg-background/60 p-4">
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                Session summary
               </p>
+              <p className="mt-2 text-sm leading-6">{session.summary.headline}</p>
             </div>
+          ) : null}
 
-            {session.summary?.headline ? (
-              <div className="rounded-xl border border-border bg-background/60 p-4">
-                <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                  Session summary
-                </p>
-                <p className="mt-1 text-sm">{session.summary.headline}</p>
-              </div>
-            ) : null}
-
-            <div className="rounded-xl border border-border bg-background/60 p-4">
-              {renderMultiTurnForm?.({ sessionId: session.id, turns, isComplete })}
-            </div>
-          </section>
-
-          <aside className="space-y-4">
-            <section className="rounded-md border border-border bg-card p-5">
-              <h3 className="font-heading text-base font-medium">Progress</h3>
-              <div className="mt-4 space-y-3">
-                <ProgressRow label="Version" value={`v${session.version ?? 1}`} />
-                <ProgressRow label="Status" value={session.status} />
-                <ProgressRow
-                  label="Turns"
-                  value={maxTurns > 0 ? `${completedTurns}/${maxTurns}` : `${completedTurns}`}
-                />
-                <ProgressRow
-                  label="Last activity"
-                  value={formatDate(session.lastActivityAt ?? session.updatedAt)}
-                />
-              </div>
-            </section>
-
-            {session.readinessImpact ? (
-              <section className="rounded-md border border-border bg-card p-5">
-                <h3 className="font-heading text-base font-medium">Readiness impact</h3>
-                <div className="mt-4 space-y-3">
-                  <ProgressRow
-                    label="Overall"
-                    value={signed(session.readinessImpact.overallDelta)}
-                  />
-                  <ProgressRow
-                    label="Technical"
-                    value={signed(session.readinessImpact.technicalDelta)}
-                  />
-                  <ProgressRow
-                    label="Behavioral"
-                    value={signed(session.readinessImpact.behavioralDelta)}
-                  />
-                  <ProgressRow
-                    label="System design"
-                    value={signed(session.readinessImpact.systemDesignDelta)}
-                  />
-                  <ProgressRow
-                    label="Communication"
-                    value={signed(session.readinessImpact.communicationDelta)}
-                  />
-                </div>
-              </section>
-            ) : null}
-
-            {isComplete && reviewHref ? (
-              <a
-                href={reviewHref}
-                className="block rounded-md bg-primary px-4 py-3 text-center text-sm font-medium text-primary-foreground"
-              >
-                Open session review
-              </a>
-            ) : null}
-          </aside>
+          <div className="rounded-md border border-border/80 bg-background/60 p-4">
+            {renderMultiTurnForm?.({ sessionId: session.id, turns, isComplete }) ?? (
+              <p className="text-sm text-muted-foreground">
+                Connect a multi-turn response form to continue this interview.
+              </p>
+            )}
+          </div>
         </div>
-      </div>
-    )
-  }
+      </SectionCard>
 
-  // Single-turn layout
+      <div className="space-y-4">
+        <SectionCard title="Progress" description="Current session status and activity.">
+          <div className="space-y-3">
+            <ProgressRow label="Version" value={`v${session.version ?? 1}`} />
+            <ProgressRow label="Status" value={session.status} />
+            <ProgressRow
+              label="Turns"
+              value={maxTurns > 0 ? `${completedTurns}/${maxTurns}` : `${completedTurns}`}
+            />
+            <ProgressRow
+              label="Last activity"
+              value={formatInterviewSessionDateLabel(session.lastActivityAt ?? session.updatedAt)}
+            />
+          </div>
+        </SectionCard>
+
+        {session.readinessImpact ? (
+          <SectionCard
+            title="Readiness impact"
+            description="How this session is affecting your readiness signals."
+          >
+            <div className="space-y-3">
+              <ProgressRow
+                label="Overall"
+                value={formatInterviewSessionSignedValue(session.readinessImpact.overallDelta)}
+              />
+              <ProgressRow
+                label="Technical"
+                value={formatInterviewSessionSignedValue(session.readinessImpact.technicalDelta)}
+              />
+              <ProgressRow
+                label="Behavioral"
+                value={formatInterviewSessionSignedValue(session.readinessImpact.behavioralDelta)}
+              />
+              <ProgressRow
+                label="System design"
+                value={formatInterviewSessionSignedValue(session.readinessImpact.systemDesignDelta)}
+              />
+              <ProgressRow
+                label="Communication"
+                value={formatInterviewSessionSignedValue(session.readinessImpact.communicationDelta)}
+              />
+            </div>
+          </SectionCard>
+        ) : null}
+
+        {isComplete && reviewHref ? (
+          <Button asChild className="w-full">
+            <a href={reviewHref}>{getInterviewSessionReviewLabel()}</a>
+          </Button>
+        ) : null}
+      </div>
+    </div>
+  )
+}
+
+function SingleTurnBody({
+  session,
+  renderAnswerForm,
+}: {
+  session: InterviewSessionPageSession
+  renderAnswerForm?: InterviewSessionPageProps['renderAnswerForm']
+}) {
   const question = session.questions[0]
   const answer = question?.answer
 
   return (
-    <div className="mx-auto max-w-3xl space-y-6">
-      <div className="space-y-2">
-        <h2 className="font-heading text-xl font-medium">Interview Session</h2>
-        <p className="text-sm text-muted-foreground">
-          {session.note?.title ?? 'Notebook question'} · Started {formatDate(session.createdAt)}
-        </p>
-      </div>
-
-      <section className="rounded-lg border border-border p-4">
-        <h3 className="mb-2 font-heading text-base font-medium">Question</h3>
+    <div className="mx-auto max-w-4xl space-y-6">
+      <SectionCard
+        title="Question"
+        description={`${session.note?.title ?? 'Notebook question'} · Started ${formatInterviewSessionDateLabel(session.createdAt)}`}
+      >
         <p className="text-sm text-muted-foreground">
           {question?.question ?? 'Question unavailable'}
         </p>
-        <p className="mt-2 text-xs uppercase tracking-wide text-muted-foreground">
+        <p className="mt-3 text-xs uppercase tracking-wide text-muted-foreground">
           {question?.difficulty ?? 'Unknown'} · {question?.category ?? 'Unknown'} ·{' '}
-          {question?.expectedConcepts.join(', ') ?? 'No concepts'}
+          {question?.expectedConcepts.join(', ') || 'No concepts'}
         </p>
-      </section>
+      </SectionCard>
 
       <div className="grid gap-6">
         {!answer ? (
-          <section className="rounded-lg border border-border p-4">
-            <h3 className="mb-3 font-heading text-base font-medium">Practice answer</h3>
-            {renderAnswerForm?.({ session })}
-          </section>
+          <SectionCard
+            title="Practice answer"
+            description="Submit your answer to generate feedback and weak concept signals."
+          >
+            {renderAnswerForm?.({ session }) ?? (
+              <p className="text-sm text-muted-foreground">
+                Connect an answer form to submit a practice response.
+              </p>
+            )}
+          </SectionCard>
         ) : null}
 
         {answer?.rawAnswer ? (
-          <section className="rounded-lg border border-border p-4">
-            <h3 className="mb-2 font-heading text-base font-medium">Submitted answer</h3>
+          <SectionCard title="Submitted answer" description="Your latest recorded response.">
             <p className="whitespace-pre-wrap text-sm text-muted-foreground">{answer.rawAnswer}</p>
-          </section>
+          </SectionCard>
         ) : null}
 
-        <section className="rounded-lg border border-border p-4">
-          <h3 className="mb-2 font-heading text-base font-medium">Technical feedback</h3>
+        <SectionCard
+          title="Technical feedback"
+          description="Structured feedback based on your submitted answer."
+        >
           {answer?.technicalFeedback ? (
             <div className="space-y-3 text-sm text-muted-foreground">
               <p>{answer.technicalFeedback.summary}</p>
@@ -182,10 +192,89 @@ function InterviewSessionPage({
               Submit your answer to receive technical feedback.
             </p>
           )}
-        </section>
+        </SectionCard>
       </div>
     </div>
   )
 }
+
+function LoadingBody() {
+  return (
+    <div className="space-y-6">
+      <div className="grid gap-4 xl:grid-cols-[minmax(0,1.7fr)_320px]">
+        <Skeleton className="h-72 rounded-md" />
+        <div className="space-y-4">
+          <Skeleton className="h-40 rounded-md" />
+          <Skeleton className="h-40 rounded-md" />
+        </div>
+      </div>
+      <Skeleton className="h-56 rounded-md" />
+    </div>
+  )
+}
+
+function ErrorBody({ message, retryHref }: { message: string; retryHref?: string }) {
+  return (
+    <EmptyState
+      className="min-h-[60vh] border-destructive/20 bg-destructive/5"
+      title={<span className="text-destructive">{INTERVIEW_SESSION_PAGE_ERROR_TITLE}</span>}
+      description={message}
+      action={
+        retryHref ? (
+          <Button asChild variant="destructive">
+            <a href={retryHref}>{INTERVIEW_SESSION_PAGE_DEFAULT_RETRY_LABEL}</a>
+          </Button>
+        ) : undefined
+      }
+    />
+  )
+}
+
+function EmptyBody() {
+  return (
+    <EmptyState
+      className="min-h-80"
+      title={INTERVIEW_SESSION_PAGE_EMPTY_TITLE}
+      description={INTERVIEW_SESSION_PAGE_EMPTY_DESCRIPTION}
+    />
+  )
+}
+
+function Root(props: InterviewSessionPageProps) {
+  const state = getInterviewSessionState(props)
+  const headerSession = state.kind === 'ready' ? state.session : interviewSessionPageFixture.session
+
+  return (
+    <>
+      <PageHeader
+        title={INTERVIEW_SESSION_PAGE_TITLE}
+        description={getInterviewSessionHeaderDescription(headerSession)}
+      />
+
+      <PageBody>
+        {state.kind === 'error' ? (
+          <ErrorBody message={state.message} retryHref={props.retryHref} />
+        ) : state.kind === 'loading' ? (
+          <LoadingBody />
+        ) : state.kind === 'empty' ? (
+          <EmptyBody />
+        ) : isMultiTurnInterviewSession(state.session) ? (
+          <MultiTurnBody
+            session={state.session}
+            turns={state.turns}
+            reviewHref={props.reviewHref}
+            renderMultiTurnForm={props.renderMultiTurnForm}
+          />
+        ) : (
+          <SingleTurnBody session={state.session} renderAnswerForm={props.renderAnswerForm} />
+        )}
+      </PageBody>
+    </>
+  )
+}
+
+const InterviewSessionPage = Object.assign(Root, {
+  ProgressRow,
+})
 
 export default InterviewSessionPage

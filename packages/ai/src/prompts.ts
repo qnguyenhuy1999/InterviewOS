@@ -6,6 +6,7 @@ import type {
   GenerateEnglishFeedbackInput,
   GenerateQuestionsFromNoteInput,
   GenerateTechnicalNoteInput,
+  ImproveTechnicalNoteInput,
   ReadinessComputeInput,
   RecommendNextLearningInput,
   SessionEvalInput,
@@ -21,6 +22,7 @@ export type PromptDefinition = {
 
 export const promptCatalog = {
   technicalNote: 'technical-note.v1',
+  improveTechnicalNote: 'improve-technical-note.v1',
   generatedQuestions: 'generated-questions.v1',
   interviewEvaluation: 'interview-evaluation.v1',
   englishFeedback: 'english-feedback.v1',
@@ -64,6 +66,20 @@ export function technicalNotePrompt(input: GenerateTechnicalNoteInput): PromptDe
       `Interview goals: ${u((input.interviewGoals ?? []).join(', ') || 'None provided')}`,
       `Preferred output style: ${u(input.preferredOutputStyle ?? 'Practical and clear')}`,
       `Additional context: ${u(input.additionalContext ?? 'None provided')}`,
+    ].join('\n'),
+  }
+}
+
+export function improveTechnicalNotePrompt(input: ImproveTechnicalNoteInput): PromptDefinition {
+  return {
+    id: promptCatalog.improveTechnicalNote,
+    version: 'v1',
+    instructions: `You are InterviewOS. Improve the provided technical note to be more concise, accurate, and useful for interview preparation. Return only schema-compliant JSON. ${USER_INPUT_PREAMBLE}`,
+    prompt: [
+      `Note ID: ${input.noteId}`,
+      `Title: ${u(input.title)}`,
+      `Current content: ${u(truncateContent(input.content))}`,
+      `Improvement focus: ${u(input.improvementFocus ?? 'general quality and clarity')}`,
     ].join('\n'),
   }
 }

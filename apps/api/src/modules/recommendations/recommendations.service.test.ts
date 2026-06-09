@@ -66,7 +66,13 @@ test('RecommendationsService persists AI metadata on generated recommendations',
     } as never,
   )
 
-  await service.getRecommendations({ id: 'user-1' })
+  await service.getRecommendations({
+    id: 'user-1',
+    email: 'user-1@example.com',
+    name: 'User One',
+    emailVerifiedAt: new Date(),
+    sessionId: 'session-1',
+  })
 
   assert.equal(savedMetadata?.promptKey, 'learning-recommendations.v1')
 })

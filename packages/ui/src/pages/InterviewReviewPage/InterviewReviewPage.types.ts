@@ -1,4 +1,9 @@
-import type { InterviewEvaluation, InterviewReadinessImpact, InterviewSummary, InterviewType } from '@interviewos/types'
+import type {
+  InterviewEvaluation,
+  InterviewReadinessImpact,
+  InterviewSummary,
+  InterviewType,
+} from '@interviewos/types'
 
 export type InterviewReviewPageTurn = {
   id: string
@@ -20,7 +25,19 @@ export type InterviewReviewPageSession = {
   summary?: InterviewSummary | null
 }
 
+export type InterviewReviewPageState =
+  | { kind: 'loading' }
+  | { kind: 'empty' }
+  | { kind: 'error'; message: string }
+  | {
+      kind: 'ready'
+      session: InterviewReviewPageSession
+      turns: InterviewReviewPageTurn[]
+      evaluation?: InterviewEvaluation | null
+    }
+
 export type InterviewReviewPageProps = {
+  state?: InterviewReviewPageState
   session?: InterviewReviewPageSession | null
   turns?: InterviewReviewPageTurn[]
   evaluation?: InterviewEvaluation | null
@@ -28,4 +45,10 @@ export type InterviewReviewPageProps = {
   error?: string
   sessionHref?: string
   allSessionsHref?: string
+}
+
+export type InterviewReviewPageFixture = {
+  session: InterviewReviewPageSession
+  turns: InterviewReviewPageTurn[]
+  evaluation: InterviewEvaluation
 }

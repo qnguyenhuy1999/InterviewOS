@@ -42,16 +42,33 @@ export type InterviewSessionPageSession = Pick<
   questions: InterviewSessionPageQuestion[]
 }
 
+export type InterviewSessionPageState =
+  | { kind: 'loading' }
+  | { kind: 'empty' }
+  | { kind: 'error'; message: string }
+  | {
+      kind: 'ready'
+      session: InterviewSessionPageSession
+      turns: InterviewSessionPageTurn[]
+    }
+
 export type InterviewSessionPageProps = {
+  state?: InterviewSessionPageState
   session?: InterviewSessionPageSession | null
   turns?: InterviewSessionPageTurn[]
   loading?: boolean
   error?: string
   reviewHref?: string
+  retryHref?: string
   renderMultiTurnForm?: (params: {
     sessionId: string
     turns: InterviewSessionPageTurn[]
     isComplete: boolean
   }) => React.ReactNode
   renderAnswerForm?: (params: { session: InterviewSessionPageSession }) => React.ReactNode
+}
+
+export type InterviewSessionPageFixture = {
+  session: InterviewSessionPageSession
+  turns: InterviewSessionPageTurn[]
 }

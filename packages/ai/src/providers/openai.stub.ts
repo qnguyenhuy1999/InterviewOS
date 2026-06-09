@@ -43,6 +43,7 @@ import {
   conductTurnPrompt,
   englishFeedbackPrompt,
   generatedQuestionsPrompt,
+  improveTechnicalNotePrompt,
   interviewEvaluationPrompt,
   learningRecommendationsPrompt,
   readinessScorePrompt,
@@ -125,9 +126,20 @@ export class OpenAIProvider implements AIProvider {
   }
 
   async improveTechnicalNote(
-    _input: ImproveTechnicalNoteInput,
+    input: ImproveTechnicalNoteInput,
   ): Promise<AIResult<ImproveTechnicalNoteResult>> {
-    throw new Error('improveTechnicalNote is not implemented')
+    const prompt = improveTechnicalNotePrompt(input)
+    return this.createStructuredResponse({
+      instructions: withVersion(prompt),
+      prompt: prompt.prompt,
+      format: {
+        name: 'improve_technical_note',
+        schema: improveTechnicalNoteJsonSchema,
+        version: structuredSchemaVersion,
+      },
+      promptKey: prompt.id,
+      promptVersion: prompt.version,
+    })
   }
 
   async generateQuestionsFromNote(
@@ -308,6 +320,7 @@ export class OpenAIProvider implements AIProvider {
     promptVersion: string
   }): Promise<AIResult<TResult>> {
     const startedAt = Date.now()
+    const schemaHint = `\n\nReturn ONLY a valid JSON object. No markdown, no code fences, no text outside the JSON. The response must exactly match this schema:\n${JSON.stringify(format.schema)}`
     const response = await fetch(`${trimTrailingSlash(this.options.baseUrl)}/responses`, {
       method: 'POST',
       headers: {
@@ -319,7 +332,7 @@ export class OpenAIProvider implements AIProvider {
       body: JSON.stringify({
         model: this.options.model,
         stream: false,
-        instructions,
+        instructions: instructions + schemaHint,
         input: prompt,
         text: {
           format: {
@@ -545,7 +558,18 @@ function buildMetadata(input: {
   }
 }
 
-const sharedStringArray = { type: 'array', items: { type: 'string' }, minItems: 1 } as const
+const sharedStringArray = { type: 'array', items: { type: 'string' } } as const
+
+const improveTechnicalNoteJsonSchema = {
+  type: 'object',
+  additionalProperties: false,
+  required: ['title', 'content', 'improvements'],
+  properties: {
+    title: { type: 'string' },
+    content: { type: 'string' },
+    improvements: { type: 'array', items: { type: 'string' } },
+  },
+} as const
 
 const technicalNoteJsonSchema = {
   type: 'object',
@@ -792,7 +816,7 @@ const behavioralEvalJsonSchema = {
       },
     },
     missingDimensions: { type: 'array', items: { type: 'string' } },
-    followUpQuestion: { type: 'string', nullable: true },
+    followUpQuestion: { anyOf: [{ type: 'string' }, { type: 'null' }] },
     coachingFeedback: { type: 'array', items: { type: 'string' } },
   },
 } as const

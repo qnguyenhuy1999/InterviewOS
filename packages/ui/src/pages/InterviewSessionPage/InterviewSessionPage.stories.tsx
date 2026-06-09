@@ -3,59 +3,19 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 
 import ConsoleLayout from '../../layouts/ConsoleLayout/ConsoleLayout'
 import InterviewSessionPage from './InterviewSessionPage'
+import {
+  interviewSessionFixtureSession,
+  interviewSessionFixtureTurns,
+} from './InterviewSessionPage.fixtures'
 import type {
   InterviewSessionPageSession,
   InterviewSessionPageTurn,
 } from './InterviewSessionPage.types'
 
-const multiTurnTurns: InterviewSessionPageTurn[] = [
-  {
-    id: 'turn-1',
-    role: 'INTERVIEWER',
-    content: 'Design a rate limiter for a multi-tenant API.',
-    turnNumber: 1,
-    topicTags: ['system-design', 'apis'],
-  },
-  {
-    id: 'turn-2',
-    role: 'CANDIDATE',
-    content:
-      'I would start with token bucket per tenant, then layer Redis-backed coordination only if a single node is insufficient.',
-    turnNumber: 2,
-    topicTags: ['redis', 'architecture'],
-    decision: 'FOLLOW_UP',
-  },
-  {
-    id: 'turn-3',
-    role: 'INTERVIEWER',
-    content: 'How would you keep limits fair during traffic spikes?',
-    turnNumber: 3,
-    topicTags: ['fairness', 'burst-traffic'],
-  },
-]
+const multiTurnTurns: InterviewSessionPageTurn[] = interviewSessionFixtureTurns
 
 const multiTurnSession: InterviewSessionPageSession = {
-  id: 'session-multi-turn',
-  type: InterviewType.SYSTEM_DESIGN,
-  mode: 'MULTI_TURN',
-  status: NoteStatus.REVIEWING,
-  createdAt: new Date('2026-06-08T02:00:00Z'),
-  updatedAt: new Date('2026-06-08T02:16:00Z'),
-  version: 2,
-  maxTurns: 6,
-  lastActivityAt: new Date('2026-06-08T02:15:00Z'),
-  companyMode: null,
-  note: null,
-  summary: {
-    headline: 'The interviewer is pushing on fairness and distributed coordination.',
-  },
-  readinessImpact: {
-    overallDelta: 4,
-    technicalDelta: 6,
-    behavioralDelta: 1,
-    systemDesignDelta: 7,
-    communicationDelta: 3,
-  },
+  ...interviewSessionFixtureSession,
   questions: [],
 }
 

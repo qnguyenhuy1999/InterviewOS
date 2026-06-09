@@ -1,3 +1,4 @@
+import { AuthenticatedUser } from '@interviewos/types'
 import { Controller, Get } from '@nestjs/common'
 import { ApiCookieAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 
@@ -15,7 +16,7 @@ export class RecommendationsController {
   @Get()
   @ApiOperation({ summary: 'Get the current learning recommendations summary' })
   @ApiEntityResponse(RecommendationSummaryDto)
-  getRecommendations(@CurrentUser() currentUser: unknown) {
+  getRecommendations(@CurrentUser() currentUser: AuthenticatedUser) {
     return this.recommendationsService.getRecommendations(currentUser)
   }
 }

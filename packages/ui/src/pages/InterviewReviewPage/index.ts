@@ -1,2 +1,8 @@
 export { default } from './InterviewReviewPage'
-export type { InterviewReviewPageProps, InterviewReviewPageSession, InterviewReviewPageTurn } from './InterviewReviewPage.types'
+export type {
+  InterviewReviewPageFixture,
+  InterviewReviewPageProps,
+  InterviewReviewPageSession,
+  InterviewReviewPageState,
+  InterviewReviewPageTurn,
+} from './InterviewReviewPage.types'

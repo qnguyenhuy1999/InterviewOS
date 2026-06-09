@@ -33,6 +33,15 @@ import {
   getInterviewTopicOptions,
 } from './InterviewPage.utils'
 
+function getSessionMetrics(session: InterviewPageSession) {
+  return session.metrics ?? {
+    overallScore: null,
+    technicalScore: null,
+    englishScore: null,
+    durationMinutes: 0,
+  }
+}
+
 function TopicFilter({
   sessions,
   selectedTopic,
@@ -75,7 +84,8 @@ function SessionRow({
   const topicLabel = getInterviewTopicLabel(session)
   const typeLabel = INTERVIEW_PAGE_TYPE_LABELS[session.type]
   const dateLabel = formatInterviewDateLabel(session.startedAt)
-  const durationLabel = formatInterviewDurationLabel(session.metrics.durationMinutes)
+  const metrics = getSessionMetrics(session)
+  const durationLabel = formatInterviewDurationLabel(metrics.durationMinutes)
 
   return (
     <TableRow>
@@ -93,13 +103,13 @@ function SessionRow({
         {dateLabel}
       </TableCell>
       <TableCell className="hidden px-5 py-5 text-center text-sm font-semibold md:table-cell">
-        {formatInterviewScore(session.metrics.overallScore)}
+        {formatInterviewScore(metrics.overallScore)}
       </TableCell>
       <TableCell className="hidden px-5 py-5 text-center text-sm text-muted-foreground lg:table-cell">
-        {formatInterviewScore(session.metrics.technicalScore)}
+        {formatInterviewScore(metrics.technicalScore)}
       </TableCell>
       <TableCell className="hidden px-5 py-5 text-center text-sm text-muted-foreground lg:table-cell">
-        {formatInterviewScore(session.metrics.englishScore)}
+        {formatInterviewScore(metrics.englishScore)}
       </TableCell>
       <TableCell className="hidden px-5 py-5 text-sm text-muted-foreground md:table-cell">
         {durationLabel}
@@ -164,18 +174,19 @@ function InterviewHighlights({ sessions }: { sessions: InterviewPageSession[] })
     totalSessions === 0
       ? 0
       : Math.round(
-          sessions.reduce((total, session) => total + (session.metrics.overallScore ?? 0), 0) /
+          sessions.reduce((total, session) => total + (getSessionMetrics(session).overallScore ?? 0), 0) /
             totalSessions,
         )
   const bestSession = sessions.reduce<InterviewPageSession | null>(
     (best, session) =>
-      best === null || (session.metrics.overallScore ?? 0) > (best.metrics.overallScore ?? 0)
+      best === null ||
+      (getSessionMetrics(session).overallScore ?? 0) > (getSessionMetrics(best).overallScore ?? 0)
         ? session
         : best,
     null,
   )
   const totalMinutes = sessions.reduce(
-    (total, session) => total + session.metrics.durationMinutes,
+    (total, session) => total + getSessionMetrics(session).durationMinutes,
     0,
   )
 
@@ -195,7 +206,7 @@ function InterviewHighlights({ sessions }: { sessions: InterviewPageSession[] })
       />
       <StatCard
         label="Best round"
-        value={bestSession ? bestSession.metrics.overallScore : 'N/A'}
+        value={bestSession ? getSessionMetrics(bestSession).overallScore : 'N/A'}
         hint={bestSession ? getInterviewTopicLabel(bestSession) : 'No scored sessions yet.'}
         icon={FilterIcon}
       />

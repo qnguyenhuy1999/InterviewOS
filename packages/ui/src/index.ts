@@ -40,14 +40,18 @@ export type {
 } from './pages/InterviewPage/InterviewPage.types'
 export { default as InterviewReviewPage } from './pages/InterviewReviewPage/InterviewReviewPage'
 export type {
+  InterviewReviewPageFixture,
   InterviewReviewPageProps,
   InterviewReviewPageSession,
+  InterviewReviewPageState,
   InterviewReviewPageTurn,
 } from './pages/InterviewReviewPage/InterviewReviewPage.types'
 export { default as InterviewSessionPage } from './pages/InterviewSessionPage/InterviewSessionPage'
 export type {
+  InterviewSessionPageFixture,
   InterviewSessionPageProps,
   InterviewSessionPageSession,
+  InterviewSessionPageState,
   InterviewSessionPageTurn,
 } from './pages/InterviewSessionPage/InterviewSessionPage.types'
 export { default as LearningPathPage } from './pages/LearningPathPage/LearningPathPage'

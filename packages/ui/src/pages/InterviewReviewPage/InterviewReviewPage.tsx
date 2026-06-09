@@ -1,24 +1,26 @@
 import type { InterviewEvaluation } from '@interviewos/types'
 
-import { PageBody, PageHeader } from '../../../components/ui/page'
+import { Button } from '../../../components/ui/button'
+import { EmptyState, PageBody, PageHeader, SectionCard } from '../../../components/ui/page'
+import { Skeleton } from '../../../components/ui/skeleton'
+import {
+  INTERVIEW_REVIEW_PAGE_EMPTY_DESCRIPTION,
+  INTERVIEW_REVIEW_PAGE_EMPTY_TITLE,
+  INTERVIEW_REVIEW_PAGE_ERROR_TITLE,
+  INTERVIEW_REVIEW_PAGE_TITLE,
+} from './InterviewReviewPage.constants'
+import { interviewReviewPageFixture } from './InterviewReviewPage.fixtures'
 import type {
   InterviewReviewPageProps,
   InterviewReviewPageSession,
   InterviewReviewPageTurn,
 } from './InterviewReviewPage.types'
-
-function formatDate(date: Date | string | null | undefined): string {
-  if (!date) return '--'
-  return new Date(date).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  })
-}
-
-function signed(value: number): string {
-  return value > 0 ? `+${value}` : `${value}`
-}
+import {
+  formatInterviewReviewSignedValue,
+  getInterviewReviewHeaderDescription,
+  getInterviewReviewPendingMessage,
+  getInterviewReviewState,
+} from './InterviewReviewPage.utils'
 
 function MetricRow({ label, value }: { label: string; value: string }) {
   return (
@@ -56,23 +58,23 @@ function EvaluationPanel({ evaluation }: { evaluation: InterviewEvaluation }) {
             <p className="mt-1 text-sm text-muted-foreground">{evaluation.summary}</p>
           ) : null}
         </div>
-        {evaluation.overallScore != null && (
+        {evaluation.overallScore != null ? (
           <div className="text-right">
             <p className="font-heading text-3xl font-medium">{evaluation.overallScore}</p>
             <p className="text-xs text-muted-foreground">/ 100</p>
           </div>
-        )}
+        ) : null}
       </div>
 
-      {evaluation.rubricScores.length > 0 && (
+      {evaluation.rubricScores.length > 0 ? (
         <div className="space-y-3">
           {evaluation.rubricScores.map((item) => (
             <ScoreBar key={item.key} label={item.label} score={item.score} />
           ))}
         </div>
-      )}
+      ) : null}
 
-      {evaluation.evidence.length > 0 && (
+      {evaluation.evidence.length > 0 ? (
         <div className="space-y-2">
           <p className="text-sm font-medium">Evidence</p>
           <div className="space-y-3">
@@ -87,9 +89,9 @@ function EvaluationPanel({ evaluation }: { evaluation: InterviewEvaluation }) {
             ))}
           </div>
         </div>
-      )}
+      ) : null}
 
-      {evaluation.weaknesses.length > 0 && (
+      {evaluation.weaknesses.length > 0 ? (
         <div className="space-y-2">
           <p className="text-sm font-medium">Weaknesses</p>
           <div className="space-y-3">
@@ -107,9 +109,9 @@ function EvaluationPanel({ evaluation }: { evaluation: InterviewEvaluation }) {
             ))}
           </div>
         </div>
-      )}
+      ) : null}
 
-      {evaluation.recommendations.length > 0 && (
+      {evaluation.recommendations.length > 0 ? (
         <div className="space-y-2">
           <p className="text-sm font-medium">Recommendations</p>
           <div className="space-y-3">
@@ -127,7 +129,7 @@ function EvaluationPanel({ evaluation }: { evaluation: InterviewEvaluation }) {
             ))}
           </div>
         </div>
-      )}
+      ) : null}
     </div>
   )
 }
@@ -141,40 +143,45 @@ function EvaluationSidebar({
 }) {
   return (
     <aside className="space-y-4">
-      <section className="rounded-md border border-border bg-card p-5">
-        <h3 className="font-heading text-base font-medium">Confidence</h3>
-        <p className="mt-3 font-heading text-3xl font-medium">{evaluation.confidence ?? '--'}</p>
-        <p className="text-xs text-muted-foreground">Model confidence</p>
-      </section>
+      <SectionCard title="Confidence" description="Model confidence for this evaluation.">
+        <p className="font-heading text-3xl font-medium">{evaluation.confidence ?? '--'}</p>
+      </SectionCard>
 
       {session.readinessImpact ? (
-        <section className="rounded-md border border-border bg-card p-5">
-          <h3 className="font-heading text-base font-medium">Readiness impact</h3>
-          <div className="mt-4 space-y-3">
-            <MetricRow label="Overall" value={signed(session.readinessImpact.overallDelta)} />
-            <MetricRow label="Technical" value={signed(session.readinessImpact.technicalDelta)} />
-            <MetricRow label="Behavioral" value={signed(session.readinessImpact.behavioralDelta)} />
+        <SectionCard title="Readiness impact" description="How this session affects readiness.">
+          <div className="space-y-3">
+            <MetricRow
+              label="Overall"
+              value={formatInterviewReviewSignedValue(session.readinessImpact.overallDelta)}
+            />
+            <MetricRow
+              label="Technical"
+              value={formatInterviewReviewSignedValue(session.readinessImpact.technicalDelta)}
+            />
+            <MetricRow
+              label="Behavioral"
+              value={formatInterviewReviewSignedValue(session.readinessImpact.behavioralDelta)}
+            />
             <MetricRow
               label="System design"
-              value={signed(session.readinessImpact.systemDesignDelta)}
+              value={formatInterviewReviewSignedValue(session.readinessImpact.systemDesignDelta)}
             />
             <MetricRow
               label="Communication"
-              value={signed(session.readinessImpact.communicationDelta)}
+              value={formatInterviewReviewSignedValue(session.readinessImpact.communicationDelta)}
             />
           </div>
-        </section>
+        </SectionCard>
       ) : null}
 
       {session.summary ? (
-        <section className="rounded-md border border-border bg-card p-5">
-          <h3 className="font-heading text-base font-medium">Replay summary</h3>
-          <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
+        <SectionCard title="Replay summary" description="Key takeaways from the conversation.">
+          <ul className="space-y-2 text-sm text-muted-foreground">
             {session.summary.keyTakeaways.map((item, index) => (
               <li key={`${item}-${index}`}>{item}</li>
             ))}
           </ul>
-        </section>
+        </SectionCard>
       ) : null}
     </aside>
   )
@@ -182,8 +189,7 @@ function EvaluationSidebar({
 
 function ConversationReplay({ turns }: { turns: InterviewReviewPageTurn[] }) {
   return (
-    <section className="space-y-3">
-      <h3 className="font-heading text-base font-medium">Conversation replay</h3>
+    <SectionCard title="Conversation replay" description="The recorded interviewer and candidate turns.">
       {turns.length === 0 ? (
         <p className="text-sm text-muted-foreground">No turns recorded.</p>
       ) : (
@@ -223,93 +229,90 @@ function ConversationReplay({ turns }: { turns: InterviewReviewPageTurn[] }) {
           ))}
         </div>
       )}
-    </section>
+    </SectionCard>
   )
 }
 
-function InterviewReviewPage({
-  session,
-  turns = [],
-  evaluation,
-  loading,
-  error,
-  sessionHref,
-  allSessionsHref,
-}: InterviewReviewPageProps) {
-  if (loading) {
-    return (
-      <div className="mx-auto max-w-5xl space-y-6">
-        <div className="h-8 w-48 animate-pulse rounded bg-muted" />
-        <div className="h-4 w-64 animate-pulse rounded bg-muted" />
+function LoadingBody() {
+  return (
+    <div className="space-y-6">
+      <Skeleton className="h-10 w-64 rounded-md" />
+      <div className="grid gap-4 xl:grid-cols-[minmax(0,1.7fr)_320px]">
+        <Skeleton className="h-96 rounded-md" />
+        <div className="space-y-4">
+          <Skeleton className="h-36 rounded-md" />
+          <Skeleton className="h-56 rounded-md" />
+        </div>
       </div>
-    )
-  }
+      <Skeleton className="h-64 rounded-md" />
+    </div>
+  )
+}
 
-  if (error) {
-    return (
-      <div className="rounded-xl border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive">
-        {error}
-      </div>
-    )
-  }
-
-  if (!session) {
-    return (
-      <div className="rounded-xl border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive">
-        Unable to load this session.
-      </div>
-    )
-  }
+function Root(props: InterviewReviewPageProps) {
+  const state = getInterviewReviewState(props)
+  const headerSession = state.kind === 'ready' ? state.session : interviewReviewPageFixture.session
 
   return (
     <>
       <PageHeader
-        title="Session Review"
-        description={`${session.type} · Started ${formatDate(session.createdAt)}
-          ${session.endedAt ? ` · Ended ${formatDate(session.endedAt)}` : ''}`}
+        title={INTERVIEW_REVIEW_PAGE_TITLE}
+        description={getInterviewReviewHeaderDescription(headerSession)}
       />
 
       <PageBody className="space-y-6">
-        <div className="space-y-1">
-          <h2 className="font-heading text-xl font-medium">Session Review</h2>
-          <p className="text-sm text-muted-foreground">
-            {session.type} · Started {formatDate(session.createdAt)}
-            {session.endedAt ? ` · Ended ${formatDate(session.endedAt)}` : ''}
-          </p>
-        </div>
-
-        {evaluation ? (
-          <section className="grid gap-4 lg:grid-cols-[minmax(0,2fr)_320px]">
-            <EvaluationPanel evaluation={evaluation} />
-            <EvaluationSidebar evaluation={evaluation} session={session} />
-          </section>
+        {state.kind === 'error' ? (
+          <EmptyState
+            className="min-h-[60vh] border-destructive/20 bg-destructive/5"
+            title={<span className="text-destructive">{INTERVIEW_REVIEW_PAGE_ERROR_TITLE}</span>}
+            description={state.message}
+          />
+        ) : state.kind === 'loading' ? (
+          <LoadingBody />
+        ) : state.kind === 'empty' ? (
+          <EmptyState
+            className="min-h-80"
+            title={INTERVIEW_REVIEW_PAGE_EMPTY_TITLE}
+            description={INTERVIEW_REVIEW_PAGE_EMPTY_DESCRIPTION}
+          />
         ) : (
-          <section className="rounded-xl border border-dashed border-border p-5 text-center text-sm text-muted-foreground">
-            {session.status === 'PUBLISHED'
-              ? 'Evaluation is being generated. Refresh in a moment.'
-              : 'End the session to trigger evaluation.'}
-          </section>
-        )}
+          <>
+            {state.evaluation ? (
+              <section className="grid gap-4 lg:grid-cols-[minmax(0,2fr)_320px]">
+                <EvaluationPanel evaluation={state.evaluation} />
+                <EvaluationSidebar evaluation={state.evaluation} session={state.session} />
+              </section>
+            ) : (
+              <section className="rounded-xl border border-dashed border-border p-5 text-center text-sm text-muted-foreground">
+                {getInterviewReviewPendingMessage(state.session.status)}
+              </section>
+            )}
 
-        <ConversationReplay turns={turns} />
+            <ConversationReplay turns={state.turns} />
 
-        {(sessionHref || allSessionsHref) && (
-          <div className="flex items-center gap-4 text-sm">
-            {sessionHref ? (
-              <a href={sessionHref} className="text-primary hover:underline">
-                Back to session
-              </a>
+            {(props.sessionHref || props.allSessionsHref) ? (
+              <div className="flex items-center gap-4 text-sm">
+                {props.sessionHref ? (
+                  <Button asChild variant="link" className="h-auto px-0">
+                    <a href={props.sessionHref}>Back to session</a>
+                  </Button>
+                ) : null}
+                {props.allSessionsHref ? (
+                  <Button asChild variant="link" className="h-auto px-0 text-muted-foreground">
+                    <a href={props.allSessionsHref}>All sessions</a>
+                  </Button>
+                ) : null}
+              </div>
             ) : null}
-            {allSessionsHref ? (
-              <a href={allSessionsHref} className="text-muted-foreground hover:underline">
-                All sessions
-              </a>
-            ) : null}
-          </div>
+          </>
         )}
       </PageBody>
     </>
   )
 }
+
+const InterviewReviewPage = Object.assign(Root, {
+  MetricRow,
+})
 
 export default InterviewReviewPage
