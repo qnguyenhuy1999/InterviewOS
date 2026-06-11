@@ -1,6 +1,6 @@
 import Link from 'next/link'
 
-import { ResetPasswordForm } from '@/components/forms/ResetPasswordForm'
+import { ResetPasswordForm } from '@/app/_components/forms/ResetPasswordForm'
 
 function isValidResetToken(token: string | undefined): token is string {
   return typeof token === 'string' && /^[0-9a-f]{64}$/.test(token)

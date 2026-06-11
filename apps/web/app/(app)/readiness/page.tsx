@@ -2,7 +2,7 @@ import { API_ROUTES } from '@interviewos/config'
 import type { ReadinessHistoryView, ReadinessPageView, ReadinessSnapshot } from '@interviewos/types'
 import ReadinessPage from '@interviewos/ui/pages/ReadinessPage'
 
-import { ReadinessRefreshButton } from '@/components/forms/ReadinessRefreshButton'
+import { ReadinessRefreshButton } from '@/app/_components/forms/ReadinessRefreshButton'
 import { APP_ROUTES } from '@/lib/app-routes'
 import { requireLearningProfile } from '@/lib/learning-profile-guard'
 import { loadRouteData } from '@/lib/route-state'

@@ -2,7 +2,7 @@ import type { EnglishNote } from '@interviewos/types'
 import { EnglishNoteStatus } from '@interviewos/types'
 import EnglishNotesPage from '@interviewos/ui/pages/EnglishNotesPage'
 
-import { StatusSelect } from '@/components/forms/StatusSelect'
+import { StatusSelect } from '@/app/_components/forms/StatusSelect'
 import { APP_ROUTES } from '@/lib/app-routes'
 import { loadRouteData } from '@/lib/route-state'
 import { serverApiClient } from '@/lib/server-api-client'

@@ -1,6 +1,6 @@
 'use client'
 
-import { RouteErrorState } from '@/components/route-feedback/RouteErrorState'
+import { RouteErrorState } from '@/app/_components/route-feedback/RouteErrorState'
 import { APP_ROUTES } from '@/lib/app-routes'
 
 export default function NotebookDetailError({

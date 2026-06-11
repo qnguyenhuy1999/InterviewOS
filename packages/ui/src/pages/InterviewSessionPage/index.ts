@@ -1,7 +1,7 @@
 export { default } from './InterviewSessionPage'
 export type {
-  InterviewSessionPageProps,
   InterviewSessionPageFixture,
+  InterviewSessionPageProps,
   InterviewSessionPageSession,
   InterviewSessionPageState,
   InterviewSessionPageTurn,

@@ -1,7 +1,7 @@
 import type { LearningPathItem } from '@interviewos/types'
 import LearningPathPage from '@interviewos/ui/pages/LearningPathPage'
 
-import { LearningPathActions } from '@/components/forms/LearningPathActions'
+import { LearningPathActions } from '@/app/_components/forms/LearningPathActions'
 import { APP_ROUTES } from '@/lib/app-routes'
 import { requireLearningProfile } from '@/lib/learning-profile-guard'
 import { loadRouteData } from '@/lib/route-state'

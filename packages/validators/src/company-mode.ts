@@ -14,7 +14,7 @@ export const companyModeConfigSchema = z.object({
     clarificationThreshold: z.number().min(0).max(1),
   }),
   evaluationCriteria: z.object({
-    weights: z.record(z.number().min(0).max(1)),
+    weights: z.record(z.string(), z.number().min(0).max(1)),
     rubric: z.string().min(1),
   }),
   feedbackStyle: z.enum(['DIRECT', 'COACHING', 'SOCRATIC']),

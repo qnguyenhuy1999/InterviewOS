@@ -1,4 +1,5 @@
 import { EnglishLevel, ExperienceLevel } from '@interviewos/types'
+import { splitCommaSeparated } from '@interviewos/utils'
 import { z } from 'zod'
 
 export const onboardingSchema = z.object({
@@ -28,10 +29,3 @@ export const profileUpdateSchema = z.object({
 
 export type OnboardingInput = z.infer<typeof onboardingSchema>
 export type ProfileUpdateInput = z.input<typeof profileUpdateSchema>
-
-function splitCommaSeparated(value: string) {
-  return value
-    .split(',')
-    .map((item) => item.trim())
-    .filter(Boolean)
-}

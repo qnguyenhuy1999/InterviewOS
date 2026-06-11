@@ -1,7 +1,7 @@
 import { API_ROUTES } from '@interviewos/config'
 import type { CompanyMode, NotebookNoteListItem } from '@interviewos/types'
 
-import { StartInterviewForm } from '@/components/forms/StartInterviewForm'
+import { StartInterviewForm } from '@/app/_components/forms/StartInterviewForm'
 import { APP_ROUTES } from '@/lib/app-routes'
 import { requireLearningProfile } from '@/lib/learning-profile-guard'
 import { loadRouteData } from '@/lib/route-state'

@@ -11,12 +11,14 @@ export function formatDate(input: string | Date | null | undefined) {
   }).format(date)
 }
 
-export function parseCommaSeparated(value: string) {
+export function splitCommaSeparated(value: string) {
   return value
     .split(',')
     .map((item) => item.trim())
     .filter(Boolean)
 }
+
+export const parseCommaSeparated = splitCommaSeparated
 
 export function clampScore(value: number, minimum = 0, maximum = 100) {
   return Math.min(Math.max(Math.round(value), minimum), maximum)

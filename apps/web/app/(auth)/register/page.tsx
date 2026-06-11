@@ -1,6 +1,6 @@
 import Link from 'next/link'
 
-import { RegisterForm } from '@/components/forms/RegisterForm'
+import { RegisterForm } from '@/app/_components/forms/RegisterForm'
 
 export default function RegisterPage() {
   return (

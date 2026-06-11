@@ -1,10 +1,11 @@
 import { API_ROUTES } from '@interviewos/config'
 import type { NotebookNoteListItem } from '@interviewos/types'
 
-import { NotebookPageClient } from '@/components/pages/NotebookPageClient'
 import { APP_ROUTES } from '@/lib/app-routes'
 import { loadRouteData } from '@/lib/route-state'
 import { serverApiClient } from '@/lib/server-api-client'
+
+import { NotebookPageClient } from './_components/NotebookPageClient'
 
 export default async function Page({
   searchParams,

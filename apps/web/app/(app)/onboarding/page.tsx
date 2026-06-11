@@ -1,7 +1,7 @@
 import { API_ROUTES } from '@interviewos/config'
 import type { UserLearningProfile } from '@interviewos/types'
 
-import { ProfileForm } from '@/components/forms/ProfileForm'
+import { ProfileForm } from '@/app/_components/forms/ProfileForm'
 import { serverApiClient } from '@/lib/server-api-client'
 
 export default async function OnboardingPage({

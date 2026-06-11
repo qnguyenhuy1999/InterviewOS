@@ -8,9 +8,9 @@ import {
 } from '@interviewos/types'
 import NotebookDetailPage from '@interviewos/ui/pages/NotebookDetailPage'
 
-import { NoteActions } from '@/components/forms/NoteActions'
-import { StartPracticeButton } from '@/components/forms/StartPracticeButton'
-import { StatusSelect } from '@/components/forms/StatusSelect'
+import { NoteActions } from '@/app/_components/forms/NoteActions'
+import { StartPracticeButton } from '@/app/_components/forms/StartPracticeButton'
+import { StatusSelect } from '@/app/_components/forms/StatusSelect'
 import { loadRouteData } from '@/lib/route-state'
 import { serverApiClient } from '@/lib/server-api-client'
 

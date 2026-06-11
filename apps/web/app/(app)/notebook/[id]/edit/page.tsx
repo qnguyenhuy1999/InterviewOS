@@ -1,7 +1,7 @@
 import { API_ROUTES } from '@interviewos/config'
 import type { TechnicalNote, UserLearningProfile } from '@interviewos/types'
 
-import { NoteForm } from '@/components/forms/NoteForm'
+import { NoteForm } from '@/app/_components/forms/NoteForm'
 import { serverApiClient } from '@/lib/server-api-client'
 
 export default async function EditNotePage({ params }: { params: Promise<{ id: string }> }) {

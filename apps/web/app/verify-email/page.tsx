@@ -1,6 +1,6 @@
 import Link from 'next/link'
 
-import { VerifyEmailForm } from '@/components/forms/VerifyEmailForm'
+import { VerifyEmailForm } from '@/app/_components/forms/VerifyEmailForm'
 
 export default async function VerifyEmailPage({
   searchParams,

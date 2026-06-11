@@ -6,8 +6,8 @@ import type {
 } from '@interviewos/ui/pages/InterviewSessionPage'
 import InterviewSessionPage from '@interviewos/ui/pages/InterviewSessionPage'
 
-import { InterviewAnswerForm } from '@/components/forms/InterviewAnswerForm'
-import { MultiTurnForm } from '@/components/forms/MultiTurnForm'
+import { InterviewAnswerForm } from '@/app/_components/forms/InterviewAnswerForm'
+import { MultiTurnForm } from '@/app/_components/forms/MultiTurnForm'
 import { APP_ROUTES } from '@/lib/app-routes'
 import { requireLearningProfile } from '@/lib/learning-profile-guard'
 import { loadRouteData } from '@/lib/route-state'

@@ -2,7 +2,7 @@ import { API_ROUTES } from '@interviewos/config'
 import type { ResumeAnalysis, ResumePageView } from '@interviewos/types'
 import ResumePage from '@interviewos/ui/pages/ResumePage'
 
-import { ResumeUploadForm } from '@/components/forms/ResumeUploadForm'
+import { ResumeUploadForm } from '@/app/_components/forms/ResumeUploadForm'
 import { APP_ROUTES } from '@/lib/app-routes'
 import { requireLearningProfile } from '@/lib/learning-profile-guard'
 import { loadRouteData } from '@/lib/route-state'

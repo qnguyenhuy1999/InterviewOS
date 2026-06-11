@@ -5,6 +5,7 @@ import {
   NoteType,
   QuestionDifficulty,
 } from '@interviewos/types'
+import { splitCommaSeparated } from '@interviewos/utils'
 import { z } from 'zod'
 
 const advancedSettingsSchema = z
@@ -94,10 +95,3 @@ export type NoteCreateInput = z.infer<typeof noteCreateSchema>
 export type NoteFormInput = z.input<typeof noteFormSchema>
 export type NoteUpdateInput = z.infer<typeof noteUpdateSchema>
 export type GenerateQuestionsInput = z.infer<typeof generateQuestionsSchema>
-
-function splitCommaSeparated(value: string) {
-  return value
-    .split(',')
-    .map((item) => item.trim())
-    .filter(Boolean)
-}

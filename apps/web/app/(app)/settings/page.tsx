@@ -1,9 +1,10 @@
 import { API_ROUTES } from '@interviewos/config'
 import type { ActiveAuthSession, AuthSessionResponse, UserLearningProfile } from '@interviewos/types'
 
-import { ProfileForm } from '@/components/forms/ProfileForm'
-import { SecuritySettings } from '@/components/settings/SecuritySettings'
+import { ProfileForm } from '@/app/_components/forms/ProfileForm'
 import { serverApiClient } from '@/lib/server-api-client'
+
+import { SecuritySettings } from './_components/SecuritySettings'
 
 export default async function SettingsPage() {
   const [profile, session, sessions] = await Promise.all([
