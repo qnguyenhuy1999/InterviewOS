@@ -30,23 +30,15 @@ test('InterviewService lets session overrides replace saved defaults', async () 
           },
         ],
       }),
-      saveAnswer: async (_sessionId: string, _questionId: string, payload: Record<string, unknown>) => {
-        savedPayload = payload
+      saveAnswerAtomic: async (params: Record<string, unknown>) => {
+        savedPayload = params.answerPayload as Record<string, unknown>
+        englishMetadata = params.englishAiMetadata as Record<string, unknown>
         return {
-          questions: [{ answer: { id: 'answer-1' } }],
+          session: { questions: [{ answer: { id: 'answer-1' } }] },
+          englishNotes: [],
+          weakConcepts: [],
         }
       },
-      saveEnglishNotes: async (
-        _userId: string,
-        _answerId: string,
-        _notes: unknown[],
-        metadata: Record<string, unknown>,
-      ) => {
-        englishMetadata = metadata
-        return []
-      },
-      upsertWeakConcepts: async () => undefined,
-      upsertEnglishWeaknesses: async () => undefined,
     } as never,
     {} as never,
     {

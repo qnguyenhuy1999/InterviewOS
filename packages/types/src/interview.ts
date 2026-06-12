@@ -1,5 +1,5 @@
 import type { CompanyMode } from './company-mode'
-import type { EnglishLevel, ExperienceLevel, InterviewType, NoteStatus, QuestionDifficulty } from './enums'
+import type { EnglishLevel, ExperienceLevel, InterviewStatus, InterviewType, QuestionDifficulty } from './enums'
 import type { InterviewEvaluation } from './evaluation'
 import type { AdvancedLearningSettings } from './notebook'
 
@@ -7,7 +7,7 @@ export interface InterviewSession {
   id: string
   userId: string
   type: InterviewType
-  status: NoteStatus
+  status: InterviewStatus
   noteId: string | null
   sourceQuestionId: string | null
   overrideRole: string | null

@@ -1,3 +1,5 @@
+import { randomUUID } from 'node:crypto'
+
 import {
   CallHandler,
   type ExecutionContext,
@@ -16,15 +18,23 @@ export class LoggingInterceptor implements NestInterceptor {
     const http = context.switchToHttp()
     const request = http.getRequest<FastifyRequest>()
     const response = http.getResponse<FastifyReply>()
+    const requestId = randomUUID()
+    const startedAt = Date.now()
+
+    response.header('X-Request-ID', requestId)
 
     return next.handle().pipe(
       tap({
         next: () => {
-          this.logger.log(`${request.method} ${request.url} ${response.statusCode}`)
+          const latencyMs = Date.now() - startedAt
+          this.logger.log(
+            `${request.method} ${request.url} ${response.statusCode} ${latencyMs}ms [${requestId}]`,
+          )
         },
         error: (err: unknown) => {
+          const latencyMs = Date.now() - startedAt
           this.logger.error(
-            `${request.method} ${request.url} - ${err instanceof Error ? err.message : 'Unknown error'}`,
+            `${request.method} ${request.url} ${latencyMs}ms [${requestId}] - ${err instanceof Error ? err.message : 'Unknown error'}`,
           )
         },
       }),

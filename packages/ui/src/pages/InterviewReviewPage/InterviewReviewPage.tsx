@@ -48,23 +48,101 @@ function ScoreBar({ label, score }: { label: string; score: number }) {
   )
 }
 
-function EvaluationPanel({ evaluation }: { evaluation: InterviewEvaluation }) {
+function NarrativeFeedbackPanel({ evaluation }: { evaluation: InterviewEvaluation }) {
+  const hasStrengths = evaluation.strengths.length > 0
+  const hasImprovements = evaluation.improvements.length > 0
+  const hasCoaching = evaluation.coachingNotes.length > 0
+
+  if (!evaluation.summary && !hasStrengths && !hasImprovements && !hasCoaching) return null
+
   return (
     <div className="space-y-4 rounded-md border border-border bg-card p-5">
       <div className="flex items-start justify-between gap-4">
-        <div>
-          <h3 className="font-heading text-lg font-medium">Evaluation</h3>
-          {evaluation.summary ? (
-            <p className="mt-1 text-sm text-muted-foreground">{evaluation.summary}</p>
-          ) : null}
-        </div>
+        <h3 className="font-heading text-lg font-medium">Feedback summary</h3>
         {evaluation.overallScore != null ? (
-          <div className="text-right">
+          <div className="text-right shrink-0">
             <p className="font-heading text-3xl font-medium">{evaluation.overallScore}</p>
             <p className="text-xs text-muted-foreground">/ 100</p>
           </div>
         ) : null}
       </div>
+
+      {evaluation.summary ? (
+        <p className="text-sm text-muted-foreground leading-relaxed">{evaluation.summary}</p>
+      ) : null}
+
+      {hasStrengths ? (
+        <div className="space-y-2">
+          <p className="text-sm font-medium text-emerald-600 dark:text-emerald-400">What you did well</p>
+          <ul className="space-y-1">
+            {evaluation.strengths.map((s, i) => (
+              <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
+                <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500" />
+                {s}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
+
+      {hasImprovements ? (
+        <div className="space-y-2">
+          <p className="text-sm font-medium text-amber-600 dark:text-amber-400">Areas to improve</p>
+          <ul className="space-y-1">
+            {evaluation.improvements.map((s, i) => (
+              <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
+                <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500" />
+                {s}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
+
+      {hasCoaching ? (
+        <div className="space-y-2">
+          <p className="text-sm font-medium">Coaching notes</p>
+          <ul className="space-y-1">
+            {evaluation.coachingNotes.map((note, i) => (
+              <li key={i} className="text-sm text-muted-foreground">
+                {note}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
+    </div>
+  )
+}
+
+function NextBestActionPanel({ evaluation }: { evaluation: InterviewEvaluation }) {
+  const topRecommendation = evaluation.recommendations[0]
+  const topWeakConcept = evaluation.weakConcepts[0]
+
+  if (!topRecommendation && !topWeakConcept) return null
+
+  return (
+    <div className="rounded-md border border-primary/20 bg-primary/5 p-5 space-y-3">
+      <h3 className="font-heading text-base font-medium">Next best action</h3>
+      {topWeakConcept ? (
+        <p className="text-sm text-muted-foreground">
+          You struggled with <span className="font-medium text-foreground">{topWeakConcept}</span>. Focus your next study session on this concept.
+        </p>
+      ) : null}
+      {topRecommendation ? (
+        <div className="rounded-md border border-border bg-card p-3 space-y-1">
+          <p className="text-sm font-medium">{topRecommendation.title}</p>
+          <p className="text-xs text-muted-foreground">{topRecommendation.detail}</p>
+        </div>
+      ) : null}
+    </div>
+  )
+}
+
+function EvaluationPanel({ evaluation }: { evaluation: InterviewEvaluation }) {
+  return (
+    <div className="space-y-4 rounded-md border border-border bg-card p-5">
+      <h3 className="font-heading text-lg font-medium">Detailed scores</h3>
 
       {evaluation.rubricScores.length > 0 ? (
         <div className="space-y-3">
@@ -74,61 +152,71 @@ function EvaluationPanel({ evaluation }: { evaluation: InterviewEvaluation }) {
         </div>
       ) : null}
 
-      {evaluation.evidence.length > 0 ? (
-        <div className="space-y-2">
-          <p className="text-sm font-medium">Evidence</p>
-          <div className="space-y-3">
-            {evaluation.evidence.map((item, index) => (
-              <div
-                key={`${item.quote}-${index}`}
-                className="rounded-xl border border-border bg-background/60 p-3"
-              >
-                <p className="text-sm font-medium">{item.quote}</p>
-                <p className="mt-1 text-sm text-muted-foreground">{item.rationale}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      ) : null}
-
-      {evaluation.weaknesses.length > 0 ? (
-        <div className="space-y-2">
-          <p className="text-sm font-medium">Weaknesses</p>
-          <div className="space-y-3">
-            {evaluation.weaknesses.map((item, index) => (
-              <div
-                key={`${item.title}-${index}`}
-                className="rounded-xl border border-border bg-background/60 p-3"
-              >
-                <div className="flex items-center justify-between gap-3">
-                  <p className="text-sm font-medium">{item.title}</p>
-                  <span className="text-xs text-muted-foreground">{item.severity}</span>
+      {evaluation.evidence.length > 0 || evaluation.weaknesses.length > 0 || evaluation.recommendations.length > 0 ? (
+        <details className="group">
+          <summary className="cursor-pointer select-none text-sm font-medium text-muted-foreground hover:text-foreground list-none flex items-center gap-1">
+            <span className="transition-transform group-open:rotate-90">▶</span>
+            <span>Advanced details</span>
+          </summary>
+          <div className="mt-3 space-y-4">
+            {evaluation.evidence.length > 0 ? (
+              <div className="space-y-2">
+                <p className="text-sm font-medium">Evidence</p>
+                <div className="space-y-3">
+                  {evaluation.evidence.map((item, index) => (
+                    <div
+                      key={`${item.quote}-${index}`}
+                      className="rounded-xl border border-border bg-background/60 p-3"
+                    >
+                      <p className="text-sm font-medium">{item.quote}</p>
+                      <p className="mt-1 text-sm text-muted-foreground">{item.rationale}</p>
+                    </div>
+                  ))}
                 </div>
-                <p className="mt-1 text-sm text-muted-foreground">{item.detail}</p>
               </div>
-            ))}
-          </div>
-        </div>
-      ) : null}
+            ) : null}
 
-      {evaluation.recommendations.length > 0 ? (
-        <div className="space-y-2">
-          <p className="text-sm font-medium">Recommendations</p>
-          <div className="space-y-3">
-            {evaluation.recommendations.map((item, index) => (
-              <div
-                key={`${item.title}-${index}`}
-                className="rounded-xl border border-border bg-background/60 p-3"
-              >
-                <div className="flex items-center justify-between gap-3">
-                  <p className="text-sm font-medium">{item.title}</p>
-                  <span className="text-xs text-muted-foreground">{item.priority}</span>
+            {evaluation.weaknesses.length > 0 ? (
+              <div className="space-y-2">
+                <p className="text-sm font-medium">Weaknesses</p>
+                <div className="space-y-3">
+                  {evaluation.weaknesses.map((item, index) => (
+                    <div
+                      key={`${item.title}-${index}`}
+                      className="rounded-xl border border-border bg-background/60 p-3"
+                    >
+                      <div className="flex items-center justify-between gap-3">
+                        <p className="text-sm font-medium">{item.title}</p>
+                        <span className="text-xs text-muted-foreground">{item.severity}</span>
+                      </div>
+                      <p className="mt-1 text-sm text-muted-foreground">{item.detail}</p>
+                    </div>
+                  ))}
                 </div>
-                <p className="mt-1 text-sm text-muted-foreground">{item.detail}</p>
               </div>
-            ))}
+            ) : null}
+
+            {evaluation.recommendations.length > 0 ? (
+              <div className="space-y-2">
+                <p className="text-sm font-medium">Recommendations</p>
+                <div className="space-y-3">
+                  {evaluation.recommendations.map((item, index) => (
+                    <div
+                      key={`${item.title}-${index}`}
+                      className="rounded-xl border border-border bg-background/60 p-3"
+                    >
+                      <div className="flex items-center justify-between gap-3">
+                        <p className="text-sm font-medium">{item.title}</p>
+                        <span className="text-xs text-muted-foreground">{item.priority}</span>
+                      </div>
+                      <p className="mt-1 text-sm text-muted-foreground">{item.detail}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : null}
           </div>
-        </div>
+        </details>
       ) : null}
     </div>
   )
@@ -278,10 +366,14 @@ function Root(props: InterviewReviewPageProps) {
         ) : (
           <>
             {state.evaluation ? (
-              <section className="grid gap-4 lg:grid-cols-[minmax(0,2fr)_320px]">
-                <EvaluationPanel evaluation={state.evaluation} />
-                <EvaluationSidebar evaluation={state.evaluation} session={state.session} />
-              </section>
+              <>
+                <NarrativeFeedbackPanel evaluation={state.evaluation} />
+                <NextBestActionPanel evaluation={state.evaluation} />
+                <section className="grid gap-4 lg:grid-cols-[minmax(0,2fr)_320px]">
+                  <EvaluationPanel evaluation={state.evaluation} />
+                  <EvaluationSidebar evaluation={state.evaluation} session={state.session} />
+                </section>
+              </>
             ) : (
               <section className="rounded-xl border border-dashed border-border p-5 text-center text-sm text-muted-foreground">
                 {getInterviewReviewPendingMessage(state.session.status)}

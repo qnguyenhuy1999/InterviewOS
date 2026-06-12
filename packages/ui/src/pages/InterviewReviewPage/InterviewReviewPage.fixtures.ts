@@ -1,5 +1,5 @@
 import type { InterviewEvaluation } from '@interviewos/types'
-import { EvaluationStatus, InterviewType, NoteStatus } from '@interviewos/types'
+import { EvaluationStatus, InterviewStatus, InterviewType } from '@interviewos/types'
 
 import type {
   InterviewReviewPageFixture,
@@ -10,7 +10,7 @@ import type {
 export const interviewReviewFixtureSession: InterviewReviewPageSession = {
   id: 'session-review-frontend',
   type: InterviewType.TECHNICAL,
-  status: NoteStatus.PUBLISHED,
+  status: InterviewStatus.COMPLETED,
   createdAt: new Date('2026-06-07T09:00:00Z'),
   endedAt: new Date('2026-06-07T09:46:00Z'),
   readinessImpact: {

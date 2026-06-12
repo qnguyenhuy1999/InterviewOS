@@ -9,8 +9,11 @@ import { ConfigService } from '@nestjs/config'
 
 import { AIGateway } from './ai.gateway'
 import { AIAuditRepository } from './ai-audit.repository'
+import { AIContextBuilder } from './ai-context.builder'
+import { AIObservabilityController } from './ai-observability.controller'
 
 @Module({
+  controllers: [AIObservabilityController],
   providers: [
     {
       provide: PackageAIGateway,
@@ -42,8 +45,9 @@ import { AIAuditRepository } from './ai-audit.repository'
       },
     },
     AIAuditRepository,
+    AIContextBuilder,
     AIGateway,
   ],
-  exports: [AIGateway],
+  exports: [AIContextBuilder, AIGateway],
 })
 export class AIModule {}

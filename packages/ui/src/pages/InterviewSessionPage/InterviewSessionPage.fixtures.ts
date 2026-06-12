@@ -1,4 +1,4 @@
-import { InterviewType, NoteStatus, QuestionDifficulty } from '@interviewos/types'
+import { InterviewStatus, InterviewType, QuestionDifficulty } from '@interviewos/types'
 
 import type {
   InterviewSessionPageFixture,
@@ -36,7 +36,7 @@ export const interviewSessionFixtureSession: InterviewSessionPageSession = {
   id: 'session-multi-turn',
   type: InterviewType.SYSTEM_DESIGN,
   mode: 'MULTI_TURN',
-  status: NoteStatus.REVIEWING,
+  status: InterviewStatus.IN_PROGRESS,
   createdAt: new Date('2026-06-08T02:00:00Z'),
   updatedAt: new Date('2026-06-08T02:16:00Z'),
   version: 2,

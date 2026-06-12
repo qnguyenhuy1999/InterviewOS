@@ -73,6 +73,20 @@ test('NotebookService uses saved onboarding defaults when note overrides are abs
         }
       },
     } as never,
+    {
+      build: () => ({
+        learningState: {
+          targetLevel: 'SENIOR',
+          englishLevel: 'INTERMEDIATE',
+          techStack: ['TypeScript', 'Redis'],
+          targetRole: 'Backend Engineer',
+          interviewGoals: ['Tradeoffs'],
+          activeWeakConcepts: [],
+          weakConceptCount: 0,
+        },
+        explanationDepth: 'DEEP',
+      }),
+    } as never,
   )
 
   await service.generateTechnicalNote({ id: 'user-1' }, 'note-1')
@@ -87,6 +101,7 @@ test('NotebookService uses saved onboarding defaults when note overrides are abs
     interviewGoals: ['Tradeoffs'],
     preferredOutputStyle: 'Practical',
     additionalContext: 'rough',
+    explanationDepth: 'DEEP',
   })
   assert.equal(savedMetadata?.promptKey, 'technical-note.v1')
 })

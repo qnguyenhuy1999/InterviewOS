@@ -44,7 +44,7 @@ function MultiTurnBody({
   reviewHref?: string
   renderMultiTurnForm?: InterviewSessionPageProps['renderMultiTurnForm']
 }) {
-  const isComplete = session.status === 'PUBLISHED'
+  const isComplete = session.status === 'COMPLETED'
   const completedTurns = getInterviewSessionCompletedTurns(session, turns)
   const maxTurns = session.maxTurns ?? 0
 

@@ -105,73 +105,62 @@ export class InterviewService {
       targetLevel: englishLevel as EnglishLevel,
     }, { userId: user.id })
 
-    const updatedSession = await this.interviewRepository.saveAnswer(
-      session.id,
-      primaryQuestion.id,
-      {
-        overrideRole: advancedSettings?.targetRole ?? session.overrideRole,
-        overrideLevel: targetLevel as ExperienceLevel,
-        overrideStack:
-          advancedSettings?.techStack && advancedSettings.techStack.length > 0
-            ? advancedSettings.techStack
-            : session.overrideStack,
-        overrideGoals:
-          advancedSettings?.interviewGoals && advancedSettings.interviewGoals.length > 0
-            ? advancedSettings.interviewGoals
-            : session.overrideGoals,
-        overrideEnglishLevel: englishLevel as EnglishLevel,
-        preferredOutputStyle:
-          advancedSettings?.preferredOutputStyle ?? session.preferredOutputStyle,
-        rawAnswer: input.answer,
-        technicalScore: technical.result.technicalScore,
-        englishScore: technical.result.englishScore,
-        clarityScore: technical.result.clarityScore,
-        overallScore: technical.result.overallScore,
-        aiFeedback: technical.result.summary,
-        technicalFeedback: {
-          summary: technical.result.summary,
-          strengths: technical.result.strengths,
-          improvements: technical.result.improvements,
-        } satisfies Prisma.JsonObject,
-        englishFeedback: {
-          summary: english.result.feedback,
-          overallScore: english.result.overallScore,
-          highlightedTopics: english.result.weakTopics,
-        } satisfies Prisma.JsonObject,
-        nextRecommendedQuestion:
-          technical.result.nextRecommendedQuestion satisfies Prisma.JsonObject,
-        recommendedLearning: technical.result.recommendedLearning satisfies Prisma.JsonObject,
-        weakConcepts: technical.result.weakConcepts,
-        aiMetadata: this.toAiMetadataJson(technical.metadata),
-      },
-    )
-
-    const answerId = updatedSession.questions[0]?.answer?.id
-    if (!answerId) {
-      throw new BadRequestException('Answer persistence failed.')
-    }
-
     const usefulEnglishNotes = english.result.notes.filter(
       (note) =>
         note.correctedSentence.trim() !== note.userSentence.trim() || note.explanation.length > 20,
     )
 
-    const englishNotes = await this.interviewRepository.saveEnglishNotes(
-      user.id,
-      answerId,
-      usefulEnglishNotes,
-      this.toAiMetadataJson(english.metadata),
-    )
-    const weakConcepts = await this.interviewRepository.upsertWeakConcepts(
-      user.id,
-      answerId,
-      technical.result.weakConcepts,
-    )
-    await this.interviewRepository.upsertEnglishWeaknesses(
-      user.id,
-      answerId,
-      english.result.weakTopics,
-    )
+    const { session: updatedSession, englishNotes, weakConcepts } =
+      await this.interviewRepository.saveAnswerAtomic({
+        sessionId: session.id,
+        questionId: primaryQuestion.id,
+        userId: user.id,
+        answerPayload: {
+          overrideRole: advancedSettings?.targetRole ?? session.overrideRole,
+          overrideLevel: targetLevel as ExperienceLevel,
+          overrideStack:
+            advancedSettings?.techStack && advancedSettings.techStack.length > 0
+              ? advancedSettings.techStack
+              : session.overrideStack,
+          overrideGoals:
+            advancedSettings?.interviewGoals && advancedSettings.interviewGoals.length > 0
+              ? advancedSettings.interviewGoals
+              : session.overrideGoals,
+          overrideEnglishLevel: englishLevel as EnglishLevel,
+          preferredOutputStyle:
+            advancedSettings?.preferredOutputStyle ?? session.preferredOutputStyle,
+          rawAnswer: input.answer,
+          technicalScore: technical.result.technicalScore,
+          englishScore: technical.result.englishScore,
+          clarityScore: technical.result.clarityScore,
+          overallScore: technical.result.overallScore,
+          aiFeedback: technical.result.summary,
+          technicalFeedback: {
+            summary: technical.result.summary,
+            strengths: technical.result.strengths,
+            improvements: technical.result.improvements,
+          } satisfies Prisma.JsonObject,
+          englishFeedback: {
+            summary: english.result.feedback,
+            overallScore: english.result.overallScore,
+            highlightedTopics: english.result.weakTopics,
+          } satisfies Prisma.JsonObject,
+          nextRecommendedQuestion:
+            technical.result.nextRecommendedQuestion satisfies Prisma.JsonObject,
+          recommendedLearning: technical.result.recommendedLearning satisfies Prisma.JsonObject,
+          weakConcepts: technical.result.weakConcepts,
+          aiMetadata: this.toAiMetadataJson(technical.metadata),
+        },
+        usefulEnglishNotes,
+        weakConceptNames: technical.result.weakConcepts,
+        englishWeakTopics: english.result.weakTopics,
+        englishAiMetadata: this.toAiMetadataJson(english.metadata),
+      })
+
+    const answerId = updatedSession.questions[0]?.answer?.id
+    if (!answerId) {
+      throw new BadRequestException('Answer persistence failed.')
+    }
     await this.reviewActions.syncEnglishNoteReviews(
       user.id,
       englishNotes.map((note) => ({

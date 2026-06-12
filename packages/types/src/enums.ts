@@ -105,6 +105,13 @@ export enum TurnDecision {
   EVALUATE = 'EVALUATE',
 }
 
+export enum InterviewStatus {
+  PENDING = 'PENDING',
+  IN_PROGRESS = 'IN_PROGRESS',
+  COMPLETED = 'COMPLETED',
+  ABANDONED = 'ABANDONED',
+}
+
 export enum SessionMode {
   STANDARD = 'STANDARD',
   MULTI_TURN = 'MULTI_TURN',

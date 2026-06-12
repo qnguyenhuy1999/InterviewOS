@@ -49,6 +49,13 @@ enum InterviewType {
   MIXED
 }
 
+enum InterviewStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  ABANDONED
+}
+
 enum QuestionDifficulty {
   EASY
   MEDIUM
@@ -307,7 +314,7 @@ model InterviewSession {
   id         String          @id @default(cuid())
   userId     String
   type       InterviewType
-  status     NoteStatus
+  status     InterviewStatus @default(PENDING)
   noteId     String?
   sourceQuestionId String?
   overrideRole String?
@@ -495,6 +502,7 @@ model AIRequestLog {
   inputHash        String
   validationStatus AIValidationStatus
   tokenUsage       Json?
+  estimatedCostUsd Float?
   latencyMs        Int
   generatedAt      DateTime
   errorMessage     String?

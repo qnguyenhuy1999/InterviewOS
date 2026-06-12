@@ -1,5 +1,6 @@
 import {
   AIGateway as PackageAIGateway,
+  AIProviderError,
   AIResponseValidationError,
 } from '@interviewos/ai'
 import type {
@@ -132,25 +133,45 @@ export class AIGateway {
     context: AIAuditContext,
     execute: () => Promise<AIResult<TResult>>,
   ) {
-    try {
-      const result = await execute()
-      await this.aiAuditRepository.createRequestLog({
-        userId: context.userId,
-        operation,
-        metadata: result.metadata,
-      })
-      return result
-    } catch (error) {
-      if (error instanceof AIResponseValidationError) {
+    const maxAttempts = 3
+    let lastError: unknown
+
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+      try {
+        const result = await execute()
         await this.aiAuditRepository.createRequestLog({
           userId: context.userId,
           operation,
-          metadata: error.metadata,
-          errorMessage: error.message,
+          metadata: result.metadata,
         })
-      }
+        return result
+      } catch (error) {
+        lastError = error
 
-      throw error
+        if (error instanceof AIResponseValidationError) {
+          await this.aiAuditRepository.createRequestLog({
+            userId: context.userId,
+            operation,
+            metadata: error.metadata,
+            errorMessage: error.message,
+          })
+          throw error
+        }
+
+        if (error instanceof AIProviderError && error.retryable && attempt < maxAttempts) {
+          const backoffMs = 2 ** (attempt - 1) * 1000
+          await sleep(backoffMs)
+          continue
+        }
+
+        throw error
+      }
     }
+
+    throw lastError
   }
+}
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms))
 }

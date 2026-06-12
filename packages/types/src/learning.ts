@@ -1,9 +1,21 @@
 import type {
+  EnglishLevel,
+  ExperienceLevel,
   LearningPathItemStatus,
   ReviewItemType,
   ReviewRating,
   WeakConceptStatus,
 } from './enums'
+
+export interface LearningStateInput {
+  targetLevel: ExperienceLevel
+  englishLevel: EnglishLevel
+  techStack: string[]
+  targetRole?: string
+  interviewGoals: string[]
+  activeWeakConcepts: string[]
+  weakConceptCount: number
+}
 
 export interface ReviewItem {
   id: string

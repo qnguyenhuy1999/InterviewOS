@@ -35,7 +35,7 @@ export function formatInterviewReviewSignedValue(value: number): string {
 }
 
 export function getInterviewReviewPendingMessage(status: string): string {
-  return status === 'PUBLISHED'
+  return status === 'COMPLETED'
     ? INTERVIEW_REVIEW_PAGE_PENDING_PUBLISHED_MESSAGE
     : INTERVIEW_REVIEW_PAGE_PENDING_UNPUBLISHED_MESSAGE
 }

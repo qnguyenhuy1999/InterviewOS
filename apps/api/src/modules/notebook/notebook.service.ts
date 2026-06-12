@@ -14,6 +14,7 @@ import {
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
 
 import { AIGateway } from '../../ai/ai.gateway'
+import { AIContextBuilder } from '../../ai/ai-context.builder'
 import type { AuthenticatedUser } from '../../common/auth/authenticated-request'
 import { ReviewService } from '../review/review.service'
 import { UsersRepository } from '../users/users.repository'
@@ -49,6 +50,7 @@ export class NotebookService {
     private readonly notebookRepository: NotebookRepository,
     private readonly usersRepository: UsersRepository,
     private readonly aiGateway: AIGateway,
+    private readonly aiContextBuilder: AIContextBuilder,
     reviewService?: ReviewService,
   ) {
     this.reviewActions = reviewService ?? {
@@ -107,16 +109,26 @@ export class NotebookService {
     }
 
     const profile = await this.requireProfile(user.id)
+    const targetLevel = (note.overrideLevel ?? profile.targetLevel) as unknown as ExperienceLevel
+    const aiContext = this.aiContextBuilder.build({
+      targetLevel,
+      englishLevel: (note.overrideEnglishLevel ?? profile.englishLevel) as unknown as EnglishLevel,
+      techStack: note.overrideStack.length > 0 ? note.overrideStack : profile.techStack,
+      targetRole: note.overrideRole ?? profile.targetRole ?? undefined,
+      interviewGoals: note.overrideGoals.length > 0 ? note.overrideGoals : profile.interviewGoals,
+      weakConcepts: [],
+    })
     const generated = await this.aiGateway.generateTechnicalNote({
       topic: note.title,
       noteType: note.type as unknown as NoteType,
-      targetLevel: (note.overrideLevel ?? profile.targetLevel) as unknown as ExperienceLevel,
+      targetLevel,
       targetRole: note.overrideRole ?? profile.targetRole,
       englishLevel: (note.overrideEnglishLevel ?? profile.englishLevel) as unknown as EnglishLevel,
       techStack: note.overrideStack.length > 0 ? note.overrideStack : profile.techStack,
       interviewGoals: note.overrideGoals.length > 0 ? note.overrideGoals : profile.interviewGoals,
       preferredOutputStyle: note.preferredOutputStyle ?? profile.preferredOutputStyle,
       additionalContext: note.rawInput,
+      explanationDepth: aiContext.explanationDepth,
     }, { userId: user.id })
 
     const saved = await this.notebookRepository.replaceGeneratedContent(user.id, note.id, {
