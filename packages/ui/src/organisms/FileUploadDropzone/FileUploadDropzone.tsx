@@ -31,20 +31,20 @@ function FileUploadDropzone({
     <Card
       className={
         className ??
-        'overflow-hidden border border-dashed border-primary/15 bg-accent-soft py-0 shadow-[0_20px_60px_-34px_color-mix(in_oklch,var(--primary),transparent_62%)]'
+        'overflow-hidden border border-dashed border-primary/20 bg-accent-soft py-0 shadow-elevated'
       }
     >
       <CardContent
         className={
           contentClassName ??
-          'relative flex min-h-[16rem] flex-col items-center justify-center gap-4 px-5 py-6 text-center sm:min-h-[18rem] sm:px-6'
+          'relative flex min-h-64 flex-col items-center justify-center gap-4 px-5 py-6 text-center sm:min-h-72 sm:px-6'
         }
       >
         <div
-          className="pointer-events-none absolute inset-x-10 top-0 h-24 rounded-b-[2rem] bg-primary/8 opacity-70"
+          className="pointer-events-none absolute inset-x-10 top-0 h-24 rounded-b-xl bg-primary opacity-10"
           aria-hidden="true"
         />
-        <div className="relative flex size-14 items-center justify-center rounded-[1.25rem] border border-primary/10 bg-white/80 text-primary shadow-sm">
+        <div className="relative flex size-14 items-center justify-center rounded-lg border border-primary/20 bg-background text-primary shadow-sm">
           <UploadIcon className="size-5" />
         </div>
         <div className="relative space-y-2">
@@ -55,7 +55,7 @@ function FileUploadDropzone({
             {description}
           </p>
           {supportingText ? (
-            <p className="inline-flex rounded-full border border-primary/10 bg-white/80 px-2.5 py-0.5 text-xs font-medium text-muted-foreground shadow-sm">
+            <p className="inline-flex rounded-md border border-primary/20 bg-background px-2.5 py-0.5 text-xs font-medium text-muted-foreground shadow-sm">
               {supportingText}
             </p>
           ) : null}

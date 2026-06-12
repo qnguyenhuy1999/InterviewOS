@@ -78,8 +78,8 @@ function NotebookCard({
   return (
     <Card
       className={cn(
-        'gap-0 border border-border/80 bg-surface-elevated py-0 transition-all hover:-translate-y-0.5 hover:border-primary/25 hover:shadow-[0_20px_60px_-40px_color-mix(in_oklch,var(--primary),transparent_45%)]',
-        view === 'list' && 'md:grid md:grid-cols-[minmax(0,1fr)_auto] md:items-center',
+        'gap-0 border border-border/80 bg-surface-elevated py-0 transition-all hover:-translate-y-0.5 hover:border-primary/25 hover:shadow-elevated',
+        view === 'list' && 'md:flex-row md:items-center md:justify-between',
       )}
     >
       <CardHeader className="gap-3 border-b py-4 md:border-b-0">

@@ -1,7 +1,7 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { type SubmitTurnInput,submitTurnSchema } from '@interviewos/validators'
+import { type SubmitTurnInput, submitTurnSchema } from '@interviewos/validators'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 
@@ -93,7 +93,7 @@ export function MultiTurnForm({
             className={`flex ${turn.role === 'CANDIDATE' ? 'justify-end' : 'justify-start'}`}
           >
             <div
-              className={`max-w-[80%] rounded-xl px-4 py-3 text-sm ${
+              className={`w-fit max-w-3xl rounded-xl px-4 py-3 text-sm ${
                 turn.role === 'CANDIDATE'
                   ? 'bg-primary text-primary-foreground'
                   : 'border border-border bg-card text-card-foreground'

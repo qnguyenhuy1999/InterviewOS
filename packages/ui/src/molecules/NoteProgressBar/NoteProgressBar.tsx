@@ -16,7 +16,7 @@ function NoteProgressBar({
   return (
     <div className={cn('space-y-2', className)}>
       <div className="flex items-center justify-between gap-3">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+        <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
           {label}
         </p>
         <p className="text-sm font-medium text-foreground">{normalizedValue}%</p>
@@ -27,7 +27,7 @@ function NoteProgressBar({
         aria-valuemin={0}
         aria-valuenow={normalizedValue}
         role="progressbar"
-        className="h-2 overflow-hidden rounded-full bg-foreground/6"
+        className="h-2 overflow-hidden rounded-full bg-muted"
       >
         <div
           className="h-full rounded-full bg-primary transition-[width] duration-300 ease-out"

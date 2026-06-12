@@ -51,7 +51,7 @@ export function SecuritySettings({
   }
 
   return (
-    <section className="space-y-4 rounded-2xl border border-border bg-card p-5">
+    <section className="space-y-4 rounded-xl border border-border bg-card p-5">
       <div className="space-y-1">
         <h3 className="font-heading text-lg font-medium">Security</h3>
         <p className="text-sm text-muted-foreground">
@@ -124,7 +124,7 @@ export function SecuritySettings({
                     {session.userAgent ?? 'Unknown device'}
                   </p>
                   {session.isCurrent ? (
-                    <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs text-primary">
+                    <span className="rounded-md bg-accent-soft px-2 py-0.5 text-xs text-primary">
                       Current
                     </span>
                   ) : null}
@@ -159,7 +159,7 @@ export function SecuritySettings({
       </div>
 
       {state.message ? (
-        <div className="rounded-lg border border-border bg-muted/50 px-3 py-2 text-sm text-muted-foreground">
+        <div className="rounded-lg border border-border bg-muted px-3 py-2 text-sm text-muted-foreground">
           {state.message}
         </div>
       ) : null}

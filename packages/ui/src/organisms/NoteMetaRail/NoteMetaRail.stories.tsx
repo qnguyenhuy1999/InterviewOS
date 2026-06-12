@@ -22,14 +22,14 @@ const meta = {
       { id: 'interview-answer', label: 'Interview-ready answer' },
     ],
     mobileTocAction: (
-      <Button variant="outline" size="sm" className="rounded-full">
+      <Button variant="outline" size="sm" className="rounded-lg">
         Open TOC
       </Button>
     ),
   },
   decorators: [
     (Story) => (
-      <div className="w-[320px]">
+      <div className="w-80">
         <Story />
       </div>
     ),

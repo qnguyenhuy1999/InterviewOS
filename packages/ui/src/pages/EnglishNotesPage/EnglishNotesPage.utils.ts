@@ -59,7 +59,7 @@ export function getEnglishStatusClassName(status: EnglishNoteStatus): string {
     case EnglishNoteStatus.MASTERED:
       return 'border-success/30 bg-success-soft text-success'
     case EnglishNoteStatus.IMPROVED:
-      return 'border-primary/20 bg-primary/10 text-primary'
+      return 'border-primary/20 bg-accent-soft text-primary'
     case EnglishNoteStatus.REVIEWING:
       return 'border-warning/30 bg-warning-soft text-warning'
     case EnglishNoteStatus.NEEDS_PRACTICE:

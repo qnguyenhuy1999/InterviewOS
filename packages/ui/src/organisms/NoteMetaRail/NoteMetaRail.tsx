@@ -29,11 +29,11 @@ function NoteMetaRail({
 }: NoteMetaRailProps) {
   return (
     <aside className="space-y-4 xl:sticky xl:top-8">
-      <Card className="gap-0 rounded-[1.6rem] border border-border/70 bg-surface-elevated py-0 shadow-[0_24px_60px_-52px_color-mix(in_oklch,var(--foreground),transparent_40%)]">
+      <Card className="gap-0 border border-border/70 bg-surface-elevated py-0 shadow-elevated">
         <CardContent className="space-y-5 p-4 md:p-5">
           <NoteProgressBar value={progress} />
 
-          <div className="grid gap-3 rounded-2xl border border-border/70 bg-background/72 p-3.5">
+          <div className="grid gap-3 rounded-lg border border-border/70 bg-background p-3.5">
             <div className="flex items-center gap-2 text-sm text-foreground">
               <Clock3Icon className="size-4 text-muted-foreground" />
               <span>{readingTime}</span>
@@ -50,7 +50,7 @@ function NoteMetaRail({
 
           <div className="flex items-center justify-between gap-3 xl:block">
             <div>
-              <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+              <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
                 On this page
               </p>
             </div>

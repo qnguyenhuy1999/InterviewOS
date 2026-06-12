@@ -9,14 +9,14 @@ import {
 
 export function getReviewRatingClassName(rating: ReviewRating) {
   return cn(
-    'inline-flex min-w-16 items-center justify-center rounded-full border px-2.5 py-0.5 text-xs font-medium uppercase tracking-[0.08em]',
+    'inline-flex min-w-16 items-center justify-center rounded-md border px-2.5 py-0.5 text-xs font-medium uppercase tracking-widest',
     REVIEW_RATING_TONE[rating],
   )
 }
 
 export function getWeakConceptStatusClassName(status: WeakConceptStatus) {
   return cn(
-    'inline-flex min-w-20 items-center justify-center rounded-full border px-2.5 py-0.5 text-xs font-medium uppercase tracking-[0.08em]',
+    'inline-flex min-w-20 items-center justify-center rounded-md border px-2.5 py-0.5 text-xs font-medium uppercase tracking-widest',
     REVIEW_STATUS_TONE[status],
   )
 }

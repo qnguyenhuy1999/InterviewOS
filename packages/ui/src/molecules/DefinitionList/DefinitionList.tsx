@@ -11,7 +11,7 @@ function DefinitionList({ items }: DefinitionListProps) {
           className="flex items-start justify-between gap-3 border-b border-border/60 pb-2.5 last:border-b-0 last:pb-0"
         >
           <dt className="text-xs text-muted-foreground">{item.label}</dt>
-          <dd className="max-w-[60%] text-right text-sm font-medium text-foreground">
+          <dd className="max-w-prose text-right text-sm font-medium text-foreground">
             {item.value}
           </dd>
         </div>

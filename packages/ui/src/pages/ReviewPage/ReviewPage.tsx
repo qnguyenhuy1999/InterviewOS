@@ -47,7 +47,7 @@ function ReviewTypeBadge({ type }: { type: ReviewQueueCardView['type'] }) {
   return (
     <Badge
       variant="outline"
-      className="rounded-full px-2.5 py-1 text-[0.7rem] font-semibold uppercase tracking-[0.08em]"
+      className="rounded-md px-2.5 py-1 text-xs font-semibold uppercase tracking-widest"
     >
       {REVIEW_ITEM_TYPE_LABEL[type]}
     </Badge>
@@ -216,7 +216,7 @@ function ReviewBody({
                   label: item.typeLabel,
                   variant: 'outline',
                   className:
-                    'rounded-full px-2.5 py-1 text-[0.7rem] font-semibold uppercase tracking-[0.08em]',
+                    'rounded-md px-2.5 py-1 text-xs font-semibold uppercase tracking-widest',
                 },
               ]}
               title={item.title}
@@ -247,7 +247,7 @@ function ReviewBody({
           <Table>
             <TableHeader>
               <TableRow className="hover:bg-transparent">
-                <TableHead className="w-[34%]">Concept</TableHead>
+                <TableHead className="w-1/3">Concept</TableHead>
                 <TableHead>Occurrences</TableHead>
                 <TableHead>Mastery</TableHead>
                 <TableHead>Status</TableHead>
@@ -334,7 +334,7 @@ function LoadingBody() {
 function ErrorBody({ message, retryHref }: { message: string; retryHref?: string }) {
   return (
     <EmptyState
-      className="min-h-[60vh] border-destructive/20 bg-destructive/5"
+      className="min-h-128 border-destructive/20 bg-destructive/5"
       title={<span className="text-destructive">Failed to load review queue</span>}
       description={message}
       action={

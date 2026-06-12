@@ -13,7 +13,7 @@ export function getProfileNavigation(): ConsoleLayoutNavGroup[] {
 
 export function getProfileVerifiedBadgeClassName(isVerified: boolean) {
   return isVerified
-    ? 'border-primary/20 bg-primary/5 text-primary'
+    ? 'border-primary/20 bg-accent-soft text-primary'
     : 'border-border text-muted-foreground'
 }
 

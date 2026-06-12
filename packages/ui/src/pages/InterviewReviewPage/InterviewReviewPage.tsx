@@ -73,11 +73,11 @@ function NarrativeFeedbackPanel({ evaluation }: { evaluation: InterviewEvaluatio
 
       {hasStrengths ? (
         <div className="space-y-2">
-          <p className="text-sm font-medium text-emerald-600 dark:text-emerald-400">What you did well</p>
+          <p className="text-sm font-medium text-success">What you did well</p>
           <ul className="space-y-1">
             {evaluation.strengths.map((s, i) => (
               <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
-                <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500" />
+                <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-success" />
                 {s}
               </li>
             ))}
@@ -87,11 +87,11 @@ function NarrativeFeedbackPanel({ evaluation }: { evaluation: InterviewEvaluatio
 
       {hasImprovements ? (
         <div className="space-y-2">
-          <p className="text-sm font-medium text-amber-600 dark:text-amber-400">Areas to improve</p>
+          <p className="text-sm font-medium text-warning">Areas to improve</p>
           <ul className="space-y-1">
             {evaluation.improvements.map((s, i) => (
               <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
-                <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500" />
+                <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-warning" />
                 {s}
               </li>
             ))}
@@ -122,7 +122,7 @@ function NextBestActionPanel({ evaluation }: { evaluation: InterviewEvaluation }
   if (!topRecommendation && !topWeakConcept) return null
 
   return (
-    <div className="rounded-md border border-primary/20 bg-primary/5 p-5 space-y-3">
+    <div className="rounded-md border border-primary/20 bg-accent-soft p-5 space-y-3">
       <h3 className="font-heading text-base font-medium">Next best action</h3>
       {topWeakConcept ? (
         <p className="text-sm text-muted-foreground">
@@ -166,7 +166,7 @@ function EvaluationPanel({ evaluation }: { evaluation: InterviewEvaluation }) {
                   {evaluation.evidence.map((item, index) => (
                     <div
                       key={`${item.quote}-${index}`}
-                      className="rounded-xl border border-border bg-background/60 p-3"
+                      className="rounded-lg border border-border bg-background p-3"
                     >
                       <p className="text-sm font-medium">{item.quote}</p>
                       <p className="mt-1 text-sm text-muted-foreground">{item.rationale}</p>
@@ -183,7 +183,7 @@ function EvaluationPanel({ evaluation }: { evaluation: InterviewEvaluation }) {
                   {evaluation.weaknesses.map((item, index) => (
                     <div
                       key={`${item.title}-${index}`}
-                      className="rounded-xl border border-border bg-background/60 p-3"
+                      className="rounded-lg border border-border bg-background p-3"
                     >
                       <div className="flex items-center justify-between gap-3">
                         <p className="text-sm font-medium">{item.title}</p>
@@ -203,7 +203,7 @@ function EvaluationPanel({ evaluation }: { evaluation: InterviewEvaluation }) {
                   {evaluation.recommendations.map((item, index) => (
                     <div
                       key={`${item.title}-${index}`}
-                      className="rounded-xl border border-border bg-background/60 p-3"
+                      className="rounded-lg border border-border bg-background p-3"
                     >
                       <div className="flex items-center justify-between gap-3">
                         <p className="text-sm font-medium">{item.title}</p>
@@ -288,7 +288,7 @@ function ConversationReplay({ turns }: { turns: InterviewReviewPageTurn[] }) {
               className={`flex ${turn.role === 'CANDIDATE' ? 'justify-end' : 'justify-start'}`}
             >
               <div
-                className={`max-w-[80%] rounded-xl px-4 py-3 text-sm ${
+                className={`w-fit max-w-3xl rounded-xl px-4 py-3 text-sm ${
                   turn.role === 'CANDIDATE'
                     ? 'bg-primary text-primary-foreground'
                     : 'border border-border bg-card'
@@ -325,8 +325,8 @@ function LoadingBody() {
   return (
     <div className="space-y-6">
       <Skeleton className="h-10 w-64 rounded-md" />
-      <div className="grid gap-4 xl:grid-cols-[minmax(0,1.7fr)_320px]">
-        <Skeleton className="h-96 rounded-md" />
+      <div className="grid gap-4 xl:grid-cols-3">
+        <Skeleton className="h-96 rounded-md xl:col-span-2" />
         <div className="space-y-4">
           <Skeleton className="h-36 rounded-md" />
           <Skeleton className="h-56 rounded-md" />
@@ -351,7 +351,7 @@ function Root(props: InterviewReviewPageProps) {
       <PageBody className="space-y-6">
         {state.kind === 'error' ? (
           <EmptyState
-            className="min-h-[60vh] border-destructive/20 bg-destructive/5"
+            className="min-h-128 border-destructive/20 bg-destructive/5"
             title={<span className="text-destructive">{INTERVIEW_REVIEW_PAGE_ERROR_TITLE}</span>}
             description={state.message}
           />
@@ -369,8 +369,10 @@ function Root(props: InterviewReviewPageProps) {
               <>
                 <NarrativeFeedbackPanel evaluation={state.evaluation} />
                 <NextBestActionPanel evaluation={state.evaluation} />
-                <section className="grid gap-4 lg:grid-cols-[minmax(0,2fr)_320px]">
-                  <EvaluationPanel evaluation={state.evaluation} />
+                <section className="grid gap-4 lg:grid-cols-3">
+                  <div className="lg:col-span-2">
+                    <EvaluationPanel evaluation={state.evaluation} />
+                  </div>
                   <EvaluationSidebar evaluation={state.evaluation} session={state.session} />
                 </section>
               </>

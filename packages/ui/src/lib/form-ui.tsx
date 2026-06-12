@@ -65,8 +65,8 @@ export function FormNotice({ className, variant = 'info', ...props }: FormNotice
       className={cn(
         'rounded-xl border px-3.5 py-3 text-sm leading-6',
         variant === 'error' && 'border-destructive/30 bg-destructive/10 text-destructive',
-        variant === 'info' && 'border-border bg-muted/50 text-muted-foreground',
-        variant === 'success' && 'border-primary/20 bg-primary/5 text-foreground',
+        variant === 'info' && 'border-border bg-muted text-muted-foreground',
+        variant === 'success' && 'border-primary/20 bg-accent-soft text-foreground',
         className,
       )}
       {...props}

@@ -40,16 +40,16 @@ function LearningPathBody({
 
   return (
     <div className="space-y-6">
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-[minmax(0,1.35fr)_repeat(3,minmax(0,1fr))]">
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         {focusItem ? (
-          <div className="rounded-md border border-primary/15 p-5">
+          <div className="rounded-xl border border-primary/20 bg-accent-soft p-5 md:col-span-2 xl:col-span-4">
             <p className="text-xs font-semibold uppercase text-primary/80">Today&apos;s focus</p>
             <p className="mt-3 font-heading text-2xl font-semibold tracking-tight">
               {focusItem.title}
             </p>
             <p className="mt-2 text-sm leading-6 text-muted-foreground">{focusItem.reason}</p>
             <div className="mt-4 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
-              <span className="rounded-full border border-primary/10 bg-white/80 px-3 py-1 font-medium text-foreground">
+              <span className="rounded-md border border-primary/20 bg-background px-3 py-1 font-medium text-foreground">
                 Priority {focusItem.priorityScore}
               </span>
               <span>{formatLearningPathLabel(focusItem.type)}</span>
@@ -110,7 +110,7 @@ function LearningPathBody({
             return (
               <div
                 key={summary.type}
-                className="rounded-md border border-border/80 bg-muted/40 p-4"
+                className="rounded-md border border-border/80 bg-muted p-4"
               >
                 <p className="text-sm font-semibold">{formatLearningPathLabel(summary.type)}</p>
                 <p className="mt-2 text-2xl font-semibold tracking-tight">

@@ -10,7 +10,7 @@ function BulletList({ items, className }: BulletListProps) {
     <ul className={cn('space-y-1.5', className)}>
       {items.map((item) => (
         <li key={item} className="flex items-start gap-2.5 text-sm leading-6 text-foreground">
-          <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-primary/80" aria-hidden="true" />
+          <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-primary" aria-hidden="true" />
           <span>{item}</span>
         </li>
       ))}

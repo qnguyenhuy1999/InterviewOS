@@ -73,12 +73,12 @@ function DimensionRow({ dimension }: { dimension: ReadinessDimension }) {
 
 function HistoryRow({ item }: { item: ReadinessHistoryItem }) {
   return (
-    <div className="grid grid-cols-[1.25rem_minmax(0,1fr)] gap-2.5">
-      <div className="relative flex justify-center">
+    <div className="flex gap-2.5">
+      <div className="relative flex w-5 shrink-0 justify-center">
         <span className="absolute inset-y-0 left-1/2 -translate-x-1/2 border-l border-border/80" />
         <span className="relative mt-2.5 inline-flex size-2.5 rounded-full border-2 border-background bg-primary" />
       </div>
-      <article className="flex items-center justify-between gap-3 rounded-md border border-border/80 bg-background px-3.5 py-3">
+      <article className="flex flex-1 items-center justify-between gap-3 rounded-md border border-border/80 bg-background px-3.5 py-3">
         <div>
           <p className="text-xs text-muted-foreground">
             {getReadinessHistoryDateLabel(item.computedAt)}
@@ -89,7 +89,7 @@ function HistoryRow({ item }: { item: ReadinessHistoryItem }) {
           className={cn(
             'inline-flex items-center justify-center rounded-full p-1.5',
             getReadinessTrend(item.improvementTrend) === 'UP'
-              ? 'text-emerald-600'
+              ? 'text-success'
               : getReadinessTrend(item.improvementTrend) === 'DOWN'
                 ? 'text-destructive'
                 : 'text-muted-foreground',
@@ -111,8 +111,8 @@ function ReadinessBody({ data }: { data: NonNullable<ReadinessPageProps['data']>
 
   return (
     <>
-      <div className="grid gap-5 xl:grid-cols-[minmax(0,2fr)_minmax(320px,1fr)]">
-        <Card className="gap-0 overflow-hidden py-0">
+      <div className="grid gap-5 xl:grid-cols-3">
+        <Card className="gap-0 overflow-hidden py-0 xl:col-span-2">
           <CardHeader className="border-b bg-card py-4">
             <p className="text-xs font-semibold uppercase text-muted-foreground">
               Current readiness
@@ -207,9 +207,9 @@ function ReadinessBody({ data }: { data: NonNullable<ReadinessPageProps['data']>
 function LoadingBody() {
   return (
     <PageBody className="space-y-5">
-      <div className="grid gap-5 xl:grid-cols-[minmax(0,2fr)_minmax(320px,1fr)]">
+      <div className="grid gap-5 xl:grid-cols-3">
         <Skeleton className="h-64 rounded-md" />
-        <Skeleton className="h-64 rounded-md" />
+        <Skeleton className="h-64 rounded-md xl:col-span-2" />
       </div>
       <Skeleton className="h-88 rounded-md" />
       <Skeleton className="h-88 rounded-md" />

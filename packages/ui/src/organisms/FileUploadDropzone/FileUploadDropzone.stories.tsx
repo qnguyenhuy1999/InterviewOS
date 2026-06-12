@@ -35,7 +35,7 @@ export const PrimaryAction: Story = {
 export const CompactDropzone: Story = {
   args: {
     contentClassName:
-      'relative flex min-h-[14rem] flex-col items-center justify-center gap-4 px-5 py-6 text-center',
+      'relative flex min-h-56 flex-col items-center justify-center gap-4 px-5 py-6 text-center',
     actionSize: 'sm',
     title: 'Organisms/Import notes',
     description: 'Bring in existing study notes to continue from where you left off.',

@@ -15,7 +15,7 @@ export const REVIEW_ITEM_TYPE_LABEL: Record<ReviewItemType, string> = {
 export const REVIEW_RATING_TONE: Record<ReviewRating, string> = {
   [ReviewRating.AGAIN]: 'border-destructive/30 bg-destructive/10 text-destructive',
   [ReviewRating.HARD]: 'border-warning/30 bg-warning-soft text-warning',
-  [ReviewRating.GOOD]: 'border-primary/20 bg-primary/10 text-primary',
+  [ReviewRating.GOOD]: 'border-primary/20 bg-accent-soft text-primary',
   [ReviewRating.EASY]: 'border-success/30 bg-success-soft text-success',
 }
 

@@ -62,7 +62,7 @@ export function getLearningPathStatusClassName(status: LearningPathItemStatus): 
     case LearningPathItemStatus.COMPLETED:
       return 'border-success/30 bg-success-soft text-success'
     case LearningPathItemStatus.IN_PROGRESS:
-      return 'border-primary/20 bg-primary/10 text-primary'
+      return 'border-primary/20 bg-accent-soft text-primary'
     case LearningPathItemStatus.SNOOZED:
     case LearningPathItemStatus.SKIPPED:
       return 'border-border bg-muted text-muted-foreground'

@@ -135,25 +135,25 @@ function SessionsTable({
       <Table>
         <TableHeader>
           <TableRow className="hover:bg-transparent">
-            <TableHead className="h-12 px-5 text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
+            <TableHead className="h-12 px-5 text-xs font-medium uppercase tracking-widest text-muted-foreground">
               Topic
             </TableHead>
-            <TableHead className="hidden h-12 px-5 text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground md:table-cell">
+            <TableHead className="hidden h-12 px-5 text-xs font-medium uppercase tracking-widest text-muted-foreground md:table-cell">
               Date
             </TableHead>
-            <TableHead className="hidden h-12 px-5 text-center text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground md:table-cell">
+            <TableHead className="hidden h-12 px-5 text-center text-xs font-medium uppercase tracking-widest text-muted-foreground md:table-cell">
               Score
             </TableHead>
-            <TableHead className="hidden h-12 px-5 text-center text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground lg:table-cell">
+            <TableHead className="hidden h-12 px-5 text-center text-xs font-medium uppercase tracking-widest text-muted-foreground lg:table-cell">
               Tech
             </TableHead>
-            <TableHead className="hidden h-12 px-5 text-center text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground lg:table-cell">
+            <TableHead className="hidden h-12 px-5 text-center text-xs font-medium uppercase tracking-widest text-muted-foreground lg:table-cell">
               English
             </TableHead>
-            <TableHead className="hidden h-12 px-5 text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground md:table-cell">
+            <TableHead className="hidden h-12 px-5 text-xs font-medium uppercase tracking-widest text-muted-foreground md:table-cell">
               Duration
             </TableHead>
-            <TableHead className="h-12 px-5 text-right text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
+            <TableHead className="h-12 px-5 text-right text-xs font-medium uppercase tracking-widest text-muted-foreground">
               <span className="sr-only">Actions</span>
             </TableHead>
           </TableRow>
@@ -257,7 +257,7 @@ function EmptyBody({ actions }: { actions: InterviewPageActions }) {
 function ErrorBody({ message, retryHref }: { message: string; retryHref?: string }) {
   return (
     <EmptyState
-      className="min-h-[60vh] border-destructive/20 bg-destructive/5"
+      className="min-h-128 border-destructive/20 bg-destructive/5"
       title={<span className="text-destructive">Failed to load interview sessions</span>}
       description={message}
       action={
@@ -289,7 +289,7 @@ function ReadyBody({
     <div className="space-y-6">
       <InterviewHighlights sessions={visibleSessions.length > 0 ? visibleSessions : sessions} />
       {onTopicChange ? (
-        <div className="rounded-md border border-border/80 bg-card p-4 shadow-[0_20px_60px_-46px_rgba(15,23,42,0.28)]">
+        <div className="rounded-md border border-border/80 bg-card p-4 shadow-sm">
           <TopicFilter
             sessions={sessions}
             selectedTopic={selectedTopic}

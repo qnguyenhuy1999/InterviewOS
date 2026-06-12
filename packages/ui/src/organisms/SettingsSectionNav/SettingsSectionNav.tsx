@@ -31,7 +31,7 @@ function SettingsSectionNav({
               'flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-left text-sm transition-colors',
               isActive
                 ? 'bg-primary font-medium text-muted'
-                : 'text-muted-foreground hover:bg-muted/70 hover:text-foreground',
+                : 'text-muted-foreground hover:bg-muted hover:text-foreground',
             )}
           >
             <Icon className="size-4 shrink-0" />

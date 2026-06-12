@@ -38,7 +38,7 @@ function SessionMeta({ session }: { session: SessionPageSession }) {
         {session.isCurrent ? (
           <Badge
             variant="secondary"
-            className="rounded-full bg-emerald-500/12 px-3 py-1 text-emerald-700"
+            className="rounded-md bg-success-soft px-3 py-1 text-success"
           >
             This device
           </Badge>
@@ -65,7 +65,7 @@ function SessionRow({
   const isRevoking = revokingSessionId === session.id
 
   return (
-    <div className="flex flex-col gap-4 rounded-md border border-transparent px-3 py-4 transition-colors hover:border-primary/15 hover:bg-primary/3 md:flex-row md:items-center md:justify-between">
+    <div className="flex flex-col gap-4 rounded-md border border-transparent px-3 py-4 transition-colors hover:border-primary/20 hover:bg-accent-soft md:flex-row md:items-center md:justify-between">
       <div className="flex min-w-0 items-start gap-4">
         <SessionIcon session={session} />
         <SessionMeta session={session} />
@@ -131,13 +131,15 @@ function SessionsCard({
   sessions,
   revokingSessionId,
   onRevokeSession,
+  className,
 }: {
   sessions: SessionPageSession[]
   revokingSessionId?: string | null
   onRevokeSession?: (sessionId: string) => void
+  className?: string
 }) {
   return (
-    <Card className="gap-0 overflow-hidden py-0">
+    <Card className={`gap-0 overflow-hidden py-0 ${className ?? ''}`}>
       <CardHeader className="border-b py-4">
         <CardTitle className="text-xl font-semibold">Signed-in devices</CardTitle>
       </CardHeader>
@@ -202,7 +204,7 @@ function EmptyBody() {
 function ErrorBody({ message }: { message: string }) {
   return (
     <EmptyState
-      className="min-h-[60vh] border-destructive/20 bg-destructive/5"
+      className="min-h-128 border-destructive/20 bg-destructive/5"
       title={<span className="text-destructive">Failed to load active sessions</span>}
       description={message}
       action={<Button variant="destructive">Retry</Button>}
@@ -223,18 +225,19 @@ function ReadyBody({
     <div className="space-y-6">
       <SessionHighlights sessions={sessions} />
 
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1.7fr)_minmax(300px,0.9fr)]">
+      <div className="grid gap-6 xl:grid-cols-3">
         <SessionsCard
           sessions={sessions}
           revokingSessionId={revokingSessionId}
           onRevokeSession={onRevokeSession}
+          className="xl:col-span-2"
         />
         <Card className="gap-0 overflow-hidden py-0">
           <CardHeader className="border-b py-4">
             <CardTitle className="text-xl font-semibold">Security tips</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4 py-4 text-sm leading-6 text-muted-foreground">
-            <div className="rounded-md border border-primary/10 bg-primary/5 px-4 py-3 text-foreground">
+            <div className="rounded-md border border-primary/20 bg-accent-soft px-4 py-3 text-foreground">
               Review devices after interviews on shared computers or borrowed phones.
             </div>
             <p>

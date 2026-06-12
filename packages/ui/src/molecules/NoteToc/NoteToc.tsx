@@ -25,10 +25,10 @@ function NoteToc({ items, activeId, onNavigate, className }: NoteTocProps) {
             onClick={() => onNavigate?.(item.id)}
             aria-current={isActive ? 'location' : undefined}
             className={cn(
-              'flex w-full items-center gap-3 rounded-2xl px-3 py-2 text-left text-sm transition-colors',
+              'flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm transition-colors',
               isActive
-                ? 'bg-foreground text-background shadow-[0_12px_32px_-22px_color-mix(in_oklch,var(--foreground),transparent_30%)]'
-                : 'text-muted-foreground hover:bg-foreground/4 hover:text-foreground',
+                ? 'bg-foreground text-background shadow-sm'
+                : 'text-muted-foreground hover:bg-muted hover:text-foreground',
             )}
           >
             <span

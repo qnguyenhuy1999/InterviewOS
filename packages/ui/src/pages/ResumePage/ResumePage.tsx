@@ -53,7 +53,7 @@ function AnalysisRow({ item }: { item: ResumeAnalysisAttribute }) {
 
 function TopicRow({ item }: { item: ResumeSuggestedTopic }) {
   return (
-    <div className="flex items-center justify-between gap-3 rounded-md border border-border/80 bg-background px-4 py-4 shadow-[0_16px_40px_-34px_rgba(15,23,42,0.35)]">
+    <div className="flex items-center justify-between gap-3 rounded-md border border-border/80 bg-background px-4 py-4 shadow-sm">
       <p className="text-base font-medium">{item.title}</p>
       <Button variant="outline" size="sm" className="shrink-0 rounded-full">
         {item.actionLabel}
@@ -88,11 +88,11 @@ function ResumeHighlights({ data = resumePageFixture }: { data?: ResumePageProps
       {summaryItems.map((item) => (
         <Card
           key={item.label}
-          className="gap-3 border border-border/80 bg-accent-soft py-4 shadow-[0_18px_50px_-38px_color-mix(in_oklch,var(--primary),transparent_45%)]"
+          className="gap-3 border border-border/80 bg-accent-soft py-4 shadow-elevated"
           size="sm"
         >
           <CardHeader className="gap-2">
-            <CardDescription className="text-xs font-semibold uppercase tracking-[0.16em]">
+            <CardDescription className="text-xs font-semibold uppercase tracking-widest">
               {item.label}
             </CardDescription>
             <CardTitle className="font-heading text-3xl font-semibold tracking-tight">
@@ -343,7 +343,7 @@ function EmptyBody({
 function ErrorBody({ message }: { message: string }) {
   return (
     <EmptyState
-      className="min-h-[60vh] border-destructive/20 bg-destructive/5"
+      className="min-h-128 border-destructive/20 bg-destructive/5"
       title={<span className="text-destructive">Failed to load resume workspace</span>}
       description={message}
       action={<Button variant="destructive">Retry</Button>}

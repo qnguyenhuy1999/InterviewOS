@@ -1,5 +1,5 @@
 export const READINESS_TREND_TONE = {
-  UP: 'border-emerald-500/20 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300',
+  UP: 'border-success/30 bg-success-soft text-success',
   DOWN: 'border-destructive/20 bg-destructive/10 text-destructive',
   STABLE: 'border-border bg-muted text-muted-foreground',
 } as const

@@ -49,14 +49,15 @@ function MultiTurnBody({
   const maxTurns = session.maxTurns ?? 0
 
   return (
-    <div className="grid gap-6 xl:grid-cols-[minmax(0,1.7fr)_320px]">
+    <div className="grid gap-6 xl:grid-cols-3">
       <SectionCard
         title="Interview room"
         description={getInterviewSessionHeaderDescription(session)}
+        className="xl:col-span-2"
       >
         <div className="space-y-4">
           {session.summary?.headline ? (
-            <div className="rounded-md border border-border/80 bg-background/60 p-4">
+            <div className="rounded-md border border-border/80 bg-background p-4">
               <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                 Session summary
               </p>
@@ -64,7 +65,7 @@ function MultiTurnBody({
             </div>
           ) : null}
 
-          <div className="rounded-md border border-border/80 bg-background/60 p-4">
+          <div className="rounded-md border border-border/80 bg-background p-4">
             {renderMultiTurnForm?.({ sessionId: session.id, turns, isComplete }) ?? (
               <p className="text-sm text-muted-foreground">
                 Connect a multi-turn response form to continue this interview.
@@ -201,8 +202,8 @@ function SingleTurnBody({
 function LoadingBody() {
   return (
     <div className="space-y-6">
-      <div className="grid gap-4 xl:grid-cols-[minmax(0,1.7fr)_320px]">
-        <Skeleton className="h-72 rounded-md" />
+      <div className="grid gap-4 xl:grid-cols-3">
+        <Skeleton className="h-72 rounded-md xl:col-span-2" />
         <div className="space-y-4">
           <Skeleton className="h-40 rounded-md" />
           <Skeleton className="h-40 rounded-md" />
@@ -216,7 +217,7 @@ function LoadingBody() {
 function ErrorBody({ message, retryHref }: { message: string; retryHref?: string }) {
   return (
     <EmptyState
-      className="min-h-[60vh] border-destructive/20 bg-destructive/5"
+      className="min-h-128 border-destructive/20 bg-destructive/5"
       title={<span className="text-destructive">{INTERVIEW_SESSION_PAGE_ERROR_TITLE}</span>}
       description={message}
       action={

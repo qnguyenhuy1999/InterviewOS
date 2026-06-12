@@ -52,7 +52,7 @@ import {
 
 function RelatedNoteRow({ note }: { note: TechnicalNoteSummary }) {
   return (
-    <div className="flex items-start justify-between gap-4 rounded-[1.35rem] border border-border/70 bg-surface-elevated px-4 py-4 shadow-[0_18px_45px_-42px_color-mix(in_oklch,var(--foreground),transparent_42%)] transition-transform duration-200 hover:-translate-y-0.5">
+    <div className="flex items-start justify-between gap-4 rounded-xl border border-border/70 bg-surface-elevated px-4 py-4 shadow-sm transition-transform duration-200 hover:-translate-y-0.5 hover:shadow-elevated">
       <div className="min-w-0">
         <p className="text-pretty text-sm leading-6 font-medium text-foreground">{note.title}</p>
         <p className="mt-1 break-words text-sm text-muted-foreground">
@@ -76,9 +76,9 @@ function ConceptGrid({ items }: { items: string[] }) {
       {items.map((item, index) => (
         <div
           key={item}
-          className="rounded-[1.35rem] border border-border/70 bg-muted/40 px-4 py-4 shadow-[0_18px_45px_-40px_color-mix(in_oklch,var(--foreground),transparent_40%)]"
+          className="rounded-xl border border-border/70 bg-muted px-4 py-4 shadow-sm"
         >
-          <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+          <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
             Concept {index + 1}
           </p>
           <p className="mt-2 text-sm leading-6 text-foreground">{item}</p>
@@ -90,7 +90,7 @@ function ConceptGrid({ items }: { items: string[] }) {
 
 function MentalModelCard({ content }: { content: string }) {
   return (
-    <div className="rounded-[1.5rem] border border-primary/10 bg-accent-soft px-5 py-5 shadow-[0_22px_64px_-54px_color-mix(in_oklch,var(--primary),transparent_35%)] md:px-6">
+    <div className="rounded-xl border border-primary/20 bg-accent-soft px-5 py-5 shadow-elevated md:px-6">
       <p className="text-base leading-8 text-foreground">{content}</p>
     </div>
   )
@@ -113,7 +113,7 @@ function StudyContext({ data }: { data: TechnicalNoteDetailView }) {
 
           {data.note.overrideGoals.length > 0 ? (
             <div>
-              <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+              <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
                 Goals
               </p>
               <TagList
@@ -126,7 +126,7 @@ function StudyContext({ data }: { data: TechnicalNoteDetailView }) {
 
           {data.note.overrideStack.length > 0 ? (
             <div>
-              <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+              <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
                 Stack
               </p>
               <TagList
@@ -185,7 +185,7 @@ function PracticeQuestions({
         </div>
       ) : (
         <EmptyState
-          className="border-dashed min-h-48 bg-background/70"
+          className="border-dashed min-h-48 bg-background"
           icon={FileQuestionIcon}
           title="No generated questions yet"
           description="Generate a question set when the note is ready for rehearsal."
@@ -211,7 +211,7 @@ function RelatedNotes({ data }: { data: TechnicalNoteDetailView }) {
         </div>
       ) : (
         <EmptyState
-          className="border-dashed min-h-48 bg-background/70"
+          className="border-dashed min-h-48 bg-background"
           title="No related notes yet"
           description="As your notebook grows, supporting topics will show up here."
         />
@@ -229,7 +229,7 @@ function StructuredContentEmpty() {
       tone="muted"
     >
       <EmptyState
-        className="border-dashed min-h-72 bg-background/70"
+        className="border-dashed min-h-72 bg-background"
         icon={SparklesIcon}
         title="No structured content yet"
         description="This note is still a draft. Generate the AI structure to unlock article sections, interview answer, and practice prompts."
@@ -368,24 +368,24 @@ function NotebookDetailBody({
         }
       />
 
-      <div className="grid gap-7 xl:grid-cols-[minmax(0,1fr)_19rem] xl:items-start">
-        <article ref={articleRef} className="min-w-0 space-y-7 md:space-y-8">
+      <div className="grid gap-7 xl:grid-cols-4 xl:items-start">
+        <article ref={articleRef} className="min-w-0 space-y-7 md:space-y-8 xl:col-span-3">
           {data.note.structuredContent ? (
             <>
-              <div className="sticky top-2 z-10 -mx-1 rounded-full px-1 py-2 backdrop-blur-sm xl:hidden">
-                <div className="rounded-full border border-border/70 bg-background/88 px-3 py-2 shadow-[0_14px_34px_-26px_color-mix(in_oklch,var(--foreground),transparent_40%)]">
+              <div className="sticky top-2 z-10 -mx-1 rounded-xl px-1 py-2 backdrop-blur-sm xl:hidden">
+                <div className="rounded-xl border border-border/70 bg-background px-3 py-2 shadow-elevated">
                   <div className="flex items-center justify-between gap-3">
                     <p className="text-xs font-medium text-muted-foreground">
                       {Math.round(progress)}% completed
                     </p>
                     <Sheet>
                       <SheetTrigger asChild>
-                        <Button variant="outline" size="sm" className="rounded-full">
+                        <Button variant="outline" size="sm" className="rounded-lg">
                           <MenuIcon />
                           On this page
                         </Button>
                       </SheetTrigger>
-                      <SheetContent side="bottom" className="rounded-t-[1.75rem]">
+                      <SheetContent side="bottom" className="rounded-t-xl">
                         <SheetHeader>
                           <SheetTitle>On this page</SheetTitle>
                           <SheetDescription>
@@ -501,12 +501,12 @@ function NotebookDetailBody({
           mobileTocAction={
             <Sheet>
               <SheetTrigger asChild>
-                <Button variant="outline" size="sm" className="rounded-full">
+                <Button variant="outline" size="sm" className="rounded-lg">
                   <MenuIcon />
                   Open TOC
                 </Button>
               </SheetTrigger>
-              <SheetContent side="bottom" className="rounded-t-[1.75rem]">
+              <SheetContent side="bottom" className="rounded-t-xl">
                 <SheetHeader>
                   <SheetTitle>On this page</SheetTitle>
                   <SheetDescription>Jump to any section in the article.</SheetDescription>
@@ -526,7 +526,7 @@ function NotebookDetailBody({
 function LoadingBody() {
   return (
     <div className="space-y-6 md:space-y-8">
-      <div className="overflow-hidden rounded-[2rem] border border-border/70 bg-surface-elevated px-6 py-7">
+      <div className="overflow-hidden rounded-xl border border-border/70 bg-surface-elevated px-6 py-7">
         <Skeleton className="w-32 h-4 rounded-full" />
         <Skeleton className="w-full h-12 max-w-3xl mt-5 rounded-2xl" />
         <Skeleton className="w-full h-5 max-w-2xl mt-4 rounded-full" />
@@ -538,13 +538,13 @@ function LoadingBody() {
         </div>
       </div>
 
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_20rem]">
+      <div className="grid gap-6 xl:grid-cols-4">
         <div className="space-y-6">
-          <Skeleton className="h-56 rounded-[1.75rem]" />
-          <Skeleton className="h-48 rounded-[1.5rem]" />
-          <Skeleton className="h-72 rounded-[1.5rem]" />
+          <Skeleton className="h-56 rounded-xl" />
+          <Skeleton className="h-48 rounded-xl" />
+          <Skeleton className="h-72 rounded-xl" />
         </div>
-        <Skeleton className="h-72 rounded-[1.5rem]" />
+        <Skeleton className="h-72 rounded-xl xl:col-span-3" />
       </div>
     </div>
   )
@@ -553,11 +553,11 @@ function LoadingBody() {
 function EmptyBody() {
   return (
     <EmptyState
-      className="min-h-96 rounded-[2rem]"
+      className="min-h-96 rounded-xl"
       icon={BookOpenTextIcon}
       title="No note selected"
       description="Choose a notebook entry to open the learning article, practice questions, and study context."
-      action={<Button className="px-4 rounded-full">Back to notebook</Button>}
+      action={<Button className="rounded-lg px-4">Back to notebook</Button>}
     />
   )
 }
@@ -565,11 +565,11 @@ function EmptyBody() {
 function ErrorBody({ message }: { message: string }) {
   return (
     <EmptyState
-      className="min-h-[60vh] rounded-[2rem] border-destructive/20 bg-destructive/5"
+      className="min-h-128 rounded-xl border-destructive/20 bg-destructive/5"
       title={<span className="text-destructive">Failed to load notebook detail</span>}
       description={message}
       action={
-        <Button variant="destructive" className="px-4 rounded-full">
+        <Button variant="destructive" className="rounded-lg px-4">
           Retry
         </Button>
       }
@@ -587,7 +587,7 @@ function Root({
       type="button"
       variant="ghost"
       size="sm"
-      className="rounded-full px-3 text-muted-foreground hover:text-foreground"
+      className="rounded-lg px-3 text-muted-foreground hover:text-foreground"
     >
       <ArrowLeftIcon />
       Back to notebook

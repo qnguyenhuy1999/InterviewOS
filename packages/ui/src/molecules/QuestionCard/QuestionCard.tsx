@@ -14,12 +14,12 @@ type QuestionCardProps = {
 
 function QuestionCard({ title, description, difficulty, badges = [], footer, action }: QuestionCardProps) {
   return (
-    <div className="overflow-hidden rounded-[1.35rem] border border-border/70 bg-background px-4 py-4 shadow-[0_18px_45px_-42px_color-mix(in_oklch,var(--foreground),transparent_42%)]">
+    <div className="overflow-hidden rounded-xl border border-border/70 bg-background px-4 py-4 shadow-sm">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0 space-y-2">
-          <p className="text-pretty text-[0.98rem] leading-6 font-medium text-foreground">{title}</p>
+          <p className="text-pretty text-base leading-6 font-medium text-foreground">{title}</p>
           {description ? (
-            <p className="max-w-[65ch] break-words text-sm leading-6 text-muted-foreground">
+            <p className="max-w-prose break-words text-sm leading-6 text-muted-foreground">
               {description}
             </p>
           ) : null}

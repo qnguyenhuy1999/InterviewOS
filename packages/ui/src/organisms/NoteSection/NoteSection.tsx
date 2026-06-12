@@ -18,13 +18,13 @@ type NoteSectionProps = {
 
 const toneClassName = {
   default:
-    'rounded-[1.6rem] border border-border/70 bg-background/92 px-5 py-5 shadow-[0_20px_48px_-44px_color-mix(in_oklch,var(--foreground),transparent_40%)] md:px-6 md:py-6',
+    'rounded-xl border border-border/70 bg-background px-5 py-5 shadow-elevated md:px-6 md:py-6',
   warning:
-    'rounded-[1.6rem] border border-warning/25 bg-warning-soft px-5 py-5 md:px-6 md:py-6',
+    'rounded-xl border border-warning/30 bg-warning-soft px-5 py-5 md:px-6 md:py-6',
   accent:
-    'rounded-[1.6rem] border border-primary/12 bg-accent-soft px-5 py-5 md:px-6 md:py-6',
+    'rounded-xl border border-primary/20 bg-accent-soft px-5 py-5 md:px-6 md:py-6',
   muted:
-    'rounded-[1.6rem] border border-border/70 bg-muted/45 px-5 py-5 md:px-6 md:py-6',
+    'rounded-xl border border-border/70 bg-muted px-5 py-5 md:px-6 md:py-6',
 } as const
 
 function NoteSection({
@@ -47,11 +47,11 @@ function NoteSection({
     >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 space-y-2">
-          <h2 className="text-[1.35rem] leading-tight font-semibold tracking-[-0.02em] text-foreground md:text-[1.45rem]">
+          <h2 className="font-heading text-xl leading-tight font-semibold tracking-tight text-foreground md:text-2xl">
             {title}
           </h2>
           {description ? (
-            <p className="max-w-[62ch] text-pretty text-sm leading-6 text-muted-foreground">
+            <p className="max-w-prose text-pretty text-sm leading-6 text-muted-foreground">
               {description}
             </p>
           ) : null}

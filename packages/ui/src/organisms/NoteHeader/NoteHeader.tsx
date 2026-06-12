@@ -28,7 +28,7 @@ function NoteHeader({
   return (
     <header
       className={cn(
-        'relative overflow-hidden rounded-lg border border-border/70 bg-surface-elevated px-5 py-5 shadow-[0_32px_90px_-64px_color-mix(in_oklch,var(--foreground),transparent_50%)] md:px-8 md:py-7',
+        'relative overflow-hidden rounded-xl border border-border/70 bg-surface-elevated px-5 py-5 shadow-elevated md:px-8 md:py-7',
         className,
       )}
     >
@@ -47,12 +47,12 @@ function NoteHeader({
         <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
           <div className="min-w-0 space-y-3">
             {eyebrow ? (
-              <div className="flex flex-wrap items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+              <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
                 {eyebrow}
               </div>
             ) : null}
             <h1
-              className="text-balance text-3xl leading-[1.08] font-semibold tracking-[-0.03em] text-foreground md:text-[2.4rem]"
+              className="text-balance font-heading text-3xl leading-tight font-semibold tracking-tight text-foreground md:text-4xl"
               title={title?.toString()}
             >
               {title}
@@ -76,7 +76,7 @@ function NoteHeaderBadge({ children, className, ...props }: React.ComponentProps
     <Badge
       variant="outline"
       className={cn(
-        'rounded-full border-white/70 bg-white/72 px-3 py-1 text-[11px] font-medium tracking-[0.01em] text-foreground/78 backdrop-blur-sm whitespace-normal break-words',
+        'rounded-md border-border/70 bg-background px-3 py-1 text-xs font-medium text-foreground whitespace-normal break-words',
         className,
       )}
       {...props}

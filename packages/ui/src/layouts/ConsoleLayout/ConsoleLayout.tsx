@@ -82,7 +82,7 @@ function HeaderSearch({ placeholder }: { placeholder: string }) {
   return (
     <div className="relative w-full max-w-xl">
       <SearchIcon className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
-      <Input className="h-9 rounded-xl pl-9 pr-12 text-sm" placeholder={placeholder} />
+      <Input className="h-9 rounded-lg pl-9 pr-12 text-sm" placeholder={placeholder} />
       <div className="pointer-events-none absolute top-1/2 right-3 hidden -translate-y-1/2 sm:block">
         <Kbd>{`Ctrl ${CONSOLE_LAYOUT_SEARCH_SHORTCUT}`}</Kbd>
       </div>
@@ -125,7 +125,7 @@ function Root({
         </Sidebar>
 
         <SidebarInset className="min-h-screen bg-transparent">
-          <header className="sticky top-0 z-20 border-b bg-background/88 backdrop-blur-xl">
+          <header className="sticky top-0 z-20 border-b bg-background backdrop-blur-xl">
             <div className="mx-auto flex min-h-16 w-full max-w-384 flex-col gap-2.5 px-4 py-2.5 md:flex-row md:items-center md:px-6">
               <div className="flex min-w-0 items-center gap-2.5">
                 <SidebarTrigger />
@@ -134,7 +134,7 @@ function Root({
               </div>
               <div className="order-2 flex items-center gap-2 md:order-3">
                 {headerActions}
-                <Button variant="ghost" size="icon-sm" className="rounded-full">
+                <Button variant="ghost" size="icon-sm" className="rounded-lg">
                   <BellIcon />
                   <span className="sr-only">Notifications</span>
                 </Button>

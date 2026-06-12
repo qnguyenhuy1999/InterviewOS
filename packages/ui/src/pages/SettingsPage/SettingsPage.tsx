@@ -62,7 +62,7 @@ function FieldControl({ field }: { field: SettingsFieldView }) {
         value={field.value}
         onChange={() => {}}
         type={field.inputType}
-        className="h-11 rounded-xl bg-card px-4 text-base shadow-xs"
+        className="h-11 rounded-lg bg-card px-4 text-base shadow-xs"
       />
     )
   }
@@ -70,7 +70,7 @@ function FieldControl({ field }: { field: SettingsFieldView }) {
   if (field.kind === 'select') {
     return (
       <Select value={field.value} onValueChange={() => {}}>
-        <SelectTrigger className="h-11 w-full rounded-xl bg-card px-4 text-left text-base shadow-xs">
+        <SelectTrigger className="h-11 w-full rounded-lg bg-card px-4 text-left text-base shadow-xs">
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
@@ -111,14 +111,18 @@ function SectionFieldRow({ field }: { field: SettingsFieldView }) {
   return (
     <div
       className={cn(
-        'grid gap-4 py-5 md:grid-cols-[240px_minmax(0,1fr)] md:gap-6',
-        isToggle && 'md:grid-cols-[240px_auto]',
+        'grid gap-4 py-5 md:grid-cols-3 md:gap-6',
         (isValue || isActions) && 'md:items-center',
       )}
     >
       <FieldLabel label={field.label} description={field.description} />
       <div
-        className={cn('min-w-0', isToggle && 'flex items-start', isActions && 'justify-self-start')}
+        className={cn(
+          'min-w-0',
+          !isToggle && !isActions && 'md:col-span-2',
+          isToggle && 'flex items-start',
+          isActions && 'justify-self-start',
+        )}
       >
         <FieldControl field={field} />
       </div>
@@ -234,9 +238,9 @@ function SettingsBody({
     <div className="space-y-6">
       <SettingsHighlights data={data} activeSection={activeSection} />
 
-      <div className="grid gap-6 xl:grid-cols-[320px_minmax(0,1fr)] xl:items-start">
+      <div className="grid gap-6 xl:grid-cols-4 xl:items-start">
         <div className="space-y-4 xl:sticky xl:top-24">
-          <div className="rounded-md border border-primary/15 p-5">
+          <div className="rounded-md border border-primary/20 bg-accent-soft p-5">
             <p className="text-xs font-semibold uppercase text-primary/80">Active section</p>
             <p className="mt-3 font-heading text-2xl font-semibold tracking-tight">
               {activeSection.title}
@@ -255,7 +259,9 @@ function SettingsBody({
           </div>
         </div>
 
-        <SectionCard section={activeSection} />
+        <div className="xl:col-span-3">
+          <SectionCard section={activeSection} />
+        </div>
       </div>
     </div>
   )
@@ -263,13 +269,13 @@ function SettingsBody({
 
 function LoadingBody() {
   return (
-    <div className="grid gap-6 xl:grid-cols-[280px_minmax(0,1fr)] xl:items-start">
+    <div className="grid gap-6 xl:grid-cols-4 xl:items-start">
       <div className="space-y-2">
         {Array.from({ length: 6 }).map((_, index) => (
           <Skeleton key={index} className="h-12 w-full rounded-xl" />
         ))}
       </div>
-      <Card className="min-h-96 items-center justify-center rounded-md">
+      <Card className="min-h-96 items-center justify-center rounded-md xl:col-span-3">
         <Spinner className="size-7" />
       </Card>
     </div>
@@ -279,7 +285,7 @@ function LoadingBody() {
 function ErrorBody({ message }: { message: string }) {
   return (
     <EmptyState
-      className="min-h-[60vh] border-destructive/20 bg-destructive/5"
+      className="min-h-128 border-destructive/20 bg-destructive/5"
       title={<span className="text-destructive">Failed to load settings</span>}
       description={message}
       action={<Button variant="destructive">Retry</Button>}

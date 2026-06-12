@@ -37,7 +37,7 @@ function Field({
     <div className="space-y-2">
       <p className="text-sm font-medium">{label}</p>
       <div className="flex items-center gap-2.5">
-        <Input value={value} readOnly className="h-9 rounded-xl px-3 text-sm" />
+        <Input value={value} readOnly className="h-9 rounded-lg px-3 text-sm" />
         {trailing}
       </div>
     </div>
@@ -57,7 +57,7 @@ function SelectField({
     <div className="space-y-2">
       <p className="text-sm font-medium">{label}</p>
       <Select value={value}>
-        <SelectTrigger className="h-9 w-full rounded-xl px-3 text-left text-sm">
+        <SelectTrigger className="h-9 w-full rounded-lg px-3 text-left text-sm">
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
@@ -84,7 +84,7 @@ function TagField({
   return (
     <div className="space-y-2">
       <p className="text-sm font-medium">{label}</p>
-      <div className="flex min-h-10 flex-wrap items-center gap-1.5 rounded-xl border border-input bg-background px-3 py-2">
+      <div className="flex min-h-10 flex-wrap items-center gap-1.5 rounded-lg border border-input bg-background px-3 py-2">
         <TagList
           items={items}
           trailing={<span className="text-xs text-muted-foreground">{inputPlaceholder}</span>}
@@ -108,8 +108,8 @@ function ResumeUploadCard({
       title={title}
       description={description}
       actionLabel={ctaLabel}
-      className="border-dashed bg-muted/20 py-0"
-      contentClassName="flex min-h-[18rem] flex-col items-center justify-center gap-4 p-5 text-center"
+      className="border-dashed bg-muted py-0"
+      contentClassName="flex min-h-72 flex-col items-center justify-center gap-4 p-5 text-center"
     />
   )
 }
@@ -205,7 +205,7 @@ function ProfileBody({ profile }: { profile: NonNullable<ProfilePageProps['profi
   const verifiedBadge = (
     <Badge
       variant="outline"
-      className={`h-9 rounded-xl px-3 text-sm ${getProfileVerifiedBadgeClassName(
+      className={`h-9 rounded-lg px-3 text-sm ${getProfileVerifiedBadgeClassName(
         profile.account.isEmailVerified,
       )}`}
     >
@@ -275,7 +275,7 @@ function ProfileBody({ profile }: { profile: NonNullable<ProfilePageProps['profi
         description={profile.resume.description}
         className="py-0"
       >
-        <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_minmax(320px,0.98fr)]">
+        <div className="grid gap-5 xl:grid-cols-2">
           <ResumeUploadCard
             title={profile.resume.upload.dropzoneTitle}
             description={getProfileAcceptedFileLabel(
@@ -288,7 +288,7 @@ function ProfileBody({ profile }: { profile: NonNullable<ProfilePageProps['profi
             <ResumeInsightCard insight={profile.resume.latest} />
           ) : (
             <EmptyState
-              className="min-h-88 rounded-md border border-dashed bg-muted/20"
+              className="min-h-88 rounded-md border border-dashed bg-muted"
               icon={FileTextIcon}
               title="No resume analysis yet"
               description={profile.resume.description}
@@ -305,7 +305,7 @@ function LoadingBody() {
     <div className="space-y-5">
       <Skeleton className="h-36 rounded-md" />
       <Skeleton className="h-72 rounded-md" />
-      <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_minmax(320px,0.98fr)]">
+      <div className="grid gap-5 xl:grid-cols-2">
         <Skeleton className="h-96 rounded-md" />
         <Skeleton className="h-96 rounded-md" />
       </div>
@@ -327,7 +327,7 @@ function EmptyBody() {
 function ErrorBody({ message }: { message: string }) {
   return (
     <EmptyState
-      className="min-h-[60vh] border-destructive/20 bg-destructive/5"
+      className="min-h-128 border-destructive/20 bg-destructive/5"
       title={<span className="text-destructive">Failed to load profile</span>}
       description={message}
       action={<Button variant="destructive">Retry</Button>}
