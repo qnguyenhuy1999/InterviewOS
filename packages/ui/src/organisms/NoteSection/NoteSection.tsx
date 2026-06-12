@@ -17,13 +17,14 @@ type NoteSectionProps = {
 }
 
 const toneClassName = {
-  default: 'bg-transparent',
+  default:
+    'rounded-[1.6rem] border border-border/70 bg-background/92 px-5 py-5 shadow-[0_20px_48px_-44px_color-mix(in_oklch,var(--foreground),transparent_40%)] md:px-6 md:py-6',
   warning:
-    'rounded-[1.5rem] border border-warning/25 bg-warning-soft p-5 md:p-6',
+    'rounded-[1.6rem] border border-warning/25 bg-warning-soft px-5 py-5 md:px-6 md:py-6',
   accent:
-    'rounded-[1.5rem] border border-primary/12 bg-accent-soft p-5 md:p-6',
+    'rounded-[1.6rem] border border-primary/12 bg-accent-soft px-5 py-5 md:px-6 md:py-6',
   muted:
-    'rounded-[1.5rem] border border-border/70 bg-muted/50 p-5 md:p-6',
+    'rounded-[1.6rem] border border-border/70 bg-muted/45 px-5 py-5 md:px-6 md:py-6',
 } as const
 
 function NoteSection({
@@ -36,17 +37,23 @@ function NoteSection({
   children,
   className,
 }: NoteSectionProps) {
-  const sectionBody = <div className="mt-5">{children}</div>
+  const sectionBody = <div className="mt-5 min-w-0">{children}</div>
 
   return (
-    <section id={id} data-note-section className={cn('scroll-mt-24', toneClassName[tone], className)}>
+    <section
+      id={id}
+      data-note-section
+      className={cn('scroll-mt-24 min-w-0 overflow-hidden', toneClassName[tone], className)}
+    >
       <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <h2 className="text-[1.45rem] leading-tight font-semibold tracking-[-0.02em] text-foreground">
+        <div className="min-w-0 space-y-2">
+          <h2 className="text-[1.35rem] leading-tight font-semibold tracking-[-0.02em] text-foreground md:text-[1.45rem]">
             {title}
           </h2>
           {description ? (
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">{description}</p>
+            <p className="max-w-[62ch] text-pretty text-sm leading-6 text-muted-foreground">
+              {description}
+            </p>
           ) : null}
         </div>
 

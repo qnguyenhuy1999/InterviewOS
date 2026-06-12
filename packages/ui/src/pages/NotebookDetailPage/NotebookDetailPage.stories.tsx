@@ -1,6 +1,8 @@
 import { NoteStatus } from '@interviewos/types'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { ArrowLeftIcon } from 'lucide-react'
 
+import { Button } from '../../../components/ui/button'
 import ConsoleLayout from '../../layouts/ConsoleLayout/ConsoleLayout'
 import NotebookDetailPage from './NotebookDetailPage'
 import { notebookDetailFixture } from './NotebookDetailPage.fixtures'
@@ -23,6 +25,17 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const HappyPath: Story = {}
+
+export const WithBackAction: Story = {
+  args: {
+    backAction: (
+      <Button variant="ghost" size="sm" className="rounded-full px-3 text-muted-foreground">
+        <ArrowLeftIcon />
+        Back to notebook
+      </Button>
+    ),
+  },
+}
 
 export const DraftNote: Story = {
   args: {

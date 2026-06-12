@@ -6,6 +6,7 @@ export type NotebookDetailPageProps = {
   loading?: boolean
   empty?: boolean
   error?: string
+  backAction?: ReactNode
   renderHeaderActions?: (note: TechnicalNote) => ReactNode
   renderQuestionActions?: (questionId: string) => ReactNode
 }

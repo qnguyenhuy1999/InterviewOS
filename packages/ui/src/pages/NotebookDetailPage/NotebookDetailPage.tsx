@@ -1,7 +1,13 @@
 'use client'
 
 import type { TechnicalNoteDetailView, TechnicalNoteSummary } from '@interviewos/types'
-import { BookOpenTextIcon, FileQuestionIcon, MenuIcon, SparklesIcon } from 'lucide-react'
+import {
+  ArrowLeftIcon,
+  BookOpenTextIcon,
+  FileQuestionIcon,
+  MenuIcon,
+  SparklesIcon,
+} from 'lucide-react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 
@@ -46,10 +52,10 @@ import {
 
 function RelatedNoteRow({ note }: { note: TechnicalNoteSummary }) {
   return (
-    <div className="flex items-start justify-between gap-4 rounded-[1.35rem] border border-border/70 bg-surface-elevated px-4 py-4 transition-transform duration-200 hover:-translate-y-0.5">
+    <div className="flex items-start justify-between gap-4 rounded-[1.35rem] border border-border/70 bg-surface-elevated px-4 py-4 shadow-[0_18px_45px_-42px_color-mix(in_oklch,var(--foreground),transparent_42%)] transition-transform duration-200 hover:-translate-y-0.5">
       <div className="min-w-0">
-        <p className="text-sm font-medium truncate text-foreground">{note.title}</p>
-        <p className="mt-1 text-sm text-muted-foreground">
+        <p className="text-pretty text-sm leading-6 font-medium text-foreground">{note.title}</p>
+        <p className="mt-1 break-words text-sm text-muted-foreground">
           {note.topic?.trim() || 'Uncategorized'} · {getEnumLabel(note.type)}
         </p>
       </div>
@@ -94,12 +100,13 @@ function StudyContext({ data }: { data: TechnicalNoteDetailView }) {
   const interviewTargets = getNotebookDetailInterviewTargets(data.note)
 
   return (
-    <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+    <div className="flex flex-col gap-7 md:gap-9">
       <NoteSection
         id="study-context"
         title="Interview targeting"
         description="The audience and constraints that shaped this note."
         tone="muted"
+        className="order-2"
       >
         <div className="space-y-5">
           <DefinitionList items={interviewTargets} />
@@ -138,8 +145,9 @@ function StudyContext({ data }: { data: TechnicalNoteDetailView }) {
         title="Source note"
         description="The original raw capture before it was shaped into a study article."
         tone="muted"
+        className="order-1"
       >
-        <article className="prose prose-neutral max-w-none dark:prose-invert">
+        <article className="prose prose-neutral max-w-none break-words prose-p:text-pretty prose-p:leading-7 prose-headings:text-balance dark:prose-invert">
           <ReactMarkdown>{data.note.rawInput}</ReactMarkdown>
         </article>
       </NoteSection>
@@ -233,10 +241,12 @@ function StructuredContentEmpty() {
 
 function NotebookDetailBody({
   data,
+  backAction,
   renderHeaderActions,
   renderQuestionActions,
 }: {
   data: TechnicalNoteDetailView
+  backAction?: NotebookDetailPageProps['backAction']
   renderHeaderActions?: NotebookDetailPageProps['renderHeaderActions']
   renderQuestionActions?: NotebookDetailPageProps['renderQuestionActions']
 }) {
@@ -320,10 +330,11 @@ function NotebookDetailBody({
   }
 
   return (
-    <div className="space-y-6 md:space-y-8">
+    <div className="space-y-7 md:space-y-9">
       <NoteHeader
         title={data.note.title}
         note={data.note}
+        backAction={backAction}
         eyebrow={
           <>
             <span>Notebook detail</span>
@@ -357,11 +368,11 @@ function NotebookDetailBody({
         }
       />
 
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_20rem] xl:items-start">
-        <article ref={articleRef} className="min-w-0 space-y-8">
+      <div className="grid gap-7 xl:grid-cols-[minmax(0,1fr)_19rem] xl:items-start">
+        <article ref={articleRef} className="min-w-0 space-y-7 md:space-y-8">
           {data.note.structuredContent ? (
             <>
-              <div className="sticky top-0 z-10 px-2 py-2 -mx-2 rounded-full backdrop-blur-sm xl:hidden">
+              <div className="sticky top-2 z-10 -mx-1 rounded-full px-1 py-2 backdrop-blur-sm xl:hidden">
                 <div className="rounded-full border border-border/70 bg-background/88 px-3 py-2 shadow-[0_14px_34px_-26px_color-mix(in_oklch,var(--foreground),transparent_40%)]">
                   <div className="flex items-center justify-between gap-3">
                     <p className="text-xs font-medium text-muted-foreground">
@@ -571,11 +582,22 @@ function Root({
   loading,
   empty,
   error,
+  backAction = (
+    <Button
+      type="button"
+      variant="ghost"
+      size="sm"
+      className="rounded-full px-3 text-muted-foreground hover:text-foreground"
+    >
+      <ArrowLeftIcon />
+      Back to notebook
+    </Button>
+  ),
   renderHeaderActions,
   renderQuestionActions,
 }: NotebookDetailPageProps) {
   return (
-    <PageBody className="pb-10 bg-surface-elevated md:pb-12">
+    <PageBody className="bg-surface-elevated pb-10 md:pb-12">
       {error ? (
         <ErrorBody message={error} />
       ) : loading ? (
@@ -585,6 +607,7 @@ function Root({
       ) : (
         <NotebookDetailBody
           data={data}
+          backAction={backAction}
           renderHeaderActions={renderHeaderActions}
           renderQuestionActions={renderQuestionActions}
         />
