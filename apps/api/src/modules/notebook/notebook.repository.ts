@@ -6,6 +6,7 @@ import type {
 } from '@interviewos/validators'
 import { Injectable } from '@nestjs/common'
 
+import { handlePrismaWrite } from '../../common/utils/prisma-errors'
 import { PrismaService } from '../../database/prisma.service'
 
 @Injectable()
@@ -82,8 +83,9 @@ export class NotebookRepository {
         : undefined
     const topic = payload.topic
 
-    return this.prisma.technicalNote.update({
-      where: { id: noteId, userId },
+    return handlePrismaWrite(
+    this.prisma.technicalNote.update({
+      where: { id: noteId, userId, deletedAt: null },
       data: {
         title: payload.title,
         topic: topic === undefined ? undefined : topic && topic.trim() ? topic.trim() : null,
@@ -101,20 +103,26 @@ export class NotebookRepository {
         sections: true,
         questions: true,
       },
-    })
+    }),
+    'Technical note not found.',
+    )
   }
 
   async deleteNote(userId: string, noteId: string) {
-    return this.prisma.technicalNote.update({
-      where: { id: noteId, userId },
-      data: {
-        deletedAt: new Date(),
-        status: 'ARCHIVED',
-      },
-    })
+    return handlePrismaWrite(
+      this.prisma.technicalNote.update({
+        where: { id: noteId, userId, deletedAt: null },
+        data: {
+          deletedAt: new Date(),
+          status: 'ARCHIVED',
+        },
+      }),
+      'Technical note not found.',
+    )
   }
 
   async replaceGeneratedContent(
+    userId: string,
     noteId: string,
     payload: {
       structuredContent: Record<string, unknown>
@@ -122,34 +130,36 @@ export class NotebookRepository {
       aiMetadata: Prisma.InputJsonValue
     },
   ) {
-    return this.prisma.technicalNote.update({
-      where: { id: noteId },
-      data: {
-        structuredContent: payload.structuredContent as Prisma.InputJsonValue,
-        aiMetadata: payload.aiMetadata,
-        sections: {
-          deleteMany: {},
-          create: payload.sections.map((section, index) => ({
-            heading: section.heading,
-            content: section.content,
-            order: index,
-            aiMetadata: payload.aiMetadata,
-          })),
-        },
-        status: 'PUBLISHED',
-      },
-      include: {
-        sections: {
-          orderBy: {
-            order: 'asc',
+    return handlePrismaWrite(
+      this.prisma.technicalNote.update({
+        where: { id: noteId, userId, deletedAt: null },
+        data: {
+          structuredContent: payload.structuredContent as Prisma.InputJsonValue,
+          aiMetadata: payload.aiMetadata,
+          sections: {
+            deleteMany: {},
+            create: payload.sections.map((section, index) => ({
+              heading: section.heading,
+              content: section.content,
+              order: index,
+              aiMetadata: payload.aiMetadata,
+            })),
           },
+          status: 'PUBLISHED',
         },
-        questions: true,
-      },
-    })
+        include: {
+          sections: {
+            orderBy: { order: 'asc' },
+          },
+          questions: true,
+        },
+      }),
+      'Technical note not found.',
+    )
   }
 
   async replaceQuestions(
+    userId: string,
     noteId: string,
     questions: Array<{
       question: string
@@ -161,34 +171,33 @@ export class NotebookRepository {
     }>,
     aiMetadata: Prisma.InputJsonValue,
   ) {
-    return this.prisma.technicalNote.update({
-      where: { id: noteId },
-      data: {
-        questions: {
-          deleteMany: {},
-          create: questions.map((question) => ({
-            question: question.question,
-            category: question.category,
-            expectedAnswer: question.expectedAnswer,
-            difficulty: question.difficulty ?? 'MEDIUM',
-            expectedConcepts: question.expectedConcepts,
-            sourceSection: question.sourceSection,
-            aiMetadata,
-          })),
-        },
-      },
-      include: {
-        sections: {
-          orderBy: {
-            order: 'asc',
+    return handlePrismaWrite(
+      this.prisma.technicalNote.update({
+        where: { id: noteId, userId, deletedAt: null },
+        data: {
+          questions: {
+            deleteMany: {},
+            create: questions.map((question) => ({
+              question: question.question,
+              category: question.category,
+              expectedAnswer: question.expectedAnswer,
+              difficulty: question.difficulty ?? 'MEDIUM',
+              expectedConcepts: question.expectedConcepts,
+              sourceSection: question.sourceSection,
+              aiMetadata,
+            })),
           },
         },
-        questions: {
-          orderBy: {
-            createdAt: 'asc',
+        include: {
+          sections: {
+            orderBy: { order: 'asc' },
+          },
+          questions: {
+            orderBy: { createdAt: 'asc' },
           },
         },
-      },
-    })
+      }),
+      'Technical note not found.',
+    )
   }
 }

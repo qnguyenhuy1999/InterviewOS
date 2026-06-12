@@ -3,6 +3,7 @@ import { ApiBody, ApiCookieAuth, ApiOperation, ApiParam, ApiTags } from '@nestjs
 
 import type { AuthenticatedUser } from '../../common/auth/authenticated-request'
 import { CurrentUser } from '../../common/decorators/current-user.decorator'
+import { AiThrottle } from '../../common/decorators/throttle.decorator'
 import { ApiArrayResponse, ApiEntityResponse } from '../../common/swagger/swagger-helpers'
 import {
   CreateNoteDto,
@@ -63,6 +64,7 @@ export class NotebookController {
   }
 
   @Post(':noteId/generate')
+  @AiThrottle()
   @ApiOperation({ summary: 'Generate structured content for a technical note' })
   @ApiParam({ name: 'noteId', type: String })
   @ApiEntityResponse(TechnicalNoteDto, { status: 'created' })
@@ -71,6 +73,7 @@ export class NotebookController {
   }
 
   @Post(':noteId/questions')
+  @AiThrottle()
   @ApiOperation({ summary: 'Generate interview questions from a technical note' })
   @ApiParam({ name: 'noteId', type: String })
   @ApiBody({ type: GenerateQuestionsDto })

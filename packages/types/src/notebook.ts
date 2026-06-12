@@ -55,6 +55,15 @@ export interface TechnicalNoteContent {
   debuggingChecklist: string[]
   productionChecklist: string[]
   seniorInterviewSignals: string[]
+  // Extended depth fields (present on notes generated after depth expansion)
+  directAnswer?: string
+  deepTheory?: string
+  internals?: string[]
+  edgeCases?: string[]
+  tradeoffs?: string[]
+  commonMistakes?: string[]
+  interviewFollowUps?: string[]
+  summary?: string
 }
 
 export interface TechnicalNoteSection {

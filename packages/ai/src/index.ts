@@ -1,3 +1,4 @@
+export { AIProviderError } from './errors'
 export { AIGateway, AIResponseValidationError } from './gateway'
 export * from './prompts'
 export type { AIProvider } from './provider'

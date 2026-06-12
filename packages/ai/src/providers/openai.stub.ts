@@ -1,5 +1,6 @@
 import { createHash } from 'node:crypto'
 
+import { AIProviderError } from '../errors'
 import type {
   AIExecutionMetadata,
   AIProvider,
@@ -323,6 +324,7 @@ export class OpenAIProvider implements AIProvider {
     const schemaHint = `\n\nReturn ONLY a valid JSON object. No markdown, no code fences, no text outside the JSON. The response must exactly match this schema:\n${JSON.stringify(format.schema)}`
     const response = await fetch(`${trimTrailingSlash(this.options.baseUrl)}/responses`, {
       method: 'POST',
+      signal: AbortSignal.timeout(60_000),
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${this.options.apiKey}`,
@@ -346,7 +348,12 @@ export class OpenAIProvider implements AIProvider {
     })
 
     if (!response.ok) {
-      throw new Error(`OpenAI request failed with status ${response.status}`)
+      const retryable = response.status === 429 || response.status >= 500
+      throw new AIProviderError(
+        `OpenAI request failed with status ${response.status}`,
+        response.status,
+        retryable,
+      )
     }
 
     const generatedAt = new Date()
@@ -356,7 +363,7 @@ export class OpenAIProvider implements AIProvider {
       .find((content) => content.type === 'refusal')
 
     if (refusal?.type === 'refusal') {
-      throw new Error(`OpenAI refused the request: ${refusal.refusal}`)
+      throw new AIProviderError('OpenAI refused the request.', 422, false)
     }
 
     const structuredResult = extractStructuredResult(payload)
@@ -591,6 +598,14 @@ const technicalNoteJsonSchema = {
         'debuggingChecklist',
         'productionChecklist',
         'seniorInterviewSignals',
+        'directAnswer',
+        'deepTheory',
+        'internals',
+        'edgeCases',
+        'tradeoffs',
+        'commonMistakes',
+        'interviewFollowUps',
+        'summary',
       ],
       properties: {
         purpose: { type: 'string' },
@@ -603,6 +618,14 @@ const technicalNoteJsonSchema = {
         debuggingChecklist: sharedStringArray,
         productionChecklist: sharedStringArray,
         seniorInterviewSignals: sharedStringArray,
+        directAnswer: { type: 'string' },
+        deepTheory: { type: 'string' },
+        internals: sharedStringArray,
+        edgeCases: sharedStringArray,
+        tradeoffs: sharedStringArray,
+        commonMistakes: sharedStringArray,
+        interviewFollowUps: sharedStringArray,
+        summary: { type: 'string' },
       },
     },
     sections: {

@@ -12,6 +12,14 @@ export const technicalNoteContentSchema = z.object({
   debuggingChecklist: z.array(z.string().min(1)).min(1),
   productionChecklist: z.array(z.string().min(1)).min(1),
   seniorInterviewSignals: z.array(z.string().min(1)).min(1),
+  directAnswer: z.string().min(1),
+  deepTheory: z.string().min(1),
+  internals: z.array(z.string().min(1)).min(1),
+  edgeCases: z.array(z.string().min(1)).min(1),
+  tradeoffs: z.array(z.string().min(1)).min(1),
+  commonMistakes: z.array(z.string().min(1)).min(1),
+  interviewFollowUps: z.array(z.string().min(1)).min(1),
+  summary: z.string().min(1),
 })
 
 export const technicalNoteResultSchema = z.object({

@@ -9,6 +9,7 @@ import type {
 } from '../../common/auth/authenticated-request'
 import { CurrentUser } from '../../common/decorators/current-user.decorator'
 import { Public } from '../../common/decorators/public.decorator'
+import { AuthThrottle } from '../../common/decorators/throttle.decorator'
 import { ApiArrayResponse, ApiEntityResponse } from '../../common/swagger/swagger-helpers'
 import { AuthService } from './auth.service'
 import {
@@ -34,6 +35,7 @@ export class AuthController {
   ) {}
 
   @Public()
+  @AuthThrottle()
   @Post('login')
   @ApiOperation({ summary: 'Login with email and password' })
   @ApiBody({ type: LoginDto })
@@ -49,6 +51,7 @@ export class AuthController {
   }
 
   @Public()
+  @AuthThrottle()
   @Post('register')
   @ApiOperation({ summary: 'Register a new user account' })
   @ApiBody({ type: RegisterDto })
@@ -110,6 +113,7 @@ export class AuthController {
   }
 
   @Public()
+  @AuthThrottle()
   @Post('forgot-password')
   @ApiOperation({ summary: 'Request a password reset email' })
   @ApiBody({ type: RequestPasswordResetDto })
@@ -119,6 +123,7 @@ export class AuthController {
   }
 
   @Public()
+  @AuthThrottle()
   @Post('reset-password')
   @ApiOperation({ summary: 'Reset password with a valid reset token' })
   @ApiBody({ type: ResetPasswordDto })
@@ -128,6 +133,7 @@ export class AuthController {
   }
 
   @Public()
+  @AuthThrottle()
   @Post('email-verification/resend')
   @ApiOperation({ summary: 'Resend email verification link' })
   @ApiBody({ type: ResendEmailVerificationDto })

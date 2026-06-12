@@ -119,7 +119,7 @@ export class NotebookService {
       additionalContext: note.rawInput,
     }, { userId: user.id })
 
-    const saved = await this.notebookRepository.replaceGeneratedContent(note.id, {
+    const saved = await this.notebookRepository.replaceGeneratedContent(user.id, note.id, {
       structuredContent: generated.result.content as unknown as Record<string, unknown>,
       sections: generated.result.sections,
       aiMetadata: this.toAiMetadataJson(generated.metadata),
@@ -156,6 +156,7 @@ export class NotebookService {
     }, { userId: user.id })
 
     const saved = await this.notebookRepository.replaceQuestions(
+      user.id,
       note.id,
       questions.result.questions,
       this.toAiMetadataJson(questions.metadata),

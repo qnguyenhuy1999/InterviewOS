@@ -21,7 +21,7 @@ test('NotebookService uses saved onboarding defaults when note overrides are abs
         overrideEnglishLevel: null,
         preferredOutputStyle: null,
       }),
-      replaceGeneratedContent: async (_noteId: string, payload: Record<string, unknown>) => {
+      replaceGeneratedContent: async (_userId: string, _noteId: string, payload: Record<string, unknown>) => {
         savedMetadata = payload.aiMetadata as Record<string, unknown>
         return payload
       },

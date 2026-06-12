@@ -123,3 +123,10 @@ export enum StarDimension {
   ACTION = 'ACTION',
   RESULT = 'RESULT',
 }
+
+export enum ExplanationDepth {
+  QUICK = 'QUICK',
+  STANDARD = 'STANDARD',
+  DEEP = 'DEEP',
+  INTERVIEW = 'INTERVIEW',
+}

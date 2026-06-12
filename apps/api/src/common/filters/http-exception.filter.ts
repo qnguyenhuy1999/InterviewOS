@@ -1,3 +1,4 @@
+import { AIProviderError, AIResponseValidationError } from '@interviewos/ai'
 import {
   ArgumentsHost,
   Catch,
@@ -52,6 +53,31 @@ export class HttpExceptionFilter implements ExceptionFilter {
         message: exception.errors.map((e) => `${e.path.join('.')}: ${e.message}`),
         path: request.url,
         statusCode: HttpStatus.BAD_REQUEST,
+        timestamp: new Date().toISOString(),
+      })
+      return
+    }
+
+    if (exception instanceof AIProviderError) {
+      this.logger.warn(`AI provider error: status=${exception.statusCode} retryable=${exception.retryable}`)
+      const status = exception.retryable ? HttpStatus.SERVICE_UNAVAILABLE : HttpStatus.BAD_GATEWAY
+      response.status(status).send({
+        error: exception.retryable ? 'Service Unavailable' : 'Bad Gateway',
+        message: 'AI service request failed. Please try again.',
+        path: request.url,
+        statusCode: status,
+        timestamp: new Date().toISOString(),
+      })
+      return
+    }
+
+    if (exception instanceof AIResponseValidationError) {
+      this.logger.warn(`AI response validation failed: promptKey=${exception.metadata.promptKey}`)
+      response.status(HttpStatus.BAD_GATEWAY).send({
+        error: 'Bad Gateway',
+        message: 'AI returned an unexpected response format.',
+        path: request.url,
+        statusCode: HttpStatus.BAD_GATEWAY,
         timestamp: new Date().toISOString(),
       })
       return

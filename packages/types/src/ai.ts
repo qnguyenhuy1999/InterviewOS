@@ -2,6 +2,7 @@ import { CompanyModeConfig } from './company-mode'
 import type {
   EnglishLevel,
   ExperienceLevel,
+  ExplanationDepth,
   InterviewType,
   NoteType,
   QuestionDifficulty,
@@ -103,6 +104,7 @@ export interface GenerateTechnicalNoteInput {
   interviewGoals?: string[]
   preferredOutputStyle?: string
   additionalContext?: string
+  explanationDepth?: ExplanationDepth
 }
 
 export interface GenerateTechnicalNoteResult {

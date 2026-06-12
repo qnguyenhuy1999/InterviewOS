@@ -51,17 +51,31 @@ function truncateContent(content: unknown): string {
     : serialized.slice(0, MAX_CONTENT_CHARS) + '...[truncated]'
 }
 
+function depthInstruction(depth: GenerateTechnicalNoteInput['explanationDepth']): string {
+  switch (depth) {
+    case 'QUICK':
+      return 'Provide a focused, essential overview. Cover only what is most critical for a quick review.'
+    case 'DEEP':
+      return 'Provide deep theoretical coverage. Thoroughly explain internals, tradeoffs, and edge cases.'
+    case 'INTERVIEW':
+      return 'Maximize interview signal. Cover what senior engineers look for, common mistakes, follow-up questions, and mental models that distinguish strong candidates.'
+    default:
+      return 'Provide balanced coverage across theory, production usage, and interview signals.'
+  }
+}
+
 export function technicalNotePrompt(input: GenerateTechnicalNoteInput): PromptDefinition {
   return {
     id: promptCatalog.technicalNote,
     version: 'v1',
-    instructions: `You are InterviewOS. Produce concise, production-oriented technical interview study notes. Return only schema-compliant JSON. ${USER_INPUT_PREAMBLE}`,
+    instructions: `You are InterviewOS. Generate production-oriented technical interview study notes. ${depthInstruction(input.explanationDepth)} Return only schema-compliant JSON. ${USER_INPUT_PREAMBLE}`,
     prompt: [
       `Topic: ${u(input.topic)}`,
       `Note type: ${u(input.noteType)}`,
       `Target role: ${u(input.targetRole)}`,
       `Target level: ${u(input.targetLevel)}`,
       `English level: ${u(input.englishLevel)}`,
+      `Explanation depth: ${u(input.explanationDepth ?? 'STANDARD')}`,
       `Tech stack: ${u((input.techStack ?? []).join(', ') || 'None provided')}`,
       `Interview goals: ${u((input.interviewGoals ?? []).join(', ') || 'None provided')}`,
       `Preferred output style: ${u(input.preferredOutputStyle ?? 'Practical and clear')}`,
@@ -99,9 +113,7 @@ export function generatedQuestionsPrompt(input: GenerateQuestionsFromNoteInput):
   }
 }
 
-export function interviewEvaluationPrompt(
-  input: EvaluateInterviewAnswerInput,
-): PromptDefinition {
+export function interviewEvaluationPrompt(input: EvaluateInterviewAnswerInput): PromptDefinition {
   return {
     id: promptCatalog.interviewEvaluation,
     version: 'v1',
@@ -125,9 +137,7 @@ export function englishFeedbackPrompt(input: GenerateEnglishFeedbackInput): Prom
   }
 }
 
-export function learningRecommendationsPrompt(
-  input: RecommendNextLearningInput,
-): PromptDefinition {
+export function learningRecommendationsPrompt(input: RecommendNextLearningInput): PromptDefinition {
   return {
     id: promptCatalog.learningRecommendations,
     version: 'v1',
@@ -159,7 +169,8 @@ export function conductTurnPrompt(input: ConductTurnInput): PromptDefinition {
     .slice(-8)
     .map((t: ConductTurnInput['conversationHistory'][number]) => `[${t.role}] ${u(t.content)}`)
     .join('\n')
-  const persona = input.companyModeConfig?.interviewerPersona ?? 'You are a senior technical interviewer.'
+  const persona =
+    input.companyModeConfig?.interviewerPersona ?? 'You are a senior technical interviewer.'
   return {
     id: promptCatalog.conductTurn,
     version: 'v1',
