@@ -52,6 +52,30 @@ const notebookDetailFixture = {
         'Explains scheduling tradeoffs instead of repeating definitions',
         'Connects reconciliation behavior to user-perceived responsiveness',
       ],
+      deepTheory:
+        'React keeps a Fiber node for each unit of work so rendering can be split, prioritized, paused, resumed, or discarded before the commit phase mutates the DOM.',
+      internals: [
+        'Each Fiber node stores pending props, memoized state, lanes, and effect flags that drive scheduling and commit work.',
+        'The reconciler builds a work-in-progress tree before swapping it into the committed tree.',
+      ],
+      edgeCases: [
+        'Unstable keys can silently remount children and drop user input state during list reorders.',
+        'Interrupted render work may restart, so render logic must stay pure and idempotent.',
+      ],
+      tradeoffs: [
+        'Concurrent rendering improves responsiveness but makes timing assumptions in user code more fragile.',
+        'Aggressive memoization can reduce work, but it also increases cognitive overhead and stale-prop bugs.',
+      ],
+      commonMistakes: [
+        'Treating the render phase like a safe place for side effects.',
+        'Assuming React updates the DOM immediately after every state change.',
+      ],
+      interviewFollowUps: [
+        'How do lanes differ from legacy priority levels, and why do they matter for transitions?',
+        'Why can React restart render work without violating user-visible consistency?',
+      ],
+      summary:
+        'React Fiber lets React schedule, interrupt, and commit UI work in smaller chunks so apps stay responsive under complex updates.',
     },
   },
   questionCount: 8,
@@ -71,12 +95,18 @@ test('notebook detail exposes article sections in a reading-first order', () => 
       'summary',
       'coreConcepts',
       'mentalModel',
+      'deepTheory',
+      'internals',
       'practicalExamples',
       'productionUsage',
+      'edgeCases',
+      'tradeoffs',
       'commonPitfalls',
+      'commonMistakes',
       'debuggingChecklist',
       'productionChecklist',
       'seniorInterviewSignals',
+      'interviewFollowUps',
       'interviewAnswer',
     ],
   )
@@ -89,7 +119,7 @@ test('notebook detail derives a readable estimate for reading time', () => {
     | undefined
 
   assert.equal(typeof getReadingTimeLabel, 'function')
-  assert.equal(getReadingTimeLabel!(notebookDetailFixture), '2 min read')
+  assert.equal(getReadingTimeLabel!(notebookDetailFixture), '4 min read')
 })
 
 test('notebook detail composes an interview-ready answer from the structured note', () => {

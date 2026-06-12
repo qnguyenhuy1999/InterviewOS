@@ -2,11 +2,11 @@ import { Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
 import { APP_GUARD } from '@nestjs/core'
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler'
-import path from 'path'
 
 import { AIModule } from './ai/ai.module'
 import configuration from './config/configuration'
 import { DatabaseModule } from './database/database.module'
+import { apiEnvFilePath } from './env-file-path'
 import { AnalyticsModule } from './modules/analytics/analytics.module'
 import { AuthModule } from './modules/auth/auth.module'
 import { CompanyModeModule } from './modules/company-mode/company-mode.module'
@@ -25,7 +25,7 @@ import { UsersModule } from './modules/users/users.module'
     ConfigModule.forRoot({
       isGlobal: true,
       load: [configuration],
-      envFilePath: path.resolve(process.cwd(), '../../.env'),
+      envFilePath: apiEnvFilePath,
     }),
     ThrottlerModule.forRoot([
       { name: 'global', ttl: 60_000, limit: 120 },

@@ -1,13 +1,9 @@
 'use client'
 
 import type { TechnicalNoteDetailView, TechnicalNoteSummary } from '@interviewos/types'
-import {
-  BookOpenTextIcon,
-  FileQuestionIcon,
-  MenuIcon,
-  SparklesIcon,
-} from 'lucide-react'
+import { BookOpenTextIcon, FileQuestionIcon, MenuIcon, SparklesIcon } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState } from 'react'
+import ReactMarkdown from 'react-markdown'
 
 import { Button } from '../../../components/ui/button'
 import { EmptyState, PageBody } from '../../../components/ui/page'
@@ -34,7 +30,6 @@ import { NoteSection } from '../../organisms/NoteSection/NoteSection'
 import {
   getDifficultyTone,
   getEnumLabel,
-  getNotebookSummary,
   getRelativeUpdatedAtLabel,
   getStatusDot,
 } from '../NotebookPage/NotebookPage.utils'
@@ -53,12 +48,12 @@ function RelatedNoteRow({ note }: { note: TechnicalNoteSummary }) {
   return (
     <div className="flex items-start justify-between gap-4 rounded-[1.35rem] border border-border/70 bg-surface-elevated px-4 py-4 transition-transform duration-200 hover:-translate-y-0.5">
       <div className="min-w-0">
-        <p className="truncate text-sm font-medium text-foreground">{note.title}</p>
+        <p className="text-sm font-medium truncate text-foreground">{note.title}</p>
         <p className="mt-1 text-sm text-muted-foreground">
           {note.topic?.trim() || 'Uncategorized'} · {getEnumLabel(note.type)}
         </p>
       </div>
-      <div className="shrink-0 text-right text-xs text-muted-foreground">
+      <div className="text-xs text-right shrink-0 text-muted-foreground">
         <div className="flex items-center justify-end gap-2">
           <StatusDot status={getStatusDot(note.status)} />
           <span>{getEnumLabel(note.status)}</span>
@@ -105,7 +100,6 @@ function StudyContext({ data }: { data: TechnicalNoteDetailView }) {
         title="Interview targeting"
         description="The audience and constraints that shaped this note."
         tone="muted"
-        collapsible
       >
         <div className="space-y-5">
           <DefinitionList items={interviewTargets} />
@@ -144,9 +138,10 @@ function StudyContext({ data }: { data: TechnicalNoteDetailView }) {
         title="Source note"
         description="The original raw capture before it was shaped into a study article."
         tone="muted"
-        collapsible
       >
-        <p className="text-sm leading-7 text-foreground">{data.note.rawInput}</p>
+        <article className="prose prose-neutral max-w-none dark:prose-invert">
+          <ReactMarkdown>{data.note.rawInput}</ReactMarkdown>
+        </article>
       </NoteSection>
     </div>
   )
@@ -182,7 +177,7 @@ function PracticeQuestions({
         </div>
       ) : (
         <EmptyState
-          className="min-h-48 border-dashed bg-background/70"
+          className="border-dashed min-h-48 bg-background/70"
           icon={FileQuestionIcon}
           title="No generated questions yet"
           description="Generate a question set when the note is ready for rehearsal."
@@ -208,7 +203,7 @@ function RelatedNotes({ data }: { data: TechnicalNoteDetailView }) {
         </div>
       ) : (
         <EmptyState
-          className="min-h-48 border-dashed bg-background/70"
+          className="border-dashed min-h-48 bg-background/70"
           title="No related notes yet"
           description="As your notebook grows, supporting topics will show up here."
         />
@@ -226,7 +221,7 @@ function StructuredContentEmpty() {
       tone="muted"
     >
       <EmptyState
-        className="min-h-72 border-dashed bg-background/70"
+        className="border-dashed min-h-72 bg-background/70"
         icon={SparklesIcon}
         title="No structured content yet"
         description="This note is still a draft. Generate the AI structure to unlock article sections, interview answer, and practice prompts."
@@ -270,7 +265,12 @@ function NotebookDetailBody({
     items.push({ id: 'study-context', label: 'Study context' })
 
     return items
-  }, [articleSections, data.generatedQuestions.length, data.questionCount, data.relatedNotes.length])
+  }, [
+    articleSections,
+    data.generatedQuestions.length,
+    data.questionCount,
+    data.relatedNotes.length,
+  ])
 
   useEffect(() => {
     const handleScroll = () => {
@@ -323,11 +323,11 @@ function NotebookDetailBody({
     <div className="space-y-6 md:space-y-8">
       <NoteHeader
         title={data.note.title}
-        summary={getNotebookSummary(data.note)}
+        note={data.note}
         eyebrow={
           <>
             <span>Notebook detail</span>
-            <span className="h-1 w-1 rounded-full bg-muted-foreground/50" />
+            <span className="w-1 h-1 rounded-full bg-muted-foreground/50" />
             <span>{getRelativeUpdatedAtLabel(data.note.updatedAt)}</span>
           </>
         }
@@ -349,7 +349,7 @@ function NotebookDetailBody({
           renderHeaderActions ? (
             renderHeaderActions(data.note)
           ) : (
-            <Button size="sm" className="rounded-full px-4">
+            <Button size="sm" className="px-4 rounded-full">
               <FileQuestionIcon />
               Generate questions
             </Button>
@@ -361,7 +361,7 @@ function NotebookDetailBody({
         <article ref={articleRef} className="min-w-0 space-y-8">
           {data.note.structuredContent ? (
             <>
-              <div className="sticky top-0 z-10 -mx-2 rounded-full px-2 py-2 backdrop-blur-sm xl:hidden">
+              <div className="sticky top-0 z-10 px-2 py-2 -mx-2 rounded-full backdrop-blur-sm xl:hidden">
                 <div className="rounded-full border border-border/70 bg-background/88 px-3 py-2 shadow-[0_14px_34px_-26px_color-mix(in_oklch,var(--foreground),transparent_40%)]">
                   <div className="flex items-center justify-between gap-3">
                     <p className="text-xs font-medium text-muted-foreground">
@@ -395,9 +395,7 @@ function NotebookDetailBody({
               </div>
 
               <NoteSummaryCard
-                summary={
-                  data.note.structuredContent.summary ?? data.note.structuredContent.purpose
-                }
+                summary={data.note.structuredContent.summary ?? data.note.structuredContent.purpose}
                 quickReference={data.note.structuredContent.quickReference}
               />
 
@@ -434,7 +432,12 @@ function NotebookDetailBody({
 
                 if (section.key === 'interviewAnswer') {
                   return (
-                    <div key={section.id} id={section.id} data-note-section className="scroll-mt-24">
+                    <div
+                      key={section.id}
+                      id={section.id}
+                      data-note-section
+                      className="scroll-mt-24"
+                    >
                       <NoteInterviewAnswer answer={interviewAnswer} />
                     </div>
                   )
@@ -513,14 +516,14 @@ function LoadingBody() {
   return (
     <div className="space-y-6 md:space-y-8">
       <div className="overflow-hidden rounded-[2rem] border border-border/70 bg-surface-elevated px-6 py-7">
-        <Skeleton className="h-4 w-32 rounded-full" />
-        <Skeleton className="mt-5 h-12 w-full max-w-3xl rounded-2xl" />
-        <Skeleton className="mt-4 h-5 w-full max-w-2xl rounded-full" />
-        <div className="mt-5 flex flex-wrap gap-2">
-          <Skeleton className="h-8 w-24 rounded-full" />
-          <Skeleton className="h-8 w-28 rounded-full" />
-          <Skeleton className="h-8 w-32 rounded-full" />
-          <Skeleton className="h-8 w-24 rounded-full" />
+        <Skeleton className="w-32 h-4 rounded-full" />
+        <Skeleton className="w-full h-12 max-w-3xl mt-5 rounded-2xl" />
+        <Skeleton className="w-full h-5 max-w-2xl mt-4 rounded-full" />
+        <div className="flex flex-wrap gap-2 mt-5">
+          <Skeleton className="w-24 h-8 rounded-full" />
+          <Skeleton className="h-8 rounded-full w-28" />
+          <Skeleton className="w-32 h-8 rounded-full" />
+          <Skeleton className="w-24 h-8 rounded-full" />
         </div>
       </div>
 
@@ -543,7 +546,7 @@ function EmptyBody() {
       icon={BookOpenTextIcon}
       title="No note selected"
       description="Choose a notebook entry to open the learning article, practice questions, and study context."
-      action={<Button className="rounded-full px-4">Back to notebook</Button>}
+      action={<Button className="px-4 rounded-full">Back to notebook</Button>}
     />
   )
 }
@@ -555,7 +558,7 @@ function ErrorBody({ message }: { message: string }) {
       title={<span className="text-destructive">Failed to load notebook detail</span>}
       description={message}
       action={
-        <Button variant="destructive" className="rounded-full px-4">
+        <Button variant="destructive" className="px-4 rounded-full">
           Retry
         </Button>
       }
@@ -572,7 +575,7 @@ function Root({
   renderQuestionActions,
 }: NotebookDetailPageProps) {
   return (
-    <PageBody className="bg-surface-elevated pb-10 md:pb-12">
+    <PageBody className="pb-10 bg-surface-elevated md:pb-12">
       {error ? (
         <ErrorBody message={error} />
       ) : loading ? (

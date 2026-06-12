@@ -2,17 +2,14 @@ import { API_ROUTES } from '@interviewos/config'
 import {
   type NotebookNoteListItem,
   type NoteGeneratedQuestion,
-  NoteStatus,
   type TechnicalNote,
   type TechnicalNoteDetailView,
 } from '@interviewos/types'
-import NotebookDetailPage from '@interviewos/ui/pages/NotebookDetailPage'
 
-import { NoteActions } from '@/app/_components/forms/NoteActions'
-import { StartPracticeButton } from '@/app/_components/forms/StartPracticeButton'
-import { StatusSelect } from '@/app/_components/forms/StatusSelect'
 import { loadRouteData } from '@/lib/route-state'
 import { serverApiClient } from '@/lib/server-api-client'
+
+import { NotebookDetailPageClient } from './_components/NotebookDetailPageClient'
 
 type TechnicalNoteDetailResponse = TechnicalNote & {
   questions: NoteGeneratedQuestion[]
@@ -61,23 +58,10 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
   )
 
   return (
-    <NotebookDetailPage
+    <NotebookDetailPageClient
       data={state.kind === 'ready' ? state.data : undefined}
       empty={state.kind === 'empty'}
       error={state.kind === 'error' ? state.message : undefined}
-      renderHeaderActions={(note) => (
-        <>
-          <StatusSelect
-            endpoint={API_ROUTES.notes.byId(note.id)}
-            value={note.status}
-            options={Object.values(NoteStatus)}
-          />
-          <NoteActions noteId={note.id} canGenerateQuestions={Boolean(note.structuredContent)} />
-        </>
-      )}
-      renderQuestionActions={(questionId) => (
-        <StartPracticeButton generatedQuestionId={questionId} />
-      )}
     />
   )
 }

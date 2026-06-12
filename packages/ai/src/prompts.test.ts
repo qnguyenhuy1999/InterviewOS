@@ -33,6 +33,17 @@ test('technicalNotePrompt DEEP depth gives deep theory instruction', () => {
   )
 })
 
+test('technicalNotePrompt asks for self-contained notes that avoid external searching', () => {
+  const { instructions } = technicalNotePrompt(baseInput)
+  assert.match(instructions, /without needing to search elsewhere/i)
+})
+
+test('technicalNotePrompt asks for both tutorial depth and interview-ready guidance', () => {
+  const { instructions } = technicalNotePrompt(baseInput)
+  assert.match(instructions, /teach the topic end-to-end/i)
+  assert.match(instructions, /interview-ready/i)
+})
+
 test('technicalNotePrompt INTERVIEW depth mentions interview signals', () => {
   const { instructions } = technicalNotePrompt({
     ...baseInput,

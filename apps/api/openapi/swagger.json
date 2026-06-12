@@ -1,6 +1,34 @@
 {
   "openapi": "3.0.0",
   "paths": {
+    "/ai/observability/cost-summary": {
+      "get": {
+        "operationId": "AIObservabilityController_getCostSummary",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "AIObservability"
+        ]
+      }
+    },
+    "/ai/observability/latency-breakdown": {
+      "get": {
+        "operationId": "AIObservabilityController_getLatencyBreakdown",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "AIObservability"
+        ]
+      }
+    },
     "/auth/login": {
       "post": {
         "operationId": "AuthController_login",

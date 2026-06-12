@@ -17,6 +17,12 @@ export type NotebookDetailArticleSection = {
     | 'summary'
     | NotebookDetailContentSectionKey
     | 'mentalModel'
+    | 'deepTheory'
+    | 'internals'
+    | 'edgeCases'
+    | 'tradeoffs'
+    | 'commonMistakes'
+    | 'interviewFollowUps'
     | 'interviewAnswer'
   id: string
   title: string
@@ -68,7 +74,9 @@ export function getNotebookQuestionConceptSummary(question: NoteGeneratedQuestio
     : 'Concepts not specified'
 }
 
-export function getNotebookDetailArticleSections(note: TechnicalNote): NotebookDetailArticleSection[] {
+export function getNotebookDetailArticleSections(
+  note: TechnicalNote,
+): NotebookDetailArticleSection[] {
   const content = note.structuredContent
 
   if (!content) {
@@ -98,18 +106,49 @@ export function getNotebookDetailArticleSections(note: TechnicalNote): NotebookD
       content: content.mentalModel,
     },
     {
+      key: 'deepTheory',
+      id: 'deep-theory',
+      title: 'Deep theory',
+      description: 'The full explanation, so the note can stand on its own as a study guide.',
+      content: content.deepTheory,
+    },
+    {
+      key: 'internals',
+      id: 'internals',
+      title: 'Internals',
+      description: 'The runtime mechanics and hidden moving parts behind the concept.',
+      items: content.internals,
+      collapsible: false,
+    },
+    {
       key: 'practicalExamples',
       id: 'practical-examples',
       title: 'Practical examples',
       items: content.practicalExamples,
-      collapsible: true,
+      collapsible: false,
     },
     {
       key: 'productionUsage',
       id: 'production-usage',
       title: 'Production usage',
       items: content.productionUsage,
-      collapsible: true,
+      collapsible: false,
+    },
+    {
+      key: 'edgeCases',
+      id: 'edge-cases',
+      title: 'Edge cases',
+      description: 'The situations where shallow understanding usually breaks down.',
+      items: content.edgeCases,
+      collapsible: false,
+    },
+    {
+      key: 'tradeoffs',
+      id: 'tradeoffs',
+      title: 'Tradeoffs',
+      description: 'The benefits, costs, and decision boundaries behind the concept.',
+      items: content.tradeoffs,
+      collapsible: false,
     },
     {
       key: 'commonPitfalls',
@@ -118,18 +157,25 @@ export function getNotebookDetailArticleSections(note: TechnicalNote): NotebookD
       items: content.commonPitfalls,
     },
     {
+      key: 'commonMistakes',
+      id: 'common-mistakes',
+      title: 'Common mistakes',
+      description: 'Frequent implementation or interview mistakes to avoid.',
+      items: content.commonMistakes,
+    },
+    {
       key: 'debuggingChecklist',
       id: 'debugging-checklist',
       title: 'Debugging checklist',
       items: content.debuggingChecklist,
-      collapsible: true,
+      collapsible: false,
     },
     {
       key: 'productionChecklist',
       id: 'production-checklist',
       title: 'Production checklist',
       items: content.productionChecklist,
-      collapsible: true,
+      collapsible: false,
     },
     {
       key: 'seniorInterviewSignals',
@@ -137,7 +183,15 @@ export function getNotebookDetailArticleSections(note: TechnicalNote): NotebookD
       title: 'Senior interview signals',
       description: 'The higher-order framing that separates strong answers from memorized ones.',
       items: content.seniorInterviewSignals,
-      collapsible: true,
+      collapsible: false,
+    },
+    {
+      key: 'interviewFollowUps',
+      id: 'interview-follow-ups',
+      title: 'Interview follow-ups',
+      description: 'Questions you should be ready to handle after the first answer.',
+      items: content.interviewFollowUps,
+      collapsible: false,
     },
     {
       key: 'interviewAnswer',
@@ -205,20 +259,14 @@ export function getNotebookDetailInterviewAnswer(data: {
   }
 
   const conceptLead = content.coreConcepts[0]
-  const pitfallLead =
-    content.commonMistakes?.[0] ??
-    content.commonPitfalls[0]
+  const pitfallLead = content.commonMistakes?.[0] ?? content.commonPitfalls[0]
   const productionLead = content.productionChecklist[0] ?? content.quickReference[2]
 
   return [
     content.purpose,
     content.mentalModel,
-    conceptLead
-      ? `A strong answer should connect this to ${conceptLead.toLowerCase()}.`
-      : null,
-    productionLead
-      ? `Mention ${productionLead.toLowerCase()} to show production awareness.`
-      : null,
+    conceptLead ? `A strong answer should connect this to ${conceptLead.toLowerCase()}.` : null,
+    productionLead ? `Mention ${productionLead.toLowerCase()} to show production awareness.` : null,
     pitfallLead ? `Call out ${pitfallLead.toLowerCase()} as a common mistake.` : null,
   ]
     .filter(Boolean)

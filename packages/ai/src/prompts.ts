@@ -68,7 +68,7 @@ export function technicalNotePrompt(input: GenerateTechnicalNoteInput): PromptDe
   return {
     id: promptCatalog.technicalNote,
     version: 'v1',
-    instructions: `You are InterviewOS. Generate production-oriented technical interview study notes. ${depthInstruction(input.explanationDepth)} Return only schema-compliant JSON. ${USER_INPUT_PREAMBLE}`,
+    instructions: `You are InterviewOS. Generate production-oriented technical interview study notes. ${depthInstruction(input.explanationDepth)} Teach the topic end-to-end so the reader can understand it clearly without needing to search elsewhere. Combine tutorial depth with interview-ready guidance: define important terms, explain why the topic matters, show internals and tradeoffs, cover failure modes and common mistakes, and leave the reader ready to answer follow-up interview questions out loud. Return only schema-compliant JSON. ${USER_INPUT_PREAMBLE}`,
     prompt: [
       `Topic: ${u(input.topic)}`,
       `Note type: ${u(input.noteType)}`,
@@ -80,6 +80,13 @@ export function technicalNotePrompt(input: GenerateTechnicalNoteInput): PromptDe
       `Interview goals: ${u((input.interviewGoals ?? []).join(', ') || 'None provided')}`,
       `Preferred output style: ${u(input.preferredOutputStyle ?? 'Practical and clear')}`,
       `Additional context: ${u(input.additionalContext ?? 'None provided')}`,
+      'Writing requirements:',
+      '- Assume the reader will not open another tab to study this topic.',
+      '- Make every string concrete and explanatory instead of short labels.',
+      '- Use the summary for the shortest high-signal takeaway.',
+      '- Use deepTheory for the full conceptual explanation.',
+      '- Use directAnswer for a polished interview answer someone can rehearse aloud.',
+      '- Use internals, edgeCases, tradeoffs, commonMistakes, and interviewFollowUps to complete the note as a self-contained study guide.',
     ].join('\n'),
   }
 }

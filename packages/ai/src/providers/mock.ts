@@ -87,7 +87,7 @@ export class MockAIProvider implements AIProvider {
           quickReference: [
             `${input.topic} is most useful when working with ${stack}.`,
             `Target depth is ${input.targetLevel}.`,
-            `Keep explanations concise and ${input.preferredOutputStyle ?? 'practical'}.`,
+            `Explain it in a self-contained, ${input.preferredOutputStyle ?? 'practical'} way.`,
           ],
           coreConcepts: [
             `${input.topic} fundamentals`,
@@ -122,6 +122,29 @@ export class MockAIProvider implements AIProvider {
             `Production-aware debugging mindset.`,
             `Clear communication matched to interviewer context.`,
           ],
+          directAnswer: `${input.topic} matters because it solves real system problems in ${stack}, but strong interview answers also explain the underlying tradeoffs, runtime behavior, and failure modes.`,
+          deepTheory: `${input.topic} should be taught as a complete study note: start from the purpose, connect it to the core runtime model, then explain how the internals, tradeoffs, and edge cases shape real production decisions.`,
+          internals: [
+            `Break ${input.topic} into the internal components or execution steps that make the behavior predictable.`,
+            `Explain what state, data flow, or scheduling details an experienced engineer would care about.`,
+          ],
+          edgeCases: [
+            `Call out the conditions where ${input.topic} behaves differently under load, failure, or unusual input.`,
+            `Explain what changes when assumptions about ${input.topic} stop holding.`,
+          ],
+          tradeoffs: [
+            `Show when ${input.topic} improves system outcomes and when it adds complexity.`,
+            `Compare the operational cost, performance impact, and maintainability tradeoffs.`,
+          ],
+          commonMistakes: [
+            `Repeating a definition of ${input.topic} without explaining why it behaves that way.`,
+            `Ignoring production constraints, fallback paths, or debugging signals.`,
+          ],
+          interviewFollowUps: [
+            `What would you optimize first if ${input.topic} became a bottleneck in production?`,
+            `When would you avoid ${input.topic} even if it seems like the standard solution?`,
+          ],
+          summary: `${input.topic} is easiest to master when the note teaches the concept, the internals, the tradeoffs, and the interview answer in one place.`,
         },
         sections: [
           { heading: 'Purpose', content: `Why ${input.topic} matters for ${input.targetRole}.` },

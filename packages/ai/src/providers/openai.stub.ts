@@ -322,29 +322,11 @@ export class OpenAIProvider implements AIProvider {
   }): Promise<AIResult<TResult>> {
     const startedAt = Date.now()
     const schemaHint = `\n\nReturn ONLY a valid JSON object. No markdown, no code fences, no text outside the JSON. The response must exactly match this schema:\n${JSON.stringify(format.schema)}`
-    const response = await fetch(`${trimTrailingSlash(this.options.baseUrl)}/responses`, {
-      method: 'POST',
-      signal: AbortSignal.timeout(60_000),
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${this.options.apiKey}`,
-        ...(this.options.organization ? { 'OpenAI-Organization': this.options.organization } : {}),
-        ...(this.options.project ? { 'OpenAI-Project': this.options.project } : {}),
-      },
-      body: JSON.stringify({
-        model: this.options.model,
-        stream: false,
-        instructions: instructions + schemaHint,
-        input: prompt,
-        text: {
-          format: {
-            type: 'json_schema',
-            name: format.name,
-            strict: true,
-            schema: format.schema,
-          },
-        },
-      }),
+    const instructionText = instructions + schemaHint
+    const response = await this.requestStructuredResponse({
+      instructions: instructionText,
+      prompt,
+      format,
     })
 
     if (!response.ok) {
@@ -385,6 +367,82 @@ export class OpenAIProvider implements AIProvider {
         generatedAt,
         latencyMs: Date.now() - startedAt,
       }),
+    }
+  }
+
+  private async requestStructuredResponse({
+    instructions,
+    prompt,
+    format,
+  }: {
+    instructions: string
+    prompt: string
+    format: JsonSchemaFormat
+  }) {
+    if (shouldPreferChatCompletions(this.options.baseUrl)) {
+      return this.requestChatCompletions({ instructions, prompt })
+    }
+
+    try {
+      return await fetch(`${trimTrailingSlash(this.options.baseUrl)}/responses`, {
+        method: 'POST',
+        signal: AbortSignal.timeout(60_000),
+        headers: this.requestHeaders(),
+        body: JSON.stringify({
+          model: this.options.model,
+          stream: false,
+          instructions,
+          input: prompt,
+          text: {
+            format: {
+              type: 'json_schema',
+              name: format.name,
+              strict: true,
+              schema: format.schema,
+            },
+          },
+        }),
+      })
+    } catch (error) {
+      if (!isRequestTimeoutError(error)) {
+        throw error
+      }
+
+      return this.requestChatCompletions({ instructions, prompt })
+    }
+  }
+
+  private requestChatCompletions({
+    instructions,
+    prompt,
+  }: {
+    instructions: string
+    prompt: string
+  }) {
+    return fetch(`${trimTrailingSlash(this.options.baseUrl)}/chat/completions`, {
+      method: 'POST',
+      signal: AbortSignal.timeout(60_000),
+      headers: this.requestHeaders(),
+      body: JSON.stringify({
+        model: this.options.model,
+        stream: false,
+        messages: [
+          { role: 'system', content: instructions },
+          { role: 'user', content: prompt },
+        ],
+        response_format: {
+          type: 'json_object',
+        },
+      }),
+    })
+  }
+
+  private requestHeaders() {
+    return {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${this.options.apiKey}`,
+      ...(this.options.organization ? { 'OpenAI-Organization': this.options.organization } : {}),
+      ...(this.options.project ? { 'OpenAI-Project': this.options.project } : {}),
     }
   }
 }
@@ -565,6 +623,19 @@ function buildMetadata(input: {
   }
 }
 
+function isRequestTimeoutError(error: unknown): error is Error {
+  return error instanceof Error && (error.name === 'AbortError' || error.name === 'TimeoutError')
+}
+
+function shouldPreferChatCompletions(baseUrl: string): boolean {
+  try {
+    const { hostname } = new URL(baseUrl)
+    return hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1'
+  } catch {
+    return false
+  }
+}
+
 const sharedStringArray = { type: 'array', items: { type: 'string' } } as const
 
 const improveTechnicalNoteJsonSchema = {
@@ -598,14 +669,6 @@ const technicalNoteJsonSchema = {
         'debuggingChecklist',
         'productionChecklist',
         'seniorInterviewSignals',
-        'directAnswer',
-        'deepTheory',
-        'internals',
-        'edgeCases',
-        'tradeoffs',
-        'commonMistakes',
-        'interviewFollowUps',
-        'summary',
       ],
       properties: {
         purpose: { type: 'string' },

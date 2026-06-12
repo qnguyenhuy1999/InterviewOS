@@ -1,18 +1,22 @@
+import { TechnicalNote } from '@interviewos/types'
 import type * as React from 'react'
 
 import { Badge } from '../../../components/ui/badge'
 import { cn } from '../../../lib/utils'
+import { getNotebookSummary } from '../../pages/NotebookPage/NotebookPage.utils'
 
 type NoteHeaderProps = {
   title: React.ReactNode
-  summary?: React.ReactNode
+  note?: TechnicalNote
   meta?: React.ReactNode
   eyebrow?: React.ReactNode
   actions?: React.ReactNode
   className?: string
 }
 
-function NoteHeader({ title, summary, meta, eyebrow, actions, className }: NoteHeaderProps) {
+function NoteHeader({ title, note, meta, eyebrow, actions, className }: NoteHeaderProps) {
+  const summary = note?.structuredContent?.purpose
+
   return (
     <header
       className={cn(
@@ -20,7 +24,7 @@ function NoteHeader({ title, summary, meta, eyebrow, actions, className }: NoteH
         className,
       )}
     >
-      <div className="absolute inset-x-8 top-0 h-px bg-border/70" />
+      <div className="absolute top-0 h-px inset-x-8 bg-border/70" />
       <div className="relative flex flex-col gap-5">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div className="min-w-0">
@@ -29,34 +33,34 @@ function NoteHeader({ title, summary, meta, eyebrow, actions, className }: NoteH
                 {eyebrow}
               </div>
             ) : null}
-            <h1 className="max-w-4xl text-3xl leading-tight font-semibold tracking-[-0.03em] text-foreground md:text-[2.5rem]">
+            <h1
+              className="max-w-4xl text-3xl leading-tight font-semibold tracking-[-0.03em] text-foreground md:text-[2.5rem]"
+              title={title?.toString()}
+            >
               {title}
             </h1>
             {summary ? (
-              <p className="mt-4 max-w-3xl text-sm leading-7 text-foreground/76 md:text-base">
-                {summary}
+              <p
+                className="max-w-3xl mt-4 text-sm leading-7 text-foreground/76 md:text-base"
+                title={summary}
+              >
+                {getNotebookSummary(note)}
               </p>
             ) : null}
           </div>
 
-          {actions ? <div className="flex shrink-0 flex-wrap items-center gap-2">{actions}</div> : null}
+          {actions ? (
+            <div className="flex flex-wrap items-center gap-2 shrink-0">{actions}</div>
+          ) : null}
         </div>
 
-        {meta ? (
-          <div className="flex flex-wrap items-center gap-2.5">
-            {meta}
-          </div>
-        ) : null}
+        {meta ? <div className="flex flex-wrap items-center gap-2.5">{meta}</div> : null}
       </div>
     </header>
   )
 }
 
-function NoteHeaderBadge({
-  children,
-  className,
-  ...props
-}: React.ComponentProps<typeof Badge>) {
+function NoteHeaderBadge({ children, className, ...props }: React.ComponentProps<typeof Badge>) {
   return (
     <Badge
       variant="outline"

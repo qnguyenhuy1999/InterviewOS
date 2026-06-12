@@ -26,6 +26,7 @@ import type {
   SessionEvalResult,
   SystemDesignEvalInput,
   SystemDesignEvalResult,
+  TechnicalNoteContent,
 } from '@interviewos/types'
 import {
   behavioralEvalResultSchema,
@@ -59,8 +60,13 @@ export class AIGateway {
   async generateTechnicalNote(
     input: GenerateTechnicalNoteInput,
   ): Promise<AIResult<GenerateTechnicalNoteResult>> {
-    return this.validateResult(
-      this.provider.generateTechnicalNote(input),
+    const response = await this.provider.generateTechnicalNote(input)
+
+    return this.validateValue(
+      {
+        ...response,
+        result: normalizeTechnicalNoteResult(response.result),
+      },
       technicalNoteResultSchema,
     )
   }
@@ -139,7 +145,10 @@ export class AIGateway {
     schema: ZodType<TResult>,
   ): Promise<AIResult<TResult>> {
     const response = await resultPromise
+    return this.validateValue(response, schema)
+  }
 
+  private validateValue<TResult>(response: AIResult<TResult>, schema: ZodType<TResult>): AIResult<TResult> {
     try {
       return {
         result: schema.parse(response.result),
@@ -162,4 +171,89 @@ export class AIGateway {
       throw error
     }
   }
+}
+
+function normalizeTechnicalNoteResult(result: GenerateTechnicalNoteResult): GenerateTechnicalNoteResult {
+  return {
+    ...result,
+    content: normalizeTechnicalNoteContent(result.content),
+  }
+}
+
+function normalizeTechnicalNoteContent(content: TechnicalNoteContent): TechnicalNoteContent {
+  const purpose = ensureString(content.purpose)
+  const mentalModel = ensureString(content.mentalModel)
+  const coreConcepts = ensureStringArray(content.coreConcepts)
+  const productionUsage = ensureStringArray(content.productionUsage)
+  const commonPitfalls = ensureStringArray(content.commonPitfalls)
+  const productionChecklist = ensureStringArray(content.productionChecklist)
+  const seniorInterviewSignals = ensureStringArray(content.seniorInterviewSignals)
+
+  const summary = content.summary?.trim() || purpose
+  const directAnswer =
+    content.directAnswer?.trim() ||
+    [purpose, mentalModel, productionChecklist[0]]
+      .filter(Boolean)
+      .join(' ')
+      .trim()
+  const deepTheory =
+    content.deepTheory?.trim() ||
+    [
+      mentalModel,
+      sentenceFromList('Key internals include', coreConcepts),
+      sentenceFromList('In production, this matters because', productionUsage),
+    ]
+      .filter(Boolean)
+      .join(' ')
+      .trim()
+
+  return {
+    ...content,
+    purpose,
+    mentalModel,
+    coreConcepts,
+    productionUsage,
+    commonPitfalls,
+    productionChecklist,
+    seniorInterviewSignals,
+    summary,
+    directAnswer,
+    deepTheory,
+    internals: ensureItems(content.internals, coreConcepts),
+    edgeCases: ensureItems(content.edgeCases, commonPitfalls),
+    tradeoffs: ensureItems(content.tradeoffs, seniorInterviewSignals),
+    commonMistakes: ensureItems(content.commonMistakes, commonPitfalls),
+    interviewFollowUps: ensureItems(
+      content.interviewFollowUps,
+      seniorInterviewSignals.map((signal) => `How would you apply ${signal.toLowerCase()} in production?`),
+    ),
+  }
+}
+
+function ensureItems(primary: string[] | undefined, fallback: string[]): string[] {
+  const normalizedPrimary = primary?.map((item) => item.trim()).filter(Boolean) ?? []
+  if (normalizedPrimary.length > 0) {
+    return normalizedPrimary
+  }
+
+  return fallback.map((item) => item.trim()).filter(Boolean).slice(0, 3)
+}
+
+function sentenceFromList(prefix: string, items: string[]): string {
+  const normalized = items.map((item) => item.trim()).filter(Boolean)
+  if (normalized.length === 0) {
+    return ''
+  }
+
+  return `${prefix} ${normalized.join('; ')}.`
+}
+
+function ensureString(value: unknown): string {
+  return typeof value === 'string' ? value.trim() : ''
+}
+
+function ensureStringArray(value: unknown): string[] {
+  return Array.isArray(value)
+    ? value.map((item) => (typeof item === 'string' ? item.trim() : '')).filter(Boolean)
+    : []
 }
