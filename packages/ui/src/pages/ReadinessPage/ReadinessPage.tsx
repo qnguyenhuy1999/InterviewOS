@@ -113,7 +113,7 @@ function ReadinessBody({ data }: { data: NonNullable<ReadinessPageProps['data']>
     <>
       <div className="grid gap-5 xl:grid-cols-[minmax(0,2fr)_minmax(320px,1fr)]">
         <Card className="gap-0 overflow-hidden py-0">
-          <CardHeader className="border-b bg-linear-to-br from-background via-background to-primary/5 py-4">
+          <CardHeader className="border-b bg-card py-4">
             <p className="text-xs font-semibold uppercase text-muted-foreground">
               Current readiness
             </p>

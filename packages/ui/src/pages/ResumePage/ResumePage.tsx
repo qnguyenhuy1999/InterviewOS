@@ -88,7 +88,7 @@ function ResumeHighlights({ data = resumePageFixture }: { data?: ResumePageProps
       {summaryItems.map((item) => (
         <Card
           key={item.label}
-          className="gap-3 border border-border/80 bg-[linear-gradient(180deg,white_0%,color-mix(in_oklch,var(--primary),white_95%)_100%)] py-4 shadow-[0_18px_50px_-38px_color-mix(in_oklch,var(--primary),transparent_45%)]"
+          className="gap-3 border border-border/80 bg-accent-soft py-4 shadow-[0_18px_50px_-38px_color-mix(in_oklch,var(--primary),transparent_45%)]"
           size="sm"
         >
           <CardHeader className="gap-2">

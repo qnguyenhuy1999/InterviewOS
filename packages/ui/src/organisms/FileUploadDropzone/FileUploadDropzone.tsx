@@ -31,7 +31,7 @@ function FileUploadDropzone({
     <Card
       className={
         className ??
-        'overflow-hidden border border-dashed border-primary/15 bg-[linear-gradient(180deg,color-mix(in_oklch,var(--primary),white_94%)_0%,white_100%)] py-0 shadow-[0_20px_60px_-34px_color-mix(in_oklch,var(--primary),transparent_62%)]'
+        'overflow-hidden border border-dashed border-primary/15 bg-accent-soft py-0 shadow-[0_20px_60px_-34px_color-mix(in_oklch,var(--primary),transparent_62%)]'
       }
     >
       <CardContent
@@ -41,7 +41,7 @@ function FileUploadDropzone({
         }
       >
         <div
-          className="pointer-events-none absolute inset-x-10 top-0 h-24 rounded-b-[2rem] bg-[radial-gradient(circle_at_top,color-mix(in_oklch,var(--primary),white_68%)_0%,transparent_72%)] opacity-70"
+          className="pointer-events-none absolute inset-x-10 top-0 h-24 rounded-b-[2rem] bg-primary/8 opacity-70"
           aria-hidden="true"
         />
         <div className="relative flex size-14 items-center justify-center rounded-[1.25rem] border border-primary/10 bg-white/80 text-primary shadow-sm">
