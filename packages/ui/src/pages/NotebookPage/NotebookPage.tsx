@@ -78,7 +78,7 @@ function NotebookCard({
   return (
     <Card
       className={cn(
-        'gap-0 border border-border/80 bg-[linear-gradient(180deg,white_0%,color-mix(in_oklch,var(--muted),white_58%)_100%)] py-0 transition-all hover:-translate-y-0.5 hover:border-primary/25 hover:shadow-[0_20px_60px_-40px_color-mix(in_oklch,var(--primary),transparent_45%)]',
+        'gap-0 border border-border/80 bg-surface-elevated py-0 transition-all hover:-translate-y-0.5 hover:border-primary/25 hover:shadow-[0_20px_60px_-40px_color-mix(in_oklch,var(--primary),transparent_45%)]',
         view === 'list' && 'md:grid md:grid-cols-[minmax(0,1fr)_auto] md:items-center',
       )}
     >

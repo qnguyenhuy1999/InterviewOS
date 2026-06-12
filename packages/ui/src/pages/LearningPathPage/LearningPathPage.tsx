@@ -110,7 +110,7 @@ function LearningPathBody({
             return (
               <div
                 key={summary.type}
-                className="rounded-md border border-border/80 bg-[linear-gradient(180deg,white_0%,color-mix(in_oklch,var(--muted),white_55%)_100%)] p-4"
+                className="rounded-md border border-border/80 bg-muted/40 p-4"
               >
                 <p className="text-sm font-semibold">{formatLearningPathLabel(summary.type)}</p>
                 <p className="mt-2 text-2xl font-semibold tracking-tight">

@@ -27,8 +27,7 @@ export const uiTheme = {
 export const shellStyle: CSSProperties = {
   minHeight: '100vh',
   padding: 'var(--layout-shell-padding-block) var(--layout-shell-padding-inline)',
-  background:
-    'radial-gradient(circle at top left, color-mix(in oklch, var(--accent) 18%, transparent) 0%, transparent 34%), linear-gradient(180deg, var(--surface-elevated) 0%, var(--background) 100%)',
+  background: uiTheme.colors.surfaceElevated,
   color: uiTheme.colors.text,
   boxSizing: 'border-box',
 }
@@ -43,6 +42,6 @@ export const frameStyle: CSSProperties = {
 export const surfaceStyle: CSSProperties = {
   border: `1px solid ${uiTheme.colors.border}`,
   borderRadius: uiTheme.radius.xl,
-  background: `linear-gradient(180deg, ${uiTheme.colors.surface} 0%, ${uiTheme.colors.background} 100%)`,
+  background: uiTheme.colors.surface,
   boxShadow: uiTheme.shadow,
 }
