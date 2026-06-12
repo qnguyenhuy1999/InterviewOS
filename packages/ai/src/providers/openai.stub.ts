@@ -1,6 +1,5 @@
 import { createHash } from 'node:crypto'
 
-import { AIProviderError } from '../errors'
 import type {
   AIExecutionMetadata,
   AIProvider,
@@ -39,6 +38,7 @@ import type {
   TranscribeAudioResult,
 } from '@interviewos/types'
 
+import { AIProviderError } from '../errors'
 import {
   behavioralEvalPrompt,
   conductTurnPrompt,

@@ -2,7 +2,7 @@ import type { Prisma } from '@interviewos/database'
 import { Injectable } from '@nestjs/common'
 
 import type { PaginationQueryDto } from '../../common/dto/pagination.dto'
-import { ReadinessRepository } from './readiness.repository'
+import { ReadinessRepository, type ReadinessSession } from './readiness.repository'
 
 const WEIGHTS = {
   technicalMastery: 0.25,
@@ -22,6 +22,13 @@ const LABELS: Record<keyof typeof WEIGHTS, string> = {
   englishCommunication: 'English Communication',
   reviewCompletion: 'Review Completion',
   learningProgress: 'Learning Progress',
+}
+
+function isSessionType(
+  session: ReadinessSession,
+  type: ReadinessSession['type'],
+): boolean {
+  return session.type === type && session.evaluation?.overallScore != null
 }
 
 @Injectable()
@@ -56,13 +63,13 @@ export class ReadinessService {
       await this.readinessRepository.getComputationContext(userId)
 
     const technicalSessions = sessions.filter(
-      (s) => s.type === 'TECHNICAL' && s.evaluation?.overallScore != null,
+      (s) => isSessionType(s, 'TECHNICAL'),
     )
     const behavioralSessions = sessions.filter(
-      (s) => s.type === 'BEHAVIORAL' && s.evaluation?.overallScore != null,
+      (s) => isSessionType(s, 'BEHAVIORAL'),
     )
     const designSessions = sessions.filter(
-      (s) => s.type === 'SYSTEM_DESIGN' && s.evaluation?.overallScore != null,
+      (s) => isSessionType(s, 'SYSTEM_DESIGN'),
     )
 
     const avg = (nums: number[]) =>

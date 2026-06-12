@@ -4,8 +4,8 @@ import type { ResumeUploadAreaView } from '@interviewos/types'
 import { useRef, useState } from 'react'
 
 import { Button } from '../../../components/ui/button'
-import { FileUploadDropzone } from '../FileUploadDropzone/FileUploadDropzone'
 import { FormNotice } from '../../lib/form-ui'
+import { FileUploadDropzone } from '../FileUploadDropzone/FileUploadDropzone'
 
 interface ResumeUploadFormProps {
   upload: ResumeUploadAreaView

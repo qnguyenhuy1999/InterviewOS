@@ -3,14 +3,22 @@ import { Injectable } from '@nestjs/common'
 
 import { PrismaService } from '../../database/prisma.service'
 
+export type ReadinessSession = {
+  type: 'TECHNICAL' | 'BEHAVIORAL' | 'SYSTEM_DESIGN' | 'MIXED'
+  evaluation: {
+    overallScore: number | null
+    dimensionScores: Prisma.JsonValue
+  } | null
+}
+
 @Injectable()
 export class ReadinessRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async getComputationContext(userId: string) {
-    const [sessions, reviewItems, learningItems] = await Promise.all([
+    const [rawSessions, reviewItems, learningItems] = await Promise.all([
       this.prisma.interviewSession.findMany({
-        where: { userId, status: 'PUBLISHED', deletedAt: null },
+        where: { userId, status: 'COMPLETED', deletedAt: null },
         include: { evaluation: true },
         orderBy: { endedAt: 'desc' },
         take: 20,
@@ -18,6 +26,8 @@ export class ReadinessRepository {
       this.prisma.reviewItem.findMany({ where: { userId } }),
       this.prisma.learningPathItem.findMany({ where: { userId } }),
     ])
+
+    const sessions = rawSessions as ReadinessSession[]
 
     return { sessions, reviewItems, learningItems }
   }

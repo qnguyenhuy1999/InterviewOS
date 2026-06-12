@@ -94,7 +94,7 @@ export class InterviewTurnService {
 
     const session = await this.interviewRepository.findSessionById(user.id, sessionId)
     if (!session) throw new NotFoundException('Interview session not found.')
-    if (session.status === 'PUBLISHED') throw new BadRequestException('Session already ended.')
+    if (session.status === 'COMPLETED') throw new BadRequestException('Session already ended.')
 
     const input = submitTurnSchema.parse(payload)
     const nextTurnNum = session.currentTurnNum + 1

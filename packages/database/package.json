@@ -11,7 +11,7 @@
     }
   },
   "scripts": {
-    "build": "tsc -p tsconfig.json && node -e \"const fs=require('node:fs'); const path='dist/generated/prisma/client.js'; const source=fs.readFileSync(path,'utf8'); fs.writeFileSync(path, source.replace(\\\"globalThis['__dirname'] = path.dirname((0, node_url_1.fileURLToPath)(import.meta.url));\\\", \\\"globalThis['__dirname'] = __dirname;\\\"));\"",
+    "build": "prisma generate && tsc -p tsconfig.json && node -e \"const fs=require('node:fs'); const path='dist/generated/prisma/client.js'; const source=fs.readFileSync(path,'utf8'); fs.writeFileSync(path, source.replace(\\\"globalThis['__dirname'] = path.dirname((0, node_url_1.fileURLToPath)(import.meta.url));\\\", \\\"globalThis['__dirname'] = __dirname;\\\"));\"",
     "db:generate": "dotenv -e ../../.env -- prisma generate",
     "db:migrate": "dotenv -e ../../.env -- prisma migrate dev",
     "db:validate": "dotenv -e ../../.env -- prisma validate",

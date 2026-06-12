@@ -2,15 +2,26 @@ import { Injectable } from '@nestjs/common'
 
 import { PrismaService } from '../../database/prisma.service'
 
+type AnalyticsSession = {
+  endedAt: Date | null
+  evaluation: {
+    overallScore: number | null
+    weakConcepts: string[]
+  } | null
+  turns: Array<{
+    topicTags: string[]
+  }>
+}
+
 @Injectable()
 export class AnalyticsRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async createInterviewAnalyticsSnapshot(userId: string) {
-    const sessions = await this.prisma.interviewSession.findMany({
+    const sessions = (await this.prisma.interviewSession.findMany({
       where: {
         userId,
-        status: 'PUBLISHED',
+        status: 'COMPLETED',
         deletedAt: null,
       },
       include: {
@@ -20,7 +31,7 @@ export class AnalyticsRepository {
       orderBy: {
         endedAt: 'desc',
       },
-    })
+    })) as AnalyticsSession[]
 
     const scoredSessions = sessions.filter((session) => session.evaluation?.overallScore != null)
     const averageScore = scoredSessions.length > 0
@@ -77,10 +88,7 @@ function topTerms(counts: Record<string, number>) {
     .map(([term]) => term)
 }
 
-function buildTrend(
-  sessions: Array<{ endedAt: Date | null; evaluation: { overallScore: number | null } | null }>,
-  days: number,
-) {
+function buildTrend(sessions: AnalyticsSession[], days: number) {
   const cutoff = new Date(Date.now() - days * 24 * 60 * 60 * 1000)
   const windowSessions = sessions.filter((session) => session.endedAt && session.endedAt >= cutoff)
   const scored = windowSessions.filter((session) => session.evaluation?.overallScore != null)
