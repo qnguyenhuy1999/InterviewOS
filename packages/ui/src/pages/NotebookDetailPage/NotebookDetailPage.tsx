@@ -74,10 +74,7 @@ function ConceptGrid({ items }: { items: string[] }) {
   return (
     <div className="grid gap-3 md:grid-cols-2">
       {items.map((item, index) => (
-        <div
-          key={item}
-          className="rounded-xl border border-border/70 bg-muted px-4 py-4 shadow-sm"
-        >
+        <div key={item} className="rounded-xl border border-border/70 bg-muted px-4 py-4 shadow-sm">
           <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
             Concept {index + 1}
           </p>
@@ -597,7 +594,7 @@ function Root({
   renderQuestionActions,
 }: NotebookDetailPageProps) {
   return (
-    <PageBody className="bg-surface-elevated pb-10 md:pb-12">
+    <PageBody className="pb-10 md:pb-12">
       {error ? (
         <ErrorBody message={error} />
       ) : loading ? (

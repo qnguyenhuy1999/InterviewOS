@@ -2,6 +2,13 @@ import path from 'node:path'
 
 import { expect, test } from '@playwright/test'
 
+test('guarded app routes redirect unauthenticated users to login', async ({ page }) => {
+  await page.goto('/dashboard')
+
+  await expect(page).toHaveURL(/\/login/)
+  await expect(page.getByRole('button', { name: 'Sign in' })).toBeVisible()
+})
+
 test('mvp smoke flow', async ({ context, page }) => {
   const email = `smoke-${Date.now()}@example.com`
   const password = 'Password123!'
@@ -43,12 +50,12 @@ test('mvp smoke flow', async ({ context, page }) => {
   await expect(page).toHaveURL(/\/interview\/session\/.+/)
 
   await page
-    .locator('#answer')
+    .getByPlaceholder('Type your answer...')
     .fill(
       'I would start with cache-aside for simplicity, add TTLs, and protect consistency with explicit invalidation on writes.',
     )
-  await page.getByRole('button', { name: 'Submit answer' }).click()
-  await expect(page.getByText('Technical feedback')).toBeVisible()
+  await page.getByRole('button', { name: 'Send answer' }).click()
+  await expect(page.getByText('I would start with cache-aside for simplicity')).toBeVisible()
 
   await page.goto('/review')
   const goodButton = page.getByRole('button', { name: 'GOOD' }).first()
@@ -59,6 +66,22 @@ test('mvp smoke flow', async ({ context, page }) => {
   const learningAction = page.getByRole('button', { name: 'Start' }).first()
   await expect(learningAction).toBeVisible()
   await learningAction.click()
+
+  await page.goto('/readiness')
+  await expect(page.getByRole('heading', { name: 'Readiness' })).toBeVisible()
+  await page.getByRole('button', { name: 'Recompute readiness' }).click()
+  await expect(page.getByText('Current readiness')).toBeVisible()
+
+  await page.goto('/settings')
+  await expect(page.getByRole('heading', { name: 'Update your defaults' })).toBeVisible()
+  await page.locator('#targetRole').fill('Principal Backend Engineer')
+  await page.locator('#techStack').fill('TypeScript, Node.js, PostgreSQL, Redis')
+  await page.locator('#interviewGoals').fill('System design, communication, staff-level tradeoffs')
+  await page.locator('#preferredOutputStyle').fill('Concise and practical with quantified tradeoffs')
+  await page.getByRole('button', { name: 'Save settings' }).click()
+  await expect(page).toHaveURL(/\/settings/)
+  await expect(page.getByText('Security')).toBeVisible()
+  await expect(page.getByText('Active sessions')).toBeVisible()
 
   await page.goto('/resume')
   await page.locator('input[type="file"]').setInputFiles(resumePath)

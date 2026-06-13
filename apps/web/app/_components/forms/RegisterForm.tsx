@@ -17,7 +17,6 @@ export function RegisterForm() {
     })
     if (!response.ok) throw await createApiError(response)
     router.push('/onboarding')
-    router.refresh()
   }
 
   return <RegisterFormUI onSubmit={handleSubmit} />

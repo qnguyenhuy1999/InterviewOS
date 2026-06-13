@@ -1,3 +1,4 @@
+# Ignore node modules and build artifacts
 node_modules
 .turbo
 dist
@@ -5,3 +6,22 @@ dist
 .env
 generated
 *.tsbuildinfo
+
+# Ignore test results and coverage reports
+test-results
+coverage
+.idea
+.vscode
+.DS_Store
+
+# Ignore log files and cache
+*.log
+*.cache
+*.tmp
+
+# Environment variables
+*.env.local
+*.env.development
+*.env.production
+*.env.test
+*.env.*.local

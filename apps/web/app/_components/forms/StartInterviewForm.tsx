@@ -33,7 +33,6 @@ export function StartInterviewForm({
     if (!response.ok) throw new Error(await response.text())
     const session = (await response.json()) as { id: string }
     router.push(APP_ROUTES.interviewSession(session.id))
-    router.refresh()
   }
 
   return (

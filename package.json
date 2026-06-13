@@ -9,7 +9,7 @@
     "dev": "turbo dev",
     "build": "turbo build",
     "lint": "turbo lint",
-    "test": "tsx --test apps/api/src/**/*.test.ts packages/ai/src/**/*.test.ts",
+    "test": "tsx --tsconfig apps/api/tsconfig.json --test apps/api/src/**/*.test.ts apps/web/lib/**/*.test.ts packages/ai/src/**/*.test.ts packages/config/src/**/*.test.ts packages/utils/src/**/*.test.ts packages/validators/src/**/*.test.ts && pnpm --filter @interviewos/ui test",
     "test:e2e": "playwright test",
     "typecheck": "turbo typecheck",
     "format": "prettier --write .",
