@@ -67,33 +67,29 @@ async function main() {
     },
   })
 
-  await prisma.technicalNoteSection.deleteMany({
-    where: { noteId: note.id },
-  })
+  const sectionCount = await prisma.technicalNoteSection.count({ where: { noteId: note.id } })
+  if (sectionCount === 0) {
+    await prisma.technicalNoteSection.createMany({
+      data: [
+        { noteId: note.id, order: 0, heading: 'Purpose', content: 'Why Redis caching matters.' },
+        {
+          noteId: note.id,
+          order: 1,
+          heading: 'Core Concepts',
+          content: 'Tradeoffs and failure modes.',
+        },
+        {
+          noteId: note.id,
+          order: 2,
+          heading: 'Production Usage',
+          content: 'How it works in real systems.',
+        },
+      ],
+    })
+  }
 
-  await prisma.technicalNoteSection.createMany({
-    data: [
-      { noteId: note.id, order: 0, heading: 'Purpose', content: 'Why Redis caching matters.' },
-      {
-        noteId: note.id,
-        order: 1,
-        heading: 'Core Concepts',
-        content: 'Tradeoffs and failure modes.',
-      },
-      {
-        noteId: note.id,
-        order: 2,
-        heading: 'Production Usage',
-        content: 'How it works in real systems.',
-      },
-    ],
-  })
-
-  await prisma.noteGeneratedQuestion.deleteMany({
-    where: { noteId: note.id },
-  })
-
-  await prisma.noteGeneratedQuestion.create({
+  const questionCount = await prisma.noteGeneratedQuestion.count({ where: { noteId: note.id } })
+  if (questionCount === 0) await prisma.noteGeneratedQuestion.create({
     data: {
       noteId: note.id,
       question: 'When would you choose cache-aside over write-through caching?',
