@@ -108,7 +108,10 @@ export class AuthController {
   @ApiOperation({ summary: 'Revoke a specific active session' })
   @ApiParam({ name: 'sessionId', type: String })
   @ApiEntityResponse(AuthSuccessResponseDto)
-  revokeSession(@CurrentUser() currentUser: AuthenticatedUser, @Param('sessionId') sessionId: string) {
+  revokeSession(
+    @CurrentUser() currentUser: AuthenticatedUser,
+    @Param('sessionId') sessionId: string,
+  ) {
     return this.authService.revokeSession(currentUser, sessionId)
   }
 
@@ -181,7 +184,8 @@ export class AuthController {
 
 function requestContext(request: AuthenticatedRequest) {
   return {
-    userAgent: typeof request.headers['user-agent'] === 'string' ? request.headers['user-agent'] : null,
+    userAgent:
+      typeof request.headers['user-agent'] === 'string' ? request.headers['user-agent'] : null,
     ipAddress: request.ip ?? null,
   }
 }

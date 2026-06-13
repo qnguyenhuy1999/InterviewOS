@@ -5,7 +5,10 @@ import { ApiHttpError, createApiError, normalizeApiErrorMessage } from './api-er
 
 test('normalizeApiErrorMessage supports string, array, object, and empty messages', () => {
   assert.equal(normalizeApiErrorMessage('Invalid request'), 'Invalid request')
-  assert.equal(normalizeApiErrorMessage(['Email is invalid', 'Password is short']), 'Email is invalid, Password is short')
+  assert.equal(
+    normalizeApiErrorMessage(['Email is invalid', 'Password is short']),
+    'Email is invalid, Password is short',
+  )
   assert.equal(normalizeApiErrorMessage({ field: 'email' } as never), '{"field":"email"}')
   assert.equal(normalizeApiErrorMessage(undefined), null)
 })

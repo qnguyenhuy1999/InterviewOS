@@ -18,7 +18,9 @@ export type ReviewPageProps = {
     item: NonNullable<Extract<ReviewPageState, { kind: 'ready' }>['data']>['learningPath'][number],
   ) => React.ReactNode
   renderWeakConceptActions?: (
-    concept: NonNullable<Extract<ReviewPageState, { kind: 'ready' }>['data']>['weakConcepts'][number],
+    concept: NonNullable<
+      Extract<ReviewPageState, { kind: 'ready' }>['data']
+    >['weakConcepts'][number],
   ) => React.ReactNode
 }
 

@@ -118,18 +118,22 @@ export class NotebookService {
       interviewGoals: note.overrideGoals.length > 0 ? note.overrideGoals : profile.interviewGoals,
       weakConcepts: [],
     })
-    const generated = await this.aiGateway.generateTechnicalNote({
-      topic: note.title,
-      noteType: note.type as unknown as NoteType,
-      targetLevel,
-      targetRole: note.overrideRole ?? profile.targetRole,
-      englishLevel: (note.overrideEnglishLevel ?? profile.englishLevel) as unknown as EnglishLevel,
-      techStack: note.overrideStack.length > 0 ? note.overrideStack : profile.techStack,
-      interviewGoals: note.overrideGoals.length > 0 ? note.overrideGoals : profile.interviewGoals,
-      preferredOutputStyle: note.preferredOutputStyle ?? profile.preferredOutputStyle,
-      additionalContext: note.rawInput,
-      explanationDepth: aiContext.explanationDepth,
-    }, { userId: user.id })
+    const generated = await this.aiGateway.generateTechnicalNote(
+      {
+        topic: note.title,
+        noteType: note.type as unknown as NoteType,
+        targetLevel,
+        targetRole: note.overrideRole ?? profile.targetRole,
+        englishLevel: (note.overrideEnglishLevel ??
+          profile.englishLevel) as unknown as EnglishLevel,
+        techStack: note.overrideStack.length > 0 ? note.overrideStack : profile.techStack,
+        interviewGoals: note.overrideGoals.length > 0 ? note.overrideGoals : profile.interviewGoals,
+        preferredOutputStyle: note.preferredOutputStyle ?? profile.preferredOutputStyle,
+        additionalContext: note.rawInput,
+        explanationDepth: aiContext.explanationDepth,
+      },
+      { userId: user.id },
+    )
 
     const saved = await this.notebookRepository.replaceGeneratedContent(user.id, note.id, {
       structuredContent: generated.result.content as unknown as Record<string, unknown>,
@@ -146,7 +150,11 @@ export class NotebookService {
     return saved
   }
 
-  async generateQuestions(currentUser: CurrentUserRef, noteId: string, payload: GenerateQuestionsDto) {
+  async generateQuestions(
+    currentUser: CurrentUserRef,
+    noteId: string,
+    payload: GenerateQuestionsDto,
+  ) {
     const user = await this.usersRepository.ensureUserById(currentUser.id)
     const note = await this.notebookRepository.findNoteById(user.id, noteId)
 
@@ -159,13 +167,16 @@ export class NotebookService {
     }
 
     const input = generateQuestionsSchema.parse(payload)
-    const questions = await this.aiGateway.generateQuestionsFromNote({
-      noteId: note.id,
-      title: note.title,
-      content: note.structuredContent as unknown as TechnicalNoteContent,
-      count: input.count,
-      difficulty: input.difficulty,
-    }, { userId: user.id })
+    const questions = await this.aiGateway.generateQuestionsFromNote(
+      {
+        noteId: note.id,
+        title: note.title,
+        content: note.structuredContent as unknown as TechnicalNoteContent,
+        count: input.count,
+        difficulty: input.difficulty,
+      },
+      { userId: user.id },
+    )
 
     const saved = await this.notebookRepository.replaceQuestions(
       user.id,

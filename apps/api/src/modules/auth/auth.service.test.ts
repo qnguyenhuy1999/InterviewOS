@@ -105,7 +105,8 @@ function createHarness() {
     },
     async listActiveSessions(userId: string, now: Date) {
       return Array.from(sessions.values()).filter(
-        (session) => session.userId === userId && session.revokedAt === null && session.expiresAt > now,
+        (session) =>
+          session.userId === userId && session.revokedAt === null && session.expiresAt > now,
       )
     },
     async revokeSession(userId: string, sessionId: string, revokedAt: Date) {
@@ -211,11 +212,7 @@ function createHarness() {
       const user = users.get(token.userId)
       return user ? { ...token, user } : null
     },
-    async markEmailVerified(payload: {
-      userId: string
-      verificationTokenId: string
-      now: Date
-    }) {
+    async markEmailVerified(payload: { userId: string; verificationTokenId: string; now: Date }) {
       const token = verificationTokens.get(payload.verificationTokenId)
       if (!token || token.usedAt || token.expiresAt <= payload.now) {
         return { success: false as const }
@@ -365,7 +362,10 @@ test('AuthService hashes password reset tokens, enforces single-use, expiry, and
   const harness = createHarness()
   const user = harness.seedUser({ email: 'reset@example.com', password: 'password123' })
 
-  const activeLogin = await harness.service.login({ email: user.email, password: 'password123' }, {})
+  const activeLogin = await harness.service.login(
+    { email: user.email, password: 'password123' },
+    {},
+  )
   await harness.service.requestPasswordReset({ email: user.email })
   const rawToken = lastTokenFromLog(harness.logs)
   const storedToken = Array.from(harness.resetTokens.values())[0]
@@ -391,7 +391,11 @@ test('AuthService hashes password reset tokens, enforces single-use, expiry, and
   expiringToken.expiresAt = new Date(Date.now() - 1_000)
 
   await assert.rejects(
-    () => harness.service.resetPassword({ token: lastTokenFromLog(harness.logs)!, password: 'anotherpass123' }),
+    () =>
+      harness.service.resetPassword({
+        token: lastTokenFromLog(harness.logs)!,
+        password: 'anotherpass123',
+      }),
     BadRequestException,
   )
 })

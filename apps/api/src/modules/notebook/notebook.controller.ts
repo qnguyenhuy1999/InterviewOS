@@ -68,7 +68,10 @@ export class NotebookController {
   @ApiOperation({ summary: 'Generate structured content for a technical note' })
   @ApiParam({ name: 'noteId', type: String })
   @ApiEntityResponse(TechnicalNoteDto, { status: 'created' })
-  generateTechnicalNote(@CurrentUser() currentUser: AuthenticatedUser, @Param('noteId') noteId: string) {
+  generateTechnicalNote(
+    @CurrentUser() currentUser: AuthenticatedUser,
+    @Param('noteId') noteId: string,
+  ) {
     return this.notebookService.generateTechnicalNote(currentUser, noteId)
   }
 

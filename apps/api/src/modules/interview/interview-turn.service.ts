@@ -1,9 +1,5 @@
 import type { Prisma } from '@interviewos/database'
-import type {
-  CompanyModeConfig,
-  ExperienceLevel,
-  InterviewType,
-} from '@interviewos/types'
+import type { CompanyModeConfig, ExperienceLevel, InterviewType } from '@interviewos/types'
 import { SessionMode, TurnDecision, TurnRole } from '@interviewos/types'
 import { startMultiTurnSessionSchema, submitTurnSchema } from '@interviewos/validators'
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
@@ -62,9 +58,10 @@ export class InterviewTurnService {
     })
 
     const openingQuestion = getOpeningQuestion({
-      companyQuestionBank: companyMode?.config && typeof companyMode.config === 'object'
-        ? (((companyMode.config as unknown) as CompanyModeConfig).questionBank ?? [])
-        : [],
+      companyQuestionBank:
+        companyMode?.config && typeof companyMode.config === 'object'
+          ? ((companyMode.config as unknown as CompanyModeConfig).questionBank ?? [])
+          : [],
       type: input.type,
       role: input.overrideRole ?? profile.targetRole,
       stack: input.overrideStack ?? profile.techStack,
@@ -189,7 +186,11 @@ export class InterviewTurnService {
     const result = await this.interviewRepository.endMultiTurnSession(sessionId)
     await this.interviewRepository.upsertSummary(sessionId, buildSummary(result))
     const nextReadiness = await this.readinessService.computeAndSave(user.id)
-    await this.interviewRepository.upsertReadinessImpact(sessionId, user.id, buildReadinessImpact(previousReadiness, nextReadiness))
+    await this.interviewRepository.upsertReadinessImpact(
+      sessionId,
+      user.id,
+      buildReadinessImpact(previousReadiness, nextReadiness),
+    )
     void this.evaluationService.triggerEvaluation(sessionId, user.id).catch(() => undefined)
     return result
   }
@@ -241,7 +242,8 @@ function buildSummary(session: {
     decision: turn.decision ?? null,
   }))
   const candidateTurns = session.turns.filter((turn) => turn.role === 'CANDIDATE')
-  const firstAnswer = candidateTurns[0]?.content.slice(0, 140) ?? 'Candidate completed the interview.'
+  const firstAnswer =
+    candidateTurns[0]?.content.slice(0, 140) ?? 'Candidate completed the interview.'
   const lastAnswer = candidateTurns.at(-1)?.content.slice(0, 140) ?? firstAnswer
 
   return {
@@ -249,9 +251,16 @@ function buildSummary(session: {
     keyTakeaways: [firstAnswer, lastAnswer].filter(
       (value, index, array): value is string => Boolean(value) && array.indexOf(value) === index,
     ),
-    strengths: candidateTurns.length > 1 ? ['Maintained momentum through follow-up questions.'] : ['Completed the full interview prompt.'],
-    weaknesses: ['Detailed evaluation will refine technical and communication gaps once scoring completes.'],
-    recommendations: ['Review the transcript and compare each answer against the final evaluation evidence.'],
+    strengths:
+      candidateTurns.length > 1
+        ? ['Maintained momentum through follow-up questions.']
+        : ['Completed the full interview prompt.'],
+    weaknesses: [
+      'Detailed evaluation will refine technical and communication gaps once scoring completes.',
+    ],
+    recommendations: [
+      'Review the transcript and compare each answer against the final evaluation evidence.',
+    ],
     generatedFromVersion: session.version ?? 1,
     transcript: transcript as unknown as Prisma.InputJsonValue,
   }
@@ -277,11 +286,21 @@ function buildReadinessImpact(
 ) {
   return {
     overallDelta: next.overallScore - (previous?.overallScore ?? next.overallScore),
-    technicalDelta: Math.round(next.technicalMastery * 100) - Math.round((previous?.technicalMastery ?? next.technicalMastery) * 100),
-    behavioralDelta: Math.round(next.behavioralPerformance * 100) - Math.round((previous?.behavioralPerformance ?? next.behavioralPerformance) * 100),
-    systemDesignDelta: Math.round(next.systemDesignPerformance * 100) - Math.round((previous?.systemDesignPerformance ?? next.systemDesignPerformance) * 100),
-    communicationDelta: Math.round(next.englishCommunication * 100) - Math.round((previous?.englishCommunication ?? next.englishCommunication) * 100),
-    consistencyDelta: Math.round(next.interviewPerformance * 100) - Math.round((previous?.interviewPerformance ?? next.interviewPerformance) * 100),
+    technicalDelta:
+      Math.round(next.technicalMastery * 100) -
+      Math.round((previous?.technicalMastery ?? next.technicalMastery) * 100),
+    behavioralDelta:
+      Math.round(next.behavioralPerformance * 100) -
+      Math.round((previous?.behavioralPerformance ?? next.behavioralPerformance) * 100),
+    systemDesignDelta:
+      Math.round(next.systemDesignPerformance * 100) -
+      Math.round((previous?.systemDesignPerformance ?? next.systemDesignPerformance) * 100),
+    communicationDelta:
+      Math.round(next.englishCommunication * 100) -
+      Math.round((previous?.englishCommunication ?? next.englishCommunication) * 100),
+    consistencyDelta:
+      Math.round(next.interviewPerformance * 100) -
+      Math.round((previous?.interviewPerformance ?? next.interviewPerformance) * 100),
     snapshot: next as unknown as Prisma.InputJsonValue,
   }
 }

@@ -1,4 +1,4 @@
-import { type EnglishNote,EnglishNoteStatus } from '@interviewos/types'
+import { type EnglishNote, EnglishNoteStatus } from '@interviewos/types'
 import { formatDistanceToNowStrict } from 'date-fns'
 
 export type EnglishTopicGroup = {
@@ -27,7 +27,9 @@ export function getEnglishTopicGroups(notes: EnglishNote[]): EnglishTopicGroup[]
 
   return Array.from(grouped.entries())
     .map(([name, topicNotes]) => {
-      const mastered = topicNotes.filter((note) => note.status === EnglishNoteStatus.MASTERED).length
+      const mastered = topicNotes.filter(
+        (note) => note.status === EnglishNoteStatus.MASTERED,
+      ).length
       const needsPractice = topicNotes.filter(
         (note) => note.status === EnglishNoteStatus.NEEDS_PRACTICE,
       ).length

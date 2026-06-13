@@ -2,7 +2,11 @@ import { ChevronDownIcon } from 'lucide-react'
 import type * as React from 'react'
 
 import { Button } from '../../../components/ui/button'
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '../../../components/ui/collapsible'
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '../../../components/ui/collapsible'
 import { cn } from '../../../lib/utils'
 
 type NoteSectionProps = {
@@ -19,12 +23,9 @@ type NoteSectionProps = {
 const toneClassName = {
   default:
     'rounded-xl border border-border/70 bg-background px-5 py-5 shadow-elevated md:px-6 md:py-6',
-  warning:
-    'rounded-xl border border-warning/30 bg-warning-soft px-5 py-5 md:px-6 md:py-6',
-  accent:
-    'rounded-xl border border-primary/20 bg-accent-soft px-5 py-5 md:px-6 md:py-6',
-  muted:
-    'rounded-xl border border-border/70 bg-muted px-5 py-5 md:px-6 md:py-6',
+  warning: 'rounded-xl border border-warning/30 bg-warning-soft px-5 py-5 md:px-6 md:py-6',
+  accent: 'rounded-xl border border-primary/20 bg-accent-soft px-5 py-5 md:px-6 md:py-6',
+  muted: 'rounded-xl border border-border/70 bg-muted px-5 py-5 md:px-6 md:py-6',
 } as const
 
 function NoteSection({
@@ -59,7 +60,13 @@ function NoteSection({
 
         {collapsible ? (
           <div className="hidden sm:block">
-            <Button type="button" variant="outline" size="sm" disabled className="pointer-events-none opacity-70">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              disabled
+              className="pointer-events-none opacity-70"
+            >
               Advanced
             </Button>
           </div>

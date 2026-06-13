@@ -1,11 +1,5 @@
 import { Controller, Get, Post, Req } from '@nestjs/common'
-import {
-  ApiBody,
-  ApiConsumes,
-  ApiCookieAuth,
-  ApiOperation,
-  ApiTags,
-} from '@nestjs/swagger'
+import { ApiBody, ApiConsumes, ApiCookieAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import type { FastifyRequest } from 'fastify'
 
 import { CurrentUser } from '../../common/decorators/current-user.decorator'
@@ -20,7 +14,9 @@ export class ResumeController {
   constructor(private readonly resumeService: ResumeService) {}
 
   @Post('upload')
-  @ApiOperation({ summary: 'Upload a resume file and analyze it against the onboarding target role' })
+  @ApiOperation({
+    summary: 'Upload a resume file and analyze it against the onboarding target role',
+  })
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {

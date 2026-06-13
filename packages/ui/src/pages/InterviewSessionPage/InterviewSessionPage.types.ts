@@ -27,7 +27,15 @@ export type InterviewSessionPageQuestion = {
 
 export type InterviewSessionPageSession = Pick<
   InterviewSessionDetail,
-  'id' | 'type' | 'mode' | 'status' | 'createdAt' | 'updatedAt' | 'version' | 'maxTurns' | 'lastActivityAt'
+  | 'id'
+  | 'type'
+  | 'mode'
+  | 'status'
+  | 'createdAt'
+  | 'updatedAt'
+  | 'version'
+  | 'maxTurns'
+  | 'lastActivityAt'
 > & {
   companyMode?: { name: string } | null
   note?: { title: string | null } | null

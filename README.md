@@ -165,11 +165,11 @@ Covered smoke path:
 
 ## Workspace Packages
 
-| Package | Description |
-| --- | --- |
-| `apps/web` | Next.js web application |
-| `apps/api` | Backend API server |
-| `packages/ui` | Shared UI component library |
-| `packages/database` | Database client and schema |
-| `packages/config` | Shared configuration |
-| `packages/types` | Shared TypeScript types |
+| Package             | Description                 |
+| ------------------- | --------------------------- |
+| `apps/web`          | Next.js web application     |
+| `apps/api`          | Backend API server          |
+| `packages/ui`       | Shared UI component library |
+| `packages/database` | Database client and schema  |
+| `packages/config`   | Shared configuration        |
+| `packages/types`    | Shared TypeScript types     |

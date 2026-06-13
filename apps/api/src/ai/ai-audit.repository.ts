@@ -28,7 +28,10 @@ export class AIAuditRepository {
         validationStatus: toPrismaValidationStatus(payload.metadata.validationStatus),
         tokenUsage: payload.metadata.tokenUsage as Prisma.InputJsonValue | undefined,
         // estimatedCostUsd field added via migration 20260612 — cast until client regenerated
-        estimatedCostUsd: estimateCostUsd(payload.metadata.model, payload.metadata.tokenUsage) as never,
+        estimatedCostUsd: estimateCostUsd(
+          payload.metadata.model,
+          payload.metadata.tokenUsage,
+        ) as never,
         latencyMs: payload.metadata.latencyMs,
         generatedAt: new Date(payload.metadata.generatedAt),
         errorMessage: payload.errorMessage,

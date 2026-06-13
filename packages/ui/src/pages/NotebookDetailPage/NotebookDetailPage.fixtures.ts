@@ -91,7 +91,8 @@ export const notebookDetailFixture: NotebookDetailPageFixture = {
     {
       id: 'question-react-fiber-2',
       noteId,
-      question: 'What problem do keys solve during reconciliation, and what breaks when keys are unstable?',
+      question:
+        'What problem do keys solve during reconciliation, and what breaks when keys are unstable?',
       category: 'React internals',
       expectedAnswer:
         'Keys preserve sibling identity. Unstable keys cause state loss, wrong instance reuse, and noisier diffs.',
@@ -102,7 +103,8 @@ export const notebookDetailFixture: NotebookDetailPageFixture = {
     {
       id: 'question-react-fiber-3',
       noteId,
-      question: 'How would you explain the difference between the render phase and the commit phase to an interviewer?',
+      question:
+        'How would you explain the difference between the render phase and the commit phase to an interviewer?',
       category: 'Communication',
       expectedAnswer:
         'Render computes work and can be interrupted. Commit applies the final mutations and lifecycle effects.',

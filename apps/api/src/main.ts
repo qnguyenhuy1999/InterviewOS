@@ -17,7 +17,10 @@ import { LoggingInterceptor } from './common/interceptors/logging.interceptor'
 
 async function bootstrap(): Promise<void> {
   const logger = new Logger('Bootstrap')
-  const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter({ trustProxy: 1 }))
+  const app = await NestFactory.create<NestFastifyApplication>(
+    AppModule,
+    new FastifyAdapter({ trustProxy: 1 }),
+  )
   await app.register(fastifyCookie)
   await app.register(fastifyMultipart, {
     limits: {
@@ -85,6 +88,8 @@ async function persistSwaggerDocument(document: object, logger: Logger) {
       'utf8',
     )
   } catch (err) {
-    logger.warn(`Could not persist swagger.json: ${err instanceof Error ? err.message : String(err)}`)
+    logger.warn(
+      `Could not persist swagger.json: ${err instanceof Error ? err.message : String(err)}`,
+    )
   }
 }

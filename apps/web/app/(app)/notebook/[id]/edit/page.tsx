@@ -8,9 +8,7 @@ export default async function EditNotePage({ params }: { params: Promise<{ id: s
   const { id } = await params
   const [note, profile] = await Promise.all([
     serverApiClient<TechnicalNote>(API_ROUTES.notes.byId(id)).catch(() => null),
-    serverApiClient<UserLearningProfile | null>(API_ROUTES.users.learningProfile).catch(
-      () => null,
-    ),
+    serverApiClient<UserLearningProfile | null>(API_ROUTES.users.learningProfile).catch(() => null),
   ])
 
   if (!note) {

@@ -1,7 +1,6 @@
 import {
   BookOpenIcon,
   FileTextIcon,
-  GraduationCapIcon,
   HomeIcon,
   LanguagesIcon,
   type LucideIcon,
@@ -39,12 +38,6 @@ type AppNavigationItem = {
 
 export const APP_NAVIGATION: AppNavigationItem[] = [
   { href: APP_ROUTES.dashboard, icon: HomeIcon, label: 'Dashboard', title: 'Dashboard' },
-  {
-    href: APP_ROUTES.onboarding,
-    icon: GraduationCapIcon,
-    label: 'Onboarding',
-    title: 'Onboarding',
-  },
   { href: APP_ROUTES.notebook, icon: BookOpenIcon, label: 'Notebook', title: 'Notebook' },
   { href: APP_ROUTES.interview, icon: MessageSquareIcon, label: 'Interview', title: 'Interview' },
   { href: APP_ROUTES.review, icon: SparklesIcon, label: 'Review', title: 'Review' },

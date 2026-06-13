@@ -1,8 +1,4 @@
-import type {
-  DashboardMetricView,
-  DashboardPageView,
-  DashboardProgress,
-} from '@interviewos/types'
+import type { DashboardMetricView, DashboardPageView, DashboardProgress } from '@interviewos/types'
 
 export type DashboardPageState =
   | { kind: 'loading' }

@@ -27,10 +27,15 @@ export class InterviewController {
   ) {}
 
   @Post()
-  @ApiOperation({ summary: 'Create a single-question interview session from a generated note question' })
+  @ApiOperation({
+    summary: 'Create a single-question interview session from a generated note question',
+  })
   @ApiBody({ type: CreateInterviewSessionDto })
   @ApiEntityResponse(InterviewSessionResponseDto, { status: 'created' })
-  createSession(@CurrentUser() currentUser: AuthenticatedUser, @Body() payload: CreateInterviewSessionDto) {
+  createSession(
+    @CurrentUser() currentUser: AuthenticatedUser,
+    @Body() payload: CreateInterviewSessionDto,
+  ) {
     return this.interviewService.createSession(currentUser, payload)
   }
 
@@ -45,7 +50,10 @@ export class InterviewController {
   @ApiOperation({ summary: 'Get an interview session by id' })
   @ApiParam({ name: 'sessionId', type: String })
   @ApiEntityResponse(InterviewSessionResponseDto)
-  findSessionById(@CurrentUser() currentUser: AuthenticatedUser, @Param('sessionId') sessionId: string) {
+  findSessionById(
+    @CurrentUser() currentUser: AuthenticatedUser,
+    @Param('sessionId') sessionId: string,
+  ) {
     return this.interviewService.findSessionById(currentUser, sessionId)
   }
 
@@ -66,7 +74,10 @@ export class InterviewController {
   @ApiOperation({ summary: 'Delete an interview session' })
   @ApiParam({ name: 'sessionId', type: String })
   @ApiEntityResponse(InterviewSessionResponseDto)
-  deleteSession(@CurrentUser() currentUser: AuthenticatedUser, @Param('sessionId') sessionId: string) {
+  deleteSession(
+    @CurrentUser() currentUser: AuthenticatedUser,
+    @Param('sessionId') sessionId: string,
+  ) {
     return this.interviewService.deleteSession(currentUser, sessionId)
   }
 
@@ -116,7 +127,9 @@ export class InterviewController {
   }
 
   @Post(':sessionId/end')
-  @ApiOperation({ summary: 'End a multi-turn interview session and trigger summary/evaluation work' })
+  @ApiOperation({
+    summary: 'End a multi-turn interview session and trigger summary/evaluation work',
+  })
   @ApiParam({ name: 'sessionId', type: String })
   @ApiEntityResponse(InterviewSessionResponseDto, { status: 'created' })
   endSession(@CurrentUser() currentUser: AuthenticatedUser, @Param('sessionId') sessionId: string) {
@@ -127,7 +140,10 @@ export class InterviewController {
   @ApiOperation({ summary: 'Get the evaluation for an interview session' })
   @ApiParam({ name: 'sessionId', type: String })
   @ApiEntityResponse(InterviewEvaluationDto)
-  getEvaluation(@CurrentUser() currentUser: AuthenticatedUser, @Param('sessionId') sessionId: string) {
+  getEvaluation(
+    @CurrentUser() currentUser: AuthenticatedUser,
+    @Param('sessionId') sessionId: string,
+  ) {
     return this.interviewTurnService.getEvaluation(currentUser, sessionId)
   }
 }

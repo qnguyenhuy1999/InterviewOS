@@ -78,16 +78,18 @@ function NotebookCard({
   return (
     <Card
       className={cn(
-        'gap-0 border border-border/80 bg-surface-elevated py-0 transition-all hover:-translate-y-0.5 hover:border-primary/25 hover:shadow-elevated',
+        'group gap-0 border border-border/60 bg-surface-elevated py-0 transition-all duration-200 hover:-translate-y-1 hover:border-primary/25 hover:shadow-elevated',
         view === 'list' && 'md:flex-row md:items-center md:justify-between',
       )}
     >
       <CardHeader className="gap-3 border-b py-4 md:border-b-0">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="min-w-0">
-            <p className="text-xs font-semibold uppercase text-muted-foreground">{topicLabel}</p>
+            <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground transition-colors duration-200 group-hover:text-primary/70">
+              {topicLabel}
+            </p>
             <CardTitle className="mt-2 text-lg font-semibold tracking-tight">
-              <a href={noteHref} className="hover:underline">
+              <a href={noteHref} className="underline-offset-2 hover:underline">
                 {note.title}
               </a>
             </CardTitle>
@@ -194,7 +196,7 @@ function FilterBar({
             value={searchValue ?? ''}
             onChange={(event) => onSearchValueChange?.(event.target.value)}
             placeholder="Search notes..."
-            className="h-10 rounded-xl bg-card pl-9"
+            className="h-10 rounded-xl border-border/60 bg-card pl-9 transition-colors"
           />
         </label>
         <FilterSelect
@@ -237,7 +239,7 @@ function FilterBar({
         </div>
       </div>
 
-      <div className="inline-flex items-center self-end rounded-xl border border-border bg-card p-1">
+      <div className="inline-flex items-center self-end rounded-xl border border-border/60 bg-card p-1">
         <Button
           variant={view === 'grid' ? 'secondary' : 'ghost'}
           size="icon-sm"

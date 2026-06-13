@@ -32,9 +32,7 @@ import { AIObservabilityController } from './ai-observability.controller'
                 baseUrl:
                   configService.get<string>('openai.gatewayBaseUrl') ??
                   (() => {
-                    throw new Error(
-                      'OPENAI_GATEWAY_BASE_URL is required when AI_PROVIDER=openai.',
-                    )
+                    throw new Error('OPENAI_GATEWAY_BASE_URL is required when AI_PROVIDER=openai.')
                   })(),
                 model: configService.get<string>('openai.model', 'gpt-5.4-mini'),
                 organization: configService.get<string>('openai.organization'),

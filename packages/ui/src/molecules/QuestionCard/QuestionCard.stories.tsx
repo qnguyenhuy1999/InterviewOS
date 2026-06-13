@@ -8,11 +8,11 @@ const meta = {
   parameters: { layout: 'centered' },
   tags: ['autodocs'],
   args: {
-    title: 'Molecules/How would you design a rate limiter for an API?',
-    description: 'Discuss request shape, storage, burst handling, and failure modes.',
+    question: 'How would you design a rate limiter for an API?',
+    category: 'system-design',
     difficulty: 'medium',
-    badges: ['Backend', 'System design'],
-    footer: 'Follow up: explain how you would test the limiter under load.',
+    tags: ['Backend', 'System design'],
+    timeEstimate: 15,
   },
 } satisfies Meta<typeof QuestionCard>
 
@@ -21,28 +21,67 @@ type Story = StoryObj<typeof meta>
 
 export const Default: Story = {}
 
+export const Compact: Story = {
+  args: { variant: 'compact' },
+}
+
+export const Expanded: Story = {
+  args: { variant: 'expanded' },
+}
+
+export const Active: Story = {
+  args: { variant: 'active', isActive: true },
+}
+
 export const Easy: Story = {
   args: {
     difficulty: 'easy',
-    title: 'Molecules/What is the difference between props and state?',
-    badges: ['Fundamentals'],
+    question: 'What is the difference between props and state?',
+    category: 'technical',
+    tags: ['Fundamentals'],
+  },
+}
+
+export const Medium: Story = {
+  args: {
+    difficulty: 'medium',
+    question: 'How would you implement debouncing in JavaScript?',
+    category: 'technical',
+    tags: ['Performance'],
   },
 }
 
 export const Hard: Story = {
   args: {
     difficulty: 'hard',
-    title: 'Molecules/Design a multi-region live collaboration system with conflict resolution.',
-    badges: ['Architecture', 'Scaling', 'Tradeoffs'],
+    question: 'Design a multi-region live collaboration system with conflict resolution.',
+    category: 'system-design',
+    tags: ['Architecture', 'Scaling', 'Tradeoffs'],
   },
 }
 
-export const Minimal: Story = {
+export const LongQuestion: Story = {
   args: {
-    description: undefined,
-    badges: [],
-    footer: undefined,
+    question:
+      'Tell me about a time when you had to make a critical technical decision under tight deadlines with incomplete information. How did you approach the problem, align stakeholders, and handle the outcome?',
+    category: 'behavioral',
     difficulty: 'medium',
-    title: 'Molecules/Explain useEffect cleanup timing.',
   },
+}
+
+export const WithTags: Story = {
+  args: {
+    variant: 'expanded',
+    tags: ['React', 'Hooks', 'Performance', 'Memoization', 'Rendering'],
+  },
+}
+
+export const AllVariants: Story = {
+  render: (args) => (
+    <div style={{ display: 'grid', gap: 16, width: 480 }}>
+      <QuestionCard {...args} variant="compact" />
+      <QuestionCard {...args} variant="expanded" />
+      <QuestionCard {...args} variant="active" isActive />
+    </div>
+  ),
 }

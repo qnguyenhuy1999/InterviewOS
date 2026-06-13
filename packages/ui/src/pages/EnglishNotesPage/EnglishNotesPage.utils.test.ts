@@ -4,13 +4,23 @@ import { EnglishNoteStatus } from '@interviewos/types'
 import { test } from 'vitest'
 
 import { englishNotesFixture } from './EnglishNotesPage.fixtures'
-import { getEnglishMasteryPercentage, getEnglishStatusClassName, getEnglishTopicGroups } from './EnglishNotesPage.utils'
+import {
+  getEnglishMasteryPercentage,
+  getEnglishStatusClassName,
+  getEnglishTopicGroups,
+} from './EnglishNotesPage.utils'
 
 test('getEnglishTopicGroups groups by grammar topic and sorts by volume', () => {
   const groups = getEnglishTopicGroups(englishNotesFixture.notes)
 
   assert.deepEqual(
-    groups.map((group) => [group.name, group.total, group.mastered, group.needsPractice, group.masteryPercentage]),
+    groups.map((group) => [
+      group.name,
+      group.total,
+      group.mastered,
+      group.needsPractice,
+      group.masteryPercentage,
+    ]),
     [
       ['Prepositions', 2, 1, 0, 50],
       ['Subject-verb agreement', 1, 0, 1, 0],

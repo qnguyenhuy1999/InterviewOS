@@ -14,11 +14,7 @@ type NotebookDetailPageClientProps = {
   error?: string
 }
 
-export function NotebookDetailPageClient({
-  data,
-  empty,
-  error,
-}: NotebookDetailPageClientProps) {
+export function NotebookDetailPageClient({ data, empty, error }: NotebookDetailPageClientProps) {
   return (
     <NotebookDetailPage
       data={data}

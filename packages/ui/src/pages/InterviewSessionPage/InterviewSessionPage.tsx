@@ -115,7 +115,9 @@ function MultiTurnBody({
               />
               <ProgressRow
                 label="Communication"
-                value={formatInterviewSessionSignedValue(session.readinessImpact.communicationDelta)}
+                value={formatInterviewSessionSignedValue(
+                  session.readinessImpact.communicationDelta,
+                )}
               />
             </div>
           </SectionCard>

@@ -7,7 +7,10 @@ test('AnalyticsService delegates dashboard progress to ReviewService', async () 
   const progress = { interviewReadiness: 80 }
   const service = new AnalyticsService(
     {
-      getDashboardProgress: async (currentUser: { id: string }) => ({ ...progress, userId: currentUser.id }),
+      getDashboardProgress: async (currentUser: { id: string }) => ({
+        ...progress,
+        userId: currentUser.id,
+      }),
     } as never,
     {} as never,
     {} as never,

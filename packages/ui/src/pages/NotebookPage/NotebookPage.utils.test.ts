@@ -31,7 +31,10 @@ test('getNotebookSummary prefers structured purpose and truncates long summaries
     rawInput: `${'A'.repeat(150)} trailing words`,
   }
 
-  assert.equal(getNotebookSummary(notebookFixture.notes[0]), notebookFixture.notes[0].structuredContent?.purpose)
+  assert.equal(
+    getNotebookSummary(notebookFixture.notes[0]),
+    notebookFixture.notes[0].structuredContent?.purpose,
+  )
   assert.equal(getNotebookSummary(note).length, 140)
   assert.match(getNotebookSummary(note), /\.\.\.$/)
 })

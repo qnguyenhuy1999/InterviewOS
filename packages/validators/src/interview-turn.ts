@@ -26,7 +26,10 @@ export const startMultiTurnSessionFormSchema = z.object({
   overrideStack: z
     .string()
     .trim()
-    .refine((value) => splitCommaSeparated(value).length > 0, 'Enter at least one tech stack item.'),
+    .refine(
+      (value) => splitCommaSeparated(value).length > 0,
+      'Enter at least one tech stack item.',
+    ),
   maxTurns: z.number().int().min(1).max(30),
 })
 

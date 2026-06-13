@@ -44,7 +44,10 @@ export class UsersController {
   @ApiOperation({ summary: 'Create or replace the current user learning profile' })
   @ApiBody({ type: UpsertUserLearningProfileDto })
   @ApiEntityResponse(UserLearningProfileResponseDto, { status: 'created' })
-  createProfile(@CurrentUser() currentUser: AuthenticatedUser, @Body() payload: UpsertUserLearningProfileDto) {
+  createProfile(
+    @CurrentUser() currentUser: AuthenticatedUser,
+    @Body() payload: UpsertUserLearningProfileDto,
+  ) {
     return this.usersService.upsertProfile(currentUser, payload)
   }
 
@@ -52,7 +55,10 @@ export class UsersController {
   @ApiOperation({ summary: 'Update the current user learning profile' })
   @ApiBody({ type: UpsertUserLearningProfileDto })
   @ApiEntityResponse(UserLearningProfileResponseDto)
-  updateProfile(@CurrentUser() currentUser: AuthenticatedUser, @Body() payload: UpsertUserLearningProfileDto) {
+  updateProfile(
+    @CurrentUser() currentUser: AuthenticatedUser,
+    @Body() payload: UpsertUserLearningProfileDto,
+  ) {
     return this.usersService.upsertProfile(currentUser, payload)
   }
 }

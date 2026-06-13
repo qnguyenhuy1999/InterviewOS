@@ -4,6 +4,9 @@
 @import 'shadcn/tailwind.css';
 @import '@fontsource-variable/geist';
 @import '@fontsource-variable/roboto';
+@import './styles/tokens.css';
+@import './styles/typography.css';
+@import './styles/motion.css';
 
 @custom-variant dark (&:is(.dark *));
 

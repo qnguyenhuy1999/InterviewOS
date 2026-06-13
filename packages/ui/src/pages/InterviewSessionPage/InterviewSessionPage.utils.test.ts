@@ -3,7 +3,10 @@ import assert from 'node:assert/strict'
 import { InterviewStatus, InterviewType, QuestionDifficulty } from '@interviewos/types'
 import { test } from 'vitest'
 
-import { interviewSessionFixtureSession, interviewSessionFixtureTurns } from './InterviewSessionPage.fixtures'
+import {
+  interviewSessionFixtureSession,
+  interviewSessionFixtureTurns,
+} from './InterviewSessionPage.fixtures'
 import type { InterviewSessionPageSession } from './InterviewSessionPage.types'
 import {
   formatInterviewSessionDateLabel,
@@ -21,7 +24,10 @@ test('interview session formatters handle invalid dates and signed deltas', () =
 })
 
 test('interview session helpers count completed turns by session mode', () => {
-  assert.equal(getInterviewSessionCompletedTurns(interviewSessionFixtureSession, interviewSessionFixtureTurns), 1)
+  assert.equal(
+    getInterviewSessionCompletedTurns(interviewSessionFixtureSession, interviewSessionFixtureTurns),
+    1,
+  )
 
   const standardSession: InterviewSessionPageSession = {
     ...interviewSessionFixtureSession,
@@ -63,5 +69,8 @@ test('interview session state derives loading, error, empty, and ready states', 
     }).kind,
     'ready',
   )
-  assert.match(getInterviewSessionHeaderDescription(interviewSessionFixtureSession), /SYSTEM_DESIGN/)
+  assert.match(
+    getInterviewSessionHeaderDescription(interviewSessionFixtureSession),
+    /SYSTEM_DESIGN/,
+  )
 })

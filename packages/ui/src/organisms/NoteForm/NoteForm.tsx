@@ -22,16 +22,14 @@ type NoteFormPayload = {
   topic: string | null
   roughNotes: string
   type: NoteType
-  advancedSettings?:
-    | {
-        targetRole: string
-        targetLevel: ExperienceLevel
-        englishLevel: EnglishLevel
-        techStack: string[]
-        interviewGoals: string[]
-        preferredOutputStyle: string
-      }
-    | null
+  advancedSettings?: {
+    targetRole: string
+    targetLevel: ExperienceLevel
+    englishLevel: EnglishLevel
+    techStack: string[]
+    interviewGoals: string[]
+    preferredOutputStyle: string
+  } | null
 }
 
 interface NoteFormProps {
@@ -44,11 +42,11 @@ export function NoteForm({ profile, note, onSubmit }: NoteFormProps) {
   const [error, setError] = useState<string | null>(null)
   const hasOverrides = Boolean(
     note?.overrideRole ||
-      note?.overrideLevel ||
-      note?.overrideEnglishLevel ||
-      note?.overrideStack.length ||
-      note?.overrideGoals.length ||
-      note?.preferredOutputStyle,
+    note?.overrideLevel ||
+    note?.overrideEnglishLevel ||
+    note?.overrideStack.length ||
+    note?.overrideGoals.length ||
+    note?.preferredOutputStyle,
   )
   const {
     register,

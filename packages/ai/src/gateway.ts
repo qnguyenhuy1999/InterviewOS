@@ -124,20 +124,38 @@ export class AIGateway {
     return this.validateResult(this.provider.conductInterviewTurn(input), conductTurnResultSchema)
   }
 
-  async evaluateBehavioralAnswer(input: BehavioralEvalInput): Promise<AIResult<BehavioralEvalResult>> {
-    return this.validateResult(this.provider.evaluateBehavioralAnswer(input), behavioralEvalResultSchema)
+  async evaluateBehavioralAnswer(
+    input: BehavioralEvalInput,
+  ): Promise<AIResult<BehavioralEvalResult>> {
+    return this.validateResult(
+      this.provider.evaluateBehavioralAnswer(input),
+      behavioralEvalResultSchema,
+    )
   }
 
-  async evaluateSystemDesignTurn(input: SystemDesignEvalInput): Promise<AIResult<SystemDesignEvalResult>> {
-    return this.validateResult(this.provider.evaluateSystemDesignTurn(input), systemDesignEvalResultSchema)
+  async evaluateSystemDesignTurn(
+    input: SystemDesignEvalInput,
+  ): Promise<AIResult<SystemDesignEvalResult>> {
+    return this.validateResult(
+      this.provider.evaluateSystemDesignTurn(input),
+      systemDesignEvalResultSchema,
+    )
   }
 
   async generateSessionEvaluation(input: SessionEvalInput): Promise<AIResult<SessionEvalResult>> {
-    return this.validateResult(this.provider.generateSessionEvaluation(input), sessionEvaluationResultSchema)
+    return this.validateResult(
+      this.provider.generateSessionEvaluation(input),
+      sessionEvaluationResultSchema,
+    )
   }
 
-  async computeReadinessScore(input: ReadinessComputeInput): Promise<AIResult<ReadinessComputeResult>> {
-    return this.validateResult(this.provider.computeReadinessScore(input), readinessSnapshotSchema as never)
+  async computeReadinessScore(
+    input: ReadinessComputeInput,
+  ): Promise<AIResult<ReadinessComputeResult>> {
+    return this.validateResult(
+      this.provider.computeReadinessScore(input),
+      readinessSnapshotSchema as never,
+    )
   }
 
   private async validateResult<TResult>(
@@ -148,7 +166,10 @@ export class AIGateway {
     return this.validateValue(response, schema)
   }
 
-  private validateValue<TResult>(response: AIResult<TResult>, schema: ZodType<TResult>): AIResult<TResult> {
+  private validateValue<TResult>(
+    response: AIResult<TResult>,
+    schema: ZodType<TResult>,
+  ): AIResult<TResult> {
     try {
       return {
         result: schema.parse(response.result),
@@ -173,7 +194,9 @@ export class AIGateway {
   }
 }
 
-function normalizeTechnicalNoteResult(result: GenerateTechnicalNoteResult): GenerateTechnicalNoteResult {
+function normalizeTechnicalNoteResult(
+  result: GenerateTechnicalNoteResult,
+): GenerateTechnicalNoteResult {
   return {
     ...result,
     content: normalizeTechnicalNoteContent(result.content),
@@ -192,10 +215,7 @@ function normalizeTechnicalNoteContent(content: TechnicalNoteContent): Technical
   const summary = content.summary?.trim() || purpose
   const directAnswer =
     content.directAnswer?.trim() ||
-    [purpose, mentalModel, productionChecklist[0]]
-      .filter(Boolean)
-      .join(' ')
-      .trim()
+    [purpose, mentalModel, productionChecklist[0]].filter(Boolean).join(' ').trim()
   const deepTheory =
     content.deepTheory?.trim() ||
     [
@@ -225,7 +245,9 @@ function normalizeTechnicalNoteContent(content: TechnicalNoteContent): Technical
     commonMistakes: ensureItems(content.commonMistakes, commonPitfalls),
     interviewFollowUps: ensureItems(
       content.interviewFollowUps,
-      seniorInterviewSignals.map((signal) => `How would you apply ${signal.toLowerCase()} in production?`),
+      seniorInterviewSignals.map(
+        (signal) => `How would you apply ${signal.toLowerCase()} in production?`,
+      ),
     ),
   }
 }
@@ -236,7 +258,10 @@ function ensureItems(primary: string[] | undefined, fallback: string[]): string[
     return normalizedPrimary
   }
 
-  return fallback.map((item) => item.trim()).filter(Boolean).slice(0, 3)
+  return fallback
+    .map((item) => item.trim())
+    .filter(Boolean)
+    .slice(0, 3)
 }
 
 function sentenceFromList(prefix: string, items: string[]): string {

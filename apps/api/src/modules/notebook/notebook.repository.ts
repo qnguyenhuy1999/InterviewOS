@@ -84,27 +84,29 @@ export class NotebookRepository {
     const topic = payload.topic
 
     return handlePrismaWrite(
-    this.prisma.technicalNote.update({
-      where: { id: noteId, userId, deletedAt: null },
-      data: {
-        title: payload.title,
-        topic: topic === undefined ? undefined : topic && topic.trim() ? topic.trim() : null,
-        rawInput: payload.roughNotes,
-        type: payload.type,
-        status: payload.status,
-        overrideRole: clearAdvancedSettings ? null : advancedSettings?.targetRole,
-        overrideLevel: clearAdvancedSettings ? null : advancedSettings?.targetLevel,
-        overrideStack: clearAdvancedSettings ? [] : advancedSettings?.techStack,
-        overrideGoals: clearAdvancedSettings ? [] : advancedSettings?.interviewGoals,
-        overrideEnglishLevel: clearAdvancedSettings ? null : advancedSettings?.englishLevel,
-        preferredOutputStyle: clearAdvancedSettings ? null : advancedSettings?.preferredOutputStyle,
-      },
-      include: {
-        sections: true,
-        questions: true,
-      },
-    }),
-    'Technical note not found.',
+      this.prisma.technicalNote.update({
+        where: { id: noteId, userId, deletedAt: null },
+        data: {
+          title: payload.title,
+          topic: topic === undefined ? undefined : topic && topic.trim() ? topic.trim() : null,
+          rawInput: payload.roughNotes,
+          type: payload.type,
+          status: payload.status,
+          overrideRole: clearAdvancedSettings ? null : advancedSettings?.targetRole,
+          overrideLevel: clearAdvancedSettings ? null : advancedSettings?.targetLevel,
+          overrideStack: clearAdvancedSettings ? [] : advancedSettings?.techStack,
+          overrideGoals: clearAdvancedSettings ? [] : advancedSettings?.interviewGoals,
+          overrideEnglishLevel: clearAdvancedSettings ? null : advancedSettings?.englishLevel,
+          preferredOutputStyle: clearAdvancedSettings
+            ? null
+            : advancedSettings?.preferredOutputStyle,
+        },
+        include: {
+          sections: true,
+          questions: true,
+        },
+      }),
+      'Technical note not found.',
     )
   }
 

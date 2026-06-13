@@ -1,10 +1,7 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import {
-  type RequestPasswordResetInput,
-  requestPasswordResetSchema,
-} from '@interviewos/validators'
+import { type RequestPasswordResetInput, requestPasswordResetSchema } from '@interviewos/validators'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 
@@ -60,16 +57,10 @@ export function ForgotPasswordForm({ onSubmit }: ForgotPasswordFormProps) {
         />
       </Field>
       {submitted ? (
-        <FormNotice>
-          If an account exists for that email, a reset link has been sent.
-        </FormNotice>
+        <FormNotice>If an account exists for that email, a reset link has been sent.</FormNotice>
       ) : null}
       {error ? <FormNotice variant="error">{error}</FormNotice> : null}
-      <Button
-        type="submit"
-        disabled={isSubmitting}
-        className="w-full"
-      >
+      <Button type="submit" disabled={isSubmitting} className="w-full">
         {isSubmitting ? 'Sending link...' : 'Send reset link'}
       </Button>
     </form>

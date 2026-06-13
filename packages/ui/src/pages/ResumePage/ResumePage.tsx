@@ -12,7 +12,7 @@ import {
 import { EmptyState, PageBody, PageHeader } from '../../../components/ui/page'
 import { Separator } from '../../../components/ui/separator'
 import { Skeleton } from '../../../components/ui/skeleton'
-import { Spinner } from '../../../components/ui/spinner'
+import { Spinner } from '../../atoms/Spinner'
 import { TagList } from '../../molecules/TagList/TagList'
 import { FileUploadDropzone } from '../../organisms/FileUploadDropzone/FileUploadDropzone'
 import { resumePageFixture } from './ResumePage.fixtures'
@@ -319,7 +319,7 @@ function LoadingBody() {
       </div>
 
       <Card className="min-h-64 items-center justify-center">
-        <Spinner className="size-7" />
+        <Spinner size="lg" />
       </Card>
     </div>
   )
@@ -351,7 +351,14 @@ function ErrorBody({ message }: { message: string }) {
   )
 }
 
-function Root({ data = resumePageFixture, loading, empty, error, renderUploadArea, emptyAction }: ResumePageProps) {
+function Root({
+  data = resumePageFixture,
+  loading,
+  empty,
+  error,
+  renderUploadArea,
+  emptyAction,
+}: ResumePageProps) {
   return (
     <>
       <PageHeader title={data.title} description={data.subtitle} />

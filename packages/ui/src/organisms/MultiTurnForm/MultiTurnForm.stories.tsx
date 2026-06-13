@@ -18,7 +18,8 @@ const meta = {
       {
         id: 'turn-2',
         role: 'CANDIDATE',
-        content: 'I would start with the traffic pattern and decide whether token bucket or sliding window fits better.',
+        content:
+          'I would start with the traffic pattern and decide whether token bucket or sliding window fits better.',
         turnNumber: 2,
       },
     ],

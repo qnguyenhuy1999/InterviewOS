@@ -139,7 +139,13 @@ export function MultiTurnForm({
           </a>
         </div>
       ) : (
-        <form onSubmit={(e) => { void handleEnd(); e.preventDefault() }} className="hidden" />
+        <form
+          onSubmit={(e) => {
+            void handleEnd()
+            e.preventDefault()
+          }}
+          className="hidden"
+        />
       )}
 
       {!complete && (
@@ -163,7 +169,9 @@ export function MultiTurnForm({
             </button>
             <button
               type="button"
-              onClick={() => { void handleEnd() }}
+              onClick={() => {
+                void handleEnd()
+              }}
               disabled={ending || isSubmitting}
               className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-muted-foreground hover:bg-muted disabled:opacity-60"
             >

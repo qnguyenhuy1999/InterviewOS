@@ -100,5 +100,8 @@ test('AIGateway writes AIRequestLog entries for validation failures', async () =
   )
 
   assert.equal(logs[0]?.operation, 'generateTechnicalNote')
-  assert.equal((logs[0]?.metadata as { validationStatus?: string }).validationStatus, 'validation_failed')
+  assert.equal(
+    (logs[0]?.metadata as { validationStatus?: string }).validationStatus,
+    'validation_failed',
+  )
 })

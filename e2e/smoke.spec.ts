@@ -77,7 +77,9 @@ test('mvp smoke flow', async ({ context, page }) => {
   await page.locator('#targetRole').fill('Principal Backend Engineer')
   await page.locator('#techStack').fill('TypeScript, Node.js, PostgreSQL, Redis')
   await page.locator('#interviewGoals').fill('System design, communication, staff-level tradeoffs')
-  await page.locator('#preferredOutputStyle').fill('Concise and practical with quantified tradeoffs')
+  await page
+    .locator('#preferredOutputStyle')
+    .fill('Concise and practical with quantified tradeoffs')
   await page.getByRole('button', { name: 'Save settings' }).click()
   await expect(page).toHaveURL(/\/settings/)
   await expect(page.getByText('Security')).toBeVisible()

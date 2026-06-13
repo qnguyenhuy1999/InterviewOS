@@ -9,8 +9,13 @@ import {
 } from '@nestjs/common'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 
-interface ZodIssue { path: (string | number)[]; message: string }
-interface ZodLike { errors: ZodIssue[] }
+interface ZodIssue {
+  path: (string | number)[]
+  message: string
+}
+interface ZodLike {
+  errors: ZodIssue[]
+}
 
 function isZodError(e: unknown): e is ZodLike {
   return (
@@ -59,7 +64,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
     }
 
     if (exception instanceof AIProviderError) {
-      this.logger.warn(`AI provider error: status=${exception.statusCode} retryable=${exception.retryable}`)
+      this.logger.warn(
+        `AI provider error: status=${exception.statusCode} retryable=${exception.retryable}`,
+      )
       const status = exception.retryable ? HttpStatus.SERVICE_UNAVAILABLE : HttpStatus.BAD_GATEWAY
       response.status(status).send({
         error: exception.retryable ? 'Service Unavailable' : 'Bad Gateway',

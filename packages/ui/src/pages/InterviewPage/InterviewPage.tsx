@@ -10,7 +10,6 @@ import {
   SelectValue,
 } from '../../../components/ui/select'
 import { Skeleton } from '../../../components/ui/skeleton'
-import { Spinner } from '../../../components/ui/spinner'
 import {
   Table,
   TableBody,
@@ -19,11 +18,16 @@ import {
   TableHeader,
   TableRow,
 } from '../../../components/ui/table'
+import { Spinner } from '../../atoms/Spinner'
 import {
   INTERVIEW_PAGE_ALL_TOPICS_VALUE,
   INTERVIEW_PAGE_TYPE_LABELS,
 } from './InterviewPage.constants'
-import type { InterviewPageActions, InterviewPageProps, InterviewPageSession } from './InterviewPage.types'
+import type {
+  InterviewPageActions,
+  InterviewPageProps,
+  InterviewPageSession,
+} from './InterviewPage.types'
 import {
   filterInterviewSessions,
   formatInterviewDateLabel,
@@ -34,12 +38,14 @@ import {
 } from './InterviewPage.utils'
 
 function getSessionMetrics(session: InterviewPageSession) {
-  return session.metrics ?? {
-    overallScore: null,
-    technicalScore: null,
-    englishScore: null,
-    durationMinutes: 0,
-  }
+  return (
+    session.metrics ?? {
+      overallScore: null,
+      technicalScore: null,
+      englishScore: null,
+      durationMinutes: 0,
+    }
+  )
 }
 
 function TopicFilter({
@@ -115,7 +121,12 @@ function SessionRow({
         {durationLabel}
       </TableCell>
       <TableCell className="px-5 py-5 text-right">
-        <Button asChild variant="link" size="sm" className="h-auto px-0 font-medium text-foreground">
+        <Button
+          asChild
+          variant="link"
+          size="sm"
+          className="h-auto px-0 font-medium text-foreground"
+        >
           <a href={reviewHref}>Review</a>
         </Button>
       </TableCell>
@@ -160,7 +171,11 @@ function SessionsTable({
         </TableHeader>
         <TableBody>
           {sessions.map((session) => (
-            <SessionRow key={session.id} session={session} reviewHref={actions.reviewHref(session.id)} />
+            <SessionRow
+              key={session.id}
+              session={session}
+              reviewHref={actions.reviewHref(session.id)}
+            />
           ))}
         </TableBody>
       </Table>
@@ -174,8 +189,10 @@ function InterviewHighlights({ sessions }: { sessions: InterviewPageSession[] })
     totalSessions === 0
       ? 0
       : Math.round(
-          sessions.reduce((total, session) => total + (getSessionMetrics(session).overallScore ?? 0), 0) /
-            totalSessions,
+          sessions.reduce(
+            (total, session) => total + (getSessionMetrics(session).overallScore ?? 0),
+            0,
+          ) / totalSessions,
         )
   const bestSession = sessions.reduce<InterviewPageSession | null>(
     (best, session) =>
@@ -232,7 +249,7 @@ function LoadingBody() {
           <Skeleton className="h-4 w-48" />
         </div>
         <div className="flex min-h-72 items-center justify-center">
-          <Spinner className="size-7" />
+          <Spinner size="lg" />
         </div>
       </div>
     </div>

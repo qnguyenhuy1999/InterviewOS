@@ -33,7 +33,11 @@ test('ReviewService ranks due and role-relevant review queue items', async () =>
   const service = new ReviewService(
     {
       listReviewItems: async () => [
-        createReviewItem({ id: 'low', sourceLabel: 'Generic question', nextReviewAt: new Date(now.getTime() + 86_400_000) }),
+        createReviewItem({
+          id: 'low',
+          sourceLabel: 'Generic question',
+          nextReviewAt: new Date(now.getTime() + 86_400_000),
+        }),
         createReviewItem({ id: 'high', sourceLabel: 'Redis architecture', lastFailureAt: now }),
       ],
     } as never,
@@ -97,7 +101,12 @@ test('ReviewService builds learning path actions from the top six queue entries'
   const service = new ReviewService(
     {
       listReviewItems: async () => [
-        createReviewItem({ id: 'note-review', type: 'TECHNICAL_NOTE', sourceId: 'note-1', sourceLabel: 'Note' }),
+        createReviewItem({
+          id: 'note-review',
+          type: 'TECHNICAL_NOTE',
+          sourceId: 'note-1',
+          sourceLabel: 'Note',
+        }),
         createReviewItem({
           id: 'question-review',
           type: 'GENERATED_QUESTION',
@@ -105,10 +114,23 @@ test('ReviewService builds learning path actions from the top six queue entries'
           sourceLabel: 'Question',
           metadata: { noteId: 'note-2' },
         }),
-        createReviewItem({ id: 'english-review', type: 'ENGLISH_NOTE', sourceId: 'english-1', sourceLabel: 'English' }),
-        createReviewItem({ id: 'weak-review', type: 'WEAK_CONCEPT', sourceId: 'weak-1', sourceLabel: 'Weak' }),
+        createReviewItem({
+          id: 'english-review',
+          type: 'ENGLISH_NOTE',
+          sourceId: 'english-1',
+          sourceLabel: 'English',
+        }),
+        createReviewItem({
+          id: 'weak-review',
+          type: 'WEAK_CONCEPT',
+          sourceId: 'weak-1',
+          sourceLabel: 'Weak',
+        }),
       ],
-      replacePendingLearningPath: async (_userId: string, items: Array<Record<string, unknown>>) => {
+      replacePendingLearningPath: async (
+        _userId: string,
+        items: Array<Record<string, unknown>>,
+      ) => {
         learningItems = items
         return items
       },

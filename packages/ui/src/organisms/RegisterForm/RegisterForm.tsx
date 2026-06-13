@@ -17,7 +17,11 @@ export interface RegisterFormProps {
 
 export function RegisterForm({ onSubmit }: RegisterFormProps) {
   const [error, setError] = useState<string | null>(null)
-  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<RegisterInput>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<RegisterInput>({
     resolver: zodResolver(registerSchema),
     defaultValues: { name: '', email: '', password: '' },
   })
@@ -27,7 +31,9 @@ export function RegisterForm({ onSubmit }: RegisterFormProps) {
     try {
       await onSubmit(values)
     } catch (submissionError) {
-      setError(submissionError instanceof Error ? submissionError.message : 'Unable to create account.')
+      setError(
+        submissionError instanceof Error ? submissionError.message : 'Unable to create account.',
+      )
     }
   }
 

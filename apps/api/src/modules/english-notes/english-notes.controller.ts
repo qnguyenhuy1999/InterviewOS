@@ -28,7 +28,10 @@ export class EnglishNotesController {
   @ApiOperation({ summary: 'Create an english improvement note' })
   @ApiBody({ type: CreateEnglishNoteDto })
   @ApiEntityResponse(EnglishNoteResponseDto, { status: 'created' })
-  createEnglishNote(@CurrentUser() currentUser: AuthenticatedUser, @Body() payload: CreateEnglishNoteDto) {
+  createEnglishNote(
+    @CurrentUser() currentUser: AuthenticatedUser,
+    @Body() payload: CreateEnglishNoteDto,
+  ) {
     return this.englishNotesService.createEnglishNote(currentUser, payload)
   }
 

@@ -24,7 +24,10 @@ export async function apiFetch(path: string, init?: RequestInit): Promise<Respon
   })
 }
 
-export async function apiFetchJson<TResponse>(path: string, init?: RequestInit): Promise<TResponse> {
+export async function apiFetchJson<TResponse>(
+  path: string,
+  init?: RequestInit,
+): Promise<TResponse> {
   const response = await apiFetch(path, init)
 
   if (!response.ok) {

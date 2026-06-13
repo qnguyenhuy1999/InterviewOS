@@ -79,11 +79,7 @@ export function ResumeUploadForm({
           onActionClick={() => inputRef.current?.click()}
         />
       ) : (
-        <Button
-          type="button"
-          disabled={pending}
-          onClick={() => inputRef.current?.click()}
-        >
+        <Button type="button" disabled={pending} onClick={() => inputRef.current?.click()}>
           {actionLabel}
         </Button>
       )}

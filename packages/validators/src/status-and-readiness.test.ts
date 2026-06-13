@@ -23,8 +23,14 @@ import { readinessSnapshotSchema } from './readiness'
 
 test('status schemas only accept supported workflow states', () => {
   assert.equal(noteStatusSchema.safeParse({ status: NoteStatus.MASTERED }).success, true)
-  assert.equal(englishNoteStatusSchema.safeParse({ status: EnglishNoteStatus.IMPROVED }).success, true)
-  assert.equal(weakConceptStatusSchema.safeParse({ status: WeakConceptStatus.RESOLVED }).success, true)
+  assert.equal(
+    englishNoteStatusSchema.safeParse({ status: EnglishNoteStatus.IMPROVED }).success,
+    true,
+  )
+  assert.equal(
+    weakConceptStatusSchema.safeParse({ status: WeakConceptStatus.RESOLVED }).success,
+    true,
+  )
   assert.equal(reviewRatingSchema.safeParse({ rating: ReviewRating.GOOD }).success, true)
   assert.equal(learningPathStatusSchema.safeParse(LearningPathItemStatus.IN_PROGRESS).success, true)
 
@@ -45,7 +51,9 @@ test('readinessSnapshotSchema bounds scores, confidence, weights, and trends', (
     readinessSnapshotSchema.safeParse({
       overallScore: 82,
       confidenceLevel: 0.7,
-      breakdown: [{ dimension: 'System design', score: 75, weight: 0.4, label: 'Strong', trend: 'UP' }],
+      breakdown: [
+        { dimension: 'System design', score: 75, weight: 0.4, label: 'Strong', trend: 'UP' },
+      ],
       improvementAreas: ['Clarify tradeoffs'],
     }).success,
     true,

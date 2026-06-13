@@ -6,11 +6,7 @@ type NoteProgressBarProps = {
   className?: string
 }
 
-function NoteProgressBar({
-  value,
-  label = 'Reading progress',
-  className,
-}: NoteProgressBarProps) {
+function NoteProgressBar({ value, label = 'Reading progress', className }: NoteProgressBarProps) {
   const normalizedValue = Math.min(100, Math.max(0, Math.round(value)))
 
   return (

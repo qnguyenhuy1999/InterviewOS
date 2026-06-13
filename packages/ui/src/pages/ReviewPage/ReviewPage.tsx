@@ -21,7 +21,7 @@ import { EmptyState, PageBody, PageHeader } from '../../../components/ui/page'
 import { Progress } from '../../../components/ui/progress'
 import { Separator } from '../../../components/ui/separator'
 import { Skeleton } from '../../../components/ui/skeleton'
-import { Spinner } from '../../../components/ui/spinner'
+import { Spinner } from '../../atoms/Spinner'
 import {
   Table,
   TableBody,
@@ -165,7 +165,9 @@ function ReviewBody({
   renderLearningPathActions,
   renderWeakConceptActions,
 }: {
-  state: Extract<ReviewPageProps['state'], { kind: 'ready' }> | Extract<ReviewPageProps['state'], { kind: 'empty' }>
+  state:
+    | Extract<ReviewPageProps['state'], { kind: 'ready' }>
+    | Extract<ReviewPageProps['state'], { kind: 'empty' }>
   startStudyHref: string
   renderRatingActions?: ReviewPageProps['renderRatingActions']
   renderLearningPathActions?: ReviewPageProps['renderLearningPathActions']
@@ -325,7 +327,7 @@ function LoadingBody() {
       </div>
 
       <Card className="min-h-64 items-center justify-center">
-        <Spinner className="size-7" />
+        <Spinner size="lg" />
       </Card>
     </div>
   )
@@ -353,7 +355,8 @@ function WeakConceptLastSeen({ concept }: { concept: ReviewWeakConceptView }) {
     return <span className="text-sm text-muted-foreground">Unknown</span>
   }
 
-  const date = concept.lastSeenAt instanceof Date ? concept.lastSeenAt : new Date(concept.lastSeenAt)
+  const date =
+    concept.lastSeenAt instanceof Date ? concept.lastSeenAt : new Date(concept.lastSeenAt)
   const label = Number.isNaN(date.getTime()) ? 'Unknown' : date.toLocaleDateString()
 
   return (

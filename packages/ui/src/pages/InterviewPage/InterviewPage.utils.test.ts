@@ -36,7 +36,9 @@ test('filterInterviewSessions respects the all topics sentinel', () => {
     interviewPageFixture.sessions.length,
   )
   assert.deepEqual(
-    filterInterviewSessions(interviewPageFixture.sessions, 'React internals').map((session) => session.id),
+    filterInterviewSessions(interviewPageFixture.sessions, 'React internals').map(
+      (session) => session.id,
+    ),
     ['session-react-internals'],
   )
 })

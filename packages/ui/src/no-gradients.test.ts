@@ -7,10 +7,7 @@ import { test } from 'vitest'
 
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const sourceRoots = ['src', 'components']
-const disallowedPatterns = [
-  /gradient\(/,
-  /bg-linear-to-[\w-]+/,
-]
+const disallowedPatterns = [/gradient\(/, /bg-linear-to-[\w-]+/]
 
 function getSourceFiles(dirPath: string): string[] {
   return readdirSync(dirPath, { withFileTypes: true }).flatMap((entry) => {

@@ -26,11 +26,9 @@ test('EnglishNotesService updates status and syncs the note into review items', 
     } as never,
   )
 
-  const note = await service.updateEnglishNoteStatus(
-    { id: 'user-1' },
-    'english-note-1',
-    { status: EnglishNoteStatus.MASTERED },
-  )
+  const note = await service.updateEnglishNoteStatus({ id: 'user-1' }, 'english-note-1', {
+    status: EnglishNoteStatus.MASTERED,
+  })
 
   assert.equal(note.status, EnglishNoteStatus.MASTERED)
   assert.deepEqual(syncedNotes, [

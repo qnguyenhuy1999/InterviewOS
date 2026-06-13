@@ -11,7 +11,11 @@ import {
   WavesLadderIcon,
 } from 'lucide-react'
 
-import type { ConsoleLayoutAccount, ConsoleLayoutBrand, ConsoleLayoutNavGroup } from './ConsoleLayout.types'
+import type {
+  ConsoleLayoutAccount,
+  ConsoleLayoutBrand,
+  ConsoleLayoutNavGroup,
+} from './ConsoleLayout.types'
 import { getDisplayInitials } from './ConsoleLayout.utils'
 
 export const consoleLayoutBrandFixture: ConsoleLayoutBrand = {

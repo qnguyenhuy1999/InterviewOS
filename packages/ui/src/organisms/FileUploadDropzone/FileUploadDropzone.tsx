@@ -51,9 +51,7 @@ function FileUploadDropzone({
           <p className="text-balance font-heading text-xl font-semibold tracking-tight sm:text-2xl">
             {title}
           </p>
-          <p className="mx-auto max-w-xl text-sm leading-6 text-muted-foreground">
-            {description}
-          </p>
+          <p className="mx-auto max-w-xl text-sm leading-6 text-muted-foreground">{description}</p>
           {supportingText ? (
             <p className="inline-flex rounded-md border border-primary/20 bg-background px-2.5 py-0.5 text-xs font-medium text-muted-foreground shadow-sm">
               {supportingText}

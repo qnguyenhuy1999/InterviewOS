@@ -108,10 +108,7 @@ function LearningPathBody({
               summary.total === 0 ? 0 : Math.round((summary.completed / summary.total) * 100)
 
             return (
-              <div
-                key={summary.type}
-                className="rounded-md border border-border/80 bg-muted p-4"
-              >
+              <div key={summary.type} className="rounded-md border border-border/80 bg-muted p-4">
                 <p className="text-sm font-semibold">{formatLearningPathLabel(summary.type)}</p>
                 <p className="mt-2 text-2xl font-semibold tracking-tight">
                   {summary.completed}/{summary.total}

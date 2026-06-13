@@ -1,10 +1,24 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 
-import { EnglishLevel, ExperienceLevel, InterviewType, NoteStatus, NoteType } from '@interviewos/types'
+import {
+  EnglishLevel,
+  ExperienceLevel,
+  InterviewType,
+  NoteStatus,
+  NoteType,
+} from '@interviewos/types'
 
-import { interviewAnswerFormSchema, interviewAnswerSchema, startInterviewSessionSchema } from './interview'
-import { startMultiTurnSessionFormSchema, startMultiTurnSessionSchema, submitTurnSchema } from './interview-turn'
+import {
+  interviewAnswerFormSchema,
+  interviewAnswerSchema,
+  startInterviewSessionSchema,
+} from './interview'
+import {
+  startMultiTurnSessionFormSchema,
+  startMultiTurnSessionSchema,
+  submitTurnSchema,
+} from './interview-turn'
 import { noteCreateSchema, noteFormSchema, noteUpdateSchema } from './note'
 import { onboardingSchema, profileUpdateSchema } from './onboarding'
 
@@ -41,13 +55,22 @@ test('onboarding schemas require non-empty learning profile details', () => {
     true,
   )
 
-  assert.equal(onboardingSchema.safeParse({ ...profileFields, techStack: [], interviewGoals: [] }).success, false)
+  assert.equal(
+    onboardingSchema.safeParse({ ...profileFields, techStack: [], interviewGoals: [] }).success,
+    false,
+  )
 })
 
 test('profileUpdateSchema validates comma-separated profile fields', () => {
   assert.equal(profileUpdateSchema.safeParse(profileFields).success, true)
-  assert.equal(profileUpdateSchema.safeParse({ ...profileFields, techStack: ' , , ' }).success, false)
-  assert.equal(profileUpdateSchema.safeParse({ ...profileFields, interviewGoals: '' }).success, false)
+  assert.equal(
+    profileUpdateSchema.safeParse({ ...profileFields, techStack: ' , , ' }).success,
+    false,
+  )
+  assert.equal(
+    profileUpdateSchema.safeParse({ ...profileFields, interviewGoals: '' }).success,
+    false,
+  )
 })
 
 test('noteCreateSchema defaults note type and noteUpdateSchema allows status-only updates', () => {
@@ -96,9 +119,18 @@ test('noteFormSchema only requires override fields when advanced settings are en
 })
 
 test('interview schemas validate session ids, answers, and advanced override fields', () => {
-  assert.equal(startInterviewSessionSchema.safeParse({ generatedQuestionId: 'question-1' }).success, true)
-  assert.equal(interviewAnswerSchema.safeParse({ answer: 'Use cache-aside with TTLs.' }).success, true)
-  assert.equal(submitTurnSchema.safeParse({ answer: 'I would clarify requirements first.' }).success, true)
+  assert.equal(
+    startInterviewSessionSchema.safeParse({ generatedQuestionId: 'question-1' }).success,
+    true,
+  )
+  assert.equal(
+    interviewAnswerSchema.safeParse({ answer: 'Use cache-aside with TTLs.' }).success,
+    true,
+  )
+  assert.equal(
+    submitTurnSchema.safeParse({ answer: 'I would clarify requirements first.' }).success,
+    true,
+  )
 
   assert.equal(startInterviewSessionSchema.safeParse({ generatedQuestionId: '' }).success, false)
   assert.equal(interviewAnswerSchema.safeParse({ answer: '' }).success, false)

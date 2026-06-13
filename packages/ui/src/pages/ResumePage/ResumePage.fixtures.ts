@@ -86,11 +86,15 @@ export const resumePageFixture: ResumePageFixture = {
     title: 'Interview preparation suggestions',
     subtitle: 'Use these prompts to prepare examples and sharpen your story.',
     actionLabel: 'Review prep',
-    items: ['Prepare a STAR example for scaling incidents', 'Review tradeoffs behind your Redis caching decisions'],
+    items: [
+      'Prepare a STAR example for scaling incidents',
+      'Review tradeoffs behind your Redis caching decisions',
+    ],
   },
   emptyState: {
     title: 'No resume uploaded yet',
-    description: 'Upload your first resume to unlock skills extraction and tailored interview topics.',
+    description:
+      'Upload your first resume to unlock skills extraction and tailored interview topics.',
     actionLabel: 'Upload resume',
   },
 }

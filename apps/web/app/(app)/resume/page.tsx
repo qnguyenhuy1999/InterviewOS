@@ -14,10 +14,13 @@ export default async function ResumeRoute() {
     next: APP_ROUTES.resume,
   })
 
-  const state = await loadRouteData(() => serverApiClient<ResumeAnalysis | null>(API_ROUTES.resume.latest), {
-    fallbackMessage: 'Unable to load your latest resume analysis.',
-    isEmpty: (analysis) => analysis === null,
-  })
+  const state = await loadRouteData(
+    () => serverApiClient<ResumeAnalysis | null>(API_ROUTES.resume.latest),
+    {
+      fallbackMessage: 'Unable to load your latest resume analysis.',
+      isEmpty: (analysis) => analysis === null,
+    },
+  )
 
   const data = createResumePageView(state.kind === 'ready' ? state.data : null)
 
@@ -30,11 +33,7 @@ export default async function ResumeRoute() {
         <ResumeUploadForm upload={data.upload} hasExistingAnalysis={state.kind === 'ready'} />
       }
       emptyAction={
-        <ResumeUploadForm
-          upload={data.upload}
-          hasExistingAnalysis={false}
-          renderAs="button"
-        />
+        <ResumeUploadForm upload={data.upload} hasExistingAnalysis={false} renderAs="button" />
       }
     />
   )
@@ -51,7 +50,8 @@ function createResumePageView(analysis: ResumeAnalysis | null): ResumePageView {
 
   return {
     title: 'Resume',
-    subtitle: 'Upload your resume so practice, readiness, and topic suggestions stay grounded in your actual background.',
+    subtitle:
+      'Upload your resume so practice, readiness, and topic suggestions stay grounded in your actual background.',
     upload: {
       title: analysis ? 'Refresh your latest resume analysis' : 'Upload your resume',
       description:
@@ -61,7 +61,9 @@ function createResumePageView(analysis: ResumeAnalysis | null): ResumePageView {
     },
     currentResume: {
       title: 'Current resume',
-      subtitle: analysis ? 'The latest uploaded file and analysis timestamp.' : 'No file uploaded yet.',
+      subtitle: analysis
+        ? 'The latest uploaded file and analysis timestamp.'
+        : 'No file uploaded yet.',
       actionLabel: 'Latest upload',
       items: analysis
         ? [
@@ -134,7 +136,8 @@ function createResumePageView(analysis: ResumeAnalysis | null): ResumePageView {
       : null,
     emptyState: {
       title: 'No resume uploaded yet',
-      description: 'Upload a resume to unlock role match scoring, strengths, gaps, and tailored interview preparation suggestions.',
+      description:
+        'Upload a resume to unlock role match scoring, strengths, gaps, and tailored interview preparation suggestions.',
       actionLabel: 'Upload resume',
     },
   }
@@ -146,5 +149,8 @@ function formatAnalyzedAt(value: Date | string) {
 }
 
 function humanizeEnum(value: string) {
-  return value.replaceAll('_', ' ').toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase())
+  return value
+    .replaceAll('_', ' ')
+    .toLowerCase()
+    .replace(/\b\w/g, (char) => char.toUpperCase())
 }

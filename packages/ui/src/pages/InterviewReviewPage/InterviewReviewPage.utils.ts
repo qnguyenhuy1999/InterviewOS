@@ -2,7 +2,10 @@ import {
   INTERVIEW_REVIEW_PAGE_PENDING_PUBLISHED_MESSAGE,
   INTERVIEW_REVIEW_PAGE_PENDING_UNPUBLISHED_MESSAGE,
 } from './InterviewReviewPage.constants'
-import type { InterviewReviewPageProps, InterviewReviewPageState } from './InterviewReviewPage.types'
+import type {
+  InterviewReviewPageProps,
+  InterviewReviewPageState,
+} from './InterviewReviewPage.types'
 
 export function getInterviewReviewHeaderDescription(params: {
   type: string

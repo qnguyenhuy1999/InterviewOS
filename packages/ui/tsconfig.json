@@ -13,7 +13,5 @@
     ".storybook/**/*",
     "vite.config.ts"
   ],
-  "exclude": [
-    "src/**/*.stories.tsx"
-  ]
+  "exclude": ["src/**/*.stories.tsx"]
 }

@@ -34,14 +34,19 @@ export class AnalyticsRepository {
     })) as AnalyticsSession[]
 
     const scoredSessions = sessions.filter((session) => session.evaluation?.overallScore != null)
-    const averageScore = scoredSessions.length > 0
-      ? Math.round(
-          scoredSessions.reduce((sum, session) => sum + (session.evaluation?.overallScore ?? 0), 0) /
-            scoredSessions.length,
-        )
-      : null
+    const averageScore =
+      scoredSessions.length > 0
+        ? Math.round(
+            scoredSessions.reduce(
+              (sum, session) => sum + (session.evaluation?.overallScore ?? 0),
+              0,
+            ) / scoredSessions.length,
+          )
+        : null
 
-    const weakCounts = countTerms(scoredSessions.flatMap((session) => session.evaluation?.weakConcepts ?? []))
+    const weakCounts = countTerms(
+      scoredSessions.flatMap((session) => session.evaluation?.weakConcepts ?? []),
+    )
     const strongCounts = countTerms(
       sessions.flatMap((session) => session.turns.flatMap((turn) => turn.topicTags ?? [])),
       new Set(Object.keys(weakCounts)),
@@ -95,8 +100,12 @@ function buildTrend(sessions: AnalyticsSession[], days: number) {
 
   return {
     completed: windowSessions.length,
-    averageScore: scored.length > 0
-      ? Math.round(scored.reduce((sum, session) => sum + (session.evaluation?.overallScore ?? 0), 0) / scored.length)
-      : null,
+    averageScore:
+      scored.length > 0
+        ? Math.round(
+            scored.reduce((sum, session) => sum + (session.evaluation?.overallScore ?? 0), 0) /
+              scored.length,
+          )
+        : null,
   }
 }

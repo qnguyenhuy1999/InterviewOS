@@ -24,8 +24,7 @@ export const sessionPageFixture: SessionPageFixture = {
     },
     {
       id: 'session-windows',
-      userAgent:
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:126.0) Gecko/20100101 Firefox/126.0',
+      userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:126.0) Gecko/20100101 Firefox/126.0',
       ipAddress: '88.12.5.140',
       expiresAt: new Date('2026-06-08T08:40:00'),
       lastSeenAt: new Date('2026-06-04T08:40:00'),

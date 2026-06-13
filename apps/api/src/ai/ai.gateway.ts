@@ -47,7 +47,9 @@ export class AIGateway {
     input: GenerateTechnicalNoteInput,
     context: AIAuditContext,
   ): Promise<AIResult<GenerateTechnicalNoteResult>> {
-    return this.run('generateTechnicalNote', context, () => this.gateway.generateTechnicalNote(input))
+    return this.run('generateTechnicalNote', context, () =>
+      this.gateway.generateTechnicalNote(input),
+    )
   }
 
   generateQuestionsFromNote(
@@ -104,28 +106,36 @@ export class AIGateway {
     input: BehavioralEvalInput,
     context: AIAuditContext,
   ): Promise<AIResult<BehavioralEvalResult>> {
-    return this.run('evaluateBehavioralAnswer', context, () => this.gateway.evaluateBehavioralAnswer(input))
+    return this.run('evaluateBehavioralAnswer', context, () =>
+      this.gateway.evaluateBehavioralAnswer(input),
+    )
   }
 
   evaluateSystemDesignTurn(
     input: SystemDesignEvalInput,
     context: AIAuditContext,
   ): Promise<AIResult<SystemDesignEvalResult>> {
-    return this.run('evaluateSystemDesignTurn', context, () => this.gateway.evaluateSystemDesignTurn(input))
+    return this.run('evaluateSystemDesignTurn', context, () =>
+      this.gateway.evaluateSystemDesignTurn(input),
+    )
   }
 
   generateSessionEvaluation(
     input: SessionEvalInput,
     context: AIAuditContext,
   ): Promise<AIResult<SessionEvalResult>> {
-    return this.run('generateSessionEvaluation', context, () => this.gateway.generateSessionEvaluation(input))
+    return this.run('generateSessionEvaluation', context, () =>
+      this.gateway.generateSessionEvaluation(input),
+    )
   }
 
   computeReadinessScore(
     input: ReadinessComputeInput,
     context: AIAuditContext,
   ): Promise<AIResult<ReadinessComputeResult>> {
-    return this.run('computeReadinessScore', context, () => this.gateway.computeReadinessScore(input))
+    return this.run('computeReadinessScore', context, () =>
+      this.gateway.computeReadinessScore(input),
+    )
   }
 
   private async run<TResult>(

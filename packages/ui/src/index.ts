@@ -1,6 +1,4 @@
 // Atoms
-export type { EmptyStateProps } from './atoms/EmptyState/EmptyState'
-export { EmptyState } from './atoms/EmptyState/EmptyState'
 export { Field } from './atoms/Field/Field'
 export { FieldLabel } from './atoms/FieldLabel/FieldLabel'
 

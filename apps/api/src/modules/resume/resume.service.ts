@@ -140,10 +140,7 @@ export class ResumeService {
   }
 }
 
-async function extractResumeText(upload: {
-  buffer: Buffer
-  extension: string
-}) {
+async function extractResumeText(upload: { buffer: Buffer; extension: string }) {
   if (upload.extension === '.txt') {
     return upload.buffer.toString('utf-8').trim()
   }

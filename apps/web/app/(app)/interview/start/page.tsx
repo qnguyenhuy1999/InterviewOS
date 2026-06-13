@@ -7,11 +7,7 @@ import { requireLearningProfile } from '@/lib/learning-profile-guard'
 import { loadRouteData } from '@/lib/route-state'
 import { serverApiClient } from '@/lib/server-api-client'
 
-export default async function Page({
-  searchParams,
-}: {
-  searchParams: Promise<{ mode?: string }>
-}) {
+export default async function Page({ searchParams }: { searchParams: Promise<{ mode?: string }> }) {
   const { mode } = await searchParams
   const profile = await requireLearningProfile({
     reason: 'Complete onboarding before starting an interview session.',

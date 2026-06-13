@@ -2,9 +2,15 @@ import { NoteStatus, NoteType } from '@interviewos/types'
 
 import type { NotebookPageFilterValue } from './NotebookPage.types'
 
-export const NOTEBOOK_STATUS_OPTIONS = ['ALL', ...Object.values(NoteStatus)] as const satisfies readonly NotebookPageFilterValue<NoteStatus>[]
+export const NOTEBOOK_STATUS_OPTIONS = [
+  'ALL',
+  ...Object.values(NoteStatus),
+] as const satisfies readonly NotebookPageFilterValue<NoteStatus>[]
 
-export const NOTEBOOK_TYPE_OPTIONS = ['ALL', ...Object.values(NoteType)] as const satisfies readonly NotebookPageFilterValue<NoteType>[]
+export const NOTEBOOK_TYPE_OPTIONS = [
+  'ALL',
+  ...Object.values(NoteType),
+] as const satisfies readonly NotebookPageFilterValue<NoteType>[]
 
 export const NOTEBOOK_DIFFICULTY_TONE = {
   EASY: 'easy',

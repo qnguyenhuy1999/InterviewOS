@@ -16,14 +16,13 @@ export function NoteForm({
 }) {
   const router = useRouter()
 
-  async function handleSubmit(payload: Parameters<React.ComponentProps<typeof NoteFormUI>['onSubmit']>[0]) {
-    const response = await apiFetch(
-      note ? API_ROUTES.notes.byId(note.id) : API_ROUTES.notes.list,
-      {
-        method: note ? 'PATCH' : 'POST',
-        body: JSON.stringify(payload),
-      },
-    )
+  async function handleSubmit(
+    payload: Parameters<React.ComponentProps<typeof NoteFormUI>['onSubmit']>[0],
+  ) {
+    const response = await apiFetch(note ? API_ROUTES.notes.byId(note.id) : API_ROUTES.notes.list, {
+      method: note ? 'PATCH' : 'POST',
+      body: JSON.stringify(payload),
+    })
     if (!response.ok) throw new Error(await response.text())
     const savedNote = (await response.json()) as { id: string }
     router.push(`/notebook/${savedNote.id}`)

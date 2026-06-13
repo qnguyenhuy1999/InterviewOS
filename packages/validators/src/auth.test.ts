@@ -16,8 +16,14 @@ test('loginSchema accepts valid credentials and rejects malformed credentials', 
     password: 'Password123!',
   })
 
-  assert.equal(loginSchema.safeParse({ email: 'bad-email', password: 'Password123!' }).success, false)
-  assert.equal(loginSchema.safeParse({ email: 'ada@example.com', password: 'short' }).success, false)
+  assert.equal(
+    loginSchema.safeParse({ email: 'bad-email', password: 'Password123!' }).success,
+    false,
+  )
+  assert.equal(
+    loginSchema.safeParse({ email: 'ada@example.com', password: 'short' }).success,
+    false,
+  )
 })
 
 test('registerSchema trims optional display names', () => {
@@ -32,10 +38,16 @@ test('registerSchema trims optional display names', () => {
 
 test('password reset schemas require usable tokens and matching confirmation', () => {
   assert.equal(requestPasswordResetSchema.safeParse({ email: 'ada@example.com' }).success, true)
-  assert.equal(resetPasswordSchema.safeParse({ token: 'token-1', password: 'Password123!' }).success, true)
+  assert.equal(
+    resetPasswordSchema.safeParse({ token: 'token-1', password: 'Password123!' }).success,
+    true,
+  )
   assert.equal(confirmEmailVerificationSchema.safeParse({ token: 'verify-token' }).success, true)
 
-  assert.equal(resetPasswordSchema.safeParse({ token: '   ', password: 'Password123!' }).success, false)
+  assert.equal(
+    resetPasswordSchema.safeParse({ token: '   ', password: 'Password123!' }).success,
+    false,
+  )
   assert.equal(
     resetPasswordFormSchema.safeParse({
       token: 'token-1',

@@ -77,7 +77,11 @@ export function ResetPasswordForm({ token, onSubmit, onSuccess }: ResetPasswordF
           className="w-full"
         />
       </Field>
-      <Field label="Confirm password" htmlFor="confirmPassword" error={errors.confirmPassword?.message}>
+      <Field
+        label="Confirm password"
+        htmlFor="confirmPassword"
+        error={errors.confirmPassword?.message}
+      >
         <Input
           id="confirmPassword"
           type="password"
@@ -86,15 +90,9 @@ export function ResetPasswordForm({ token, onSubmit, onSuccess }: ResetPasswordF
           className="w-full"
         />
       </Field>
-      {success ? (
-        <FormNotice>Password updated. Redirecting to sign in.</FormNotice>
-      ) : null}
+      {success ? <FormNotice>Password updated. Redirecting to sign in.</FormNotice> : null}
       {error ? <FormNotice variant="error">{error}</FormNotice> : null}
-      <Button
-        type="submit"
-        disabled={isSubmitting}
-        className="w-full"
-      >
+      <Button type="submit" disabled={isSubmitting} className="w-full">
         {isSubmitting ? 'Updating password...' : 'Reset password'}
       </Button>
     </form>

@@ -76,14 +76,16 @@ function HistoryRow({ item }: { item: ReadinessHistoryItem }) {
     <div className="flex gap-2.5">
       <div className="relative flex w-5 shrink-0 justify-center">
         <span className="absolute inset-y-0 left-1/2 -translate-x-1/2 border-l border-border/80" />
-        <span className="relative mt-2.5 inline-flex size-2.5 rounded-full border-2 border-background bg-primary" />
+        <span className="relative mt-2.5 inline-flex size-3 rounded-full border-2 border-background bg-primary ring-2 ring-primary/20 transition-shadow duration-200" />
       </div>
-      <article className="flex flex-1 items-center justify-between gap-3 rounded-md border border-border/80 bg-background px-3.5 py-3">
+      <article className="flex flex-1 items-center justify-between gap-3 rounded-md border border-border/60 bg-background px-3.5 py-3 transition-colors duration-150 hover:bg-muted/30">
         <div>
           <p className="text-xs text-muted-foreground">
             {getReadinessHistoryDateLabel(item.computedAt)}
           </p>
-          <p className="mt-0.5 text-2xl font-semibold tracking-tight">{item.overallScore}</p>
+          <p className="mt-0.5 text-2xl font-semibold tracking-tight tabular-nums">
+            {item.overallScore}
+          </p>
         </div>
         <span
           className={cn(
@@ -119,7 +121,7 @@ function ReadinessBody({ data }: { data: NonNullable<ReadinessPageProps['data']>
             </p>
             <div className="flex flex-wrap items-end gap-2.5">
               <div className="flex items-end gap-1.5">
-                <CardTitle className="text-5xl font-semibold tracking-tight">
+                <CardTitle className="text-6xl font-semibold tracking-tight tabular-nums">
                   {data.latest.overallScore}
                 </CardTitle>
                 <p className="pb-1.5 text-lg text-muted-foreground">/ {READINESS_SCORE_MAX}</p>
@@ -131,14 +133,14 @@ function ReadinessBody({ data }: { data: NonNullable<ReadinessPageProps['data']>
             </p>
           </CardHeader>
           <CardContent className="grid gap-3.5 p-3.5 md:grid-cols-3">
-            <div className="rounded-md border border-border/80 bg-background p-3.5">
+            <div className="rounded-md border border-border/60 bg-background p-3.5 transition-colors duration-150 hover:bg-muted/20">
               <p className="text-xs font-semibold uppercase text-muted-foreground">Confidence</p>
               <p className="mt-1.5 text-xl font-semibold tracking-tight">{confidencePercent}%</p>
               <p className="mt-1.5 text-sm text-muted-foreground">
                 Higher confidence means the score is backed by more recent sessions and review data.
               </p>
             </div>
-            <div className="rounded-md border border-border/80 bg-background p-3.5">
+            <div className="rounded-md border border-border/60 bg-background p-3.5 transition-colors duration-150 hover:bg-muted/20">
               <p className="text-xs font-semibold uppercase text-muted-foreground">
                 Learning progress
               </p>
@@ -149,7 +151,7 @@ function ReadinessBody({ data }: { data: NonNullable<ReadinessPageProps['data']>
                 Based on how many learning-path items have been completed.
               </p>
             </div>
-            <div className="rounded-md border border-border/80 bg-background p-3.5">
+            <div className="rounded-md border border-border/60 bg-background p-3.5 transition-colors duration-150 hover:bg-muted/20">
               <p className="text-xs font-semibold uppercase text-muted-foreground">
                 Review completion
               </p>
@@ -163,7 +165,7 @@ function ReadinessBody({ data }: { data: NonNullable<ReadinessPageProps['data']>
           </CardContent>
         </Card>
 
-        <Card className="gap-0 py-0">
+        <Card className="gap-0 border-border/60 py-0">
           <CardHeader className="border-b py-4">
             <p className="text-xs font-semibold uppercase text-muted-foreground">Best dimension</p>
             <CardTitle className="text-3xl font-semibold tracking-tight">

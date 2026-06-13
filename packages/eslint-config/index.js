@@ -94,7 +94,10 @@ export default tseslint.config(
         'error',
         {
           paths: [
-            { name: '@interviewos/database', message: 'packages/types must stay framework-agnostic.' },
+            {
+              name: '@interviewos/database',
+              message: 'packages/types must stay framework-agnostic.',
+            },
             { name: '@interviewos/ui', message: 'packages/types must stay framework-agnostic.' },
             { name: 'react', message: 'packages/types must not depend on React.' },
             { name: 'next', message: 'packages/types must not depend on Next.js.' },
@@ -118,7 +121,10 @@ export default tseslint.config(
         {
           paths: [
             { name: '@interviewos/ui', message: 'packages/utils must stay framework-agnostic.' },
-            { name: '@interviewos/database', message: 'packages/utils must stay framework-agnostic.' },
+            {
+              name: '@interviewos/database',
+              message: 'packages/utils must stay framework-agnostic.',
+            },
             { name: 'react', message: 'packages/utils must not depend on React.' },
             { name: 'next', message: 'packages/utils must not depend on Next.js.' },
           ],

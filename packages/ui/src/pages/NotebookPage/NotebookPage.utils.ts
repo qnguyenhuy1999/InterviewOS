@@ -4,10 +4,7 @@ import { formatDistanceToNowStrict } from 'date-fns'
 import { consoleLayoutNavigationFixture } from '../../layouts/ConsoleLayout/ConsoleLayout.fixtures'
 import type { ConsoleLayoutNavGroup } from '../../layouts/ConsoleLayout/ConsoleLayout.types'
 import { NOTEBOOK_DIFFICULTY_TONE, NOTEBOOK_STATUS_DOT } from './NotebookPage.constants'
-import type {
-  NotebookPageFilterValue,
-  NotebookPageNote,
-} from './NotebookPage.types'
+import type { NotebookPageFilterValue, NotebookPageNote } from './NotebookPage.types'
 
 export function getNotebookNavigation(): ConsoleLayoutNavGroup[] {
   return consoleLayoutNavigationFixture.map((group) => ({
@@ -33,7 +30,10 @@ export function getNotebookSummary(note: TechnicalNote) {
 }
 
 export function getEnumLabel(value: NoteStatus | NoteType | QuestionDifficulty) {
-  return value.toLowerCase().replaceAll('_', ' ').replace(/\b\w/g, (char) => char.toUpperCase())
+  return value
+    .toLowerCase()
+    .replaceAll('_', ' ')
+    .replace(/\b\w/g, (char) => char.toUpperCase())
 }
 
 export function getRelativeUpdatedAtLabel(value: Date) {

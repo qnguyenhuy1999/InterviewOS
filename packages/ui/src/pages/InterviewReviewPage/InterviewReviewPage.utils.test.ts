@@ -2,7 +2,10 @@ import assert from 'node:assert/strict'
 
 import { test } from 'vitest'
 
-import { interviewReviewFixtureEvaluation, interviewReviewFixtureSession } from './InterviewReviewPage.fixtures'
+import {
+  interviewReviewFixtureEvaluation,
+  interviewReviewFixtureSession,
+} from './InterviewReviewPage.fixtures'
 import {
   formatInterviewReviewDateLabel,
   formatInterviewReviewSignedValue,

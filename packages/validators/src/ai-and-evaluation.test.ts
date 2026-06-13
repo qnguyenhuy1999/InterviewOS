@@ -131,7 +131,9 @@ test('english feedback, recommendation, and resume analysis schemas validate non
   )
   assert.equal(
     recommendationResultSchema.safeParse({
-      recommendations: [{ topic: 'Cache stampede', reason: 'Common follow-up', priority: 1, action: 'Practice' }],
+      recommendations: [
+        { topic: 'Cache stampede', reason: 'Common follow-up', priority: 1, action: 'Practice' },
+      ],
     }).success,
     true,
   )
@@ -160,7 +162,9 @@ test('evaluation schemas bound scores and preserve rubric-specific feedback', ()
         structure: 9,
         confidence: 7,
       },
-      rubricScores: [{ key: 'tradeoffs', label: 'Tradeoffs', score: 80, evidence: ['Compared options'] }],
+      rubricScores: [
+        { key: 'tradeoffs', label: 'Tradeoffs', score: 80, evidence: ['Compared options'] },
+      ],
       strengths: ['Structured answer'],
       improvements: ['Quantify scale'],
       coachingNotes: ['Ask constraints first'],

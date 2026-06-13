@@ -31,26 +31,32 @@ test('UsersService upsertProfile validates onboarding payloads before persisting
     },
   } as never)
 
-  await service.upsertProfile({ id: 'user-1' }, {
-    targetRole: 'Backend Engineer',
-    currentLevel: ExperienceLevel.MID,
-    targetLevel: ExperienceLevel.SENIOR,
-    englishLevel: EnglishLevel.ADVANCED,
-    techStack: ['TypeScript', 'PostgreSQL'],
-    interviewGoals: ['System design'],
-    preferredOutputStyle: 'Concise',
-  })
-
-  assert.deepEqual(persistedProfile?.techStack, ['TypeScript', 'PostgreSQL'])
-  await assert.rejects(
-    service.upsertProfile({ id: 'user-1' }, {
-      targetRole: '',
+  await service.upsertProfile(
+    { id: 'user-1' },
+    {
+      targetRole: 'Backend Engineer',
       currentLevel: ExperienceLevel.MID,
       targetLevel: ExperienceLevel.SENIOR,
       englishLevel: EnglishLevel.ADVANCED,
-      techStack: [],
-      interviewGoals: [],
+      techStack: ['TypeScript', 'PostgreSQL'],
+      interviewGoals: ['System design'],
       preferredOutputStyle: 'Concise',
-    }),
+    },
+  )
+
+  assert.deepEqual(persistedProfile?.techStack, ['TypeScript', 'PostgreSQL'])
+  await assert.rejects(
+    service.upsertProfile(
+      { id: 'user-1' },
+      {
+        targetRole: '',
+        currentLevel: ExperienceLevel.MID,
+        targetLevel: ExperienceLevel.SENIOR,
+        englishLevel: EnglishLevel.ADVANCED,
+        techStack: [],
+        interviewGoals: [],
+        preferredOutputStyle: 'Concise',
+      },
+    ),
   )
 })

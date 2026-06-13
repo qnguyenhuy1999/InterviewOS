@@ -1,6 +1,9 @@
 import { format, isToday, isYesterday } from 'date-fns'
 
-import { INTERVIEW_PAGE_ALL_TOPICS_VALUE, INTERVIEW_PAGE_TYPE_LABELS } from './InterviewPage.constants'
+import {
+  INTERVIEW_PAGE_ALL_TOPICS_VALUE,
+  INTERVIEW_PAGE_TYPE_LABELS,
+} from './InterviewPage.constants'
 import type { InterviewPageSession } from './InterviewPage.types'
 
 export function getInterviewTopicLabel(session: InterviewPageSession) {

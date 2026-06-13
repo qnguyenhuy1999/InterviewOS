@@ -130,7 +130,9 @@ function Root({
               <div className="flex min-w-0 items-center gap-2.5">
                 <SidebarTrigger />
                 <div className="hidden h-6 w-px bg-border md:block" />
-                <h1 className="truncate font-heading text-base font-semibold md:text-lg">{title}</h1>
+                <h1 className="truncate font-heading text-base font-semibold md:text-lg">
+                  {title}
+                </h1>
               </div>
               <div className="order-2 flex items-center gap-2 md:order-3">
                 {headerActions}

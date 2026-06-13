@@ -1,6 +1,7 @@
 import { API_ROUTES } from '@interviewos/config'
 import type { UserLearningProfile } from '@interviewos/types'
 import OnboardingPage from '@interviewos/ui/pages/OnboardingPage'
+import { redirect } from 'next/navigation'
 
 import { ProfileForm } from '@/app/_components/forms/ProfileForm'
 import { serverApiClient } from '@/lib/server-api-client'
@@ -15,9 +16,13 @@ export default async function Page({
     API_ROUTES.users.learningProfile,
   ).catch(() => null)
 
+  if (profile) {
+    redirect('/settings')
+  }
+
   return (
     <OnboardingPage reason={params.reason}>
-      <ProfileForm initialProfile={profile} mode="onboarding" redirectTo={params.next} />
+      <ProfileForm initialProfile={null} mode="onboarding" redirectTo={params.next} />
     </OnboardingPage>
   )
 }

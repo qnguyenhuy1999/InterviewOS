@@ -1,5 +1,10 @@
 import type { Prisma } from '@interviewos/database'
-import type { AIExecutionMetadata, EnglishLevel, ExperienceLevel, UserWeakConcept } from '@interviewos/types'
+import type {
+  AIExecutionMetadata,
+  EnglishLevel,
+  ExperienceLevel,
+  UserWeakConcept,
+} from '@interviewos/types'
 import { interviewAnswerSchema, startInterviewSessionSchema } from '@interviewos/validators'
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
 
@@ -66,7 +71,11 @@ export class InterviewService {
     return session
   }
 
-  async answerQuestion(currentUser: CurrentUserRef, sessionId: string, payload: SubmitInterviewAnswerDto) {
+  async answerQuestion(
+    currentUser: CurrentUserRef,
+    sessionId: string,
+    payload: SubmitInterviewAnswerDto,
+  ) {
     const user = await this.usersRepository.ensureUserById(currentUser.id)
     const profile = await this.usersRepository.findProfileByUserId(user.id)
     if (!profile) {
@@ -93,69 +102,78 @@ export class InterviewService {
       advancedSettings?.englishLevel ??
       session.overrideEnglishLevel ??
       (profile.englishLevel as unknown as EnglishLevel)
-    const technical = await this.aiGateway.evaluateInterviewAnswer({
-      question: primaryQuestion.question,
-      answer: input.answer,
-      expectedConcepts: primaryQuestion.expectedConcepts,
-      sourceSection: primaryQuestion.sourceSection,
-      targetLevel: targetLevel as ExperienceLevel,
-    }, { userId: user.id })
-    const english = await this.aiGateway.generateEnglishFeedback({
-      text: input.answer,
-      targetLevel: englishLevel as EnglishLevel,
-    }, { userId: user.id })
+    const technical = await this.aiGateway.evaluateInterviewAnswer(
+      {
+        question: primaryQuestion.question,
+        answer: input.answer,
+        expectedConcepts: primaryQuestion.expectedConcepts,
+        sourceSection: primaryQuestion.sourceSection,
+        targetLevel: targetLevel as ExperienceLevel,
+      },
+      { userId: user.id },
+    )
+    const english = await this.aiGateway.generateEnglishFeedback(
+      {
+        text: input.answer,
+        targetLevel: englishLevel as EnglishLevel,
+      },
+      { userId: user.id },
+    )
 
     const usefulEnglishNotes = english.result.notes.filter(
       (note) =>
         note.correctedSentence.trim() !== note.userSentence.trim() || note.explanation.length > 20,
     )
 
-    const { session: updatedSession, englishNotes, weakConcepts } =
-      await this.interviewRepository.saveAnswerAtomic({
-        sessionId: session.id,
-        questionId: primaryQuestion.id,
-        userId: user.id,
-        answerPayload: {
-          overrideRole: advancedSettings?.targetRole ?? session.overrideRole,
-          overrideLevel: targetLevel as ExperienceLevel,
-          overrideStack:
-            advancedSettings?.techStack && advancedSettings.techStack.length > 0
-              ? advancedSettings.techStack
-              : session.overrideStack,
-          overrideGoals:
-            advancedSettings?.interviewGoals && advancedSettings.interviewGoals.length > 0
-              ? advancedSettings.interviewGoals
-              : session.overrideGoals,
-          overrideEnglishLevel: englishLevel as EnglishLevel,
-          preferredOutputStyle:
-            advancedSettings?.preferredOutputStyle ?? session.preferredOutputStyle,
-          rawAnswer: input.answer,
-          technicalScore: technical.result.technicalScore,
-          englishScore: technical.result.englishScore,
-          clarityScore: technical.result.clarityScore,
-          overallScore: technical.result.overallScore,
-          aiFeedback: technical.result.summary,
-          technicalFeedback: {
-            summary: technical.result.summary,
-            strengths: technical.result.strengths,
-            improvements: technical.result.improvements,
-          } satisfies Prisma.JsonObject,
-          englishFeedback: {
-            summary: english.result.feedback,
-            overallScore: english.result.overallScore,
-            highlightedTopics: english.result.weakTopics,
-          } satisfies Prisma.JsonObject,
-          nextRecommendedQuestion:
-            technical.result.nextRecommendedQuestion satisfies Prisma.JsonObject,
-          recommendedLearning: technical.result.recommendedLearning satisfies Prisma.JsonObject,
-          weakConcepts: technical.result.weakConcepts,
-          aiMetadata: this.toAiMetadataJson(technical.metadata),
-        },
-        usefulEnglishNotes,
-        weakConceptNames: technical.result.weakConcepts,
-        englishWeakTopics: english.result.weakTopics,
-        englishAiMetadata: this.toAiMetadataJson(english.metadata),
-      })
+    const {
+      session: updatedSession,
+      englishNotes,
+      weakConcepts,
+    } = await this.interviewRepository.saveAnswerAtomic({
+      sessionId: session.id,
+      questionId: primaryQuestion.id,
+      userId: user.id,
+      answerPayload: {
+        overrideRole: advancedSettings?.targetRole ?? session.overrideRole,
+        overrideLevel: targetLevel as ExperienceLevel,
+        overrideStack:
+          advancedSettings?.techStack && advancedSettings.techStack.length > 0
+            ? advancedSettings.techStack
+            : session.overrideStack,
+        overrideGoals:
+          advancedSettings?.interviewGoals && advancedSettings.interviewGoals.length > 0
+            ? advancedSettings.interviewGoals
+            : session.overrideGoals,
+        overrideEnglishLevel: englishLevel as EnglishLevel,
+        preferredOutputStyle:
+          advancedSettings?.preferredOutputStyle ?? session.preferredOutputStyle,
+        rawAnswer: input.answer,
+        technicalScore: technical.result.technicalScore,
+        englishScore: technical.result.englishScore,
+        clarityScore: technical.result.clarityScore,
+        overallScore: technical.result.overallScore,
+        aiFeedback: technical.result.summary,
+        technicalFeedback: {
+          summary: technical.result.summary,
+          strengths: technical.result.strengths,
+          improvements: technical.result.improvements,
+        } satisfies Prisma.JsonObject,
+        englishFeedback: {
+          summary: english.result.feedback,
+          overallScore: english.result.overallScore,
+          highlightedTopics: english.result.weakTopics,
+        } satisfies Prisma.JsonObject,
+        nextRecommendedQuestion: technical.result
+          .nextRecommendedQuestion satisfies Prisma.JsonObject,
+        recommendedLearning: technical.result.recommendedLearning satisfies Prisma.JsonObject,
+        weakConcepts: technical.result.weakConcepts,
+        aiMetadata: this.toAiMetadataJson(technical.metadata),
+      },
+      usefulEnglishNotes,
+      weakConceptNames: technical.result.weakConcepts,
+      englishWeakTopics: english.result.weakTopics,
+      englishAiMetadata: this.toAiMetadataJson(english.metadata),
+    })
 
     const answerId = updatedSession.questions[0]?.answer?.id
     if (!answerId) {
@@ -171,12 +189,19 @@ export class InterviewService {
       })),
       this.toAiMetadataJson(english.metadata),
     )
-    await this.reviewActions.syncWeakConceptReviews(user.id, weakConcepts as unknown as UserWeakConcept[])
+    await this.reviewActions.syncWeakConceptReviews(
+      user.id,
+      weakConcepts as unknown as UserWeakConcept[],
+    )
 
     return this.interviewRepository.findSessionById(user.id, session.id)
   }
 
-  async updateSession(currentUser: CurrentUserRef, sessionId: string, payload: SubmitInterviewAnswerDto) {
+  async updateSession(
+    currentUser: CurrentUserRef,
+    sessionId: string,
+    payload: SubmitInterviewAnswerDto,
+  ) {
     return this.answerQuestion(currentUser, sessionId, payload)
   }
 

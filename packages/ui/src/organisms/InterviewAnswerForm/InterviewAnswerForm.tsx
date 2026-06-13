@@ -8,10 +8,7 @@ import {
   type UserLearningProfile,
 } from '@interviewos/types'
 import { parseCommaSeparated } from '@interviewos/utils'
-import {
-  type InterviewAnswerFormInput,
-  interviewAnswerFormSchema,
-} from '@interviewos/validators'
+import { type InterviewAnswerFormInput, interviewAnswerFormSchema } from '@interviewos/validators'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 
@@ -57,11 +54,11 @@ export function InterviewAnswerForm({ session, profile, onSubmit }: InterviewAns
   const [error, setError] = useState<string | null>(null)
   const hasOverrides = Boolean(
     session.overrideRole ||
-      session.overrideLevel ||
-      session.overrideEnglishLevel ||
-      session.overrideStack.length ||
-      session.overrideGoals.length ||
-      session.preferredOutputStyle,
+    session.overrideLevel ||
+    session.overrideEnglishLevel ||
+    session.overrideStack.length ||
+    session.overrideGoals.length ||
+    session.preferredOutputStyle,
   )
   const {
     register,
@@ -76,10 +73,13 @@ export function InterviewAnswerForm({ session, profile, onSubmit }: InterviewAns
       targetRole: session.overrideRole ?? profile.targetRole,
       targetLevel: session.overrideLevel ?? profile.targetLevel,
       englishLevel: session.overrideEnglishLevel ?? profile.englishLevel,
-      techStack: (session.overrideStack.length ? session.overrideStack : profile.techStack).join(', '),
+      techStack: (session.overrideStack.length ? session.overrideStack : profile.techStack).join(
+        ', ',
+      ),
       interviewGoals: (session.overrideGoals.length
         ? session.overrideGoals
-        : profile.interviewGoals).join(', '),
+        : profile.interviewGoals
+      ).join(', '),
       preferredOutputStyle: session.preferredOutputStyle ?? profile.preferredOutputStyle,
     },
   })

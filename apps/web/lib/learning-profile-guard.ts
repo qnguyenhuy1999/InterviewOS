@@ -18,10 +18,7 @@ export async function getOptionalLearningProfile() {
   )
 }
 
-export async function requireLearningProfile({
-  reason,
-  next,
-}: RequireLearningProfileOptions) {
+export async function requireLearningProfile({ reason, next }: RequireLearningProfileOptions) {
   const profile = await getOptionalLearningProfile()
 
   if (profile) {

@@ -126,7 +126,8 @@ function NextBestActionPanel({ evaluation }: { evaluation: InterviewEvaluation }
       <h3 className="font-heading text-base font-medium">Next best action</h3>
       {topWeakConcept ? (
         <p className="text-sm text-muted-foreground">
-          You struggled with <span className="font-medium text-foreground">{topWeakConcept}</span>. Focus your next study session on this concept.
+          You struggled with <span className="font-medium text-foreground">{topWeakConcept}</span>.
+          Focus your next study session on this concept.
         </p>
       ) : null}
       {topRecommendation ? (
@@ -152,7 +153,9 @@ function EvaluationPanel({ evaluation }: { evaluation: InterviewEvaluation }) {
         </div>
       ) : null}
 
-      {evaluation.evidence.length > 0 || evaluation.weaknesses.length > 0 || evaluation.recommendations.length > 0 ? (
+      {evaluation.evidence.length > 0 ||
+      evaluation.weaknesses.length > 0 ||
+      evaluation.recommendations.length > 0 ? (
         <details className="group">
           <summary className="cursor-pointer select-none text-sm font-medium text-muted-foreground hover:text-foreground list-none flex items-center gap-1">
             <span className="transition-transform group-open:rotate-90">▶</span>
@@ -277,7 +280,10 @@ function EvaluationSidebar({
 
 function ConversationReplay({ turns }: { turns: InterviewReviewPageTurn[] }) {
   return (
-    <SectionCard title="Conversation replay" description="The recorded interviewer and candidate turns.">
+    <SectionCard
+      title="Conversation replay"
+      description="The recorded interviewer and candidate turns."
+    >
       {turns.length === 0 ? (
         <p className="text-sm text-muted-foreground">No turns recorded.</p>
       ) : (
@@ -384,7 +390,7 @@ function Root(props: InterviewReviewPageProps) {
 
             <ConversationReplay turns={state.turns} />
 
-            {(props.sessionHref || props.allSessionsHref) ? (
+            {props.sessionHref || props.allSessionsHref ? (
               <div className="flex items-center gap-4 text-sm">
                 {props.sessionHref ? (
                   <Button asChild variant="link" className="h-auto px-0">

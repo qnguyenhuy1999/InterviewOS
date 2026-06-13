@@ -16,7 +16,9 @@ export function formatInterviewSessionDateLabel(value: Date | string | null | un
 
   const date = value instanceof Date ? value : new Date(value)
 
-  return Number.isNaN(date.getTime()) ? INTERVIEW_SESSION_PAGE_UNKNOWN_VALUE : date.toLocaleDateString()
+  return Number.isNaN(date.getTime())
+    ? INTERVIEW_SESSION_PAGE_UNKNOWN_VALUE
+    : date.toLocaleDateString()
 }
 
 export function formatInterviewSessionSignedValue(value: number): string {
@@ -49,7 +51,9 @@ export function getInterviewSessionReviewLabel(): string {
   return INTERVIEW_SESSION_PAGE_DEFAULT_REVIEW_LABEL
 }
 
-export function getInterviewSessionState(props: InterviewSessionPageProps): InterviewSessionPageState {
+export function getInterviewSessionState(
+  props: InterviewSessionPageProps,
+): InterviewSessionPageState {
   if (props.state) {
     return props.state
   }

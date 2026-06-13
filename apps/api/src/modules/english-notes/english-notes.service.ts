@@ -43,7 +43,11 @@ export class EnglishNotesService {
   ) {
     const user = await this.usersRepository.ensureUserById(currentUser.id)
     const input = englishNoteStatusSchema.parse(payload)
-    const note = await this.englishNotesRepository.updateStatus(user.id, englishNoteId, input.status)
+    const note = await this.englishNotesRepository.updateStatus(
+      user.id,
+      englishNoteId,
+      input.status,
+    )
     await this.reviewService.syncEnglishNoteReviews(user.id, [
       {
         id: note.id,
@@ -54,5 +58,4 @@ export class EnglishNotesService {
     ])
     return note
   }
-
 }

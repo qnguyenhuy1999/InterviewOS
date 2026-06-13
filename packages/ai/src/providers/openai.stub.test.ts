@@ -72,7 +72,10 @@ test('OpenAIProvider falls back to chat completions when responses times out', a
       throw timeoutError
     }
 
-    assert.equal(init && typeof init === 'object' && 'method' in init ? init.method : undefined, 'POST')
+    assert.equal(
+      init && typeof init === 'object' && 'method' in init ? init.method : undefined,
+      'POST',
+    )
 
     return new Response(
       JSON.stringify({

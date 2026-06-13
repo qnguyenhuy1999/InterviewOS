@@ -30,8 +30,14 @@ test('envSchema applies defaults and coerces numeric environment values', () => 
 test('envSchema rejects invalid urls and out-of-range lifetimes', () => {
   assert.equal(envSchema.safeParse({ ...requiredEnv, DATABASE_URL: 'not-a-url' }).success, false)
   assert.equal(envSchema.safeParse({ ...requiredEnv, AUTH_SESSION_TTL_DAYS: 31 }).success, false)
-  assert.equal(envSchema.safeParse({ ...requiredEnv, PASSWORD_RESET_TTL_MINUTES: 4 }).success, false)
-  assert.equal(envSchema.safeParse({ ...requiredEnv, EMAIL_VERIFICATION_TTL_HOURS: 169 }).success, false)
+  assert.equal(
+    envSchema.safeParse({ ...requiredEnv, PASSWORD_RESET_TTL_MINUTES: 4 }).success,
+    false,
+  )
+  assert.equal(
+    envSchema.safeParse({ ...requiredEnv, EMAIL_VERIFICATION_TTL_HOURS: 169 }).success,
+    false,
+  )
 })
 
 test('API route constants expose stable base paths and parameter builders', () => {

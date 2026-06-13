@@ -70,7 +70,10 @@ test('EvaluationService triggerEvaluation marks sessions complete with derived e
     ],
   )
   assert.equal((completedPayload?.weaknesses as Array<{ severity: string }>)[0].severity, 'HIGH')
-  assert.equal((completedPayload?.recommendations as Array<{ priority: string }>)[0].priority, 'NOW')
+  assert.equal(
+    (completedPayload?.recommendations as Array<{ priority: string }>)[0].priority,
+    'NOW',
+  )
 })
 
 test('EvaluationService triggerEvaluation marks failed when the gateway throws', async () => {

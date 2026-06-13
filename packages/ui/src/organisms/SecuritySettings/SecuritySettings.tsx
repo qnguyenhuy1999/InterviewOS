@@ -100,11 +100,7 @@ export function SecuritySettings({
             type="button"
             disabled={state.pendingKey === 'logout-all'}
             onClick={() => {
-              void runAction(
-                'logout-all',
-                () => onLogoutAll(),
-                'All sessions signed out.',
-              )
+              void runAction('logout-all', () => onLogoutAll(), 'All sessions signed out.')
             }}
             className="rounded-lg border border-border px-3 py-2 text-sm disabled:opacity-60"
           >
@@ -120,9 +116,7 @@ export function SecuritySettings({
             >
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
-                  <p className="text-sm font-medium">
-                    {session.userAgent ?? 'Unknown device'}
-                  </p>
+                  <p className="text-sm font-medium">{session.userAgent ?? 'Unknown device'}</p>
                   {session.isCurrent ? (
                     <span className="rounded-md bg-accent-soft px-2 py-0.5 text-xs text-primary">
                       Current

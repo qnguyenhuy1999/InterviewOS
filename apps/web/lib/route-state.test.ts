@@ -4,11 +4,17 @@ import test from 'node:test'
 import { getRouteErrorMessage, loadRouteData, toRouteState } from './route-state'
 
 test('toRouteState returns empty or ready based on the provided predicate', () => {
-  assert.deepEqual(toRouteState([], (items) => items.length === 0), { kind: 'empty' })
-  assert.deepEqual(toRouteState(['note-1'], (items) => items.length === 0), {
-    kind: 'ready',
-    data: ['note-1'],
-  })
+  assert.deepEqual(
+    toRouteState([], (items) => items.length === 0),
+    { kind: 'empty' },
+  )
+  assert.deepEqual(
+    toRouteState(['note-1'], (items) => items.length === 0),
+    {
+      kind: 'ready',
+      data: ['note-1'],
+    },
+  )
 })
 
 test('loadRouteData converts successful, empty, and failed loaders into route states', async () => {
@@ -16,13 +22,21 @@ test('loadRouteData converts successful, empty, and failed loaders into route st
     kind: 'ready',
     data: { id: 'note-1' },
   })
-  assert.deepEqual(await loadRouteData(async () => [], { isEmpty: (items) => items.length === 0 }), {
-    kind: 'empty',
-  })
-  assert.deepEqual(await loadRouteData(async () => { throw new Error('Nope') }), {
-    kind: 'error',
-    message: 'Nope',
-  })
+  assert.deepEqual(
+    await loadRouteData(async () => [], { isEmpty: (items) => items.length === 0 }),
+    {
+      kind: 'empty',
+    },
+  )
+  assert.deepEqual(
+    await loadRouteData(async () => {
+      throw new Error('Nope')
+    }),
+    {
+      kind: 'error',
+      message: 'Nope',
+    },
+  )
 })
 
 test('getRouteErrorMessage uses fallback for non-error and blank-error values', () => {

@@ -24,7 +24,7 @@ import { EmptyState, PageBody } from '../../../components/ui/page'
 import { Progress } from '../../../components/ui/progress'
 import { Separator } from '../../../components/ui/separator'
 import { Skeleton } from '../../../components/ui/skeleton'
-import { Spinner } from '../../../components/ui/spinner'
+import { Spinner } from '../../atoms/Spinner'
 import type {
   DashboardMetric,
   DashboardPageActions,
@@ -71,12 +71,20 @@ function ActionLinkButton({
 
 function MetricCard({ metric }: { metric: DashboardMetric }) {
   return (
-    <Card aria-label={`${metric.label}: ${metric.value}`} className="h-full gap-2 py-4" size="sm">
+    <Card
+      aria-label={`${metric.label}: ${metric.value}`}
+      className="group relative h-full gap-2 overflow-hidden border-border/60 py-4 transition-all duration-200 hover:border-primary/20 hover:shadow-elevated"
+      size="sm"
+    >
+      <div
+        className="pointer-events-none absolute inset-x-0 top-0 h-0.5 origin-left scale-x-0 bg-gradient-to-r from-transparent via-primary/50 to-transparent transition-transform duration-300 group-hover:scale-x-100"
+        aria-hidden="true"
+      />
       <CardHeader className="gap-1">
         <CardDescription className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
           {metric.label}
         </CardDescription>
-        <CardTitle className="font-heading text-3xl font-semibold tracking-tight">
+        <CardTitle className="font-heading text-3xl font-semibold tracking-tight tabular-nums">
           {metric.value}
         </CardTitle>
       </CardHeader>
@@ -97,7 +105,7 @@ function LoadingBody() {
         ))}
       </div>
       <Card className="min-h-64 items-center justify-center gap-3">
-        <Spinner className="size-7" aria-hidden="true" />
+        <Spinner size="lg" />
         <p className="text-sm text-muted-foreground">Preparing your progress overview...</p>
       </Card>
     </div>
@@ -256,8 +264,12 @@ function DashboardHero({
       : 'No urgent weak concepts are flagged. Keep the loop moving with a short interview practice session.'
 
   return (
-    <Card className="bg-surface-elevated py-0">
-      <CardContent className="grid gap-5 py-5 lg:grid-cols-3 lg:items-center">
+    <Card className="relative overflow-hidden bg-surface-elevated py-0">
+      <div
+        className="pointer-events-none absolute inset-0 bg-gradient-to-br from-primary/[0.04] via-transparent to-accent-soft/20"
+        aria-hidden="true"
+      />
+      <CardContent className="relative grid gap-5 py-5 lg:grid-cols-3 lg:items-center">
         <div className="space-y-4 lg:col-span-2">
           <div className="space-y-2">
             <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
@@ -266,9 +278,7 @@ function DashboardHero({
             <h2 className="font-heading text-2xl font-semibold tracking-tight md:text-3xl">
               Close the highest-impact gap next
             </h2>
-            <p className="max-w-3xl text-sm leading-6 text-muted-foreground">
-              {focusDescription}
-            </p>
+            <p className="max-w-3xl text-sm leading-6 text-muted-foreground">{focusDescription}</p>
           </div>
           <div className="flex flex-col gap-2 sm:flex-row">
             <Button asChild size="lg" className="justify-start">
@@ -291,7 +301,9 @@ function DashboardHero({
               <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
                 Readiness
               </p>
-              <p className="font-heading text-4xl font-semibold tracking-tight">{readinessScore}</p>
+              <p className="font-heading text-5xl font-semibold tracking-tight tabular-nums">
+                {readinessScore}
+              </p>
             </div>
             {state.readiness ? (
               <p className="pb-1 text-right text-xs text-muted-foreground">
@@ -326,11 +338,13 @@ function WeakConceptList({
   return concepts.map((concept) => (
     <div
       key={concept.concept}
-      className="flex flex-col gap-3 px-3.5 py-4 sm:flex-row sm:items-center sm:justify-between"
+      className="flex flex-col gap-3 px-3.5 py-4 transition-colors duration-150 hover:bg-muted/40 sm:flex-row sm:items-center sm:justify-between"
     >
       <div className="min-w-0 space-y-1">
         <p className="font-medium">{concept.concept}</p>
-        <p className="text-sm text-muted-foreground">{getMissCountLabel(concept.occurrenceCount)}</p>
+        <p className="text-sm text-muted-foreground">
+          {getMissCountLabel(concept.occurrenceCount)}
+        </p>
       </div>
       <div className="flex shrink-0 items-center justify-between gap-3 sm:flex-col sm:items-end sm:gap-1">
         <Badge variant="outline" className={getWeakConceptStatusClassName(concept.status)}>

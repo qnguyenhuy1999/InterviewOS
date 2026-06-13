@@ -75,7 +75,9 @@ function getDeviceLabel(userAgent: string) {
   return SESSION_PAGE_UNKNOWN_DEVICE_LABEL
 }
 
-export function getSessionDevicePresentation(session: SessionPageSession): SessionDevicePresentation {
+export function getSessionDevicePresentation(
+  session: SessionPageSession,
+): SessionDevicePresentation {
   const userAgent = session.userAgent ?? ''
   const deviceLabel = getDeviceLabel(userAgent)
   const browserLabel = getBrowserVersion(userAgent, getBrowserLabel(userAgent))
@@ -114,6 +116,8 @@ export function getSessionSummary(sessions: SessionPageSession[]) {
   return {
     total: sessions.length,
     currentSessionId: currentSession?.id ?? null,
-    currentSessionLabel: currentSession ? getSessionDevicePresentation(currentSession).deviceLabel : null,
+    currentSessionLabel: currentSession
+      ? getSessionDevicePresentation(currentSession).deviceLabel
+      : null,
   }
 }

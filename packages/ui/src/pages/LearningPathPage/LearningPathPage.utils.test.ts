@@ -49,9 +49,7 @@ test('getLearningPathTypeSummaries sorts by total then type', () => {
 
 test('getLearningPathEstimatedTimeLabel reads supported metadata keys', () => {
   assert.equal(
-    getLearningPathEstimatedTimeLabel(
-      createLearningPathItemWithMetadata({ estimatedMinutes: 20 }),
-    ),
+    getLearningPathEstimatedTimeLabel(createLearningPathItemWithMetadata({ estimatedMinutes: 20 })),
     '20 min',
   )
   assert.equal(

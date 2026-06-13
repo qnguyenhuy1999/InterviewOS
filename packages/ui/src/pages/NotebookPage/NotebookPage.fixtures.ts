@@ -22,7 +22,8 @@ export const notebookFixture: NotebookFixture = {
       overrideEnglishLevel: null,
       preferredOutputStyle: 'Concise and interview-ready',
       structuredContent: {
-        purpose: 'How React decides what to re-render, why keys matter, and how fiber enables interruption.',
+        purpose:
+          'How React decides what to re-render, why keys matter, and how fiber enables interruption.',
         quickReference: [],
         coreConcepts: [],
         mentalModel: '',

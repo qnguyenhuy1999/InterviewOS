@@ -23,7 +23,7 @@ import {
 } from '../../../components/ui/select'
 import { Separator } from '../../../components/ui/separator'
 import { Skeleton } from '../../../components/ui/skeleton'
-import { Spinner } from '../../../components/ui/spinner'
+import { Spinner } from '../../atoms/Spinner'
 import { Switch } from '../../../components/ui/switch'
 import { cn } from '../../../lib/utils'
 import { FieldLabel } from '../../atoms/FieldLabel/FieldLabel'
@@ -276,7 +276,7 @@ function LoadingBody() {
         ))}
       </div>
       <Card className="min-h-96 items-center justify-center rounded-md xl:col-span-3">
-        <Spinner className="size-7" />
+        <Spinner size="lg" />
       </Card>
     </div>
   )

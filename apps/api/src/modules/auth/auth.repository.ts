@@ -109,11 +109,7 @@ export class AuthRepository {
     })
   }
 
-  createPasswordResetToken(payload: {
-    userId: string
-    tokenHash: string
-    expiresAt: Date
-  }) {
+  createPasswordResetToken(payload: { userId: string; tokenHash: string; expiresAt: Date }) {
     return this.prisma.$transaction(async (tx) => {
       await tx.passwordResetToken.deleteMany({
         where: {
@@ -206,11 +202,7 @@ export class AuthRepository {
     })
   }
 
-  createEmailVerificationToken(payload: {
-    userId: string
-    tokenHash: string
-    expiresAt: Date
-  }) {
+  createEmailVerificationToken(payload: { userId: string; tokenHash: string; expiresAt: Date }) {
     return this.prisma.$transaction(async (tx) => {
       await tx.emailVerificationToken.deleteMany({
         where: {
@@ -234,11 +226,7 @@ export class AuthRepository {
     })
   }
 
-  async markEmailVerified(payload: {
-    userId: string
-    verificationTokenId: string
-    now: Date
-  }) {
+  async markEmailVerified(payload: { userId: string; verificationTokenId: string; now: Date }) {
     return this.prisma.$transaction(async (tx) => {
       const tokenResult = await tx.emailVerificationToken.updateMany({
         where: {

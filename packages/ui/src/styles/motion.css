@@ -1,0 +1,117 @@
+/* Interview motion keyframes */
+@keyframes pulse-live {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+@keyframes pulse-critical {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes signal-ribbon-enter {
+  from {
+    transform: scaleX(0);
+    opacity: 0;
+  }
+  to {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes score-tint {
+  from {
+    background-color: transparent;
+  }
+  to {
+    background-color: var(--score-tint-color, transparent);
+  }
+}
+
+/* Utility classes */
+.animate-pulse-live {
+  animation: pulse-live 2s ease-in-out infinite;
+}
+.animate-pulse-critical {
+  animation: pulse-critical 1s ease-in-out infinite;
+}
+.animate-fade-in {
+  animation: fade-in var(--duration-normal) var(--ease-out-expo) both;
+}
+.animate-slide-up {
+  animation: slide-up var(--duration-normal) var(--ease-out-expo) both;
+}
+.animate-slide-down {
+  animation: slide-down var(--duration-normal) var(--ease-out-expo) both;
+}
+.animate-toast-in {
+  animation: toast-in var(--duration-normal) var(--ease-out-expo) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-pulse-live,
+  .animate-pulse-critical,
+  .animate-fade-in,
+  .animate-slide-up,
+  .animate-slide-down,
+  .animate-toast-in {
+    animation: none;
+  }
+}

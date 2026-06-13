@@ -68,14 +68,12 @@ export function LoginForm({ onSubmit, forgotPasswordHref }: LoginFormProps) {
           aria-invalid={errors.password?.message ? 'true' : undefined}
           className="w-full"
         />
-        {errors.password?.message ? <FormNotice variant="error">{errors.password.message}</FormNotice> : null}
+        {errors.password?.message ? (
+          <FormNotice variant="error">{errors.password.message}</FormNotice>
+        ) : null}
       </div>
       {error ? <FormNotice variant="error">{error}</FormNotice> : null}
-      <Button
-        type="submit"
-        disabled={isSubmitting}
-        className="w-full"
-      >
+      <Button type="submit" disabled={isSubmitting} className="w-full">
         {isSubmitting ? 'Signing in...' : 'Sign in'}
       </Button>
     </form>

@@ -112,7 +112,11 @@ export function ProfileForm({ initialProfile, mode, onSubmit }: ProfileFormProps
           className="w-full"
         />
       </Field>
-      <Field label="Interview goals" htmlFor="interviewGoals" error={errors.interviewGoals?.message}>
+      <Field
+        label="Interview goals"
+        htmlFor="interviewGoals"
+        error={errors.interviewGoals?.message}
+      >
         <Input
           id="interviewGoals"
           placeholder="System design, confidence, senior interviews"
@@ -137,11 +141,12 @@ export function ProfileForm({ initialProfile, mode, onSubmit }: ProfileFormProps
 
       {error ? <FormNotice variant="error">{error}</FormNotice> : null}
 
-      <Button
-        type="submit"
-        disabled={isSubmitting}
-      >
-        {isSubmitting ? 'Saving...' : mode === 'onboarding' ? 'Complete onboarding' : 'Save settings'}
+      <Button type="submit" disabled={isSubmitting}>
+        {isSubmitting
+          ? 'Saving...'
+          : mode === 'onboarding'
+            ? 'Complete onboarding'
+            : 'Save settings'}
       </Button>
     </form>
   )

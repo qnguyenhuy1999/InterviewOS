@@ -5,7 +5,7 @@ import { Button } from '../../../components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/card'
 import { EmptyState, PageBody, PageHeader, StatCard } from '../../../components/ui/page'
 import { Skeleton } from '../../../components/ui/skeleton'
-import { Spinner } from '../../../components/ui/spinner'
+import { Spinner } from '../../atoms/Spinner'
 import { SESSION_PAGE_UNKNOWN_IP_LABEL } from './SessionPage.constants'
 import { sessionPageFixture } from './SessionPage.fixtures'
 import type { SessionPageProps, SessionPageSession } from './SessionPage.types'
@@ -36,10 +36,7 @@ function SessionMeta({ session }: { session: SessionPageSession }) {
           {deviceLabel} · {browserLabel}
         </p>
         {session.isCurrent ? (
-          <Badge
-            variant="secondary"
-            className="rounded-md bg-success-soft px-3 py-1 text-success"
-          >
+          <Badge variant="secondary" className="rounded-md bg-success-soft px-3 py-1 text-success">
             This device
           </Badge>
         ) : null}
@@ -184,7 +181,7 @@ function LoadingBody() {
       </Card>
 
       <Card className="min-h-48 items-center justify-center">
-        <Spinner className="size-7" />
+        <Spinner size="lg" />
       </Card>
     </div>
   )

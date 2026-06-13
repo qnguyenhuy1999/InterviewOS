@@ -24,10 +24,7 @@ const LABELS: Record<keyof typeof WEIGHTS, string> = {
   learningProgress: 'Learning Progress',
 }
 
-function isSessionType(
-  session: ReadinessSession,
-  type: ReadinessSession['type'],
-): boolean {
+function isSessionType(session: ReadinessSession, type: ReadinessSession['type']): boolean {
   return session.type === type && session.evaluation?.overallScore != null
 }
 
@@ -62,15 +59,9 @@ export class ReadinessService {
     const { sessions, reviewItems, learningItems } =
       await this.readinessRepository.getComputationContext(userId)
 
-    const technicalSessions = sessions.filter(
-      (s) => isSessionType(s, 'TECHNICAL'),
-    )
-    const behavioralSessions = sessions.filter(
-      (s) => isSessionType(s, 'BEHAVIORAL'),
-    )
-    const designSessions = sessions.filter(
-      (s) => isSessionType(s, 'SYSTEM_DESIGN'),
-    )
+    const technicalSessions = sessions.filter((s) => isSessionType(s, 'TECHNICAL'))
+    const behavioralSessions = sessions.filter((s) => isSessionType(s, 'BEHAVIORAL'))
+    const designSessions = sessions.filter((s) => isSessionType(s, 'SYSTEM_DESIGN'))
 
     const avg = (nums: number[]) =>
       nums.length ? nums.reduce((a, b) => a + b, 0) / nums.length / 100 : 0

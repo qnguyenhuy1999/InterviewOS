@@ -1,5 +1,11 @@
 import type { CompanyMode } from './company-mode'
-import type { EnglishLevel, ExperienceLevel, InterviewStatus, InterviewType, QuestionDifficulty } from './enums'
+import type {
+  EnglishLevel,
+  ExperienceLevel,
+  InterviewStatus,
+  InterviewType,
+  QuestionDifficulty,
+} from './enums'
 import type { InterviewEvaluation } from './evaluation'
 import type { AdvancedLearningSettings } from './notebook'
 
@@ -72,8 +78,10 @@ export interface InterviewSessionDetail extends InterviewSession {
   readinessImpact?: InterviewReadinessImpact | null
 }
 
-export interface InterviewSessionListView
-  extends Pick<InterviewSessionDetail, 'id' | 'type' | 'startedAt' | 'endedAt' | 'note'> {
+export interface InterviewSessionListView extends Pick<
+  InterviewSessionDetail,
+  'id' | 'type' | 'startedAt' | 'endedAt' | 'note'
+> {
   metrics: {
     overallScore: number | null
     technicalScore: number | null

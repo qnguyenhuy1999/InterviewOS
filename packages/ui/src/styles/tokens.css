@@ -1,0 +1,92 @@
+:root {
+  /* Surfaces — layered depth via brightness steps */
+  --color-surface-base: oklch(98% 0.002 240);
+  --color-surface-raised: oklch(100% 0 0);
+  --color-surface-overlay: oklch(97% 0.003 240);
+  --color-surface-inset: oklch(95% 0.004 240);
+
+  /* Text */
+  --color-text-primary: oklch(14% 0.008 240);
+  --color-text-secondary: oklch(42% 0.012 240);
+  --color-text-muted: oklch(58% 0.008 240);
+  --color-text-disabled: oklch(32% 0.005 240);
+
+  /* Accent — electric teal */
+  --color-accent-teal: oklch(72% 0.18 195);
+  --color-accent-teal-dim: oklch(72% 0.18 195 / 0.15);
+  --color-accent-teal-glow: oklch(72% 0.18 195 / 0.08);
+
+  /* Status semantics */
+  --color-status-live: oklch(65% 0.2 145);
+  --color-status-warn: oklch(78% 0.18 75);
+  --color-status-error: oklch(62% 0.22 28);
+  --color-status-info: oklch(68% 0.14 240);
+  --color-status-neutral: oklch(50% 0.008 240);
+
+  /* Score scale */
+  --color-score-1: oklch(62% 0.22 28);
+  --color-score-2: oklch(70% 0.2 55);
+  --color-score-3: oklch(78% 0.18 75);
+  --color-score-4: oklch(72% 0.16 145);
+  --color-score-5: oklch(65% 0.2 145);
+
+  /* Interview borders */
+  --color-border-interview: oklch(88% 0.006 240);
+  --color-border-interview-subtle: oklch(93% 0.004 240);
+  --color-border-focus-teal: var(--color-accent-teal);
+
+  /* Interview spacing (additive) */
+  --space-interview-0: 0;
+  --space-interview-px: 1px;
+  --space-interview-0-5: 0.125rem;
+  --space-interview-1: 0.25rem;
+  --space-interview-1-5: 0.375rem;
+  --space-interview-2: 0.5rem;
+  --space-interview-2-5: 0.625rem;
+  --space-interview-3: 0.75rem;
+  --space-interview-4: 1rem;
+  --space-interview-5: 1.25rem;
+  --space-interview-6: 1.5rem;
+  --space-interview-8: 2rem;
+  --space-interview-10: 2.5rem;
+  --space-interview-12: 3rem;
+  --space-interview-16: 4rem;
+  --density-compact: 0.75;
+
+  /* Interview border radius */
+  --radius-interview-sm: 3px;
+  --radius-interview-md: 6px;
+  --radius-interview-lg: 10px;
+  --radius-interview-xl: 16px;
+  --radius-interview-full: 9999px;
+
+  /* Interview shadows */
+  --shadow-interview-sm: 0 1px 2px oklch(0% 0 0 / 0.3);
+  --shadow-interview-md: 0 2px 8px oklch(0% 0 0 / 0.4), 0 1px 2px oklch(0% 0 0 / 0.25);
+  --shadow-interview-lg: 0 4px 24px oklch(0% 0 0 / 0.5), 0 2px 6px oklch(0% 0 0 / 0.3);
+  --shadow-interview-focus: 0 0 0 2px var(--color-accent-teal);
+  --shadow-interview-focus-inset: inset 0 0 0 2px var(--color-accent-teal);
+
+  /* Interview motion */
+  --duration-instant: 80ms;
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --duration-slow: 400ms;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.dark {
+  --color-surface-base: oklch(12% 0.006 240);
+  --color-surface-raised: oklch(16% 0.008 240);
+  --color-surface-overlay: oklch(20% 0.01 240);
+  --color-surface-inset: oklch(10% 0.005 240);
+
+  --color-text-primary: oklch(94% 0.004 240);
+  --color-text-secondary: oklch(65% 0.01 240);
+  --color-text-muted: oklch(45% 0.008 240);
+
+  --color-border-interview: oklch(25% 0.01 240);
+  --color-border-interview-subtle: oklch(19% 0.008 240);
+}

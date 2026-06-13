@@ -20,6 +20,9 @@ test('readiness helpers derive trends and labels from numeric deltas', () => {
 })
 
 test('readiness helpers identify best dimensions and history labels', () => {
-  assert.equal(getBestReadinessDimension(readinessPageFixture.latest.breakdown).dimension, 'reviewCompletion')
+  assert.equal(
+    getBestReadinessDimension(readinessPageFixture.latest.breakdown).dimension,
+    'reviewCompletion',
+  )
   assert.equal(getReadinessHistoryDateLabel(new Date('2020-01-02T03:04:00')), 'Jan 2')
 })

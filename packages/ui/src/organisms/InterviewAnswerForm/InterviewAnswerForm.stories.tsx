@@ -1,8 +1,4 @@
-import {
-  EnglishLevel,
-  ExperienceLevel,
-  type UserLearningProfile,
-} from '@interviewos/types'
+import { EnglishLevel, ExperienceLevel, type UserLearningProfile } from '@interviewos/types'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 
 import { InterviewAnswerForm } from './InterviewAnswerForm'
