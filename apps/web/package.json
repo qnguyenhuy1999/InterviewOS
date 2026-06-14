@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "start:standalone": "HOSTNAME=0.0.0.0 node .next/standalone/apps/web/server.js",
     "typecheck": "next typegen && tsc --noEmit",
     "lint": "eslint ."
   },
