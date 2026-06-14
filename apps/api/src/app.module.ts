@@ -12,6 +12,7 @@ import { AuthModule } from './modules/auth/auth.module'
 import { CompanyModeModule } from './modules/company-mode/company-mode.module'
 import { EnglishNotesModule } from './modules/english-notes/english-notes.module'
 import { EvaluationModule } from './modules/evaluation/evaluation.module'
+import { HealthModule } from './modules/health/health.module'
 import { InterviewModule } from './modules/interview/interview.module'
 import { NotebookModule } from './modules/notebook/notebook.module'
 import { ReadinessModule } from './modules/readiness/readiness.module'
@@ -46,6 +47,7 @@ import { UsersModule } from './modules/users/users.module'
     ResumeModule,
     RecommendationsModule,
     AnalyticsModule,
+    HealthModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })

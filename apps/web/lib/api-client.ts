@@ -3,11 +3,7 @@ import { createApiError } from './api-error'
 export { createApiError } from './api-error'
 
 function baseUrl(): string {
-  const url = process.env.NEXT_PUBLIC_API_URL
-  if (!url) {
-    throw new Error('NEXT_PUBLIC_API_URL is required but not configured')
-  }
-  return url
+  return '/api/v1'
 }
 
 export async function apiFetch(path: string, init?: RequestInit): Promise<Response> {
