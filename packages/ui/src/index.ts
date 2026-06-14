@@ -64,11 +64,15 @@ export { default as DashboardPage } from './pages/DashboardPage/DashboardPage'
 export type { DashboardPageProps } from './pages/DashboardPage/DashboardPage.types'
 export { default as EnglishNotesPage } from './pages/EnglishNotesPage/EnglishNotesPage'
 export type { EnglishNotesPageProps } from './pages/EnglishNotesPage/EnglishNotesPage.types'
+export { default as AuthPage } from './pages/AuthPage/AuthPage'
+export type { AuthPageProps } from './pages/AuthPage/AuthPage.types'
 export { default as InterviewPage } from './pages/InterviewPage/InterviewPage'
 export type {
   InterviewPageProps,
   InterviewPageSession,
 } from './pages/InterviewPage/InterviewPage.types'
+export { default as InterviewStartPage } from './pages/InterviewStartPage/InterviewStartPage'
+export type { InterviewStartPageProps } from './pages/InterviewStartPage/InterviewStartPage.types'
 export { default as InterviewReviewPage } from './pages/InterviewReviewPage/InterviewReviewPage'
 export type {
   InterviewReviewPageFixture,
@@ -89,6 +93,10 @@ export { default as LearningPathPage } from './pages/LearningPathPage/LearningPa
 export type { LearningPathPageProps } from './pages/LearningPathPage/LearningPathPage.types'
 export { default as NotebookDetailPage } from './pages/NotebookDetailPage/NotebookDetailPage'
 export type { NotebookDetailPageProps } from './pages/NotebookDetailPage/NotebookDetailPage.types'
+export { default as NotebookComposerPage } from './pages/NotebookComposerPage/NotebookComposerPage'
+export type {
+  NotebookComposerPageProps,
+} from './pages/NotebookComposerPage/NotebookComposerPage.types'
 export { default as NotebookPage } from './pages/NotebookPage/NotebookPage'
 export type { NotebookPageProps, NotebookPageView } from './pages/NotebookPage/NotebookPage.types'
 export { default as ProfilePage } from './pages/ProfilePage/ProfilePage'

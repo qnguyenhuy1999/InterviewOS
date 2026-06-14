@@ -1,5 +1,6 @@
 import { API_ROUTES } from '@interviewos/config'
 import type { CompanyMode, NotebookNoteListItem } from '@interviewos/types'
+import InterviewStartPage from '@interviewos/ui/pages/InterviewStartPage'
 
 import { StartInterviewForm } from '@/app/_components/forms/StartInterviewForm'
 import { APP_ROUTES } from '@/lib/app-routes'
@@ -28,24 +29,22 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ m
 
   if (state.kind === 'error') {
     return (
-      <div className="mx-auto max-w-3xl rounded-xl border border-destructive/30 bg-destructive/10 p-6 text-sm text-destructive">
-        <p className="font-medium">Failed to load interview setup</p>
-        <p className="mt-2">{state.message}</p>
-        <a href={APP_ROUTES.interview} className="mt-4 inline-block underline">
-          Back to interview sessions
-        </a>
-      </div>
+      <InterviewStartPage
+        modeLabel={mode === 'quick' ? 'Quick interview' : 'Standard interview'}
+        errorMessage={state.message}
+        backHref={APP_ROUTES.interview}
+      />
     )
   }
 
   return (
-    <div className="mx-auto max-w-4xl">
+    <InterviewStartPage modeLabel={mode === 'quick' ? 'Quick interview' : 'Standard interview'}>
       <StartInterviewForm
         profile={profile}
         notes={state.kind === 'ready' ? state.data.notes : []}
         companyModes={state.kind === 'ready' ? state.data.companyModes : []}
         defaultMode={mode === 'quick' ? 'MULTI_TURN' : 'STANDARD'}
       />
-    </div>
+    </InterviewStartPage>
   )
 }

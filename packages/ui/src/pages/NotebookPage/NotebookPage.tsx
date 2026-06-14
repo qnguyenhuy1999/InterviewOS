@@ -458,7 +458,7 @@ function Root(props: NotebookPageProps) {
             <div className="hidden px-3 py-1 text-xs text-muted-foreground md:inline-flex">
               {readyCount} ready for practice
             </div>
-            <Button asChild className="rounded-xl md:hidden">
+            <Button asChild>
               <a href={props.actions.createNoteHref}>
                 <PlusIcon />
                 New note

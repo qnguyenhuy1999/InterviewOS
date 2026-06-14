@@ -21,6 +21,7 @@ export const NOTEBOOK_DIFFICULTY_TONE = {
 
 export const NOTEBOOK_STATUS_DOT = {
   DRAFT: 'draft',
+  GENERATING: 'in_progress',
   REVIEWING: 'in_progress',
   NEEDS_PRACTICE: 'todo',
   INTERVIEW_READY: 'ready',

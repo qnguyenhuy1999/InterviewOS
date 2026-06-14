@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import AuthPage from '@interviewos/ui/pages/AuthPage'
 
 import { ResetPasswordForm } from '@/app/_components/forms/ResetPasswordForm'
 
@@ -15,22 +16,20 @@ export default async function ResetPasswordPage({
   const token = isValidResetToken(params.token) ? params.token : undefined
 
   return (
-    <div className="flex min-h-screen items-center justify-center">
-      <div className="w-full max-w-sm space-y-6 px-4">
-        <div className="space-y-2 text-center">
-          <h1 className="font-heading text-2xl font-bold">Choose a new password</h1>
-          <p className="text-sm text-muted-foreground">
-            Reset tokens are single-use and expire automatically.
-          </p>
-        </div>
-        <ResetPasswordForm token={token} />
-        <p className="text-center text-sm text-muted-foreground">
+    <AuthPage
+      eyebrow="Choose a new password"
+      title="Set a fresh password and reopen your interview workspace."
+      description="Reset tokens are single-use, expire automatically, and should be used as soon as the email arrives."
+      footer={
+        <p className="text-sm text-muted-foreground">
           Need another link?{' '}
-          <Link href="/forgot-password" className="text-primary hover:underline">
+          <Link href="/forgot-password" className="font-medium text-primary hover:underline">
             Request a new reset email
           </Link>
         </p>
-      </div>
-    </div>
+      }
+    >
+      <ResetPasswordForm token={token} />
+    </AuthPage>
   )
 }

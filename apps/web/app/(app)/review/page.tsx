@@ -7,6 +7,7 @@ import { ReviewRatingActions } from '@/app/_components/forms/ReviewRatingActions
 import { WeakConceptStatusActions } from '@/app/_components/forms/WeakConceptStatusActions'
 import { APP_ROUTES } from '@/lib/app-routes'
 import { requireLearningProfile } from '@/lib/learning-profile-guard'
+import { normalizeReviewPageData } from '@/lib/review-page'
 import { loadRouteData } from '@/lib/route-state'
 import { serverApiClient } from '@/lib/server-api-client'
 
@@ -22,13 +23,7 @@ export default async function Page() {
         serverApiClient<UserWeakConcept[]>(API_ROUTES.review.weakConcepts),
       ])
 
-      return {
-        ...review,
-        weakConcepts: review.weakConcepts.map((concept) => ({
-          ...concept,
-          lastSeenAt: weakConcepts.find((item) => item.id === concept.id)?.lastSeenAt ?? null,
-        })),
-      }
+      return normalizeReviewPageData(review, weakConcepts)
     },
     {
       fallbackMessage: 'Unable to load the review queue.',

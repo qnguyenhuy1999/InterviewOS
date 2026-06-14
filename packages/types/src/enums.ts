@@ -17,6 +17,7 @@ export enum EnglishLevel {
 
 export enum NoteStatus {
   DRAFT = 'DRAFT',
+  GENERATING = 'GENERATING',
   REVIEWING = 'REVIEWING',
   NEEDS_PRACTICE = 'NEEDS_PRACTICE',
   INTERVIEW_READY = 'INTERVIEW_READY',

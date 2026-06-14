@@ -58,13 +58,16 @@ function BenefitItem({
 function Root({ reason, children }: OnboardingPageProps) {
   return (
     <div className="relative min-h-svh overflow-hidden bg-background">
-      {/* Ambient gradient backdrop */}
       <div
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_-10%,oklch(var(--primary)/0.08),transparent)]"
+        className="pointer-events-none absolute inset-0 bg-accent-soft/35"
         aria-hidden="true"
       />
       <div
-        className="pointer-events-none absolute top-0 right-0 h-[480px] w-[480px] -translate-y-1/3 translate-x-1/4 rounded-full bg-[radial-gradient(circle,oklch(var(--accent)/0.06),transparent_70%)] blur-3xl"
+        className="pointer-events-none absolute top-0 right-0 h-[480px] w-[480px] -translate-y-1/3 translate-x-1/4 rounded-full bg-primary/8 blur-3xl"
+        aria-hidden="true"
+      />
+      <div
+        className="pointer-events-none absolute bottom-0 left-0 h-[360px] w-[360px] -translate-x-1/4 translate-y-1/4 rounded-full bg-warning/10 blur-3xl"
         aria-hidden="true"
       />
 

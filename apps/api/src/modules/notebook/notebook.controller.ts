@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common'
+import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post } from '@nestjs/common'
 import { ApiBody, ApiCookieAuth, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger'
 
 import type { AuthenticatedUser } from '../../common/auth/authenticated-request'
@@ -64,8 +64,9 @@ export class NotebookController {
   }
 
   @Post(':noteId/generate')
+  @HttpCode(202)
   @AiThrottle()
-  @ApiOperation({ summary: 'Generate structured content for a technical note' })
+  @ApiOperation({ summary: 'Generate structured content for a technical note (background job)' })
   @ApiParam({ name: 'noteId', type: String })
   @ApiEntityResponse(TechnicalNoteDto, { status: 'created' })
   generateTechnicalNote(

@@ -386,7 +386,7 @@ export class OpenAIProvider implements AIProvider {
     try {
       return await fetch(`${trimTrailingSlash(this.options.baseUrl)}/responses`, {
         method: 'POST',
-        signal: AbortSignal.timeout(60_000),
+        signal: AbortSignal.timeout(120_000),
         headers: this.requestHeaders(),
         body: JSON.stringify({
           model: this.options.model,
@@ -529,9 +529,22 @@ function extractStructuredResult(payload: OpenAICompatiblePayload): unknown | un
   }
 
   try {
-    return unwrapStructuredPayload(JSON.parse(outputText))
+    const cleaned = outputText
+      .replace(/^```(?:json)?\s*\n?/m, '')
+      .replace(/\n?```\s*$/m, '')
+      .trim()
+    return unwrapStructuredPayload(JSON.parse(cleaned))
   } catch {
-    throw new Error('AI response contained malformed JSON')
+    // Fallback: extract first JSON object/array from within the text
+    const jsonMatch = outputText.match(/(\{[\s\S]*\}|\[[\s\S]*\])/s)
+    if (jsonMatch) {
+      try {
+        return unwrapStructuredPayload(JSON.parse(jsonMatch[0]))
+      } catch {
+        // fall through to error
+      }
+    }
+    throw new Error(`AI response contained malformed JSON. Raw output (first 500 chars): ${outputText.slice(0, 500)}`)
   }
 }
 

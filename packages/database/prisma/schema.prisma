@@ -26,6 +26,7 @@ enum EnglishLevel {
 
 enum NoteStatus {
   DRAFT
+  GENERATING
   REVIEWING
   NEEDS_PRACTICE
   INTERVIEW_READY

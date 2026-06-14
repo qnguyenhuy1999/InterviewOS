@@ -123,6 +123,17 @@ export class NotebookRepository {
     )
   }
 
+  async setNoteStatus(userId: string, noteId: string, status: string) {
+    return this.prisma.technicalNote.update({
+      where: { id: noteId, userId, deletedAt: null },
+      data: { status: status as never },
+      include: {
+        sections: { orderBy: { order: 'asc' } },
+        questions: { orderBy: { createdAt: 'asc' } },
+      },
+    })
+  }
+
   async replaceGeneratedContent(
     userId: string,
     noteId: string,

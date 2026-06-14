@@ -11,7 +11,7 @@ import {
   noteCreateSchema,
   noteUpdateSchema,
 } from '@interviewos/validators'
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
+import { BadRequestException, Injectable, Logger, NotFoundException } from '@nestjs/common'
 
 import { AIGateway } from '../../ai/ai.gateway'
 import { AIContextBuilder } from '../../ai/ai-context.builder'
@@ -25,6 +25,8 @@ type CurrentUserRef = Pick<AuthenticatedUser, 'id'>
 
 @Injectable()
 export class NotebookService {
+  private readonly logger = new Logger(NotebookService.name)
+
   private readonly reviewActions: {
     syncTechnicalNoteReview: (payload: {
       userId: string
@@ -108,46 +110,71 @@ export class NotebookService {
       throw new NotFoundException('Technical note not found.')
     }
 
-    const profile = await this.requireProfile(user.id)
-    const targetLevel = (note.overrideLevel ?? profile.targetLevel) as unknown as ExperienceLevel
-    const aiContext = this.aiContextBuilder.build({
-      targetLevel,
-      englishLevel: (note.overrideEnglishLevel ?? profile.englishLevel) as unknown as EnglishLevel,
-      techStack: note.overrideStack.length > 0 ? note.overrideStack : profile.techStack,
-      targetRole: note.overrideRole ?? profile.targetRole ?? undefined,
-      interviewGoals: note.overrideGoals.length > 0 ? note.overrideGoals : profile.interviewGoals,
-      weakConcepts: [],
-    })
-    const generated = await this.aiGateway.generateTechnicalNote(
-      {
-        topic: note.title,
-        noteType: note.type as unknown as NoteType,
-        targetLevel,
-        targetRole: note.overrideRole ?? profile.targetRole,
-        englishLevel: (note.overrideEnglishLevel ??
-          profile.englishLevel) as unknown as EnglishLevel,
-        techStack: note.overrideStack.length > 0 ? note.overrideStack : profile.techStack,
-        interviewGoals: note.overrideGoals.length > 0 ? note.overrideGoals : profile.interviewGoals,
-        preferredOutputStyle: note.preferredOutputStyle ?? profile.preferredOutputStyle,
-        additionalContext: note.rawInput,
-        explanationDepth: aiContext.explanationDepth,
-      },
-      { userId: user.id },
-    )
+    await this.requireProfile(user.id)
 
-    const saved = await this.notebookRepository.replaceGeneratedContent(user.id, note.id, {
-      structuredContent: generated.result.content as unknown as Record<string, unknown>,
-      sections: generated.result.sections,
-      aiMetadata: this.toAiMetadataJson(generated.metadata),
+    const generating = await this.notebookRepository.setNoteStatus(user.id, note.id, 'GENERATING')
+
+    void this.runTechnicalNoteGeneration(user.id, note.id).catch((err: unknown) => {
+      this.logger.error(
+        `Background generation failed for note ${note.id}: ${err instanceof Error ? err.message : String(err)}`,
+      )
     })
-    await this.reviewActions.syncTechnicalNoteReview({
-      userId: user.id,
-      noteId: saved.id,
-      title: saved.title,
-      status: saved.status,
-      aiMetadata: this.toAiMetadataJson(generated.metadata),
-    })
-    return saved
+
+    return generating
+  }
+
+  private async runTechnicalNoteGeneration(userId: string, noteId: string) {
+    const note = await this.notebookRepository.findNoteById(userId, noteId)
+    if (!note) return
+
+    const profile = await this.usersRepository.findProfileByUserId(userId)
+    if (!profile) {
+      await this.notebookRepository.setNoteStatus(userId, noteId, 'DRAFT')
+      return
+    }
+
+    try {
+      const targetLevel = (note.overrideLevel ?? profile.targetLevel) as unknown as ExperienceLevel
+      const aiContext = this.aiContextBuilder.build({
+        targetLevel,
+        englishLevel: (note.overrideEnglishLevel ?? profile.englishLevel) as unknown as EnglishLevel,
+        techStack: note.overrideStack.length > 0 ? note.overrideStack : profile.techStack,
+        targetRole: note.overrideRole ?? profile.targetRole ?? undefined,
+        interviewGoals: note.overrideGoals.length > 0 ? note.overrideGoals : profile.interviewGoals,
+        weakConcepts: [],
+      })
+      const generated = await this.aiGateway.generateTechnicalNote(
+        {
+          topic: note.title,
+          noteType: note.type as unknown as NoteType,
+          targetLevel,
+          targetRole: note.overrideRole ?? profile.targetRole,
+          englishLevel: (note.overrideEnglishLevel ?? profile.englishLevel) as unknown as EnglishLevel,
+          techStack: note.overrideStack.length > 0 ? note.overrideStack : profile.techStack,
+          interviewGoals: note.overrideGoals.length > 0 ? note.overrideGoals : profile.interviewGoals,
+          preferredOutputStyle: note.preferredOutputStyle ?? profile.preferredOutputStyle,
+          additionalContext: note.rawInput,
+          explanationDepth: aiContext.explanationDepth,
+        },
+        { userId },
+      )
+
+      const saved = await this.notebookRepository.replaceGeneratedContent(userId, note.id, {
+        structuredContent: generated.result.content as unknown as Record<string, unknown>,
+        sections: generated.result.sections,
+        aiMetadata: this.toAiMetadataJson(generated.metadata),
+      })
+      await this.reviewActions.syncTechnicalNoteReview({
+        userId,
+        noteId: saved.id,
+        title: saved.title,
+        status: saved.status,
+        aiMetadata: this.toAiMetadataJson(generated.metadata),
+      })
+    } catch (err) {
+      await this.notebookRepository.setNoteStatus(userId, noteId, 'DRAFT')
+      throw err
+    }
   }
 
   async generateQuestions(
