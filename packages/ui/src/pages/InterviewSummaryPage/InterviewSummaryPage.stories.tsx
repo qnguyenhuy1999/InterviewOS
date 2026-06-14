@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
+
 import { InterviewSummaryPage } from './InterviewSummaryPage'
 import { interviewSummaryPageFixture } from './InterviewSummaryPage.fixtures'
 

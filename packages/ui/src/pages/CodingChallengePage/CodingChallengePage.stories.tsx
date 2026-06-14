@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
+
 import { CodingChallengePage } from './CodingChallengePage'
 import { codingChallengePageFixture } from './CodingChallengePage.fixtures'
 

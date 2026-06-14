@@ -1,5 +1,5 @@
-import { SetupLayout } from '../../layouts/SetupLayout'
 import type { SetupStep } from '../../layouts/SetupLayout'
+import { SetupLayout } from '../../layouts/SetupLayout'
 import type { InterviewSetupPageProps } from './InterviewSetupPage.types'
 
 const STEPS: SetupStep[] = [

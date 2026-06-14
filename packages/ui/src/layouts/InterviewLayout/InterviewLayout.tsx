@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { Group, Panel, Separator, usePanelRef } from 'react-resizable-panels'
 import type { PanelImperativeHandle } from 'react-resizable-panels'
+import { Group, Panel, Separator, usePanelRef } from 'react-resizable-panels'
 
 import { cn } from '../../../lib/utils'
 import type { InterviewLayoutProps } from './InterviewLayout.types'
@@ -41,7 +41,11 @@ export function InterviewLayout({
         e.preventDefault()
         const panel = leftPanelRef.current as PanelImperativeHandle | null
         if (!panel) return
-        panel.isCollapsed() ? panel.expand() : panel.collapse()
+        if (panel.isCollapsed()) {
+          panel.expand()
+        } else {
+          panel.collapse()
+        }
       }
 
       if (e.key === ']' && !e.metaKey && !e.ctrlKey && !e.altKey) {
@@ -51,7 +55,11 @@ export function InterviewLayout({
         } else {
           const panel = rightPanelRef.current as PanelImperativeHandle | null
           if (!panel) return
-          panel.isCollapsed() ? panel.expand() : panel.collapse()
+          if (panel.isCollapsed()) {
+            panel.expand()
+          } else {
+            panel.collapse()
+          }
         }
       }
     }

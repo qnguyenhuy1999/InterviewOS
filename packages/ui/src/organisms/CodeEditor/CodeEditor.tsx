@@ -1,6 +1,6 @@
+import { CheckCircle, Play, RotateCcw, XCircle } from 'lucide-react'
 import { useState } from 'react'
 import { Group as PanelGroup, Panel, Separator as PanelResizeHandle } from 'react-resizable-panels'
-import { Play, RotateCcw, CheckCircle, XCircle } from 'lucide-react'
 
 // TODO: Replace <textarea> with Monaco Editor when @monaco-editor/react is installed.
 // Integration point: `import Editor from '@monaco-editor/react'` and swap the <textarea>.

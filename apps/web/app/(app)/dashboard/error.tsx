@@ -3,13 +3,12 @@
 import { RouteErrorState } from '@/app/_components/route-feedback/RouteErrorState'
 import { APP_ROUTES } from '@/lib/app-routes'
 
-export default function DashboardError({
-  error,
-  reset,
-}: {
+type DashboardErrorProps = {
   error: Error & { digest?: string }
   reset: () => void
-}) {
+}
+
+export default function DashboardError({ error, reset }: DashboardErrorProps) {
   return (
     <RouteErrorState
       title="Failed to load dashboard"

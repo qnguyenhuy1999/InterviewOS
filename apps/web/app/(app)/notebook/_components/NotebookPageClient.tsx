@@ -37,15 +37,34 @@ export function NotebookPageClient({
   initialSelectedType = 'ALL',
   initialView = 'grid',
 }: NotebookPageClientProps) {
+  return (
+    <NotebookPageClientContent
+      key={initialSearchValue}
+      state={state}
+      actions={actions}
+      initialSearchValue={initialSearchValue}
+      initialSelectedTopic={initialSelectedTopic}
+      initialSelectedStatus={initialSelectedStatus}
+      initialSelectedType={initialSelectedType}
+      initialView={initialView}
+    />
+  )
+}
+
+function NotebookPageClientContent({
+  state,
+  actions,
+  initialSearchValue = '',
+  initialSelectedTopic = 'ALL',
+  initialSelectedStatus = 'ALL',
+  initialSelectedType = 'ALL',
+  initialView = 'grid',
+}: NotebookPageClientProps) {
   const pathname = usePathname()
   const router = useRouter()
   const searchParams = useSearchParams()
   const [searchValue, setSearchValue] = useState(initialSearchValue)
   const deferredSearchValue = useDeferredValue(searchValue)
-
-  useEffect(() => {
-    setSearchValue(initialSearchValue)
-  }, [initialSearchValue])
 
   useEffect(() => {
     if (deferredSearchValue === initialSearchValue) {

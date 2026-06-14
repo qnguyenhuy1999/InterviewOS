@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
+
 import { CandidateWaitingPage } from './CandidateWaitingPage'
 import { candidateWaitingPageFixture } from './CandidateWaitingPage.fixtures'
 

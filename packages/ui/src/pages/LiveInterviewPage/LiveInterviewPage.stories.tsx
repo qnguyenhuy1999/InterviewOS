@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
+
 import { LiveInterviewPage } from './LiveInterviewPage'
 import { liveInterviewPageFixture } from './LiveInterviewPage.fixtures'
 

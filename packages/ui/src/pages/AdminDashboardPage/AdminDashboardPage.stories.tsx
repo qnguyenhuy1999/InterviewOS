@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
+
 import { AdminDashboardPage } from './AdminDashboardPage'
 import { adminDashboardPageFixture } from './AdminDashboardPage.fixtures'
 

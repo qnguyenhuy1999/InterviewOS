@@ -1,6 +1,6 @@
 import clsx from 'clsx'
-import * as React from 'react'
 import { ChevronDown, ChevronRight } from 'lucide-react'
+import * as React from 'react'
 
 import { RatingScale } from '../../molecules/RatingScale'
 import type { ScoreCardProps, ScoreSection } from './ScoreCard.types'

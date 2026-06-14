@@ -1,5 +1,6 @@
-import React from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import React from 'react'
+
 import { CodeEditor } from './CodeEditor'
 
 const meta = {

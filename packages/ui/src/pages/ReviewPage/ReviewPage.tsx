@@ -21,7 +21,6 @@ import { EmptyState, PageBody, PageHeader } from '../../../components/ui/page'
 import { Progress } from '../../../components/ui/progress'
 import { Separator } from '../../../components/ui/separator'
 import { Skeleton } from '../../../components/ui/skeleton'
-import { Spinner } from '../../atoms/Spinner'
 import {
   Table,
   TableBody,
@@ -30,6 +29,7 @@ import {
   TableHeader,
   TableRow,
 } from '../../../components/ui/table'
+import { Spinner } from '../../atoms/Spinner'
 import { LearningPathListItem } from '../../molecules/LearningPathListItem/LearningPathListItem'
 import { REVIEW_ITEM_TYPE_LABEL } from './ReviewPage.constants'
 import { reviewPageFixture } from './ReviewPage.fixtures'

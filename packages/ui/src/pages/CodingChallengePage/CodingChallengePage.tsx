@@ -1,4 +1,5 @@
 import { useState } from 'react'
+
 import { CodeEditor } from '../../organisms/CodeEditor'
 import type { CodingChallengePageProps } from './CodingChallengePage.types'
 

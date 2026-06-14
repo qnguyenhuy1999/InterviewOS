@@ -3,13 +3,12 @@
 import { RouteErrorState } from '@/app/_components/route-feedback/RouteErrorState'
 import { APP_ROUTES } from '@/lib/app-routes'
 
-export default function ReadinessError({
-  error,
-  reset,
-}: {
+type ReadinessErrorProps = {
   error: Error & { digest?: string }
   reset: () => void
-}) {
+}
+
+export default function ReadinessError({ error, reset }: ReadinessErrorProps) {
   return (
     <RouteErrorState
       title="Failed to load readiness"

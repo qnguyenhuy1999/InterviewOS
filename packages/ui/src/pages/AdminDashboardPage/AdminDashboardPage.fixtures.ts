@@ -5,6 +5,7 @@ import {
   SettingsIcon,
   UsersIcon,
 } from 'lucide-react'
+
 import type { AdminDashboardPageProps } from './AdminDashboardPage.types'
 
 export const adminDashboardPageFixture: AdminDashboardPageProps = {

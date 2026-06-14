@@ -3,13 +3,12 @@
 import { RouteErrorState } from '@/app/_components/route-feedback/RouteErrorState'
 import { APP_ROUTES } from '@/lib/app-routes'
 
-export default function InterviewError({
-  error,
-  reset,
-}: {
+type InterviewErrorProps = {
   error: Error & { digest?: string }
   reset: () => void
-}) {
+}
+
+export default function InterviewError({ error, reset }: InterviewErrorProps) {
   return (
     <RouteErrorState
       title="Failed to load interview sessions"
