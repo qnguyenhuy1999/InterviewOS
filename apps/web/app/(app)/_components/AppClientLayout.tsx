@@ -3,13 +3,13 @@
 import { API_ROUTES } from '@interviewos/config'
 import type { AuthenticatedUser } from '@interviewos/types'
 import type { ConsoleLayoutNavGroup } from '@interviewos/ui'
-import { ConsoleLayout, LogoutButton, TooltipProvider } from '@interviewos/ui'
+import { ConsoleLayout, TooltipProvider } from '@interviewos/ui'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import type { ReactNode } from 'react'
 
 import { apiFetch } from '@/lib/api-client'
-import { APP_NAVIGATION, getAppRouteTitle } from '@/lib/app-routes'
+import { APP_NAVIGATION, APP_ROUTES, getAppRouteTitle } from '@/lib/app-routes'
 
 export function AppClientLayout({
   currentUser,
@@ -43,9 +43,6 @@ export function AppClientLayout({
 
   async function handleLogout() {
     await apiFetch(API_ROUTES.auth.logout, { method: 'POST' })
-  }
-
-  function handleLogoutSuccess() {
     router.push('/login')
     router.refresh()
   }
@@ -58,7 +55,8 @@ export function AppClientLayout({
         account={account}
         brand={{ name: 'InterviewOS', tagline: 'Interview preparation' }}
         LinkComponent={Link}
-        headerActions={<LogoutButton onLogout={handleLogout} onSuccess={handleLogoutSuccess} />}
+        settingsHref={APP_ROUTES.settings}
+        onLogout={handleLogout}
       >
         {children}
       </ConsoleLayout>

@@ -1,8 +1,23 @@
-import { BellIcon, SearchIcon, SparklesIcon } from 'lucide-react'
+import {
+  BellIcon,
+  LogOutIcon,
+  SearchIcon,
+  SettingsIcon,
+  SparklesIcon,
+  UserIcon,
+} from 'lucide-react'
 import * as React from 'react'
 
 import { Avatar, AvatarFallback } from '../../../components/ui/avatar'
 import { Button } from '../../../components/ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '../../../components/ui/dropdown-menu'
 import { Input } from '../../../components/ui/input'
 import { Kbd } from '../../../components/ui/kbd'
 import {
@@ -99,7 +114,12 @@ function Root({
   searchPlaceholder = 'Search or jump to...',
   headerActions,
   LinkComponent,
+  profileHref = '#profile',
+  settingsHref = '#settings',
+  onLogout,
 }: ConsoleLayoutProps) {
+  const LinkEl = (LinkComponent ?? 'a') as React.ElementType
+
   return (
     <SidebarProvider defaultOpen>
       <div className="flex min-h-screen w-full">
@@ -125,27 +145,68 @@ function Root({
         </Sidebar>
 
         <SidebarInset className="min-h-screen bg-transparent">
-          <header className="sticky top-0 z-20 border-b bg-background backdrop-blur-xl">
-            <div className="mx-auto flex min-h-16 w-full max-w-384 flex-col gap-2.5 px-4 py-2.5 md:flex-row md:items-center md:px-6">
-              <div className="flex min-w-0 items-center gap-2.5">
-                <SidebarTrigger />
-                <div className="hidden h-6 w-px bg-border md:block" />
-                <h1 className="truncate font-heading text-base font-semibold md:text-lg">
-                  {title}
-                </h1>
+          <header className="sticky top-0 z-20 border-b bg-background">
+            <div className="flex h-12 items-center gap-2 px-4">
+              <SidebarTrigger />
+              <div
+                data-orientation="vertical"
+                role="none"
+                className="shrink-0 bg-border w-px h-5"
+              />
+              <div className="flex min-w-0 items-center gap-2">
+                <h1 className="truncate text-sm font-semibold">{title}</h1>
               </div>
-              <div className="order-2 flex items-center gap-2 md:order-3">
+              <div className="ml-auto flex items-center gap-1.5">
+                <div className="w-64">
+                  <HeaderSearch placeholder={searchPlaceholder} />
+                </div>
                 {headerActions}
                 <Button variant="ghost" size="icon-sm" className="rounded-lg">
-                  <BellIcon />
+                  <BellIcon className="size-4" />
                   <span className="sr-only">Notifications</span>
                 </Button>
-                <Avatar>
-                  <AvatarFallback>{account.initials}</AvatarFallback>
-                </Avatar>
-              </div>
-              <div className="order-3 w-full md:order-2 md:ml-auto md:max-w-xl">
-                <HeaderSearch placeholder={searchPlaceholder} />
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon-sm" className="rounded-lg p-0">
+                      <Avatar size="sm">
+                        <AvatarFallback>{account.initials}</AvatarFallback>
+                      </Avatar>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56">
+                    <DropdownMenuLabel className="flex flex-col gap-0.5">
+                      <span className="font-medium">{account.name}</span>
+                      <span className="text-xs font-normal text-muted-foreground">
+                        {account.email}
+                      </span>
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild>
+                      <LinkEl href={profileHref} className="flex items-center gap-2">
+                        <UserIcon className="size-4" />
+                        Profile
+                      </LinkEl>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <LinkEl href={settingsHref} className="flex items-center gap-2">
+                        <SettingsIcon className="size-4" />
+                        Settings
+                      </LinkEl>
+                    </DropdownMenuItem>
+                    {onLogout && (
+                      <>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem
+                          onClick={onLogout}
+                          className="flex items-center gap-2 text-destructive focus:text-destructive"
+                        >
+                          <LogOutIcon className="size-4" />
+                          Log out
+                        </DropdownMenuItem>
+                      </>
+                    )}
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             </div>
           </header>

@@ -18,6 +18,7 @@ const meta = {
     actions: {
       createNoteHref: '#',
       noteHref: () => '#',
+      noteEditHref: () => '#',
       retryHref: '#',
     },
   },

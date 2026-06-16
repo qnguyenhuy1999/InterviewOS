@@ -39,4 +39,7 @@ export type ConsoleLayoutProps = {
   searchPlaceholder?: string
   headerActions?: React.ReactNode
   LinkComponent?: ConsoleLayoutLinkComponent
+  profileHref?: string
+  settingsHref?: string
+  onLogout?: () => void
 }

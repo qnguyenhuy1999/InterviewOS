@@ -1,8 +1,12 @@
+import { type LucideProps } from 'lucide-react'
 import type * as React from 'react'
 
 export type AuthPageFeature = {
   title: string
   description: string
+  icon: React.ForwardRefExoticComponent<
+    Omit<LucideProps, 'ref'> & React.RefAttributes<SVGSVGElement>
+  >
 }
 
 export type AuthPageHighlight = {

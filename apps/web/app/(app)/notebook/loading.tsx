@@ -9,6 +9,7 @@ export default function NotebookLoading() {
       actions={{
         createNoteHref: APP_ROUTES.notebookNew,
         noteHref: APP_ROUTES.notebookDetail,
+        noteEditHref: APP_ROUTES.notebookEdit,
         retryHref: APP_ROUTES.notebook,
       }}
     />

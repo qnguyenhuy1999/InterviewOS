@@ -1,5 +1,5 @@
-import Link from 'next/link'
 import AuthPage from '@interviewos/ui/pages/AuthPage'
+import Link from 'next/link'
 
 import { VerifyEmailForm } from '@/app/_components/forms/VerifyEmailForm'
 

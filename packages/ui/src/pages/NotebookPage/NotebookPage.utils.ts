@@ -4,7 +4,7 @@ import { formatDistanceToNowStrict } from 'date-fns'
 import { consoleLayoutNavigationFixture } from '../../layouts/ConsoleLayout/ConsoleLayout.fixtures'
 import type { ConsoleLayoutNavGroup } from '../../layouts/ConsoleLayout/ConsoleLayout.types'
 import { NOTEBOOK_DIFFICULTY_TONE, NOTEBOOK_STATUS_DOT } from './NotebookPage.constants'
-import type { NotebookPageFilterValue, NotebookPageNote } from './NotebookPage.types'
+import type { NotebookPageFilterValue, NotebookPageNote, NotebookPageSort } from './NotebookPage.types'
 
 export function getNotebookNavigation(): ConsoleLayoutNavGroup[] {
   return consoleLayoutNavigationFixture.map((group) => ({
@@ -46,6 +46,46 @@ export function getDifficultyTone(difficulty: QuestionDifficulty) {
 
 export function getStatusDot(status: NoteStatus) {
   return NOTEBOOK_STATUS_DOT[status]
+}
+
+export function getNotebookReadinessPercent(status: NoteStatus) {
+  switch (status) {
+    case 'DRAFT':
+      return 15
+    case 'GENERATING':
+      return 25
+    case 'NEEDS_PRACTICE':
+      return 45
+    case 'REVIEWING':
+      return 65
+    case 'INTERVIEW_READY':
+      return 85
+    case 'MASTERED':
+    case 'PUBLISHED':
+      return 100
+    case 'ARCHIVED':
+      return 100
+    default:
+      return 0
+  }
+}
+
+export function sortNotebookNotes(notes: NotebookPageNote[], sort: NotebookPageSort) {
+  return [...notes].sort((left, right) => {
+    switch (sort) {
+      case 'updated-asc':
+        return left.updatedAt.getTime() - right.updatedAt.getTime()
+      case 'questions-desc':
+        return right.questionCount - left.questionCount
+      case 'questions-asc':
+        return left.questionCount - right.questionCount
+      case 'title-asc':
+        return left.title.localeCompare(right.title)
+      case 'updated-desc':
+      default:
+        return right.updatedAt.getTime() - left.updatedAt.getTime()
+    }
+  })
 }
 
 export function getVisibleNotebookNotes({
@@ -96,6 +136,20 @@ export function getVisibleNotebookNotes({
 
     return true
   })
+}
+
+export function getReadinessTierClass(percent: number): string {
+  if (percent >= 85) return 'bg-success'
+  if (percent >= 60) return 'bg-primary'
+  if (percent >= 30) return 'bg-amber-500'
+  return 'bg-muted-foreground/40'
+}
+
+export function getReadinessLabel(percent: number): string {
+  if (percent >= 85) return 'Almost ready'
+  if (percent >= 60) return 'In progress'
+  if (percent >= 30) return 'Building'
+  return 'Starting'
 }
 
 export function isSelectedFilter<T extends string>(

@@ -1,5 +1,5 @@
 import { EnglishNoteStatus } from '@interviewos/types'
-import { BookTextIcon, CheckCircle2Icon, LanguagesIcon } from 'lucide-react'
+import { BookTextIcon, CheckCircle2Icon, LanguagesIcon, UploadIcon } from 'lucide-react'
 import type React from 'react'
 
 import { Badge } from '../../../components/ui/badge'
@@ -22,6 +22,8 @@ import {
   getEnglishTopicGroups,
 } from './EnglishNotesPage.utils'
 
+// ─── EnglishNoteRow ───────────────────────────────────────────────────────────
+
 function EnglishNoteRow({
   originalSentence,
   correctedSentence,
@@ -34,33 +36,121 @@ function EnglishNoteRow({
   renderActions?: React.ReactNode
 }) {
   return (
-    <article className="rounded-md border border-border/80 bg-background p-4">
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div className="space-y-3">
-          <div>
-            <p className="text-xs font-semibold uppercase text-muted-foreground">Original</p>
-            <p className="mt-1 text-sm font-medium">{originalSentence}</p>
+    <article className="group rounded-lg border border-border/70 bg-card transition-shadow duration-150 hover:shadow-elevated">
+      <div className="space-y-4 p-4">
+        {/* Sentence trio */}
+        <div className="grid gap-3 sm:grid-cols-3">
+          <div className="space-y-1">
+            <p className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
+              Original
+            </p>
+            <p className="text-sm font-medium leading-6 text-foreground">{originalSentence}</p>
           </div>
-          <div>
-            <p className="text-xs font-semibold uppercase text-muted-foreground">Corrected</p>
-            <p className="mt-1 text-sm">{correctedSentence}</p>
+
+          <div className="space-y-1">
+            <p className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
+              Corrected
+            </p>
+            <p className="text-sm leading-6 text-foreground">{correctedSentence}</p>
           </div>
-          <div>
-            <p className="text-xs font-semibold uppercase text-muted-foreground">Natural version</p>
-            <p className="mt-1 text-sm text-muted-foreground">{naturalVersion}</p>
+
+          <div className="space-y-1">
+            <p className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
+              Natural version
+            </p>
+            <p className="text-sm leading-6 text-muted-foreground">{naturalVersion}</p>
           </div>
-          <p className="text-sm leading-6 text-muted-foreground">{explanation}</p>
         </div>
-        {renderActions ?? (
-          <Badge variant="outline" className={getEnglishStatusClassName(status)}>
-            {ENGLISH_NOTES_STATUS_LABEL[status]}
-          </Badge>
-        )}
+
+        {/* Divider */}
+        <div className="h-px bg-border/60" />
+
+        {/* Explanation + meta row */}
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <p className="max-w-prose text-sm leading-6 text-muted-foreground">{explanation}</p>
+
+          <div className="flex shrink-0 items-center gap-3">
+            <span className="text-xs text-muted-foreground/70">
+              {getEnglishRelativeDateLabel(createdAt)}
+            </span>
+            {renderActions ?? (
+              <Badge variant="outline" className={getEnglishStatusClassName(status)}>
+                {ENGLISH_NOTES_STATUS_LABEL[status]}
+              </Badge>
+            )}
+          </div>
+        </div>
       </div>
-      <p className="mt-3 text-xs text-muted-foreground">{getEnglishRelativeDateLabel(createdAt)}</p>
     </article>
   )
 }
+
+// ─── TopicCoverageCard ────────────────────────────────────────────────────────
+
+function TopicCoverageCard({ topic }: { topic: ReturnType<typeof getEnglishTopicGroups>[number] }) {
+  // Map mastery % to a semantic colour token
+  const progressColour =
+    topic.masteryPercentage >= 75
+      ? 'text-success'
+      : topic.masteryPercentage >= 40
+        ? 'text-warning'
+        : 'text-destructive'
+
+  return (
+    <div className="rounded-lg border border-border/70 bg-card p-4 transition-shadow duration-150 hover:shadow-elevated">
+      <div className="flex items-start justify-between gap-4">
+        <div className="min-w-0 space-y-0.5">
+          <p className="truncate text-sm font-semibold text-foreground">{topic.name}</p>
+          <p className="text-xs text-muted-foreground">
+            {topic.total} notes · {topic.mastered} mastered · {topic.needsPractice} urgent
+          </p>
+        </div>
+        <span className={`shrink-0 font-mono text-sm font-semibold tabular-nums ${progressColour}`}>
+          {topic.masteryPercentage}%
+        </span>
+      </div>
+      <Progress value={topic.masteryPercentage} className="mt-3 h-1.5" />
+    </div>
+  )
+}
+
+// ─── TopicSection ─────────────────────────────────────────────────────────────
+
+function TopicSection({
+  topic,
+  renderNoteActions,
+}: {
+  topic: ReturnType<typeof getEnglishTopicGroups>[number]
+  renderNoteActions?: EnglishNotesPageProps['renderNoteActions']
+}) {
+  return (
+    <section className="space-y-3">
+      {/* Section header */}
+      <div className="flex items-center justify-between gap-3">
+        <div className="space-y-0.5">
+          <p className="text-sm font-semibold text-foreground">{topic.name}</p>
+          <p className="text-xs text-muted-foreground">{topic.total} corrections</p>
+        </div>
+        <Badge variant="secondary" className="rounded-full px-3 py-1 font-mono tabular-nums">
+          {topic.masteryPercentage}% mastery
+        </Badge>
+      </div>
+
+      {/* Notes */}
+      <div className="space-y-3">
+        {topic.notes.map((note) => (
+          <EnglishNoteRow
+            key={note.id}
+            {...note}
+            renderActions={renderNoteActions ? renderNoteActions(note) : undefined}
+          />
+        ))}
+      </div>
+    </section>
+  )
+}
+
+// ─── EnglishNotesBody ─────────────────────────────────────────────────────────
 
 function EnglishNotesBody({
   notes,
@@ -71,10 +161,11 @@ function EnglishNotesBody({
 }) {
   const topicGroups = getEnglishTopicGroups(notes)
   const masteryPercentage = getEnglishMasteryPercentage(notes)
-  const masteredCount = notes.filter((note) => note.status === EnglishNoteStatus.MASTERED).length
+  const masteredCount = notes.filter((n) => n.status === EnglishNoteStatus.MASTERED).length
 
   return (
     <div className="space-y-6">
+      {/* Stats row */}
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <StatCard label="Total notes" value={notes.length} icon={BookTextIcon} />
         <StatCard label="Grammar topics" value={topicGroups.length} icon={LanguagesIcon} />
@@ -86,61 +177,32 @@ function EnglishNotesBody({
         />
       </div>
 
+      {/* Topic coverage */}
       <SectionCard
         title="Topic coverage"
         description="Grouped by grammar topic so repeated patterns stand out quickly."
       >
-        <div className="grid gap-4 xl:grid-cols-2">
+        <div className="grid gap-3 xl:grid-cols-2">
           {topicGroups.map((topic) => (
-            <div key={topic.name} className="rounded-md border border-border/80 bg-background p-4">
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <p className="text-base font-semibold">{topic.name}</p>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    {topic.total} notes, {topic.mastered} mastered, {topic.needsPractice} urgent
-                  </p>
-                </div>
-                <span className="text-sm font-medium text-muted-foreground">
-                  {topic.masteryPercentage}%
-                </span>
-              </div>
-              <Progress value={topic.masteryPercentage} className="mt-3 h-2" />
-            </div>
+            <TopicCoverageCard key={topic.name} topic={topic} />
           ))}
         </div>
       </SectionCard>
 
+      {/* Corrections */}
       <SectionCard
         title="Corrections"
         description="Review the exact sentence, the corrected version, and the more natural phrasing."
         action={
           <Button variant="outline" size="sm">
+            <UploadIcon aria-hidden="true" />
             Export notes
           </Button>
         }
       >
-        <div className="space-y-4">
+        <div className="space-y-8">
           {topicGroups.map((topic) => (
-            <section key={topic.name} className="space-y-3">
-              <div className="flex items-center justify-between gap-3">
-                <div>
-                  <p className="text-sm font-semibold">{topic.name}</p>
-                  <p className="text-xs text-muted-foreground">{topic.total} corrections</p>
-                </div>
-                <Badge variant="secondary" className="rounded-full px-3 py-1">
-                  {topic.masteryPercentage}% mastery
-                </Badge>
-              </div>
-              <div className="space-y-3">
-                {topic.notes.map((note) => (
-                  <EnglishNoteRow
-                    key={note.id}
-                    {...note}
-                    renderActions={renderNoteActions ? renderNoteActions(note) : undefined}
-                  />
-                ))}
-              </div>
-            </section>
+            <TopicSection key={topic.name} topic={topic} renderNoteActions={renderNoteActions} />
           ))}
         </div>
       </SectionCard>
@@ -148,28 +210,32 @@ function EnglishNotesBody({
   )
 }
 
+// ─── LoadingBody ──────────────────────────────────────────────────────────────
+
 function LoadingBody() {
   return (
     <div className="space-y-6">
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        {Array.from({ length: 4 }).map((_, index) => (
-          <Skeleton key={index} className="h-28 rounded-md" />
+        {Array.from({ length: 4 }).map((_, i) => (
+          <Skeleton key={i} className="h-28 rounded-lg" />
         ))}
       </div>
-      <Skeleton className="h-56 rounded-md" />
+      <Skeleton className="h-56 rounded-lg" />
       <div className="space-y-3">
-        {Array.from({ length: 3 }).map((_, index) => (
-          <Skeleton key={index} className="h-44 rounded-md" />
+        {Array.from({ length: 3 }).map((_, i) => (
+          <Skeleton key={i} className="h-44 rounded-lg" />
         ))}
       </div>
     </div>
   )
 }
 
+// ─── ErrorBody ────────────────────────────────────────────────────────────────
+
 function ErrorBody({ message, retryHref }: { message: string; retryHref?: string }) {
   return (
     <EmptyState
-      className="min-h-128 border-destructive/20 bg-destructive/5"
+      className="min-h-96 border-destructive/20 bg-error-soft"
       title={<span className="text-destructive">Failed to load English notes</span>}
       description={message}
       action={
@@ -182,6 +248,8 @@ function ErrorBody({ message, retryHref }: { message: string; retryHref?: string
     />
   )
 }
+
+// ─── EmptyBody ────────────────────────────────────────────────────────────────
 
 function EmptyBody({ startPracticeHref }: { startPracticeHref: string }) {
   return (
@@ -198,6 +266,8 @@ function EmptyBody({ startPracticeHref }: { startPracticeHref: string }) {
     />
   )
 }
+
+// ─── Root ─────────────────────────────────────────────────────────────────────
 
 function Root({ state, actions, renderNoteActions }: EnglishNotesPageProps) {
   return (
@@ -227,8 +297,5 @@ function Root({ state, actions, renderNoteActions }: EnglishNotesPageProps) {
   )
 }
 
-const EnglishNotesPage = Object.assign(Root, {
-  EnglishNoteRow,
-})
-
+const EnglishNotesPage = Object.assign(Root, { EnglishNoteRow })
 export default EnglishNotesPage

@@ -6,10 +6,12 @@ import { test } from 'vitest'
 import { notebookFixture } from './NotebookPage.fixtures'
 import {
   getEnumLabel,
+  getNotebookReadinessPercent,
   getNotebookSummary,
   getNotebookTopicOptions,
   getVisibleNotebookNotes,
   isSelectedFilter,
+  sortNotebookNotes,
 } from './NotebookPage.utils'
 
 test('getNotebookTopicOptions returns sorted unique topics with ALL first', () => {
@@ -68,4 +70,22 @@ test('notebook enum labels and selected filters are human-readable', () => {
   assert.equal(isSelectedFilter(undefined, 'ALL'), true)
   assert.equal(isSelectedFilter(NoteType.CONCEPT, NoteType.CONCEPT), true)
   assert.equal(isSelectedFilter(NoteType.BEHAVIORAL, NoteType.CONCEPT), false)
+})
+
+test('notebook readiness and sorting helpers are stable', () => {
+  assert.equal(getNotebookReadinessPercent(NoteStatus.DRAFT), 15)
+  assert.equal(getNotebookReadinessPercent(NoteStatus.INTERVIEW_READY), 85)
+  assert.equal(getNotebookReadinessPercent(NoteStatus.MASTERED), 100)
+
+  assert.deepEqual(
+    sortNotebookNotes(notebookFixture.notes, 'questions-desc').map((note) => note.questionCount),
+    [8, 6, 5, 4, 3, 0],
+  )
+
+  assert.deepEqual(
+    sortNotebookNotes(notebookFixture.notes, 'title-asc').map((note) => note.title),
+    [...notebookFixture.notes.map((note) => note.title)].sort((left, right) =>
+      left.localeCompare(right),
+    ),
+  )
 })

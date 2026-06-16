@@ -55,7 +55,7 @@ function RelatedNoteRow({ note }: { note: TechnicalNoteSummary }) {
     <div className="flex items-start justify-between gap-4 rounded-xl border border-border/70 bg-surface-elevated px-4 py-4 shadow-sm transition-transform duration-200 hover:-translate-y-0.5 hover:shadow-elevated">
       <div className="min-w-0">
         <p className="text-pretty text-sm leading-6 font-medium text-foreground">{note.title}</p>
-        <p className="mt-1 break-words text-sm text-muted-foreground">
+        <p className="mt-1 wrap-break-word text-sm text-muted-foreground">
           {note.topic?.trim() || 'Uncategorized'} · {getEnumLabel(note.type)}
         </p>
       </div>
@@ -144,7 +144,7 @@ function StudyContext({ data }: { data: TechnicalNoteDetailView }) {
         tone="muted"
         className="order-1"
       >
-        <article className="prose prose-neutral max-w-none break-words prose-p:text-pretty prose-p:leading-7 prose-headings:text-balance dark:prose-invert">
+        <article className="prose prose-neutral max-w-none wrap-break-word prose-p:text-pretty prose-p:leading-7 prose-headings:text-balance dark:prose-invert">
           <ReactMarkdown>{data.note.rawInput}</ReactMarkdown>
         </article>
       </NoteSection>

@@ -31,10 +31,9 @@ import { SettingsSectionNav } from '../../organisms/SettingsSectionNav/SettingsS
 import { settingsPageFixture } from './SettingsPage.fixtures'
 import type { SettingsPageProps, SettingsPageSection } from './SettingsPage.types'
 
-const settingsSectionIcons: Record<
-  SettingsSectionId,
-  React.ComponentType<{ className?: string }>
-> = {
+// ─── Constants ────────────────────────────────────────────────────────────────
+
+const SECTION_ICONS: Record<SettingsSectionId, React.ComponentType<{ className?: string }>> = {
   profile: UserIcon,
   learning_preferences: BrainCircuitIcon,
   english_level: LanguagesIcon,
@@ -43,17 +42,15 @@ const settingsSectionIcons: Record<
   account: ShieldIcon,
 }
 
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
 function getActionVariant(intent: SettingsActionIntent): 'default' | 'outline' | 'destructive' {
-  if (intent === 'primary') {
-    return 'default'
-  }
-
-  if (intent === 'destructive') {
-    return 'destructive'
-  }
-
+  if (intent === 'primary') return 'default'
+  if (intent === 'destructive') return 'destructive'
   return 'outline'
 }
+
+// ─── FieldControl ─────────────────────────────────────────────────────────────
 
 function FieldControl({ field }: { field: SettingsFieldView }) {
   if (field.kind === 'input') {
@@ -62,7 +59,7 @@ function FieldControl({ field }: { field: SettingsFieldView }) {
         value={field.value}
         onChange={() => {}}
         type={field.inputType}
-        className="h-11 rounded-lg bg-card px-4 text-base shadow-xs"
+        className="h-10 rounded-lg bg-card px-4 shadow-xs"
       />
     )
   }
@@ -70,7 +67,7 @@ function FieldControl({ field }: { field: SettingsFieldView }) {
   if (field.kind === 'select') {
     return (
       <Select value={field.value} onValueChange={() => {}}>
-        <SelectTrigger className="h-11 w-full rounded-lg bg-card px-4 text-left text-base shadow-xs">
+        <SelectTrigger className="h-10 w-full rounded-lg bg-card px-4 text-left shadow-xs">
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
@@ -85,23 +82,28 @@ function FieldControl({ field }: { field: SettingsFieldView }) {
   }
 
   if (field.kind === 'toggle') {
-    return <Switch checked={field.checked} onCheckedChange={() => {}} className="mt-1" />
+    return <Switch checked={field.checked} onCheckedChange={() => {}} />
   }
 
   if (field.kind === 'value') {
-    return <p className="text-xl font-medium text-foreground">{field.value}</p>
+    return (
+      <p className="font-mono text-lg font-semibold tabular-nums text-foreground">{field.value}</p>
+    )
   }
 
+  // kind === 'actions'
   return (
-    <div className="flex flex-wrap items-center gap-3">
+    <div className="flex flex-wrap items-center gap-2.5">
       {field.actions.map((action) => (
-        <Button key={action.id} variant={getActionVariant(action.intent)} size="lg">
+        <Button key={action.id} variant={getActionVariant(action.intent)} size="sm">
           {action.label}
         </Button>
       ))}
     </div>
   )
 }
+
+// ─── SectionFieldRow ──────────────────────────────────────────────────────────
 
 function SectionFieldRow({ field }: { field: SettingsFieldView }) {
   const isToggle = field.kind === 'toggle'
@@ -120,7 +122,7 @@ function SectionFieldRow({ field }: { field: SettingsFieldView }) {
         className={cn(
           'min-w-0',
           !isToggle && !isActions && 'md:col-span-2',
-          isToggle && 'flex items-start',
+          isToggle && 'flex items-center',
           isActions && 'justify-self-start',
         )}
       >
@@ -130,30 +132,33 @@ function SectionFieldRow({ field }: { field: SettingsFieldView }) {
   )
 }
 
+// ─── SectionCard ─────────────────────────────────────────────────────────────
+
 function SectionCard({ section }: { section: SettingsPageSection }) {
   return (
-    <Card className="gap-0 rounded-md py-0">
+    <Card className="gap-0 py-0">
       <CardHeader className="border-b py-4">
         <div>
-          <CardTitle className="text-xl font-semibold">{section.title}</CardTitle>
-          <p className="text-sm text-muted-foreground">{section.description}</p>
+          <CardTitle className="font-heading text-lg font-semibold">{section.title}</CardTitle>
+          <p className="mt-0.5 text-sm text-muted-foreground">{section.description}</p>
         </div>
       </CardHeader>
-      <CardContent className="py-2">
-        <div className="divide-y">
+      <CardContent className="px-6 py-2">
+        <div className="divide-y divide-border">
           {section.fields.map((field) => (
             <SectionFieldRow key={field.id} field={field} />
           ))}
         </div>
+
         {section.footerActions?.length ? (
           <>
-            <Separator />
-            <div className="flex flex-wrap items-center justify-end gap-3 pt-5 pb-2">
+            <Separator className="mt-2" />
+            <div className="flex flex-wrap items-center justify-end gap-2.5 py-4">
               {section.footerActions.map((action) => (
                 <Button
                   key={action.id}
                   variant={getActionVariant(action.intent)}
-                  size="lg"
+                  size="sm"
                   className={cn(action.intent === 'secondary' && 'border-transparent shadow-none')}
                 >
                   {action.label}
@@ -167,6 +172,8 @@ function SectionCard({ section }: { section: SettingsPageSection }) {
   )
 }
 
+// ─── SettingsHighlights ───────────────────────────────────────────────────────
+
 function SettingsHighlights({
   data,
   activeSection,
@@ -174,9 +181,8 @@ function SettingsHighlights({
   data: NonNullable<SettingsPageProps['data']>
   activeSection: SettingsPageSection
 }) {
-  const activeSectionIndex =
-    data.sections.findIndex((section) => section.id === activeSection.id) + 1
-  const toggleCount = activeSection.fields.filter((field) => field.kind === 'toggle').length
+  const activeSectionIndex = data.sections.findIndex((s) => s.id === activeSection.id) + 1
+  const toggleCount = activeSection.fields.filter((f) => f.kind === 'toggle').length
 
   return (
     <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
@@ -190,7 +196,7 @@ function SettingsHighlights({
         label="Current section"
         value={`${activeSectionIndex}/${data.sections.length}`}
         hint={activeSection.label}
-        icon={settingsSectionIcons[activeSection.id]}
+        icon={SECTION_ICONS[activeSection.id]}
       />
       <StatCard
         label="Fields in view"
@@ -203,14 +209,61 @@ function SettingsHighlights({
         value={toggleCount}
         hint={
           toggleCount > 0
-            ? 'Behavior defaults you can switch instantly.'
-            : 'This section is mostly static values.'
+            ? 'Behaviour defaults you can switch instantly.'
+            : 'This section has no toggles.'
         }
         icon={BrainCircuitIcon}
       />
     </div>
   )
 }
+
+// ─── SectionContextPanel ──────────────────────────────────────────────────────
+// Sidebar panel: section title/description + nav list.
+
+function SectionContextPanel({
+  data,
+  activeSection,
+  onSectionChange,
+}: {
+  data: NonNullable<SettingsPageProps['data']>
+  activeSection: SettingsPageSection
+  onSectionChange?: (id: SettingsSectionId) => void
+}) {
+  const Icon = SECTION_ICONS[activeSection.id]
+
+  return (
+    <div className="space-y-3 xl:sticky xl:top-24">
+      {/* Active section context */}
+      <div className="rounded-lg border border-primary/20 bg-accent-soft p-4">
+        <div className="mb-3 flex items-center gap-2.5">
+          <div className="flex size-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
+            <Icon className="size-4" aria-hidden="true" />
+          </div>
+          <p className="text-[11px] font-semibold uppercase tracking-widest text-primary">
+            Active section
+          </p>
+        </div>
+        <p className="font-heading text-lg font-semibold tracking-tight text-foreground">
+          {activeSection.title}
+        </p>
+        <p className="mt-1 text-sm leading-6 text-muted-foreground">{activeSection.description}</p>
+      </div>
+
+      {/* Section nav */}
+      <div className="rounded-lg border border-border/80 bg-card p-2">
+        <SettingsSectionNav
+          sections={data.sections}
+          activeSectionId={activeSection.id}
+          iconMap={SECTION_ICONS}
+          onSectionChange={onSectionChange}
+        />
+      </div>
+    </div>
+  )
+}
+
+// ─── SettingsBody ─────────────────────────────────────────────────────────────
 
 function SettingsBody({
   data,
@@ -221,8 +274,7 @@ function SettingsBody({
   activeSectionId: SettingsSectionId
   onSectionChange?: (sectionId: SettingsSectionId) => void
 }) {
-  const activeSection =
-    data.sections.find((section) => section.id === activeSectionId) ?? data.sections[0]
+  const activeSection = data.sections.find((s) => s.id === activeSectionId) ?? data.sections[0]
 
   if (!activeSection) {
     return (
@@ -235,30 +287,15 @@ function SettingsBody({
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <SettingsHighlights data={data} activeSection={activeSection} />
 
-      <div className="grid gap-6 xl:grid-cols-4 xl:items-start">
-        <div className="space-y-4 xl:sticky xl:top-24">
-          <div className="rounded-md border border-primary/20 bg-accent-soft p-5">
-            <p className="text-xs font-semibold uppercase text-primary/80">Active section</p>
-            <p className="mt-3 font-heading text-2xl font-semibold tracking-tight">
-              {activeSection.title}
-            </p>
-            <p className="mt-2 text-sm leading-6 text-muted-foreground">
-              {activeSection.description}
-            </p>
-          </div>
-          <div className="rounded-md border border-border/80 bg-card p-3">
-            <SettingsSectionNav
-              sections={data.sections}
-              activeSectionId={activeSection.id}
-              iconMap={settingsSectionIcons}
-              onSectionChange={onSectionChange}
-            />
-          </div>
-        </div>
-
+      <div className="grid gap-5 xl:grid-cols-4 xl:items-start">
+        <SectionContextPanel
+          data={data}
+          activeSection={activeSection}
+          onSectionChange={onSectionChange}
+        />
         <div className="xl:col-span-3">
           <SectionCard section={activeSection} />
         </div>
@@ -267,31 +304,52 @@ function SettingsBody({
   )
 }
 
+// ─── LoadingBody ──────────────────────────────────────────────────────────────
+
 function LoadingBody() {
   return (
-    <div className="grid gap-6 xl:grid-cols-4 xl:items-start">
-      <div className="space-y-2">
-        {Array.from({ length: 6 }).map((_, index) => (
-          <Skeleton key={index} className="h-12 w-full rounded-xl" />
+    <div className="space-y-5">
+      {/* Stat card skeletons */}
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <Skeleton key={i} className="h-28 rounded-lg" />
         ))}
       </div>
-      <Card className="min-h-96 items-center justify-center rounded-md xl:col-span-3">
-        <Spinner size="lg" />
-      </Card>
+
+      <div className="grid gap-5 xl:grid-cols-4 xl:items-start">
+        {/* Sidebar skeleton */}
+        <div className="space-y-3">
+          <Skeleton className="h-32 rounded-lg" />
+          <div className="space-y-1.5">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <Skeleton key={i} className="h-10 w-full rounded-lg" />
+            ))}
+          </div>
+        </div>
+
+        {/* Section card skeleton */}
+        <Card className="min-h-96 items-center justify-center xl:col-span-3">
+          <Spinner size="lg" />
+        </Card>
+      </div>
     </div>
   )
 }
 
+// ─── ErrorBody ────────────────────────────────────────────────────────────────
+
 function ErrorBody({ message }: { message: string }) {
   return (
     <EmptyState
-      className="min-h-128 border-destructive/20 bg-destructive/5"
+      className="min-h-96 border-destructive/20 bg-error-soft"
       title={<span className="text-destructive">Failed to load settings</span>}
       description={message}
       action={<Button variant="destructive">Retry</Button>}
     />
   )
 }
+
+// ─── Root ─────────────────────────────────────────────────────────────────────
 
 function Root({
   data = settingsPageFixture,
@@ -324,6 +382,7 @@ function Root({
           />
         )}
       </PageBody>
+
       <Separator className="mt-8 opacity-0" />
     </>
   )

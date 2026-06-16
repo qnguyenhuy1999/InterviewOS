@@ -41,7 +41,7 @@ export function getLearningPathActionVariant(status: LearningPathItemStatus) {
   return LEARNING_PATH_STATUS_BUTTON_VARIANT[status]
 }
 
-export function getWeakConceptActions(status: WeakConceptStatus) {
+export function getWeakConceptActions(status: WeakConceptStatus): ('resolve' | 'ignore')[] {
   switch (status) {
     case WeakConceptStatus.RESOLVED:
       return ['ignore'] as const

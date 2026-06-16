@@ -1,152 +1,221 @@
-import { BrainCircuitIcon, CheckCircle2Icon, SparklesIcon, TargetIcon } from 'lucide-react'
+import {
+  BrainCircuitIcon,
+  CheckCircle2Icon,
+  ShieldCheckIcon,
+  SparklesIcon,
+  TargetIcon,
+} from 'lucide-react'
 
 import { Badge } from '../../../components/ui/badge'
 import { Card, CardContent } from '../../../components/ui/card'
 import type { AuthPageProps } from './AuthPage.types'
 
-const DEFAULT_FEATURES = [
+// ─── Static data ──────────────────────────────────────────────────────────────
+
+const FEATURES = [
   {
+    icon: TargetIcon,
     title: 'Focused prep loops',
-    description: 'Practice sessions, weak concepts, and review prompts stay connected.',
+    description:
+      'Practice sessions, weak concepts, and review prompts stay connected so nothing falls through the cracks.',
   },
   {
+    icon: SparklesIcon,
     title: 'Resume-grounded coaching',
-    description: 'Interview guidance tracks the role, level, and stack you are targeting.',
+    description:
+      "Guidance adapts to the role, level, and stack you're targeting — not a one-size template.",
   },
   {
-    title: 'Measurable momentum',
-    description: 'Readiness signals show whether you are actually improving between sessions.',
+    icon: CheckCircle2Icon,
+    title: 'Measurable readiness',
+    description:
+      "Signals that show whether you're actually improving between sessions, not just grinding.",
   },
 ]
 
-const DEFAULT_HIGHLIGHTS = [
+const STATS = [
   {
-    label: 'Adaptive plan',
     value: '24/7',
+    label: 'Adaptive plan',
     detail: 'Your queue updates after every interview, note, and review decision.',
   },
   {
+    value: '4x',
     label: 'Signal types',
-    value: '4',
-    detail: 'Practice, readiness, review, and resume context stay in one system.',
+    detail: 'Practice, readiness, review, and resume context — one system.',
   },
 ]
 
-function Root({
-  eyebrow,
+// ─── Sub-components ───────────────────────────────────────────────────────────
+
+function FeatureCard({
+  icon: Icon,
+  title,
+  description,
+}: {
+  icon: React.ComponentType<{ className?: string }>
+  title: string
+  description: string
+}) {
+  return (
+    <div className="group flex flex-col gap-3 rounded-2xl border border-border/60 bg-card p-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-elevated">
+      <div className="flex size-8 items-center justify-center rounded-xl border border-border/60 bg-accent-soft text-primary transition-colors group-hover:border-primary/20 group-hover:bg-primary/10">
+        <Icon className="size-3.5" />
+      </div>
+      <div className="space-y-1">
+        <p className="font-heading text-xs font-semibold tracking-tight text-foreground">{title}</p>
+        <p className="text-xs leading-5 text-muted-foreground">{description}</p>
+      </div>
+    </div>
+  )
+}
+
+function StatCard({ value, label, detail }: { value: string; label: string; detail: string }) {
+  return (
+    <div className="relative overflow-hidden rounded-2xl border border-border/60 bg-card px-4 py-4">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-primary/40 to-transparent" />
+      <p className="text-[9px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
+        {label}
+      </p>
+      <p className="mt-1.5 font-heading text-3xl font-semibold tracking-tight text-foreground">
+        {value}
+      </p>
+      <p className="mt-1 text-[11px] leading-4 text-muted-foreground">{detail}</p>
+    </div>
+  )
+}
+
+// ─── Root ─────────────────────────────────────────────────────────────────────
+
+export default function AuthPage({
+  eyebrow = 'Now in early access',
   title,
   description,
   children,
   footer,
   brandLabel = 'InterviewOS',
-  reassurance = 'Secure sign-in keeps your prep history, notes, and readiness data in sync.',
-  features = DEFAULT_FEATURES,
-  highlights = DEFAULT_HIGHLIGHTS,
+  reassurance = 'Your prep history, notes, and readiness data stay in sync across every session.',
+  features = FEATURES,
+  highlights = STATS,
 }: AuthPageProps) {
   return (
-    <div className="relative min-h-svh overflow-hidden bg-background">
+    // Viewport lock — exactly one screen, no scroll
+    <div className="fixed inset-0 overflow-x-hidden bg-background">
+      {/* ── Ambient background ── */}
       <div
-        className="pointer-events-none absolute inset-0 bg-accent-soft/50"
-        aria-hidden="true"
+        aria-hidden
+        className="pointer-events-none absolute -left-24 -top-24 size-[480px] rounded-full bg-primary/8 blur-3xl"
       />
       <div
-        className="pointer-events-none absolute -top-16 left-[-6rem] size-72 rounded-full bg-primary/10 blur-3xl"
-        aria-hidden="true"
+        aria-hidden
+        className="pointer-events-none absolute -bottom-20 -right-16 size-[420px] rounded-full bg-accent/6 blur-3xl"
       />
       <div
-        className="pointer-events-none absolute right-[-5rem] bottom-[-4rem] size-80 rounded-full bg-warning/10 blur-3xl"
-        aria-hidden="true"
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+        style={{
+          backgroundImage:
+            'radial-gradient(circle, color-mix(in oklch, var(--primary) 12%, transparent) 1px, transparent 1px)',
+          backgroundSize: '28px 28px',
+          maskImage: 'radial-gradient(ellipse 70% 60% at 30% 20%, black 0%, transparent 100%)',
+          WebkitMaskImage:
+            'radial-gradient(ellipse 70% 60% at 30% 20%, black 0%, transparent 100%)',
+        }}
       />
 
-      <div className="relative mx-auto grid min-h-svh max-w-7xl gap-10 px-4 py-10 md:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16 lg:px-8 lg:py-14">
-        <div className="flex flex-col justify-between gap-10 lg:py-6">
-          <div className="space-y-8">
-            <div className="flex items-center gap-3">
-              <div className="flex size-11 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-elevated">
-                <BrainCircuitIcon className="size-5" aria-hidden="true" />
-              </div>
-              <div>
-                <p className="font-heading text-lg font-semibold tracking-tight">{brandLabel}</p>
-                <p className="text-sm text-muted-foreground">Interview prep operating system</p>
-              </div>
+      {/* ── Full-height two-column grid ── */}
+      <div className="relative mx-auto grid h-full max-w-7xl grid-cols-1 items-center gap-10 px-6 md:px-10 lg:grid-cols-[1.2fr_0.8fr] lg:gap-16 xl:px-14">
+        {/* ══ LEFT — product story ══ */}
+        <div className="flex flex-col justify-center gap-8 lg:h-full lg:py-10">
+          {/* Brand lockup */}
+          <div className="flex items-center gap-3">
+            <div className="flex size-10 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-elevated">
+              <BrainCircuitIcon className="size-4.5" />
             </div>
-
-            <div className="space-y-4">
-              <Badge
-                variant="outline"
-                className="rounded-full border-primary/20 bg-background/70 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-primary backdrop-blur"
-              >
-                {eyebrow}
-              </Badge>
-              <div className="space-y-3">
-                <h1 className="max-w-2xl text-balance font-heading text-4xl font-semibold tracking-tight text-foreground md:text-5xl md:leading-[1.05]">
-                  {title}
-                </h1>
-                <p className="max-w-xl text-base leading-7 text-muted-foreground md:text-lg">
-                  {description}
-                </p>
-              </div>
-            </div>
-
-            <div className="grid gap-3 md:grid-cols-3">
-              {features.map((feature, index) => {
-                const Icon = index === 0 ? TargetIcon : index === 1 ? SparklesIcon : CheckCircle2Icon
-
-                return (
-                  <Card
-                    key={feature.title}
-                    className="border-border/70 bg-background/80 py-0 shadow-elevated backdrop-blur"
-                  >
-                    <CardContent className="space-y-3 px-5 py-5">
-                      <div className="flex size-10 items-center justify-center rounded-2xl bg-accent-soft text-primary">
-                        <Icon className="size-4" aria-hidden="true" />
-                      </div>
-                      <div className="space-y-1.5">
-                        <p className="font-medium text-foreground">{feature.title}</p>
-                        <p className="text-sm leading-6 text-muted-foreground">
-                          {feature.description}
-                        </p>
-                      </div>
-                    </CardContent>
-                  </Card>
-                )
-              })}
+            <div>
+              <p className="font-heading text-base font-semibold tracking-tight text-foreground">
+                {brandLabel}
+              </p>
+              <p className="text-[11px] text-muted-foreground">Interview prep operating system</p>
             </div>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-2">
-            {highlights.map((item) => (
-              <div
-                key={item.label}
-                className="rounded-3xl border border-border/70 bg-background/80 px-5 py-5 shadow-elevated backdrop-blur"
-              >
-                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-muted-foreground">
-                  {item.label}
-                </p>
-                <p className="mt-3 font-heading text-4xl font-semibold tracking-tight text-foreground">
-                  {item.value}
-                </p>
-                <p className="mt-2 text-sm leading-6 text-muted-foreground">{item.detail}</p>
-              </div>
+          {/* Hero copy */}
+          <div className="space-y-4">
+            <Badge
+              variant="outline"
+              className="gap-1.5 rounded-full border-primary/25 bg-accent-soft px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-primary"
+            >
+              <span className="relative flex size-1.5">
+                <span className="absolute inline-flex size-full animate-ping rounded-full bg-primary opacity-60" />
+                <span className="relative inline-flex size-1.5 rounded-full bg-primary" />
+              </span>
+              {eyebrow}
+            </Badge>
+
+            <h1 className="font-heading text-3xl font-semibold leading-[1.06] tracking-tight text-foreground md:text-4xl lg:text-[2.75rem]">
+              {title ?? (
+                <>
+                  Prep smarter.{' '}
+                  <span className="bg-linear-to-r from-primary to-accent-strong bg-clip-text text-transparent">
+                    Land the right role.
+                  </span>
+                </>
+              )}
+            </h1>
+
+            <p className="max-w-[460px] text-sm leading-6 text-muted-foreground md:text-base md:leading-7">
+              {description ??
+                'InterviewOS connects your practice sessions, resume context, and readiness signals into one adaptive system that actually remembers where you left off.'}
+            </p>
+          </div>
+
+          {/* Feature cards */}
+          <div className="grid gap-2.5 sm:grid-cols-3">
+            {features.map((f) => (
+              <FeatureCard
+                key={f.title}
+                icon={f.icon}
+                title={f.title}
+                description={f.description}
+              />
+            ))}
+          </div>
+
+          {/* Stat cards */}
+          <div className="grid grid-cols-2 gap-2.5">
+            {highlights.map((h) => (
+              <StatCard key={h.label} value={h.value} label={h.label} detail={h.detail} />
             ))}
           </div>
         </div>
 
-        <div className="flex items-center justify-center lg:justify-end">
-          <Card className="w-full max-w-xl overflow-hidden border-border/70 bg-background/95 py-0 shadow-elevated backdrop-blur">
-            <CardContent className="space-y-6 px-6 py-6 md:px-8 md:py-8">
-              <div className="space-y-2">
-                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-muted-foreground">
+        {/* ══ RIGHT — auth form, self-centered ══ */}
+        <div className="flex items-center justify-center lg:h-full lg:justify-end">
+          <Card className="w-full max-w-[400px] overflow-hidden border-border/70 bg-card/95 py-0 shadow-elevated backdrop-blur-sm">
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-primary/50 to-transparent" />
+
+            <CardContent className="space-y-6 px-7 py-7">
+              {/* Header */}
+              <div className="space-y-1">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
                   Account access
                 </p>
-                <p className="text-sm leading-6 text-muted-foreground">{reassurance}</p>
+                <p className="text-xs leading-5 text-muted-foreground">{reassurance}</p>
               </div>
 
-              <div className="rounded-2xl border border-primary/15 bg-accent-soft/70 p-4">
+              {/* Auth slot */}
+              <div className="rounded-xl border border-border/60 bg-background/50 p-4">
                 {children}
               </div>
 
-              {footer ? <div className="text-center">{footer}</div> : null}
+              {footer && <div className="text-center text-xs text-muted-foreground">{footer}</div>}
+
+              {/* Trust row */}
+              <div className="flex items-center justify-center gap-2 text-[11px] text-muted-foreground/60">
+                <ShieldCheckIcon className="size-3 text-success" />
+                Encrypted &amp; secure · SOC 2 compliant
+              </div>
             </CardContent>
           </Card>
         </div>
@@ -154,7 +223,3 @@ function Root({
     </div>
   )
 }
-
-const AuthPage = Root
-
-export default AuthPage

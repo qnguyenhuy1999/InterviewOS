@@ -1,6 +1,7 @@
 'use client'
 
-import { RouteErrorState } from '@/app/_components/route-feedback/RouteErrorState'
+import { RouteErrorState } from '@interviewos/ui'
+
 import { APP_ROUTES } from '@/lib/app-routes'
 
 type ResumeErrorProps = {

@@ -1,11 +1,10 @@
 import { API_ROUTES } from '@interviewos/config'
 import type { NotebookNoteListItem } from '@interviewos/types'
+import { NotebookPageClient } from '@interviewos/ui'
 
 import { APP_ROUTES } from '@/lib/app-routes'
 import { loadRouteData } from '@/lib/route-state'
 import { serverApiClient } from '@/lib/server-api-client'
-
-import { NotebookPageClient } from './_components/NotebookPageClient'
 
 export default async function Page({
   searchParams,
@@ -15,6 +14,7 @@ export default async function Page({
     topic?: string
     status?: string
     type?: string
+    sort?: string
     view?: string
   }>
 }) {
@@ -33,12 +33,14 @@ export default async function Page({
       actions={{
         createNoteHref: APP_ROUTES.notebookNew,
         noteHrefBase: APP_ROUTES.notebook,
+        noteEditHrefBase: APP_ROUTES.notebook,
         retryHref: APP_ROUTES.notebook,
       }}
       initialSearchValue={params.q}
       initialSelectedTopic={params.topic?.trim() ? params.topic : 'ALL'}
       initialSelectedStatus={params.status ?? null}
       initialSelectedType={params.type ?? null}
+      initialSelectedSort={params.sort ?? null}
       initialView={params.view === 'list' ? 'list' : 'grid'}
     />
   )
