@@ -1,3 +1,5 @@
+'use client'
+
 import { NoteStatus } from '@interviewos/types'
 import { PlusIcon } from 'lucide-react'
 

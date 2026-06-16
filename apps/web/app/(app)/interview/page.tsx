@@ -24,7 +24,7 @@ export default async function Page() {
       actions={{
         startInterviewHref: APP_ROUTES.interviewStart,
         quickStartHref: `${APP_ROUTES.interviewStart}?mode=quick`,
-        reviewHref: APP_ROUTES.interviewReview,
+        reviewHref: '/interview/session',
         retryHref: APP_ROUTES.interview,
       }}
     />

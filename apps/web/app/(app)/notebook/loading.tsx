@@ -1,3 +1,5 @@
+'use client'
+
 import NotebookPage from '@interviewos/ui/pages/NotebookPage'
 
 import { APP_ROUTES } from '@/lib/app-routes'

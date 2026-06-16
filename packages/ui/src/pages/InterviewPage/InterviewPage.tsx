@@ -1,3 +1,5 @@
+'use client'
+
 import { FilterIcon, MicIcon, PlayIcon } from 'lucide-react'
 
 import { Button } from '../../../components/ui/button'
@@ -174,7 +176,7 @@ function SessionsTable({
             <SessionRow
               key={session.id}
               session={session}
-              reviewHref={actions.reviewHref(session.id)}
+              reviewHref={`${actions.reviewHref}/${session.id}/review`}
             />
           ))}
         </TableBody>

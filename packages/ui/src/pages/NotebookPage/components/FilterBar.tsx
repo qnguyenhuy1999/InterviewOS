@@ -1,3 +1,5 @@
+'use client'
+
 import type { NoteStatus, NoteType } from '@interviewos/types'
 import { LayoutGridIcon, ListIcon, SearchIcon, XIcon } from 'lucide-react'
 

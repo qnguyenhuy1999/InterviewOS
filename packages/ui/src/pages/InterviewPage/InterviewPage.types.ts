@@ -11,7 +11,7 @@ export type InterviewPageState =
 export type InterviewPageActions = {
   startInterviewHref: string
   quickStartHref: string
-  reviewHref: (sessionId: string) => string
+  reviewHref: string
   retryHref?: string
 }
 

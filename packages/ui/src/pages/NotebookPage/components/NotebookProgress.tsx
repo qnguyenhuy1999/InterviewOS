@@ -1,3 +1,5 @@
+'use client'
+
 import { Progress } from '../../../../components/ui/progress'
 import type { NotebookPageNote } from '../NotebookPage.types'
 import { getNotebookReadinessPercent, getReadinessTierClass } from '../NotebookPage.utils'

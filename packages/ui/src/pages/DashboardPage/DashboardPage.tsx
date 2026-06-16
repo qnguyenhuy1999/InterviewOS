@@ -1,3 +1,5 @@
+'use client'
+
 import { WeakConceptStatus } from '@interviewos/types'
 import {
   AlertCircleIcon,
@@ -12,7 +14,6 @@ import {
   TrendingUpIcon,
 } from 'lucide-react'
 import type * as React from 'react'
-import { useEffect, useState } from 'react'
 
 import { Badge } from '../../../components/ui/badge'
 import { Button } from '../../../components/ui/button'
@@ -29,6 +30,7 @@ import { Progress } from '../../../components/ui/progress'
 import { Separator } from '../../../components/ui/separator'
 import { Skeleton } from '../../../components/ui/skeleton'
 import { Spinner } from '../../atoms/Spinner'
+import { ReadinessDial } from './components/ReadinessDial'
 import type {
   DashboardMetric,
   DashboardPageActions,
@@ -118,77 +120,6 @@ function getDashboardMetrics(state: ReadyDashboardState): DashboardMetric[] {
 }
 
 // ─── ReadinessDial ────────────────────────────────────────────────────────────
-// Signature element: animated SVG arc. Colours reference CSS custom properties
-// already defined in the project token system.
-
-function ReadinessDial({ score }: { score: number }) {
-  const R = 54
-  const CX = 70
-  const CY = 70
-  const circumference = 2 * Math.PI * R
-  const arcLength = circumference * (270 / 360)
-  const [filled, setFilled] = useState(0)
-
-  useEffect(() => {
-    const id = requestAnimationFrame(() => setFilled(Math.min(score, 100)))
-    return () => cancelAnimationFrame(id)
-  }, [score])
-
-  const offset = arcLength - (filled / 100) * arcLength
-
-  return (
-    <div className="relative size-[140px]">
-      <svg
-        viewBox="0 0 140 140"
-        width="140"
-        height="140"
-        className="overflow-visible"
-        aria-label={`Readiness score: ${score}`}
-        role="img"
-      >
-        <defs>
-          {/* Uses --primary and --accent-strong from the project token system */}
-          <linearGradient id="dialGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="var(--primary)" />
-            <stop offset="100%" stopColor="var(--accent-strong)" />
-          </linearGradient>
-        </defs>
-        <circle
-          cx={CX}
-          cy={CY}
-          r={R}
-          fill="none"
-          stroke="var(--border)"
-          strokeWidth={8}
-          strokeDasharray={`${arcLength} ${circumference}`}
-          transform={`rotate(135 ${CX} ${CY})`}
-        />
-        <circle
-          cx={CX}
-          cy={CY}
-          r={R}
-          fill="none"
-          stroke="url(#dialGradient)"
-          strokeWidth={8}
-          strokeLinecap="round"
-          strokeDasharray={`${arcLength} ${circumference}`}
-          strokeDashoffset={offset}
-          transform={`rotate(135 ${CX} ${CY})`}
-          className="transition-[stroke-dashoffset] duration-900 ease-in-out motion-reduce:transition-none"
-        />
-      </svg>
-      <div className="absolute inset-0 flex flex-col items-center justify-center gap-0.5">
-        <span className="font-mono text-[34px] font-semibold leading-none tracking-tight tabular-nums text-foreground">
-          {score}
-        </span>
-        <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
-          readiness
-        </span>
-      </div>
-    </div>
-  )
-}
-
 // ─── ActionItem ───────────────────────────────────────────────────────────────
 
 function ActionItem({

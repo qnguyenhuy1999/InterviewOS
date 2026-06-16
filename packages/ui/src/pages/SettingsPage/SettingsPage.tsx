@@ -1,3 +1,5 @@
+'use client'
+
 import type { SettingsActionIntent, SettingsFieldView, SettingsSectionId } from '@interviewos/types'
 import {
   BrainCircuitIcon,

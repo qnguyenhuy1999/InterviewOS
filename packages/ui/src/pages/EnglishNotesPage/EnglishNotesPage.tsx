@@ -1,3 +1,5 @@
+'use client'
+
 import { EnglishNoteStatus } from '@interviewos/types'
 import { BookTextIcon, CheckCircle2Icon, LanguagesIcon, UploadIcon } from 'lucide-react'
 import type React from 'react'

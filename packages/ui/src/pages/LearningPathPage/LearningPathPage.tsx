@@ -1,3 +1,5 @@
+'use client'
+
 import { LearningPathItem, LearningPathItemStatus } from '@interviewos/types'
 import { CheckCheckIcon, CompassIcon, SparklesIcon } from 'lucide-react'
 
