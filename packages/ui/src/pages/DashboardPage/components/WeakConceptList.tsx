@@ -45,7 +45,7 @@ export function WeakConceptList({ concepts }: WeakConceptListProps) {
               <Badge variant="outline" className={meta.badgeClass}>
                 {meta.label}
               </Badge>
-              <span className={`flex items-center gap-1 text-[11px] ${TREND_COLOR[meta.trend]}`}>
+              <span className={`flex items-center gap-1 text-xs ${TREND_COLOR[meta.trend]}`}>
                 <TrendIcon trend={meta.trend} />
                 {TREND_LABEL[meta.trend]}
               </span>

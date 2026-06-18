@@ -31,7 +31,7 @@ function HistoryRow({ item, isLast }: { item: ReadinessHistoryItem; isLast?: boo
 
       <article className="mb-3 flex flex-1 items-center justify-between gap-3 rounded-lg border border-border/60 bg-background px-4 py-3 transition-colors duration-150 hover:bg-muted/30">
         <div>
-          <p className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
             {getReadinessHistoryDateLabel(item.computedAt)}
           </p>
           <p className="mt-0.5 text-2xl font-semibold tracking-tight tabular-nums">

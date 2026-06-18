@@ -31,7 +31,7 @@ function Root({
               {profileStateLabel ? (
                 <Badge
                   variant="outline"
-                  className="rounded-full border-primary/20 bg-accent-soft px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-primary"
+                  className="rounded-full border-primary/20 bg-accent-soft px-3 py-1 text-xs font-semibold uppercase tracking-[0.22em] text-primary"
                 >
                   {profileStateLabel}
                 </Badge>

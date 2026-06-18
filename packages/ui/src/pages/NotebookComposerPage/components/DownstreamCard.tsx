@@ -11,7 +11,7 @@ function DownstreamCard() {
         aria-hidden="true"
       />
       <CardContent className="relative space-y-2 px-5 py-5">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-primary">
+        <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
           Downstream use
         </p>
         <p className="font-heading text-xl font-semibold tracking-tight text-foreground">

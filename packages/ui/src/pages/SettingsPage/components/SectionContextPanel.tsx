@@ -22,7 +22,7 @@ function SectionContextPanel({
           <div className="flex size-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
             <Icon className="size-4" aria-hidden="true" />
           </div>
-          <p className="text-[11px] font-semibold uppercase tracking-widest text-primary">
+          <p className="text-xs font-semibold uppercase tracking-widest text-primary">
             Active section
           </p>
         </div>

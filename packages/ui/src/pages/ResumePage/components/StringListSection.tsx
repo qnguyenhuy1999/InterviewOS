@@ -1,8 +1,4 @@
-import {
-  AlertCircleIcon,
-  CheckCircle2Icon,
-  TrendingUpIcon,
-} from 'lucide-react'
+import { AlertCircleIcon, CheckCircle2Icon, TrendingUpIcon } from 'lucide-react'
 
 import { Card, CardContent, CardHeader, CardTitle } from '../../../../components/ui/card'
 import { TagList } from '../../../molecules/TagList/TagList'
@@ -25,7 +21,7 @@ function StringListSection({
     strength: {
       icon: CheckCircle2Icon,
       iconBg: 'bg-emerald-50 dark:bg-emerald-950/40',
-      iconColor: 'text-emerald-500',
+      iconColor: 'text-success',
     },
     gap: {
       icon: AlertCircleIcon,
@@ -35,7 +31,7 @@ function StringListSection({
     improvement: {
       icon: TrendingUpIcon,
       iconBg: 'bg-amber-50 dark:bg-amber-950/40',
-      iconColor: 'text-amber-500',
+      iconColor: 'text-warning',
     },
   }
 

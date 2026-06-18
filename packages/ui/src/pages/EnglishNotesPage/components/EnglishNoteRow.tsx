@@ -23,21 +23,21 @@ export function EnglishNoteRow({
       <div className="space-y-4 p-4">
         <div className="grid gap-3 sm:grid-cols-3">
           <div className="space-y-1">
-            <p className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
+            <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
               Original
             </p>
             <p className="text-sm font-medium leading-6 text-foreground">{originalSentence}</p>
           </div>
 
           <div className="space-y-1">
-            <p className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
+            <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
               Corrected
             </p>
             <p className="text-sm leading-6 text-foreground">{correctedSentence}</p>
           </div>
 
           <div className="space-y-1">
-            <p className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
+            <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
               Natural version
             </p>
             <p className="text-sm leading-6 text-muted-foreground">{naturalVersion}</p>

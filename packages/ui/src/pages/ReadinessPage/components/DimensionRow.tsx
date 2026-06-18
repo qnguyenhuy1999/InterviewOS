@@ -12,7 +12,7 @@ function DimensionRow({ dimension }: { dimension: ReadinessDimension }) {
       <div className="flex items-center justify-between gap-3">
         <div className="min-w-0">
           <p className="text-xs font-medium leading-snug">{dimension.label}</p>
-          <p className="text-[11px] text-muted-foreground">
+          <p className="text-xs text-muted-foreground">
             {Math.round(dimension.weight * 100)}% weight
           </p>
         </div>

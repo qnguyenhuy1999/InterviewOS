@@ -56,7 +56,7 @@ function ReviewQueueCard({
               key={rating}
               variant="outline"
               size="sm"
-              className="justify-center text-[11px] font-semibold uppercase tracking-widest"
+              className="justify-center text-xs font-semibold uppercase tracking-widest"
             >
               {rating}
             </Button>

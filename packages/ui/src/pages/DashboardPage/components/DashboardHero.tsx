@@ -31,7 +31,7 @@ export function DashboardHero({ state, actions }: DashboardHeroProps) {
       <div className="relative grid lg:grid-cols-[1fr_auto]">
         <div className="flex flex-col gap-5 p-6 lg:p-7">
           <div className="space-y-1.5">
-            <p className="text-[11px] font-semibold uppercase tracking-widest text-primary">
+            <p className="text-xs font-semibold uppercase tracking-widest text-primary">
               Today's focus
             </p>
             <h2 className="font-heading text-2xl font-bold tracking-tight text-foreground md:text-[26px]">
@@ -65,7 +65,7 @@ export function DashboardHero({ state, actions }: DashboardHeroProps) {
                 {formatPercent(confidence)} confidence
               </p>
             )}
-            <p className="mt-0.5 text-[11px] text-muted-foreground/70">
+            <p className="mt-0.5 text-xs text-muted-foreground/70">
               {state.progress.reviewStreak}d streak · {state.progress.dueReviews} due
             </p>
           </div>

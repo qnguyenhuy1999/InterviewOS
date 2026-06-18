@@ -70,7 +70,7 @@ export function ReadyBody({ state, actions }: ReadyBodyProps) {
           </CardHeader>
           <CardContent className="flex flex-col gap-5 py-4">
             <div className="flex flex-col gap-1.5">
-              <p className="mb-1 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
+              <p className="mb-1 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
                 Practice
               </p>
               <ActionItem
@@ -95,7 +95,7 @@ export function ReadyBody({ state, actions }: ReadyBodyProps) {
             <Separator />
 
             <div className="flex flex-col gap-1.5">
-              <p className="mb-1 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
+              <p className="mb-1 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
                 Browse
               </p>
               <ActionItem

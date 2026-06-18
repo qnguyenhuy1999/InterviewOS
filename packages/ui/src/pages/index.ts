@@ -1,5 +1,7 @@
 export type { AuthPageProps } from './AuthPage'
 export { default as AuthPage } from './AuthPage'
+export type { LandingPageFeature, LandingPageProps, LandingPageStat } from './LandingPage'
+export { default as LandingPage } from './LandingPage'
 export type { NotebookComposerPageProps } from './NotebookComposerPage'
 export { default as NotebookComposerPage } from './NotebookComposerPage'
 export type { OnboardingPageProps } from './OnboardingPage'

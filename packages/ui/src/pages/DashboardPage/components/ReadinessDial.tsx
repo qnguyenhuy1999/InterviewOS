@@ -60,7 +60,7 @@ export function ReadinessDial({ score }: { score: number }) {
         <span className="font-mono text-[34px] font-semibold leading-none tracking-tight tabular-nums text-foreground">
           {score}
         </span>
-        <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+        <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
           readiness
         </span>
       </div>

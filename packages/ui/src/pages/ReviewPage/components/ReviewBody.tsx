@@ -82,7 +82,7 @@ function ReviewBody({
                   label: item.typeLabel,
                   variant: 'outline',
                   className:
-                    'rounded-md px-2.5 py-1 text-[11px] font-semibold uppercase tracking-widest',
+                    'rounded-md px-2.5 py-1 text-xs font-semibold uppercase tracking-widest',
                 },
               ]}
               title={item.title}
@@ -113,22 +113,22 @@ function ReviewBody({
           <Table>
             <TableHeader>
               <TableRow className="hover:bg-transparent">
-                <TableHead className="pl-5 text-[11px] font-semibold uppercase tracking-widest">
+                <TableHead className="pl-5 text-xs font-semibold uppercase tracking-widest">
                   Concept
                 </TableHead>
-                <TableHead className="text-[11px] font-semibold uppercase tracking-widest">
+                <TableHead className="text-xs font-semibold uppercase tracking-widest">
                   Occurrences
                 </TableHead>
-                <TableHead className="text-[11px] font-semibold uppercase tracking-widest">
+                <TableHead className="text-xs font-semibold uppercase tracking-widest">
                   Mastery
                 </TableHead>
-                <TableHead className="text-[11px] font-semibold uppercase tracking-widest">
+                <TableHead className="text-xs font-semibold uppercase tracking-widest">
                   Status
                 </TableHead>
-                <TableHead className="text-[11px] font-semibold uppercase tracking-widest">
+                <TableHead className="text-xs font-semibold uppercase tracking-widest">
                   Last seen
                 </TableHead>
-                <TableHead className="pr-5 text-right text-[11px] font-semibold uppercase tracking-widest">
+                <TableHead className="pr-5 text-right text-xs font-semibold uppercase tracking-widest">
                   Action
                 </TableHead>
               </TableRow>

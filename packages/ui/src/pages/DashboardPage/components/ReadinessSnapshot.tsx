@@ -41,7 +41,7 @@ export function ReadinessSnapshot({ state, actions }: ReadinessSnapshotProps) {
       </CardHeader>
       <CardContent className="grid gap-6 py-5 md:grid-cols-[160px_1fr]">
         <div className="flex flex-col gap-1">
-          <p className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
+          <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
             Overall
           </p>
           <p className="font-mono text-5xl font-semibold tracking-tight tabular-nums text-foreground">

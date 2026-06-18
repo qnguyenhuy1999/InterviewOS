@@ -21,7 +21,7 @@ function SessionMeta({ session }: { session: SessionPageSession }) {
         {session.isCurrent && (
           <Badge
             variant="secondary"
-            className="rounded-full border border-success/30 bg-success-soft px-2.5 py-0.5 text-[11px] font-semibold text-success"
+            className="rounded-full border border-success/30 bg-success-soft px-2.5 py-0.5 text-xs font-semibold text-success"
           >
             This device
           </Badge>

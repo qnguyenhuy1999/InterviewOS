@@ -19,7 +19,7 @@ export function MetricCard({ metric }: { metric: DashboardMetric }) {
         aria-hidden="true"
       />
       <CardHeader className="gap-1 pt-4">
-        <CardDescription className="text-[11px] font-semibold uppercase tracking-widest">
+        <CardDescription className="text-xs font-semibold uppercase tracking-widest">
           {metric.label}
         </CardDescription>
         <CardTitle className="font-mono text-3xl font-semibold tracking-tight tabular-nums">

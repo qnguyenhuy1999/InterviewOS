@@ -1,7 +1,4 @@
-import {
-  BrainCircuitIcon,
-  ShieldCheckIcon,
-} from 'lucide-react'
+import { BrainCircuitIcon, ShieldCheckIcon } from 'lucide-react'
 
 import { Badge } from '../../../components/ui/badge'
 import { Card, CardContent } from '../../../components/ui/card'
@@ -61,7 +58,7 @@ export default function AuthPage({
               <p className="font-heading text-base font-semibold tracking-tight text-foreground">
                 {brandLabel}
               </p>
-              <p className="text-[11px] text-muted-foreground">Interview prep operating system</p>
+              <p className="text-xs text-muted-foreground">Interview prep operating system</p>
             </div>
           </div>
 
@@ -69,7 +66,7 @@ export default function AuthPage({
           <div className="space-y-4">
             <Badge
               variant="outline"
-              className="gap-1.5 rounded-full border-primary/25 bg-accent-soft px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-primary"
+              className="gap-1.5 rounded-full border-primary/25 bg-accent-soft px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-primary"
             >
               <span className="relative flex size-1.5">
                 <span className="absolute inline-flex size-full animate-ping rounded-full bg-primary opacity-60" />
@@ -123,7 +120,7 @@ export default function AuthPage({
             <CardContent className="space-y-6 px-7 py-7">
               {/* Header */}
               <div className="space-y-1">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
                   Account access
                 </p>
                 <p className="text-xs leading-5 text-muted-foreground">{reassurance}</p>
@@ -137,7 +134,7 @@ export default function AuthPage({
               {footer && <div className="text-center text-xs text-muted-foreground">{footer}</div>}
 
               {/* Trust row */}
-              <div className="flex items-center justify-center gap-2 text-[11px] text-muted-foreground/60">
+              <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground/60">
                 <ShieldCheckIcon className="size-3 text-success" />
                 Encrypted &amp; secure · SOC 2 compliant
               </div>
