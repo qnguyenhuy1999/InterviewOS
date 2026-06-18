@@ -1,15 +1,13 @@
 import { API_ROUTES } from '@interviewos/config'
 import type { ReviewPageView, UserWeakConcept } from '@interviewos/types'
-import ReviewPage from '@interviewos/ui/pages/ReviewPage'
 
-import { LearningPathActions } from '@/app/_components/forms/LearningPathActions'
-import { ReviewRatingActions } from '@/app/_components/forms/ReviewRatingActions'
-import { WeakConceptStatusActions } from '@/app/_components/forms/WeakConceptStatusActions'
 import { APP_ROUTES } from '@/lib/app-routes'
 import { requireLearningProfile } from '@/lib/learning-profile-guard'
 import { normalizeReviewPageData } from '@/lib/review-page'
 import { loadRouteData } from '@/lib/route-state'
 import { serverApiClient } from '@/lib/server-api-client'
+
+import ReviewPageClient from './ReviewPageClient'
 
 export default async function Page() {
   await requireLearningProfile({
@@ -33,15 +31,10 @@ export default async function Page() {
   )
 
   return (
-    <ReviewPage
+    <ReviewPageClient
       state={state.kind === 'ready' ? { kind: 'ready', data: state.data } : state}
       retryHref={APP_ROUTES.review}
       startStudyHref={APP_ROUTES.interviewStart}
-      renderRatingActions={(item) => <ReviewRatingActions reviewItemId={item.reviewItemId} />}
-      renderLearningPathActions={(item) => <LearningPathActions itemId={item.id} />}
-      renderWeakConceptActions={(concept) => (
-        <WeakConceptStatusActions weakConceptId={concept.id} />
-      )}
     />
   )
 }

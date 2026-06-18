@@ -1,14 +1,11 @@
 import { TrendingUpIcon } from 'lucide-react'
 
 import { Card, CardContent, CardHeader, CardTitle } from '../../../../components/ui/card'
-import { Progress } from '../../../../components/ui/progress'
 import { SectionCard } from '../../../../components/ui/page'
+import { Progress } from '../../../../components/ui/progress'
 import { READINESS_SCORE_MAX } from '../ReadinessPage.constants'
 import type { ReadinessPageProps } from '../ReadinessPage.types'
-import {
-  getBestReadinessDimension,
-  getReadinessComputedAtLabel,
-} from '../ReadinessPage.utils'
+import { getBestReadinessDimension, getReadinessComputedAtLabel } from '../ReadinessPage.utils'
 import { DimensionRow } from './DimensionRow'
 import { HistoryRow } from './HistoryRow'
 import { ReadinessDeltaBadge } from './ReadinessDeltaBadge'

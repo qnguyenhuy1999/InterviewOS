@@ -3,7 +3,6 @@
 import { PageBody, PageHeader } from '../../../components/ui/page'
 import { Separator } from '../../../components/ui/separator'
 import { SettingsSectionNav } from '../../organisms/SettingsSectionNav/SettingsSectionNav'
-import { SECTION_ICONS } from './SettingsPage.constants'
 import { EmptyBody } from './components/EmptyBody'
 import { ErrorBody } from './components/ErrorBody'
 import { LoadingBody } from './components/LoadingBody'
