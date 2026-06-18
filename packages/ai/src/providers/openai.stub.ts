@@ -123,6 +123,7 @@ export class OpenAIProvider implements AIProvider {
       },
       promptKey: prompt.id,
       promptVersion: prompt.version,
+      maxTokens: 8192,
     })
   }
 
@@ -313,12 +314,14 @@ export class OpenAIProvider implements AIProvider {
     format,
     promptKey,
     promptVersion,
+    maxTokens = 4096,
   }: {
     instructions: string
     prompt: string
     format: JsonSchemaFormat
     promptKey: string
     promptVersion: string
+    maxTokens?: number
   }): Promise<AIResult<TResult>> {
     const startedAt = Date.now()
     const schemaHint = `\n\nReturn ONLY a valid JSON object. No markdown, no code fences, no text outside the JSON. The response must exactly match this schema:\n${JSON.stringify(format.schema)}`
@@ -327,6 +330,7 @@ export class OpenAIProvider implements AIProvider {
       instructions: instructionText,
       prompt,
       format,
+      maxTokens,
     })
 
     if (!response.ok) {
@@ -374,13 +378,15 @@ export class OpenAIProvider implements AIProvider {
     instructions,
     prompt,
     format,
+    maxTokens,
   }: {
     instructions: string
     prompt: string
     format: JsonSchemaFormat
+    maxTokens: number
   }) {
     if (shouldPreferChatCompletions(this.options.baseUrl)) {
-      return this.requestChatCompletions({ instructions, prompt })
+      return this.requestChatCompletions({ instructions, prompt, maxTokens })
     }
 
     try {
@@ -391,7 +397,7 @@ export class OpenAIProvider implements AIProvider {
         body: JSON.stringify({
           model: this.options.model,
           stream: false,
-          max_output_tokens: 4096,
+          max_output_tokens: maxTokens,
           instructions,
           input: prompt,
           text: {
@@ -409,16 +415,18 @@ export class OpenAIProvider implements AIProvider {
         throw error
       }
 
-      return this.requestChatCompletions({ instructions, prompt })
+      return this.requestChatCompletions({ instructions, prompt, maxTokens })
     }
   }
 
   private requestChatCompletions({
     instructions,
     prompt,
+    maxTokens,
   }: {
     instructions: string
     prompt: string
+    maxTokens: number
   }) {
     return fetch(`${trimTrailingSlash(this.options.baseUrl)}/chat/completions`, {
       method: 'POST',
@@ -427,7 +435,7 @@ export class OpenAIProvider implements AIProvider {
       body: JSON.stringify({
         model: this.options.model,
         stream: false,
-        max_tokens: 4096,
+        max_tokens: maxTokens,
         messages: [
           { role: 'system', content: instructions },
           { role: 'user', content: prompt },
