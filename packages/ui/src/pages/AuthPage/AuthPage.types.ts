@@ -23,6 +23,6 @@ export type AuthPageProps = {
   footer?: React.ReactNode
   brandLabel?: string
   reassurance?: string
-  features?: AuthPageFeature[]
-  highlights?: AuthPageHighlight[]
+  features?: readonly AuthPageFeature[]
+  highlights?: readonly AuthPageHighlight[]
 }
