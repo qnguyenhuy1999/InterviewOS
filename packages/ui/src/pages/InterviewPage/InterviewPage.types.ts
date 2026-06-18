@@ -8,6 +8,8 @@ export type InterviewPageState =
   | { kind: 'error'; message: string }
   | { kind: 'ready'; sessions: InterviewPageSession[] }
 
+export type InterviewPageReadyState = Extract<InterviewPageState, { kind: 'ready' }>
+
 export type InterviewPageActions = {
   startInterviewHref: string
   quickStartHref: string

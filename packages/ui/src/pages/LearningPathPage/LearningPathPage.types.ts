@@ -1,6 +1,8 @@
 import type { LearningPathItem } from '@interviewos/types'
 import type React from 'react'
 
+export type ReadyLearningPathState = Extract<LearningPathPageState, { kind: 'ready' }>
+
 export type LearningPathPageState =
   | { kind: 'loading' }
   | { kind: 'empty' }

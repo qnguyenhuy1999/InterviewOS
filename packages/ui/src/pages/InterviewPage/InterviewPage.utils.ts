@@ -6,6 +6,17 @@ import {
 } from './InterviewPage.constants'
 import type { InterviewPageSession } from './InterviewPage.types'
 
+export function getInterviewSessionMetrics(session: InterviewPageSession) {
+  return (
+    session.metrics ?? {
+      overallScore: null,
+      technicalScore: null,
+      englishScore: null,
+      durationMinutes: 0,
+    }
+  )
+}
+
 export function getInterviewTopicLabel(session: InterviewPageSession) {
   return session.note?.title ?? INTERVIEW_PAGE_TYPE_LABELS[session.type]
 }

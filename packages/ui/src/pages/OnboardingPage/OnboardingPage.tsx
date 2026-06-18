@@ -1,59 +1,11 @@
-import { BrainCircuitIcon, MicIcon, SparklesIcon, TrendingUpIcon } from 'lucide-react'
-import type * as React from 'react'
+import { BrainCircuitIcon, SparklesIcon } from 'lucide-react'
 
 import { Badge } from '../../../components/ui/badge'
 import { Card, CardContent } from '../../../components/ui/card'
 import { Separator } from '../../../components/ui/separator'
+import { ONBOARDING_PAGE_BENEFITS } from './OnboardingPage.constants'
+import { BenefitItem } from './components/BenefitItem'
 import type { OnboardingPageProps } from './OnboardingPage.types'
-
-const BENEFITS: Array<{
-  icon: React.ComponentType<{ className?: string }>
-  title: string
-  description: string
-}> = [
-  {
-    icon: BrainCircuitIcon,
-    title: 'AI-powered gap analysis',
-    description: 'We surface exactly which concepts to revisit before your next interview.',
-  },
-  {
-    icon: MicIcon,
-    title: 'Realistic interview practice',
-    description: 'Simulate full interview sessions with live feedback on clarity and depth.',
-  },
-  {
-    icon: SparklesIcon,
-    title: 'Spaced repetition review',
-    description: 'A smart review queue keeps key topics fresh at exactly the right moment.',
-  },
-  {
-    icon: TrendingUpIcon,
-    title: 'Readiness score over time',
-    description: "Track your trajectory so you know when you're genuinely interview-ready.",
-  },
-]
-
-function BenefitItem({
-  icon: Icon,
-  title,
-  description,
-}: {
-  icon: React.ComponentType<{ className?: string }>
-  title: string
-  description: string
-}) {
-  return (
-    <div className="flex gap-3.5">
-      <div className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg border border-primary/20 bg-primary/8 text-primary">
-        <Icon className="size-4" aria-hidden="true" />
-      </div>
-      <div className="min-w-0 space-y-0.5">
-        <p className="text-sm font-medium text-foreground">{title}</p>
-        <p className="text-sm leading-5 text-muted-foreground">{description}</p>
-      </div>
-    </div>
-  )
-}
 
 function Root({ reason, children }: OnboardingPageProps) {
   return (
@@ -107,7 +59,7 @@ function Root({ reason, children }: OnboardingPageProps) {
 
           {/* Benefits list */}
           <div className="space-y-4">
-            {BENEFITS.map((benefit) => (
+            {ONBOARDING_PAGE_BENEFITS.map((benefit) => (
               <BenefitItem key={benefit.title} {...benefit} />
             ))}
           </div>

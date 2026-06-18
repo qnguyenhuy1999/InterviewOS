@@ -1,89 +1,14 @@
 import {
   BrainCircuitIcon,
-  CheckCircle2Icon,
   ShieldCheckIcon,
-  SparklesIcon,
-  TargetIcon,
 } from 'lucide-react'
 
 import { Badge } from '../../../components/ui/badge'
 import { Card, CardContent } from '../../../components/ui/card'
+import { AUTH_PAGE_FEATURES, AUTH_PAGE_STATS } from './AuthPage.constants'
+import { FeatureCard } from './components/FeatureCard'
+import { StatCard } from './components/StatCard'
 import type { AuthPageProps } from './AuthPage.types'
-
-// ─── Static data ──────────────────────────────────────────────────────────────
-
-const FEATURES = [
-  {
-    icon: TargetIcon,
-    title: 'Focused prep loops',
-    description:
-      'Practice sessions, weak concepts, and review prompts stay connected so nothing falls through the cracks.',
-  },
-  {
-    icon: SparklesIcon,
-    title: 'Resume-grounded coaching',
-    description:
-      "Guidance adapts to the role, level, and stack you're targeting — not a one-size template.",
-  },
-  {
-    icon: CheckCircle2Icon,
-    title: 'Measurable readiness',
-    description:
-      "Signals that show whether you're actually improving between sessions, not just grinding.",
-  },
-]
-
-const STATS = [
-  {
-    value: '24/7',
-    label: 'Adaptive plan',
-    detail: 'Your queue updates after every interview, note, and review decision.',
-  },
-  {
-    value: '4x',
-    label: 'Signal types',
-    detail: 'Practice, readiness, review, and resume context — one system.',
-  },
-]
-
-// ─── Sub-components ───────────────────────────────────────────────────────────
-
-function FeatureCard({
-  icon: Icon,
-  title,
-  description,
-}: {
-  icon: React.ComponentType<{ className?: string }>
-  title: string
-  description: string
-}) {
-  return (
-    <div className="group flex flex-col gap-3 rounded-2xl border border-border/60 bg-card p-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-elevated">
-      <div className="flex size-8 items-center justify-center rounded-xl border border-border/60 bg-accent-soft text-primary transition-colors group-hover:border-primary/20 group-hover:bg-primary/10">
-        <Icon className="size-3.5" />
-      </div>
-      <div className="space-y-1">
-        <p className="font-heading text-xs font-semibold tracking-tight text-foreground">{title}</p>
-        <p className="text-xs leading-5 text-muted-foreground">{description}</p>
-      </div>
-    </div>
-  )
-}
-
-function StatCard({ value, label, detail }: { value: string; label: string; detail: string }) {
-  return (
-    <div className="relative overflow-hidden rounded-2xl border border-border/60 bg-card px-4 py-4">
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-primary/40 to-transparent" />
-      <p className="text-[9px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
-        {label}
-      </p>
-      <p className="mt-1.5 font-heading text-3xl font-semibold tracking-tight text-foreground">
-        {value}
-      </p>
-      <p className="mt-1 text-[11px] leading-4 text-muted-foreground">{detail}</p>
-    </div>
-  )
-}
 
 // ─── Root ─────────────────────────────────────────────────────────────────────
 
@@ -95,8 +20,8 @@ export default function AuthPage({
   footer,
   brandLabel = 'InterviewOS',
   reassurance = 'Your prep history, notes, and readiness data stay in sync across every session.',
-  features = FEATURES,
-  highlights = STATS,
+  features = AUTH_PAGE_FEATURES,
+  highlights = AUTH_PAGE_STATS,
 }: AuthPageProps) {
   return (
     // Viewport lock — exactly one screen, no scroll

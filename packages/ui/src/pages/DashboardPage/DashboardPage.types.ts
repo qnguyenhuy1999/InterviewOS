@@ -1,5 +1,8 @@
 import type { DashboardMetricView, DashboardPageView, DashboardProgress } from '@interviewos/types'
 
+export type ReadyDashboardState = Extract<DashboardPageState, { kind: 'ready' }>
+export type StatusTrend = 'up' | 'down' | 'stable'
+
 export type DashboardPageState =
   | { kind: 'loading' }
   | { kind: 'empty' }

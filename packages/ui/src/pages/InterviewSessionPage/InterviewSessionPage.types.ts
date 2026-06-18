@@ -60,6 +60,8 @@ export type InterviewSessionPageState =
       turns: InterviewSessionPageTurn[]
     }
 
+export type InterviewSessionReadyState = Extract<InterviewSessionPageState, { kind: 'ready' }>
+
 export type InterviewSessionPageProps = {
   state?: InterviewSessionPageState
   session?: InterviewSessionPageSession | null

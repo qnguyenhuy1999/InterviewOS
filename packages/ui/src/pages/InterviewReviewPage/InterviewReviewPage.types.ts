@@ -36,6 +36,8 @@ export type InterviewReviewPageState =
       evaluation?: InterviewEvaluation | null
     }
 
+export type InterviewReviewReadyState = Extract<InterviewReviewPageState, { kind: 'ready' }>
+
 export type InterviewReviewPageProps = {
   state?: InterviewReviewPageState
   session?: InterviewReviewPageSession | null

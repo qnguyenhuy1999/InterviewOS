@@ -1,6 +1,8 @@
 import type { EnglishNote } from '@interviewos/types'
 import type React from 'react'
 
+export type ReadyEnglishNotesState = Extract<EnglishNotesPageState, { kind: 'ready' }>
+
 export type EnglishNotesPageState =
   | { kind: 'loading' }
   | { kind: 'empty' }

@@ -7,6 +7,9 @@ export type ReviewPageState =
   | { kind: 'error'; message: string }
   | { kind: 'ready'; data: ReviewPageView }
 
+export type ReviewPageReadyState = Extract<ReviewPageState, { kind: 'ready' }>
+export type ReviewPageEmptyState = Extract<ReviewPageState, { kind: 'empty' }>
+
 export type ReviewPageProps = {
   state: ReviewPageState
   retryHref?: string
