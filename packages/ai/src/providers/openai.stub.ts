@@ -391,6 +391,7 @@ export class OpenAIProvider implements AIProvider {
         body: JSON.stringify({
           model: this.options.model,
           stream: false,
+          max_output_tokens: 4096,
           instructions,
           input: prompt,
           text: {
@@ -426,6 +427,7 @@ export class OpenAIProvider implements AIProvider {
       body: JSON.stringify({
         model: this.options.model,
         stream: false,
+        max_tokens: 4096,
         messages: [
           { role: 'system', content: instructions },
           { role: 'user', content: prompt },
