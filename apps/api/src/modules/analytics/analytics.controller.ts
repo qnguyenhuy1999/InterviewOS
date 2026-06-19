@@ -1,3 +1,4 @@
+import { resolveAuthCookieName } from '@interviewos/config'
 import { Controller, Get } from '@nestjs/common'
 import { ApiCookieAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 
@@ -9,7 +10,7 @@ import { AnalyticsService } from './analytics.service'
 import { InterviewAnalyticsResponseDto } from './dto/analytics.dto'
 
 @ApiTags('analytics')
-@ApiCookieAuth('interviewos_session')
+@ApiCookieAuth(resolveAuthCookieName())
 @Controller('analytics')
 export class AnalyticsController {
   constructor(private readonly analyticsService: AnalyticsService) {}

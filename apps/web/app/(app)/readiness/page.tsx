@@ -48,6 +48,8 @@ export default async function ReadinessRoute() {
       }
       empty={state.kind === 'empty'}
       error={state.kind === 'error' ? state.message : undefined}
+      retryHref={APP_ROUTES.readiness}
+      startPracticeHref={APP_ROUTES.interviewStart}
       renderRecomputeAction={<ReadinessRefreshButton />}
     />
   )

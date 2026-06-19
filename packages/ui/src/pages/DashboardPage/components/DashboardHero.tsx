@@ -25,7 +25,7 @@ export function DashboardHero({ state, actions }: DashboardHeroProps) {
   return (
     <Card className="relative overflow-hidden bg-surface-elevated py-0">
       <div
-        className="pointer-events-none absolute inset-0 bg-linear-to-br from-primary/4 via-transparent to-accent-soft/30"
+        className="pointer-events-none absolute inset-0 bg-accent-soft/30"
         aria-hidden="true"
       />
       <div className="relative grid lg:grid-cols-[1fr_auto]">

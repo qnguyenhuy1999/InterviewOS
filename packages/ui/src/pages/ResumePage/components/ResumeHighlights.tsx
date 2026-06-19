@@ -1,7 +1,7 @@
 import { SparklesIcon, TargetIcon, TrendingUpIcon } from 'lucide-react'
 
-import type { ResumePageProps } from '../ResumePage.types'
 import { resumePageFixture } from '../ResumePage.fixtures'
+import type { ResumePageProps } from '../ResumePage.types'
 
 const STAT_ICONS = [TargetIcon, SparklesIcon, TrendingUpIcon]
 
@@ -15,27 +15,27 @@ function ResumeHighlights({ data = resumePageFixture }: { data?: ResumePageProps
       value: matchValue,
       hint: 'Based on your latest uploaded resume.',
       icon: STAT_ICONS[0],
-      accent: 'text-emerald-600 dark:text-emerald-400',
-      bg: 'bg-emerald-50 dark:bg-emerald-950/40',
-      border: 'border-emerald-200/60 dark:border-emerald-800/40',
+      accent: 'text-success',
+      bg: 'bg-success-soft',
+      border: 'border-success/20',
     },
     {
       label: 'Skills found',
       value: data.extractedSkills.items.length,
       hint: 'Extracted from your experience.',
       icon: STAT_ICONS[1],
-      accent: 'text-violet-600 dark:text-violet-400',
-      bg: 'bg-violet-50 dark:bg-violet-950/40',
-      border: 'border-violet-200/60 dark:border-violet-800/40',
+      accent: 'text-primary',
+      bg: 'bg-accent-soft',
+      border: 'border-primary/15',
     },
     {
       label: 'Practice topics',
       value: data.suggestedTopics.items.length,
       hint: 'Ready to turn into interview drills.',
       icon: STAT_ICONS[2],
-      accent: 'text-sky-600 dark:text-sky-400',
-      bg: 'bg-sky-50 dark:bg-sky-950/40',
-      border: 'border-sky-200/60 dark:border-sky-800/40',
+      accent: 'text-primary',
+      bg: 'bg-accent-soft',
+      border: 'border-primary/15',
     },
   ]
 

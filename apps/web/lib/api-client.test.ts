@@ -4,30 +4,19 @@ import test from 'node:test'
 import { absoluteApiPath, apiFetch, apiFetchJson } from './api-client'
 import { ApiHttpError } from './api-error'
 
-const originalApiUrl = process.env.NEXT_PUBLIC_API_URL
 const originalFetch = globalThis.fetch
 
 function restoreGlobals() {
-  if (originalApiUrl === undefined) {
-    delete process.env.NEXT_PUBLIC_API_URL
-  } else {
-    process.env.NEXT_PUBLIC_API_URL = originalApiUrl
-  }
   globalThis.fetch = originalFetch
 }
 
 test.afterEach(restoreGlobals)
 
-test('absoluteApiPath requires and uses NEXT_PUBLIC_API_URL', () => {
-  delete process.env.NEXT_PUBLIC_API_URL
-  assert.throws(() => absoluteApiPath('/auth/me'), /NEXT_PUBLIC_API_URL/)
-
-  process.env.NEXT_PUBLIC_API_URL = 'http://api.local'
-  assert.equal(absoluteApiPath('/auth/me'), 'http://api.local/auth/me')
+test('absoluteApiPath uses the internal web proxy base path', () => {
+  assert.equal(absoluteApiPath('/auth/me'), '/api/v1/auth/me')
 })
 
 test('apiFetch sends JSON content type by default and preserves explicit headers', async () => {
-  process.env.NEXT_PUBLIC_API_URL = 'http://api.local'
   const calls: Array<{ url: string; init: RequestInit }> = []
   globalThis.fetch = (async (url: string | URL | Request, init?: RequestInit) => {
     calls.push({ url: String(url), init: init ?? {} })
@@ -37,7 +26,7 @@ test('apiFetch sends JSON content type by default and preserves explicit headers
   await apiFetch('/notes')
   await apiFetch('/notes', { headers: { 'Content-Type': 'text/plain' } })
 
-  assert.equal(calls[0].url, 'http://api.local/notes')
+  assert.equal(calls[0].url, '/api/v1/notes')
   assert.equal((calls[0].init.headers as Headers).get('Content-Type'), 'application/json')
   assert.equal((calls[1].init.headers as Headers).get('Content-Type'), 'text/plain')
   assert.equal(calls[0].init.credentials, 'include')
@@ -45,7 +34,6 @@ test('apiFetch sends JSON content type by default and preserves explicit headers
 })
 
 test('apiFetch leaves multipart requests without a synthetic JSON content type', async () => {
-  process.env.NEXT_PUBLIC_API_URL = 'http://api.local'
   let capturedHeaders: Headers | undefined
   globalThis.fetch = (async (_url: string | URL | Request, init?: RequestInit) => {
     capturedHeaders = init?.headers as Headers
@@ -58,7 +46,6 @@ test('apiFetch leaves multipart requests without a synthetic JSON content type',
 })
 
 test('apiFetchJson returns JSON, handles 204 responses, and throws API errors', async () => {
-  process.env.NEXT_PUBLIC_API_URL = 'http://api.local'
   const responses = [
     new Response(JSON.stringify({ id: 'note-1' }), {
       status: 200,

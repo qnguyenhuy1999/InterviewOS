@@ -1,10 +1,10 @@
 import { PageBody, PageHeader } from '../../../components/ui/page'
+import { ErrorBody } from './components/ErrorBody'
+import { ReadyBody } from './components/ReadyBody'
 import {
   INTERVIEW_START_PAGE_DEFAULT_DESCRIPTION,
   INTERVIEW_START_PAGE_DEFAULT_TITLE,
 } from './InterviewStartPage.constants'
-import { ErrorBody } from './components/ErrorBody'
-import { ReadyBody } from './components/ReadyBody'
 import type { InterviewStartPageProps } from './InterviewStartPage.types'
 
 function Root({

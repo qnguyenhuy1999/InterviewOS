@@ -43,12 +43,13 @@ export const Loading: Story = {
 }
 
 export const EmptyState: Story = {
-  args: { empty: true },
+  args: { empty: true, setupProfileHref: '/settings' },
 }
 
 export const Error: Story = {
   args: {
     error: 'Unable to load your profile right now. Please try again.',
+    retryHref: '/settings',
   },
 }
 

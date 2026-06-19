@@ -3,9 +3,8 @@ import { CheckCircle2Icon, LanguagesIcon, MicIcon, NotebookTextIcon, SparklesIco
 import { Button } from '../../../../components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../../../components/ui/card'
 import { EmptyState } from '../../../../components/ui/page'
-
-import { ActionItem } from './ActionItem'
 import type { DashboardPageActions } from '../DashboardPage.types'
+import { ActionItem } from './ActionItem'
 
 export function EmptyBody({ actions }: { actions: DashboardPageActions }) {
   return (

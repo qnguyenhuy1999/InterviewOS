@@ -11,10 +11,10 @@
   --color-text-muted: oklch(58% 0.008 240);
   --color-text-disabled: oklch(32% 0.005 240);
 
-  /* Accent — electric teal */
-  --color-accent-teal: oklch(72% 0.18 195);
-  --color-accent-teal-dim: oklch(72% 0.18 195 / 0.15);
-  --color-accent-teal-glow: oklch(72% 0.18 195 / 0.08);
+  /* Accent — align interview primitives with the shared brand accent */
+  --color-accent-teal: var(--primary);
+  --color-accent-teal-dim: color-mix(in oklch, var(--primary) 16%, transparent);
+  --color-accent-teal-glow: color-mix(in oklch, var(--primary) 8%, transparent);
 
   /* Status semantics */
   --color-status-live: oklch(65% 0.2 145);

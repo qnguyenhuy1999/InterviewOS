@@ -22,7 +22,6 @@ test('APP_NAVIGATION exposes every primary route once', () => {
     APP_NAVIGATION.map((item) => item.href),
     [
       '/dashboard',
-      '/onboarding',
       '/notebook',
       '/interview',
       '/review',

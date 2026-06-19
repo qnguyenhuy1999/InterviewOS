@@ -3,9 +3,9 @@ import { BrainCircuitIcon, ShieldCheckIcon } from 'lucide-react'
 import { Badge } from '../../../components/ui/badge'
 import { Card, CardContent } from '../../../components/ui/card'
 import { AUTH_PAGE_FEATURES, AUTH_PAGE_STATS } from './AuthPage.constants'
+import type { AuthPageProps } from './AuthPage.types'
 import { FeatureCard } from './components/FeatureCard'
 import { StatCard } from './components/StatCard'
-import type { AuthPageProps } from './AuthPage.types'
 
 // ─── Root ─────────────────────────────────────────────────────────────────────
 
@@ -37,11 +37,8 @@ export default function AuthPage({
         className="pointer-events-none absolute inset-0"
         style={{
           backgroundImage:
-            'radial-gradient(circle, color-mix(in oklch, var(--primary) 12%, transparent) 1px, transparent 1px)',
+            'url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2728%27 height=%2728%27 viewBox=%270 0 28 28%27%3E%3Ccircle cx=%2714%27 cy=%2714%27 r=%271%27 fill=%27%236f7b8a%27 fill-opacity=%270.18%27 /%3E%3C/svg%3E")',
           backgroundSize: '28px 28px',
-          maskImage: 'radial-gradient(ellipse 70% 60% at 30% 20%, black 0%, transparent 100%)',
-          WebkitMaskImage:
-            'radial-gradient(ellipse 70% 60% at 30% 20%, black 0%, transparent 100%)',
         }}
       />
 
@@ -79,7 +76,7 @@ export default function AuthPage({
               {title ?? (
                 <>
                   Prep smarter.{' '}
-                  <span className="bg-linear-to-r from-primary to-accent-strong bg-clip-text text-transparent">
+                  <span className="text-primary">
                     Land the right role.
                   </span>
                 </>
@@ -115,7 +112,7 @@ export default function AuthPage({
         {/* ══ RIGHT — auth form, self-centered ══ */}
         <div className="flex items-center justify-center lg:h-full lg:justify-end">
           <Card className="w-full max-w-[400px] overflow-hidden border-border/70 bg-card/95 py-0 shadow-elevated backdrop-blur-sm">
-            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-primary/50 to-transparent" />
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-primary/40" />
 
             <CardContent className="space-y-6 px-7 py-7">
               {/* Header */}
@@ -136,7 +133,7 @@ export default function AuthPage({
               {/* Trust row */}
               <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground/60">
                 <ShieldCheckIcon className="size-3 text-success" />
-                Encrypted &amp; secure · SOC 2 compliant
+                Encrypted account access
               </div>
             </CardContent>
           </Card>

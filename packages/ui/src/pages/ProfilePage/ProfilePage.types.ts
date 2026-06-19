@@ -12,6 +12,8 @@ export type ProfilePageProps = {
   empty?: boolean
   error?: string
   profile?: ProfilePageView
+  retryHref?: string
+  setupProfileHref?: string
 }
 
 export type ProfileAccount = ProfileAccountView

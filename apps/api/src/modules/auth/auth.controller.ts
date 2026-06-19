@@ -1,3 +1,4 @@
+import { resolveAuthCookieName } from '@interviewos/config'
 import { Body, Controller, Delete, Get, Param, Post, Req, Res } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { ApiBody, ApiCookieAuth, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger'
@@ -26,7 +27,7 @@ import {
 } from './dto/auth.dto'
 
 @ApiTags('auth')
-@ApiCookieAuth('interviewos_session')
+@ApiCookieAuth(resolveAuthCookieName())
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -146,6 +147,7 @@ export class AuthController {
   }
 
   @Public()
+  @AuthThrottle()
   @Post('email-verification/confirm')
   @ApiOperation({ summary: 'Confirm email verification token' })
   @ApiBody({ type: ConfirmEmailVerificationDto })

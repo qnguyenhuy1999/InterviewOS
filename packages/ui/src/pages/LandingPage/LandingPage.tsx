@@ -35,11 +35,8 @@ export default function LandingPage({
         className="pointer-events-none absolute inset-0"
         style={{
           backgroundImage:
-            'radial-gradient(circle, color-mix(in oklch, var(--primary) 10%, transparent) 1px, transparent 1px)',
+            'url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2732%27 height=%2732%27 viewBox=%270 0 32 32%27%3E%3Ccircle cx=%2716%27 cy=%2716%27 r=%271%27 fill=%27%236f7b8a%27 fill-opacity=%270.16%27 /%3E%3C/svg%3E")',
           backgroundSize: '32px 32px',
-          maskImage: 'radial-gradient(ellipse 60% 50% at 70% 30%, black 0%, transparent 100%)',
-          WebkitMaskImage:
-            'radial-gradient(ellipse 60% 50% at 70% 30%, black 0%, transparent 100%)',
         }}
       />
 
@@ -87,11 +84,11 @@ export default function LandingPage({
               {headline ?? (
                 <>
                   Every gap,{' '}
-                  <span className="bg-linear-to-r from-primary to-accent-strong bg-clip-text text-transparent">
+                  <span className="text-primary">
                     closed.
                   </span>{' '}
                   Every signal,{' '}
-                  <span className="bg-linear-to-r from-primary to-accent-strong bg-clip-text text-transparent">
+                  <span className="text-primary">
                     tracked.
                   </span>
                 </>

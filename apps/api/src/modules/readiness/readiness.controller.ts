@@ -1,3 +1,4 @@
+import { resolveAuthCookieName } from '@interviewos/config'
 import { Controller, Get, Post, Query } from '@nestjs/common'
 import { ApiCookieAuth, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger'
 
@@ -13,7 +14,7 @@ import { ReadinessSnapshotDto } from './dto/readiness.dto'
 import { ReadinessService } from './readiness.service'
 
 @ApiTags('readiness')
-@ApiCookieAuth('interviewos_session')
+@ApiCookieAuth(resolveAuthCookieName())
 @Controller('readiness')
 export class ReadinessController {
   constructor(private readonly readinessService: ReadinessService) {}

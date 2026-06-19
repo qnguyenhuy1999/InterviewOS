@@ -1,13 +1,16 @@
-import { Button } from '../../../../components/ui/button'
-import { EmptyState } from '../../../../components/ui/page'
+import { EmptyState, PageStateAction } from '../../../../components/ui/page'
 
-export function EmptyBody() {
+export function EmptyBody({ setupProfileHref }: { setupProfileHref?: string }) {
   return (
     <EmptyState
       className="min-h-96"
       title="No profile data yet"
       description="Account details, learning preferences, and resume insights will appear here once your profile is configured."
-      action={<Button>Set up profile</Button>}
+      action={
+        setupProfileHref ? (
+          <PageStateAction href={setupProfileHref} label="Set up profile" />
+        ) : undefined
+      }
     />
   )
 }

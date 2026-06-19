@@ -1,5 +1,6 @@
 import type * as React from 'react'
 
+import { Button } from './button'
 import { cn } from '../../lib/utils'
 import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from './card'
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from './empty'
@@ -81,6 +82,33 @@ function EmptyState({
   )
 }
 
+type PageStateActionProps = {
+  href: string
+  label: React.ReactNode
+  variant?: React.ComponentProps<typeof Button>['variant']
+  size?: React.ComponentProps<typeof Button>['size']
+  icon?: React.ReactNode
+  className?: string
+}
+
+function PageStateAction({
+  href,
+  label,
+  variant = 'default',
+  size = 'default',
+  icon,
+  className,
+}: PageStateActionProps) {
+  return (
+    <Button asChild variant={variant} size={size} className={className}>
+      <a href={href}>
+        {icon}
+        {label}
+      </a>
+    </Button>
+  )
+}
+
 type SectionCardProps = Omit<React.ComponentProps<typeof Card>, 'title'> & {
   title?: React.ReactNode
   description?: React.ReactNode
@@ -139,4 +167,4 @@ function StatCard({ label, value, hint, icon: Icon, className, ...props }: StatC
   )
 }
 
-export { EmptyState, PageBody, PageHeader, SectionCard, StatCard }
+export { EmptyState, PageBody, PageHeader, PageStateAction, SectionCard, StatCard }

@@ -15,7 +15,7 @@ export function MetricCard({ metric }: { metric: DashboardMetric }) {
       size="sm"
     >
       <div
-        className="pointer-events-none absolute inset-x-0 top-0 h-0.5 origin-left scale-x-0 bg-linear-to-r from-primary via-accent-strong to-transparent transition-transform duration-300 group-hover:scale-x-100"
+        className="pointer-events-none absolute inset-x-0 top-0 h-0.5 origin-left scale-x-0 bg-primary/60 transition-transform duration-300 group-hover:scale-x-100"
         aria-hidden="true"
       />
       <CardHeader className="gap-1 pt-4">

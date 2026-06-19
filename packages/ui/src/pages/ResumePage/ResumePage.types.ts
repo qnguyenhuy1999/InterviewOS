@@ -12,7 +12,9 @@ export type ResumePageProps = {
   loading?: boolean
   empty?: boolean
   error?: string
+  retryHref?: string
   renderUploadArea?: React.ReactNode
+  uploadAction?: React.ReactNode
   emptyAction?: React.ReactNode
 }
 

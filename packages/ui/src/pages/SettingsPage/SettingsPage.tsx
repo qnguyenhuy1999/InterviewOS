@@ -19,6 +19,7 @@ function Root({
   loading,
   empty,
   error,
+  retryHref,
   onSectionChange,
 }: SettingsPageProps) {
   return (
@@ -27,7 +28,7 @@ function Root({
 
       <PageBody>
         {error ? (
-          <ErrorBody message={error} />
+          <ErrorBody message={error} retryHref={retryHref} />
         ) : loading ? (
           <LoadingBody />
         ) : empty || data.sections.length === 0 ? (

@@ -1,3 +1,4 @@
+import { resolveAuthCookieName } from '@interviewos/config'
 import { Body, Controller, Get, Patch, Post } from '@nestjs/common'
 import { ApiBody, ApiCookieAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 
@@ -13,7 +14,7 @@ import {
 import { UsersService } from './users.service'
 
 @ApiTags('users')
-@ApiCookieAuth('interviewos_session')
+@ApiCookieAuth(resolveAuthCookieName())
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}

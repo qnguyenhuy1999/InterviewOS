@@ -6,6 +6,7 @@ export default () => {
   return {
     ai: {
       provider: parsed.AI_PROVIDER,
+      observabilityEnabled: parsed.AI_OBSERVABILITY_ENABLED,
     },
     app: {
       env: parsed.NODE_ENV,

@@ -1,3 +1,4 @@
+import { resolveAuthCookieName } from '@interviewos/config'
 import { Controller, Get, Post, Req } from '@nestjs/common'
 import { ApiBody, ApiConsumes, ApiCookieAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import type { FastifyRequest } from 'fastify'
@@ -8,7 +9,7 @@ import { ResumeAnalysisResponseDto } from './dto/resume.dto'
 import { ResumeService } from './resume.service'
 
 @ApiTags('resume')
-@ApiCookieAuth('interviewos_session')
+@ApiCookieAuth(resolveAuthCookieName())
 @Controller('resume')
 export class ResumeController {
   constructor(private readonly resumeService: ResumeService) {}

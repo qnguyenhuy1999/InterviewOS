@@ -26,4 +26,25 @@ describe('ResumePage', () => {
     expect(markup).toContain(resumePageFixture.analysis.title)
     expect(markup).toContain(resumePageFixture.suggestedTopics.title)
   })
+
+  it('renders upload and retry controls only when real actions are provided', () => {
+    const errorMarkup = renderToStaticMarkup(<ResumePage error="Upload failed." />)
+    const errorWithRetry = renderToStaticMarkup(
+      <ResumePage error="Upload failed." retryHref="/resume" />,
+    )
+    const readyMarkup = renderToStaticMarkup(<ResumePage data={resumePageFixture} />)
+    const readyWithUploadAction = renderToStaticMarkup(
+      <ResumePage
+        data={resumePageFixture}
+        uploadAction={<a href="/resume/upload">{resumePageFixture.upload.actionLabel}</a>}
+      />,
+    )
+
+    expect(errorMarkup).not.toContain('Try again')
+    expect(errorWithRetry).toContain('Try again')
+    expect(errorWithRetry).toContain('href="/resume"')
+    expect(readyMarkup).not.toContain(resumePageFixture.upload.actionLabel)
+    expect(readyWithUploadAction).toContain(resumePageFixture.upload.actionLabel)
+    expect(readyWithUploadAction).toContain('href="/resume/upload"')
+  })
 })

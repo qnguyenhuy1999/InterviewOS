@@ -15,12 +15,13 @@ import { UploadPrompt } from './UploadPrompt'
 function ResumeBody({
   data = resumePageFixture,
   renderUploadArea,
-}: Pick<ResumePageProps, 'data' | 'renderUploadArea'>) {
+  uploadAction,
+}: Pick<ResumePageProps, 'data' | 'renderUploadArea' | 'uploadAction'>) {
   return (
     <div className="space-y-6">
       <ResumeHighlights data={data} />
 
-      {renderUploadArea ?? <UploadPrompt data={data} />}
+      {renderUploadArea ?? <UploadPrompt data={data} action={uploadAction} />}
 
       <div className="grid gap-5 xl:grid-cols-2">
         <Card className="gap-0 py-0">
@@ -88,8 +89,8 @@ function ResumeBody({
         <Card className="gap-0 py-0">
           <CardHeader className="border-b py-4">
             <div className="flex items-center gap-2.5">
-              <div className="flex size-7 items-center justify-center rounded-lg bg-violet-50 dark:bg-violet-950/40">
-                <SparklesIcon className="size-3.5 text-violet-500" />
+              <div className="flex size-7 items-center justify-center rounded-lg bg-accent-soft text-primary">
+                <SparklesIcon className="size-3.5" />
               </div>
               <div>
                 <CardTitle className="text-base font-semibold">
@@ -115,8 +116,8 @@ function ResumeBody({
         <Card className="gap-0 py-0 xl:col-span-2">
           <CardHeader className="border-b py-4">
             <div className="flex items-center gap-2.5">
-              <div className="flex size-7 items-center justify-center rounded-lg bg-sky-50 dark:bg-sky-950/40">
-                <ZapIcon className="size-3.5 text-sky-500" />
+              <div className="flex size-7 items-center justify-center rounded-lg bg-accent-soft text-primary">
+                <ZapIcon className="size-3.5" />
               </div>
               <div>
                 <CardTitle className="text-base font-semibold">

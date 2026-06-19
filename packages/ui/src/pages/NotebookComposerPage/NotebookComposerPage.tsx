@@ -1,11 +1,11 @@
 import { Badge } from '../../../components/ui/badge'
 import { PageBody, PageHeader, SectionCard } from '../../../components/ui/page'
+import { DownstreamCard } from './components/DownstreamCard'
+import { GuidesCard } from './components/GuidesCard'
 import {
   NOTEBOOK_COMPOSER_PAGE_DEFAULT_DESCRIPTION,
   NOTEBOOK_COMPOSER_PAGE_DEFAULT_TITLE,
 } from './NotebookComposerPage.constants'
-import { DownstreamCard } from './components/DownstreamCard'
-import { GuidesCard } from './components/GuidesCard'
 import type { NotebookComposerPageProps } from './NotebookComposerPage.types'
 
 // ─── Root ─────────────────────────────────────────────────────────────────────

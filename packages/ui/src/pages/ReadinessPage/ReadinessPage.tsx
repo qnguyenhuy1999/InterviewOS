@@ -19,6 +19,8 @@ function Root({
   loading,
   empty,
   error,
+  retryHref,
+  startPracticeHref,
   renderRecomputeAction,
 }: ReadinessPageProps) {
   return (
@@ -38,11 +40,11 @@ function Root({
 
       <PageBody>
         {error ? (
-          <ErrorBody message={error} />
+          <ErrorBody message={error} retryHref={retryHref} />
         ) : loading ? (
           <LoadingBody />
         ) : empty ? (
-          <EmptyBody />
+          <EmptyBody startPracticeHref={startPracticeHref} />
         ) : (
           <ReadinessBody data={data} />
         )}

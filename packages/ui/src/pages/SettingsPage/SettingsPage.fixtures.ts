@@ -35,8 +35,8 @@ export const settingsPageFixture: SettingsPageFixture = {
         },
       ],
       footerActions: [
-        { id: 'cancel-profile', label: 'Cancel', intent: 'secondary' },
-        { id: 'save-profile', label: 'Save changes', intent: 'primary' },
+        { id: 'cancel-profile', label: 'Reset profile', intent: 'secondary' },
+        { id: 'save-profile', label: 'Save profile', intent: 'primary' },
       ],
     },
     {
@@ -71,8 +71,8 @@ export const settingsPageFixture: SettingsPageFixture = {
         },
       ],
       footerActions: [
-        { id: 'cancel-learning', label: 'Cancel', intent: 'secondary' },
-        { id: 'save-learning', label: 'Save changes', intent: 'primary' },
+        { id: 'cancel-learning', label: 'Reset learning preferences', intent: 'secondary' },
+        { id: 'save-learning', label: 'Save learning preferences', intent: 'primary' },
       ],
     },
     {
@@ -110,8 +110,8 @@ export const settingsPageFixture: SettingsPageFixture = {
         },
       ],
       footerActions: [
-        { id: 'cancel-english', label: 'Cancel', intent: 'secondary' },
-        { id: 'save-english', label: 'Save changes', intent: 'primary' },
+        { id: 'cancel-english', label: 'Reset English preferences', intent: 'secondary' },
+        { id: 'save-english', label: 'Save English preferences', intent: 'primary' },
       ],
     },
     {
@@ -152,8 +152,8 @@ export const settingsPageFixture: SettingsPageFixture = {
         },
       ],
       footerActions: [
-        { id: 'cancel-interview', label: 'Cancel', intent: 'secondary' },
-        { id: 'save-interview', label: 'Save changes', intent: 'primary' },
+        { id: 'cancel-interview', label: 'Reset interview defaults', intent: 'secondary' },
+        { id: 'save-interview', label: 'Save interview defaults', intent: 'primary' },
       ],
     },
     {
@@ -183,8 +183,8 @@ export const settingsPageFixture: SettingsPageFixture = {
         },
       ],
       footerActions: [
-        { id: 'cancel-ai-provider', label: 'Cancel', intent: 'secondary' },
-        { id: 'save-ai-provider', label: 'Save changes', intent: 'primary' },
+        { id: 'cancel-ai-provider', label: 'Clear provider changes', intent: 'secondary' },
+        { id: 'save-ai-provider', label: 'Save provider settings', intent: 'primary' },
       ],
     },
     {

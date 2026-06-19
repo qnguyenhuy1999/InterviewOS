@@ -1,16 +1,19 @@
 import { GaugeIcon } from 'lucide-react'
 
-import { Button } from '../../../../components/ui/button'
-import { EmptyState } from '../../../../components/ui/page'
+import { EmptyState, PageStateAction } from '../../../../components/ui/page'
 
-function EmptyBody() {
+function EmptyBody({ startPracticeHref }: { startPracticeHref?: string }) {
   return (
     <EmptyState
       className="min-h-80"
       icon={GaugeIcon}
       title="No readiness snapshots yet"
       description="Complete a review session or interview to generate your first readiness baseline."
-      action={<Button>Start practice</Button>}
+      action={
+        startPracticeHref ? (
+          <PageStateAction href={startPracticeHref} label="Start practice" />
+        ) : undefined
+      }
     />
   )
 }

@@ -3,6 +3,7 @@ import type { NotebookNoteListItem } from '@interviewos/types'
 import { NotebookPageClient } from '@interviewos/ui'
 
 import { APP_ROUTES } from '@/lib/app-routes'
+import { hydrateNotebookNotes } from '@/lib/notebook-data'
 import { loadRouteData } from '@/lib/route-state'
 import { serverApiClient } from '@/lib/server-api-client'
 
@@ -20,7 +21,7 @@ export default async function Page({
 }) {
   const params = await searchParams
   const state = await loadRouteData(
-    () => serverApiClient<NotebookNoteListItem[]>(API_ROUTES.notes.list),
+    async () => hydrateNotebookNotes(await serverApiClient<NotebookNoteListItem[]>(API_ROUTES.notes.list)),
     {
       fallbackMessage: 'Unable to load notebook entries.',
       isEmpty: (notes) => notes.length === 0,

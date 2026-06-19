@@ -1,3 +1,4 @@
+import { resolveAuthCookieName } from '@interviewos/config'
 import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post } from '@nestjs/common'
 import { ApiBody, ApiCookieAuth, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger'
 
@@ -14,7 +15,7 @@ import {
 import { NotebookService } from './notebook.service'
 
 @ApiTags('notes')
-@ApiCookieAuth('interviewos_session')
+@ApiCookieAuth(resolveAuthCookieName())
 @Controller('notes')
 export class NotebookController {
   constructor(private readonly notebookService: NotebookService) {}

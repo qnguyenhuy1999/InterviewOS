@@ -29,6 +29,7 @@ export default async function ResumeRoute() {
       data={data}
       empty={state.kind === 'empty'}
       error={state.kind === 'error' ? state.message : undefined}
+      retryHref={APP_ROUTES.resume}
       renderUploadArea={
         <ResumeUploadForm upload={data.upload} hasExistingAnalysis={state.kind === 'ready'} />
       }

@@ -25,6 +25,21 @@ describe('ProfilePage', () => {
 
     expect(markup).toContain('Failed to load profile')
     expect(markup).toContain('Network issue')
-    expect(markup).toContain('Retry')
+    expect(markup).not.toContain('Retry')
+  })
+
+  it('renders state actions only when routes are provided', () => {
+    const emptyMarkup = renderToStaticMarkup(<ProfilePage empty />)
+    const emptyWithAction = renderToStaticMarkup(<ProfilePage empty setupProfileHref="/settings" />)
+    const errorWithAction = renderToStaticMarkup(
+      <ProfilePage error="Network issue" retryHref="/profile" />,
+    )
+
+    expect(emptyMarkup).not.toContain('Set up profile')
+    expect(emptyMarkup).not.toContain('href="/settings"')
+    expect(emptyWithAction).toContain('Set up profile')
+    expect(emptyWithAction).toContain('href="/settings"')
+    expect(errorWithAction).toContain('Retry')
+    expect(errorWithAction).toContain('href="/profile"')
   })
 })

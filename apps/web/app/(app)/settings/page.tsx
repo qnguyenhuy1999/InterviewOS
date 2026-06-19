@@ -3,6 +3,7 @@ import type { AuthSessionResponse, UserLearningProfile } from '@interviewos/type
 import type { SettingsPageView } from '@interviewos/types'
 import { EnglishLevel, QuestionDifficulty } from '@interviewos/types'
 
+import { APP_ROUTES } from '@/lib/app-routes'
 import { serverApiClient } from '@/lib/server-api-client'
 
 import { SettingsContainer } from './_components/SettingsContainer'
@@ -49,10 +50,10 @@ export default async function SettingsPage() {
             inputType: 'text',
           },
         ],
-        footerActions: [
-          { id: 'cancel-profile', label: 'Cancel', intent: 'secondary' },
-          { id: 'save-profile', label: 'Save changes', intent: 'primary' },
-        ],
+      footerActions: [
+        { id: 'cancel-profile', label: 'Reset profile', intent: 'secondary' },
+        { id: 'save-profile', label: 'Save profile', intent: 'primary' },
+      ],
       },
       {
         id: 'learning_preferences',
@@ -85,10 +86,10 @@ export default async function SettingsPage() {
             checked: false,
           },
         ],
-        footerActions: [
-          { id: 'cancel-learning', label: 'Cancel', intent: 'secondary' },
-          { id: 'save-learning', label: 'Save changes', intent: 'primary' },
-        ],
+      footerActions: [
+        { id: 'cancel-learning', label: 'Reset learning preferences', intent: 'secondary' },
+        { id: 'save-learning', label: 'Save learning preferences', intent: 'primary' },
+      ],
       },
       {
         id: 'english_level',
@@ -124,10 +125,10 @@ export default async function SettingsPage() {
             checked: false,
           },
         ],
-        footerActions: [
-          { id: 'cancel-english', label: 'Cancel', intent: 'secondary' },
-          { id: 'save-english', label: 'Save changes', intent: 'primary' },
-        ],
+      footerActions: [
+        { id: 'cancel-english', label: 'Reset English preferences', intent: 'secondary' },
+        { id: 'save-english', label: 'Save English preferences', intent: 'primary' },
+      ],
       },
       {
         id: 'interview_preferences',
@@ -166,10 +167,10 @@ export default async function SettingsPage() {
             inputType: 'number',
           },
         ],
-        footerActions: [
-          { id: 'cancel-interview', label: 'Cancel', intent: 'secondary' },
-          { id: 'save-interview', label: 'Save changes', intent: 'primary' },
-        ],
+      footerActions: [
+        { id: 'cancel-interview', label: 'Reset interview defaults', intent: 'secondary' },
+        { id: 'save-interview', label: 'Save interview defaults', intent: 'primary' },
+      ],
       },
       {
         id: 'ai_provider',
@@ -197,10 +198,10 @@ export default async function SettingsPage() {
             inputType: 'password',
           },
         ],
-        footerActions: [
-          { id: 'cancel-ai-provider', label: 'Cancel', intent: 'secondary' },
-          { id: 'save-ai-provider', label: 'Save changes', intent: 'primary' },
-        ],
+      footerActions: [
+        { id: 'cancel-ai-provider', label: 'Clear provider changes', intent: 'secondary' },
+        { id: 'save-ai-provider', label: 'Save provider settings', intent: 'primary' },
+      ],
       },
       {
         id: 'account',
@@ -232,5 +233,5 @@ export default async function SettingsPage() {
     ],
   }
 
-  return <SettingsContainer data={data} />
+  return <SettingsContainer data={data} retryHref={APP_ROUTES.settings} />
 }

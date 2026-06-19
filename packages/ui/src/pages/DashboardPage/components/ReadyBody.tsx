@@ -84,7 +84,11 @@ export function ReadyBody({ state, actions }: ReadyBodyProps) {
                 label="Start interview"
                 icon={<MicIcon />}
               />
-              <ActionItem href={actions.quickStartHref} label="Quick start" icon={<MicIcon />} />
+              <ActionItem
+                href={actions.quickStartHref}
+                label="Start quick interview"
+                icon={<MicIcon />}
+              />
               <ActionItem
                 href={actions.reviewQueueHref}
                 label="Review queue"

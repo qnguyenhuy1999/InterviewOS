@@ -28,7 +28,7 @@ function ReadinessTerminal() {
 
       <div className="relative w-full max-w-[420px] overflow-hidden rounded-2xl border border-border/70 bg-card shadow-elevated">
         {/* Top accent line */}
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-primary/50 to-transparent" />
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-primary/40" />
 
         {/* Title bar */}
         <div className="flex items-center gap-1.5 border-b border-border/50 bg-muted/20 px-4 py-3">
@@ -71,7 +71,7 @@ function ReadinessTerminal() {
             </div>
 
             <div className="h-1.5 overflow-hidden rounded-full bg-muted">
-              <div className="landing-terminal-bar h-full rounded-full bg-linear-to-r from-primary to-accent-strong" />
+              <div className="landing-terminal-bar h-full rounded-full bg-primary" />
             </div>
 
             <div className="grid grid-cols-3 gap-2 pt-0.5">

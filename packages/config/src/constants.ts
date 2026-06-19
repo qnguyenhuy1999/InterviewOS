@@ -2,6 +2,11 @@ export const APP_NAME = 'InterviewOS'
 export const API_VERSION = 'v1'
 export const DEFAULT_PORT = 3001
 export const API_BASE_PATH = '/api/v1'
+export const DEFAULT_AUTH_COOKIE_NAME = 'interviewos_session'
+
+export function resolveAuthCookieName(env: { AUTH_COOKIE_NAME?: string | undefined } = process.env) {
+  return env.AUTH_COOKIE_NAME?.trim() || DEFAULT_AUTH_COOKIE_NAME
+}
 
 export const API_ROUTES = {
   auth: {

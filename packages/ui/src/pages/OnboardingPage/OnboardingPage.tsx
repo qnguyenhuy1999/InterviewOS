@@ -3,17 +3,14 @@ import { BrainCircuitIcon, SparklesIcon } from 'lucide-react'
 import { Badge } from '../../../components/ui/badge'
 import { Card, CardContent } from '../../../components/ui/card'
 import { Separator } from '../../../components/ui/separator'
-import { ONBOARDING_PAGE_BENEFITS } from './OnboardingPage.constants'
 import { BenefitItem } from './components/BenefitItem'
+import { ONBOARDING_PAGE_BENEFITS } from './OnboardingPage.constants'
 import type { OnboardingPageProps } from './OnboardingPage.types'
 
 function Root({ reason, children }: OnboardingPageProps) {
   return (
     <div className="relative min-h-svh overflow-hidden bg-background">
-      <div
-        className="pointer-events-none absolute inset-0 bg-accent-soft/35"
-        aria-hidden="true"
-      />
+      <div className="pointer-events-none absolute inset-0 bg-accent-soft/35" aria-hidden="true" />
       <div
         className="pointer-events-none absolute top-0 right-0 h-[480px] w-[480px] -translate-y-1/3 translate-x-1/4 rounded-full bg-primary/8 blur-3xl"
         aria-hidden="true"
@@ -72,10 +69,10 @@ function Root({ reason, children }: OnboardingPageProps) {
 
         {/* Right panel — form */}
         <div className="flex flex-col justify-center">
-          <Card className="relative overflow-hidden border-border/60 shadow-xl shadow-black/[0.04]">
+          <Card className="relative overflow-hidden border-border/60 shadow-xl shadow-black/4">
             {/* Subtle top accent line */}
             <div
-              className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent"
+              className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-primary/40 to-transparent"
               aria-hidden="true"
             />
 
@@ -92,7 +89,7 @@ function Root({ reason, children }: OnboardingPageProps) {
 
               {/* Reason banner */}
               {reason ? (
-                <div className="mb-5 flex items-start gap-3 rounded-lg border border-amber-200/60 bg-amber-50/60 px-4 py-3 text-sm text-amber-800 dark:border-amber-400/20 dark:bg-amber-400/8 dark:text-amber-300">
+                <div className="mb-5 flex items-start gap-3 rounded-lg border border-warning/30 bg-warning-soft px-4 py-3 text-sm text-warning-foreground">
                   <SparklesIcon className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
                   <span>{reason}</span>
                 </div>

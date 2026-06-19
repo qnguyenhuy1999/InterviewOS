@@ -6,6 +6,7 @@ export type SettingsPageProps = {
   loading?: boolean
   empty?: boolean
   error?: string
+  retryHref?: string
   onSectionChange?: (sectionId: SettingsSectionId) => void
 }
 

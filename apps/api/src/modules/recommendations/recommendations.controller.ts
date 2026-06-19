@@ -1,3 +1,4 @@
+import { resolveAuthCookieName } from '@interviewos/config'
 import { AuthenticatedUser } from '@interviewos/types'
 import { Controller, Get } from '@nestjs/common'
 import { ApiCookieAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
@@ -8,7 +9,7 @@ import { RecommendationSummaryDto } from './dto/recommendations.dto'
 import { RecommendationsService } from './recommendations.service'
 
 @ApiTags('recommendations')
-@ApiCookieAuth('interviewos_session')
+@ApiCookieAuth(resolveAuthCookieName())
 @Controller('recommendations')
 export class RecommendationsController {
   constructor(private readonly recommendationsService: RecommendationsService) {}

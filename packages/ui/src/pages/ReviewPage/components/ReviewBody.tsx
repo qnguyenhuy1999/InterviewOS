@@ -1,3 +1,4 @@
+import { Button } from '../../../../components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '../../../../components/ui/card'
 import { EmptyState } from '../../../../components/ui/page'
 import {
@@ -8,7 +9,6 @@ import {
   TableHeader,
   TableRow,
 } from '../../../../components/ui/table'
-import { Button } from '../../../../components/ui/button'
 import { LearningPathListItem } from '../../../molecules/LearningPathListItem/LearningPathListItem'
 import type {
   ReviewPageEmptyState,

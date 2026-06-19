@@ -46,3 +46,10 @@ export const AIProvider: Story = {
 export const Account: Story = {
   args: { activeSectionId: 'account' },
 }
+
+export const ErrorState: Story = {
+  args: {
+    error: 'Unable to load settings right now.',
+    retryHref: '/settings',
+  },
+}

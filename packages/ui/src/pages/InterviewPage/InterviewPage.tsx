@@ -38,7 +38,7 @@ function Root({
             <Button asChild size="lg">
               <a href={actions.quickStartHref}>
                 <PlayIcon />
-                Quick start
+                Start quick interview
               </a>
             </Button>
           </>

@@ -7,8 +7,8 @@ import type { LearningPathPageProps, ReadyLearningPathState } from '../LearningP
 import {
   getLearningPathFocusItem,
   getLearningPathProgress,
-  getLearningPathTypeSummaries,
   getLearningPathStatusGroups,
+  getLearningPathTypeSummaries,
 } from '../LearningPathPage.utils'
 import { CoverageCard } from './CoverageCard'
 import { FocusCard } from './FocusCard'

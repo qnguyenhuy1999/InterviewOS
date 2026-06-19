@@ -24,4 +24,18 @@ describe('ReadinessPage', () => {
     expect(markup).toContain('Dimension breakdown')
     expect(markup).toContain('History')
   })
+
+  it('renders recovery actions only when routes are provided', () => {
+    const emptyMarkup = renderToStaticMarkup(<ReadinessPage empty />)
+    const emptyWithAction = renderToStaticMarkup(<ReadinessPage empty startPracticeHref="/interview/start" />)
+    const errorWithAction = renderToStaticMarkup(
+      <ReadinessPage error="Unable to load analytics." retryHref="/readiness" />,
+    )
+
+    expect(emptyMarkup).not.toContain('Start practice')
+    expect(emptyWithAction).toContain('Start practice')
+    expect(emptyWithAction).toContain('href="/interview/start"')
+    expect(errorWithAction).toContain('Try again')
+    expect(errorWithAction).toContain('href="/readiness"')
+  })
 })

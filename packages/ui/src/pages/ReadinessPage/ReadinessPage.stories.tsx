@@ -31,11 +31,12 @@ export const Loading: Story = {
 }
 
 export const EmptyState: Story = {
-  args: { empty: true },
+  args: { empty: true, startPracticeHref: '/interview/start' },
 }
 
 export const Error: Story = {
   args: {
     error: 'Unable to compute the latest readiness snapshot right now.',
+    retryHref: '/readiness',
   },
 }

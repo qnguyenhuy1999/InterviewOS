@@ -11,6 +11,8 @@ export type ReadinessPageProps = {
   loading?: boolean
   empty?: boolean
   error?: string
+  retryHref?: string
+  startPracticeHref?: string
   renderRecomputeAction?: React.ReactNode
 }
 

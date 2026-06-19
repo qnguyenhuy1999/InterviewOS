@@ -1,5 +1,12 @@
 import { z } from 'zod'
 
+const booleanEnvSchema = z
+  .preprocess(
+    (value) => (typeof value === 'string' ? value.trim().toLowerCase() : value),
+    z.union([z.boolean(), z.enum(['true', 'false', '1', '0'])]),
+  )
+  .transform((value) => value === true || value === 'true' || value === '1')
+
 export const envSchema = z.object({
   DATABASE_URL: z.string().url(),
   REDIS_URL: z.string().url(),
@@ -15,6 +22,7 @@ export const envSchema = z.object({
   OPENAI_ORGANIZATION: z.string().min(1).optional(),
   OPENAI_PROJECT: z.string().min(1).optional(),
   AI_PROVIDER: z.enum(['mock', 'openai']).default('mock'),
+  AI_OBSERVABILITY_ENABLED: booleanEnvSchema.default(false),
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
 })
 

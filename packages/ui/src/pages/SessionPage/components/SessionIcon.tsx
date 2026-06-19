@@ -1,5 +1,5 @@
-import { getSessionDevicePresentation } from '../SessionPage.utils'
 import type { SessionPageSession } from '../SessionPage.types'
+import { getSessionDevicePresentation } from '../SessionPage.utils'
 
 function SessionIcon({ session }: { session: SessionPageSession }) {
   const { icon: Icon } = getSessionDevicePresentation(session)

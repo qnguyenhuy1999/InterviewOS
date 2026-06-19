@@ -1,10 +1,13 @@
 import 'server-only'
 
+import { resolveAuthCookieName } from '@interviewos/config'
 import { headers } from 'next/headers'
 
 import { createApiError } from './api-error'
 
-const SESSION_COOKIE_NAME = process.env.SESSION_COOKIE_NAME ?? 'interviewos_session'
+const SESSION_COOKIE_NAME = resolveAuthCookieName({
+  AUTH_COOKIE_NAME: process.env.AUTH_COOKIE_NAME ?? process.env.SESSION_COOKIE_NAME,
+})
 
 function baseUrl(): string {
   const url = process.env.NEXT_PUBLIC_API_URL

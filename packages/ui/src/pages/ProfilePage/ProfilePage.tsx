@@ -14,18 +14,25 @@ import { TagField } from './components/TagField'
 import { profileFixture } from './ProfilePage.fixtures'
 import type { ProfilePageProps } from './ProfilePage.types'
 
-function Root({ loading, empty, error, profile = profileFixture }: ProfilePageProps) {
+function Root({
+  loading,
+  empty,
+  error,
+  retryHref,
+  setupProfileHref,
+  profile = profileFixture,
+}: ProfilePageProps) {
   return (
     <>
       <PageHeader title={profile.title} description={profile.subtitle} />
 
       <PageBody>
         {error ? (
-          <ErrorBody message={error} />
+          <ErrorBody message={error} retryHref={retryHref} />
         ) : loading ? (
           <LoadingBody />
         ) : empty ? (
-          <EmptyBody />
+          <EmptyBody setupProfileHref={setupProfileHref} />
         ) : (
           <ReadyBody profile={profile} />
         )}

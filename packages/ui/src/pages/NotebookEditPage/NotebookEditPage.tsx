@@ -1,9 +1,9 @@
 import { PageBody, PageHeader } from '../../../components/ui/page'
+import { ErrorBody } from './components/ErrorBody'
 import {
   NOTEBOOK_EDIT_PAGE_DEFAULT_DESCRIPTION,
   NOTEBOOK_EDIT_PAGE_DEFAULT_TITLE,
 } from './NotebookEditPage.constants'
-import { ErrorBody } from './components/ErrorBody'
 import type { NotebookEditPageProps } from './NotebookEditPage.types'
 
 function Root({ error, children }: NotebookEditPageProps) {

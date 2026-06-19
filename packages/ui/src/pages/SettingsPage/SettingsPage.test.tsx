@@ -17,6 +17,18 @@ describe('SettingsPage', () => {
     expect(markup).toContain('min-h-96')
   })
 
+  it('renders a retry action only when a retry route is provided', () => {
+    const withoutRetry = renderToStaticMarkup(<SettingsPage error="Network issue" />)
+    const withRetry = renderToStaticMarkup(
+      <SettingsPage error="Network issue" retryHref="/settings" />,
+    )
+
+    expect(withoutRetry).not.toContain('Retry')
+    expect(withoutRetry).not.toContain('href="/settings"')
+    expect(withRetry).toContain('Retry')
+    expect(withRetry).toContain('href="/settings"')
+  })
+
   it('renders the ready branch', () => {
     const markup = renderToStaticMarkup(<SettingsPage data={settingsPageFixture} />)
 

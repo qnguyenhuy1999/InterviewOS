@@ -31,12 +31,16 @@ export const Loading: Story = {
 }
 
 export const EmptyState: Story = {
-  args: { empty: true },
+  args: {
+    empty: true,
+    emptyAction: <a href="/resume/upload">{resumePageFixture.emptyState.actionLabel}</a>,
+  },
 }
 
 export const Error: Story = {
   args: {
     error: 'Unable to load the latest resume analysis. Please try again in a moment.',
+    retryHref: '/resume',
   },
 }
 

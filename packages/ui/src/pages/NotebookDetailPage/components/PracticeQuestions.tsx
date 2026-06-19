@@ -4,9 +4,9 @@ import { FileQuestionIcon } from 'lucide-react'
 import { EmptyState } from '../../../../components/ui/page'
 import { QuestionCard } from '../../../molecules/QuestionCard/QuestionCard'
 import { NoteSection } from '../../../organisms/NoteSection/NoteSection'
+import { getDifficultyTone } from '../../NotebookPage/NotebookPage.utils'
 import type { NotebookDetailPageProps } from '../NotebookDetailPage.types'
 import { getNotebookQuestionConceptSummary } from '../NotebookDetailPage.utils'
-import { getDifficultyTone } from '../../NotebookPage/NotebookPage.utils'
 
 function PracticeQuestions({
   data,

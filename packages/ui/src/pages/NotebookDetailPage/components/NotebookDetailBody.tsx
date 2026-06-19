@@ -1,5 +1,5 @@
 import type { TechnicalNoteDetailView } from '@interviewos/types'
-import { ArrowLeftIcon, FileQuestionIcon, MenuIcon } from 'lucide-react'
+import { FileQuestionIcon, MenuIcon } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { Button } from '../../../../components/ui/button'

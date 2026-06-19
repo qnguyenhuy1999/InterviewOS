@@ -1,3 +1,4 @@
+import { resolveAuthCookieName } from '@interviewos/config'
 import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common'
 import { ApiBody, ApiCookieAuth, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger'
 
@@ -12,7 +13,7 @@ import {
 import { EnglishNotesService } from './english-notes.service'
 
 @ApiTags('english-notes')
-@ApiCookieAuth('interviewos_session')
+@ApiCookieAuth(resolveAuthCookieName())
 @Controller('english-notes')
 export class EnglishNotesController {
   constructor(private readonly englishNotesService: EnglishNotesService) {}

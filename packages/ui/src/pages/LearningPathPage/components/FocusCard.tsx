@@ -1,4 +1,3 @@
-import { Button } from '../../../../components/ui/button'
 import type { LearningPathPageProps } from '../LearningPathPage.types'
 import {
   formatLearningPathLabel,

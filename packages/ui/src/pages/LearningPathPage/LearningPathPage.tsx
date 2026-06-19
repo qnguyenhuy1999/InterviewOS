@@ -24,7 +24,7 @@ function Root({
         actions={
           focusModeHref ? (
             <Button asChild variant="outline" size="lg">
-              <a href={focusModeHref}>Focus mode</a>
+              <a href={focusModeHref}>Start focus session</a>
             </Button>
           ) : undefined
         }

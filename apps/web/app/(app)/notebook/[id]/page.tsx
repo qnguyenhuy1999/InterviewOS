@@ -6,6 +6,11 @@ import {
   type TechnicalNoteDetailView,
 } from '@interviewos/types'
 
+import {
+  hydrateNotebookDetailView,
+  hydrateNotebookNote,
+  hydrateNotebookNotes,
+} from '@/lib/notebook-data'
 import { loadRouteData } from '@/lib/route-state'
 import { serverApiClient } from '@/lib/server-api-client'
 
@@ -19,10 +24,15 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
   const { id } = await params
   const state = await loadRouteData(
     async () => {
-      const [note, notes] = await Promise.all([
+      const [rawNote, rawNotes] = await Promise.all([
         serverApiClient<TechnicalNoteDetailResponse>(API_ROUTES.notes.byId(id)),
         serverApiClient<NotebookNoteListItem[]>(API_ROUTES.notes.list),
       ])
+      const note: TechnicalNoteDetailResponse = {
+        ...hydrateNotebookNote(rawNote),
+        questions: rawNote.questions,
+      }
+      const notes = hydrateNotebookNotes(rawNotes)
 
       const noteTopic = note.topic?.trim().toLowerCase()
       const relatedNotes = notes
@@ -47,12 +57,12 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
           questionCount: candidate.questionCount,
         }))
 
-      return {
+      return hydrateNotebookDetailView({
         note,
         questionCount: note.questions.length,
         generatedQuestions: note.questions,
         relatedNotes,
-      } satisfies TechnicalNoteDetailView
+      } satisfies TechnicalNoteDetailView)
     },
     { fallbackMessage: 'Unable to load this notebook entry.' },
   )

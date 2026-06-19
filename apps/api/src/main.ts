@@ -5,6 +5,7 @@ import path from 'node:path'
 
 import fastifyCookie from '@fastify/cookie'
 import fastifyMultipart from '@fastify/multipart'
+import { resolveAuthCookieName } from '@interviewos/config'
 import { Logger, ValidationPipe } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { NestFactory } from '@nestjs/core'
@@ -40,6 +41,7 @@ async function bootstrap(): Promise<void> {
   app.useGlobalFilters(new HttpExceptionFilter())
   app.useGlobalInterceptors(new LoggingInterceptor())
   const configService = app.get(ConfigService)
+  const authCookieName = resolveAuthCookieName()
   const corsOrigin = configService.get<string>('app.webAppUrl')
   if (!corsOrigin || corsOrigin === '*') {
     logger.error('app.webAppUrl is not configured or set to wildcard — refusing to start')
@@ -57,7 +59,7 @@ async function bootstrap(): Promise<void> {
       .setTitle('InterviewOS API')
       .setDescription('REST API for InterviewOS local development and integration testing.')
       .setVersion('0.1.0')
-      .addCookieAuth('interviewos_session')
+      .addCookieAuth(authCookieName)
       .build()
     const swaggerDocument = SwaggerModule.createDocument(app, swaggerConfig, {
       deepScanRoutes: true,
