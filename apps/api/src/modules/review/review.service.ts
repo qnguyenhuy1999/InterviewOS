@@ -245,6 +245,19 @@ export class ReviewService {
   async buildLearningPath(currentUser: CurrentUserRef): Promise<LearningPathItem[]> {
     const user = await this.usersRepository.ensureUserById(currentUser.id)
     const queue = await this.getReviewQueue(user)
+    const now = new Date()
+    const existingItems = await this.reviewRepository.listLearningPathItems(user.id, now)
+    const completedKeys = new Set(
+      existingItems
+        .filter((item) => item.status === 'COMPLETED')
+        .map((item) => {
+          const meta = item.metadata as Record<string, unknown> | null
+          const targetType = typeof meta?.targetType === 'string' ? meta.targetType : null
+          const targetId = typeof meta?.targetId === 'string' ? meta.targetId : null
+          return targetType && targetId ? `${targetType}:${targetId}` : null
+        })
+        .filter((key): key is string => key !== null),
+    )
     const items = mergeLearningTargets(
       queue.items.map((entry) =>
         toLearningTarget({
@@ -254,6 +267,7 @@ export class ReviewService {
         }),
       ),
     )
+      .filter((target) => !completedKeys.has(`${target.targetType}:${target.targetId}`))
       .sort((left, right) => right.priorityScore - left.priorityScore)
       .slice(0, 6)
       .map((target) => toLearningPathItem(target))
