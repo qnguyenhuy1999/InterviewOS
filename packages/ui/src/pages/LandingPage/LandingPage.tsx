@@ -1,10 +1,10 @@
 import { ArrowRightIcon, BrainCircuitIcon, ChevronRightIcon } from 'lucide-react'
 
 import { Badge } from '../../../components/ui/badge'
-import { LANDING_PAGE_FEATURES, LANDING_PAGE_STATS } from './LandingPage.constants'
-import type { LandingPageProps } from './LandingPage.types'
 import { FeatureCard } from './components/FeatureCard'
 import { ReadinessTerminal } from './components/ReadinessTerminal'
+import { LANDING_PAGE_FEATURES, LANDING_PAGE_STATS } from './LandingPage.constants'
+import type { LandingPageProps } from './LandingPage.types'
 
 // ─── Root ─────────────────────────────────────────────────────────────────────
 
@@ -65,7 +65,7 @@ export default function LandingPage({
         {/* ── Hero ── */}
         <section
           aria-labelledby="landing-hero-heading"
-          className="grid items-center gap-12 pb-20 pt-14 lg:grid-cols-[1.1fr_0.9fr] lg:gap-20 lg:pb-28 lg:pt-20"
+          className="grid items-center gap-12 pb-20 pt-5 lg:grid-cols-[1.1fr_0.9fr] lg:gap-20 lg:pb-28"
         >
           {/* Left — value prop */}
           <div className="flex flex-col gap-7">
@@ -141,7 +141,7 @@ export default function LandingPage({
         </section>
 
         {/* ── Features ── */}
-        <section aria-labelledby="landing-features-heading" className="pb-24">
+        <section aria-labelledby="landing-features-heading" className="sm:pb-20 pb-0">
           <p id="landing-features-heading" className="sr-only">
             Features
           </p>
