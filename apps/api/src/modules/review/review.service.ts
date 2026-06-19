@@ -245,17 +245,18 @@ export class ReviewService {
   async buildLearningPath(currentUser: CurrentUserRef): Promise<LearningPathItem[]> {
     const user = await this.usersRepository.ensureUserById(currentUser.id)
     const queue = await this.getReviewQueue(user)
-    const items = queue.items.slice(0, 6).map((entry) => ({
-      type: entry.item.type,
-      title: entry.item.sourceLabel,
-      reason: entry.reasons.join(', '),
-      actionPath: actionPathForReviewItem(entry.item),
-      priorityScore: entry.priorityScore,
-      sourceReviewItemId: entry.item.id,
-      metadata: {
-        reviewType: entry.item.type,
-      } satisfies Prisma.JsonObject,
-    }))
+    const items = mergeLearningTargets(
+      queue.items.map((entry) =>
+        toLearningTarget({
+          item: entry.item,
+          priorityScore: entry.priorityScore,
+          reasons: entry.reasons,
+        }),
+      ),
+    )
+      .sort((left, right) => right.priorityScore - left.priorityScore)
+      .slice(0, 6)
+      .map((target) => toLearningPathItem(target))
 
     return this.reviewRepository.replacePendingLearningPath(user.id, items) as Promise<
       LearningPathItem[]
@@ -506,23 +507,158 @@ function masteryFromWeakConceptStatus(status: string) {
   }
 }
 
-function actionPathForReviewItem(item: { type: string; sourceId: string; metadata?: unknown }) {
-  switch (item.type) {
-    case 'TECHNICAL_NOTE':
-      return `/notebook/${item.sourceId}`
-    case 'GENERATED_QUESTION': {
-      const metadata = (item.metadata ?? {}) as Record<string, unknown>
-      const noteId = typeof metadata.noteId === 'string' ? metadata.noteId : null
-      return noteId ? `/notebook/${noteId}` : '/interview'
+// --- Learning target pipeline ---
+
+type RankedReviewEntry = {
+  item: ReviewQueueEntryItem
+  priorityScore: number
+  reasons: string[]
+}
+
+type LearningTargetType = 'NOTEBOOK_NOTE' | 'ENGLISH_NOTE' | 'WEAK_CONCEPT' | 'GENERATED_QUESTION'
+
+type LearningTarget = {
+  targetType: LearningTargetType
+  targetId: string
+  type: string
+  title: string
+  actionPath: string
+  priorityScore: number
+  reasons: string[]
+  sourceReviewItemIds: string[]
+  reviewTypes: string[]
+  primaryReviewType: string
+  primarySourceReviewItemId: string
+}
+
+function toLearningTarget(entry: RankedReviewEntry): LearningTarget {
+  const { item, priorityScore, reasons } = entry
+
+  if (item.type === 'TECHNICAL_NOTE') {
+    return {
+      targetType: 'NOTEBOOK_NOTE',
+      targetId: item.sourceId,
+      type: item.type,
+      title: item.sourceLabel,
+      actionPath: `/notebook/${item.sourceId}`,
+      priorityScore,
+      reasons,
+      sourceReviewItemIds: [item.id],
+      reviewTypes: [item.type],
+      primaryReviewType: item.type,
+      primarySourceReviewItemId: item.id,
     }
-    case 'ENGLISH_NOTE':
-      return '/english-notes'
-    case 'WEAK_CONCEPT':
-      return '/review'
-    default:
-      return '/learning-path'
+  }
+
+  if (item.type === 'GENERATED_QUESTION') {
+    const noteId = readNoteId(item.metadata)
+    return {
+      targetType: noteId ? 'NOTEBOOK_NOTE' : 'GENERATED_QUESTION',
+      targetId: noteId ?? item.sourceId,
+      type: item.type,
+      title: item.sourceLabel,
+      actionPath: noteId ? `/notebook/${noteId}` : '/interview',
+      priorityScore,
+      reasons,
+      sourceReviewItemIds: [item.id],
+      reviewTypes: [item.type],
+      primaryReviewType: item.type,
+      primarySourceReviewItemId: item.id,
+    }
+  }
+
+  if (item.type === 'ENGLISH_NOTE') {
+    return {
+      targetType: 'ENGLISH_NOTE',
+      targetId: item.sourceId,
+      type: item.type,
+      title: item.sourceLabel,
+      actionPath: '/english-notes',
+      priorityScore,
+      reasons,
+      sourceReviewItemIds: [item.id],
+      reviewTypes: [item.type],
+      primaryReviewType: item.type,
+      primarySourceReviewItemId: item.id,
+    }
+  }
+
+  return {
+    targetType: 'WEAK_CONCEPT',
+    targetId: item.sourceId,
+    type: item.type,
+    title: item.sourceLabel,
+    actionPath: '/review',
+    priorityScore,
+    reasons,
+    sourceReviewItemIds: [item.id],
+    reviewTypes: [item.type],
+    primaryReviewType: item.type,
+    primarySourceReviewItemId: item.id,
   }
 }
+
+function mergeLearningTargets(targets: LearningTarget[]): LearningTarget[] {
+  const merged = new Map<string, LearningTarget>()
+
+  for (const target of targets) {
+    const key = `${target.targetType}:${target.targetId}`
+    const existing = merged.get(key)
+
+    if (!existing) {
+      merged.set(key, target)
+      continue
+    }
+
+    const primary = target.priorityScore > existing.priorityScore ? target : existing
+    const secondary = primary === target ? existing : target
+
+    merged.set(key, {
+      ...primary,
+      reasons: mergeOrderedUnique(primary.reasons, secondary.reasons),
+      sourceReviewItemIds: mergeOrderedUnique(
+        primary.sourceReviewItemIds,
+        secondary.sourceReviewItemIds,
+      ),
+      reviewTypes: mergeOrderedUnique(primary.reviewTypes, secondary.reviewTypes),
+    })
+  }
+
+  return [...merged.values()]
+}
+
+function toLearningPathItem(target: LearningTarget) {
+  return {
+    type: target.type,
+    title: target.title,
+    reason: target.reasons.join(', '),
+    actionPath: target.actionPath,
+    priorityScore: target.priorityScore,
+    sourceReviewItemId: target.primarySourceReviewItemId,
+    metadata: {
+      reviewType: target.primaryReviewType,
+      targetType: target.targetType,
+      targetId: target.targetId,
+      sourceReviewItemIds: target.sourceReviewItemIds,
+      reviewTypes: target.reviewTypes,
+    } satisfies Prisma.JsonObject,
+  }
+}
+
+function mergeOrderedUnique(values: string[], incoming: string[]) {
+  return [...new Set([...values, ...incoming])]
+}
+
+function readNoteId(metadata: ReviewQueueEntryItem['metadata']) {
+  if (!metadata || typeof metadata !== 'object' || Array.isArray(metadata)) {
+    return null
+  }
+
+  const noteId = (metadata as Record<string, unknown>).noteId
+  return typeof noteId === 'string' && noteId.length > 0 ? noteId : null
+}
+
+// --- Dashboard helpers ---
 
 function computeReviewStreak(dates: Date[]) {
   if (dates.length === 0) {
