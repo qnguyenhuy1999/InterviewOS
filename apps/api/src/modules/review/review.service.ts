@@ -533,62 +533,9 @@ type LearningTarget = {
 
 function toLearningTarget(entry: RankedReviewEntry): LearningTarget {
   const { item, priorityScore, reasons } = entry
-
-  if (item.type === 'TECHNICAL_NOTE') {
-    return {
-      targetType: 'NOTEBOOK_NOTE',
-      targetId: item.sourceId,
-      type: item.type,
-      title: item.sourceLabel,
-      actionPath: `/notebook/${item.sourceId}`,
-      priorityScore,
-      reasons,
-      sourceReviewItemIds: [item.id],
-      reviewTypes: [item.type],
-      primaryReviewType: item.type,
-      primarySourceReviewItemId: item.id,
-    }
-  }
-
-  if (item.type === 'GENERATED_QUESTION') {
-    const noteId = readNoteId(item.metadata)
-    return {
-      targetType: noteId ? 'NOTEBOOK_NOTE' : 'GENERATED_QUESTION',
-      targetId: noteId ?? item.sourceId,
-      type: item.type,
-      title: item.sourceLabel,
-      actionPath: noteId ? `/notebook/${noteId}` : '/interview',
-      priorityScore,
-      reasons,
-      sourceReviewItemIds: [item.id],
-      reviewTypes: [item.type],
-      primaryReviewType: item.type,
-      primarySourceReviewItemId: item.id,
-    }
-  }
-
-  if (item.type === 'ENGLISH_NOTE') {
-    return {
-      targetType: 'ENGLISH_NOTE',
-      targetId: item.sourceId,
-      type: item.type,
-      title: item.sourceLabel,
-      actionPath: '/english-notes',
-      priorityScore,
-      reasons,
-      sourceReviewItemIds: [item.id],
-      reviewTypes: [item.type],
-      primaryReviewType: item.type,
-      primarySourceReviewItemId: item.id,
-    }
-  }
-
-  return {
-    targetType: 'WEAK_CONCEPT',
-    targetId: item.sourceId,
+  const base = {
     type: item.type,
     title: item.sourceLabel,
-    actionPath: '/review',
     priorityScore,
     reasons,
     sourceReviewItemIds: [item.id],
@@ -596,6 +543,22 @@ function toLearningTarget(entry: RankedReviewEntry): LearningTarget {
     primaryReviewType: item.type,
     primarySourceReviewItemId: item.id,
   }
+
+  if (item.type === 'TECHNICAL_NOTE') {
+    return { ...base, targetType: 'NOTEBOOK_NOTE', targetId: item.sourceId, actionPath: `/notebook/${item.sourceId}` }
+  }
+
+  if (item.type === 'GENERATED_QUESTION') {
+    const noteId = readNoteId(item.metadata)
+    return { ...base, targetType: noteId ? 'NOTEBOOK_NOTE' : 'GENERATED_QUESTION', targetId: noteId ?? item.sourceId, actionPath: noteId ? `/notebook/${noteId}` : '/interview' }
+  }
+
+  if (item.type === 'ENGLISH_NOTE') {
+    return { ...base, targetType: 'ENGLISH_NOTE', targetId: item.sourceId, actionPath: '/english-notes' }
+  }
+
+  // Handles WEAK_CONCEPT and any future enum members — routes to /review until this function is updated.
+  return { ...base, targetType: 'WEAK_CONCEPT', targetId: item.sourceId, actionPath: '/review' }
 }
 
 function mergeLearningTargets(targets: LearningTarget[]): LearningTarget[] {
@@ -627,7 +590,7 @@ function mergeLearningTargets(targets: LearningTarget[]): LearningTarget[] {
   return [...merged.values()]
 }
 
-function toLearningPathItem(target: LearningTarget) {
+function toLearningPathItem(target: LearningTarget): { type: string; title: string; reason: string; actionPath: string; priorityScore: number; sourceReviewItemId: string; metadata: Prisma.JsonObject } {
   return {
     type: target.type,
     title: target.title,
