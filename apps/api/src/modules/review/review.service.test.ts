@@ -148,3 +148,159 @@ test('ReviewService builds learning path actions from the top six queue entries'
     ['/notebook/note-1', '/notebook/note-2', '/english-notes', '/review'],
   )
 })
+
+test('ReviewService deduplicates learning path entries that point to the same notebook', async () => {
+  let learningItems: Array<Record<string, unknown>> | undefined
+  const service = new ReviewService(
+    {
+      listReviewItems: async () => [
+        createReviewItem({
+          id: 'note-review',
+          type: 'TECHNICAL_NOTE',
+          sourceId: 'note-1',
+          sourceLabel: 'Primary note',
+          weaknessScore: 95,
+          masteryScore: 10,
+        }),
+        createReviewItem({
+          id: 'question-review-1',
+          type: 'GENERATED_QUESTION',
+          sourceId: 'question-1',
+          sourceLabel: 'Question tied to same note',
+          weaknessScore: 90,
+          masteryScore: 10,
+          metadata: { noteId: 'note-1' },
+        }),
+        createReviewItem({
+          id: 'question-review-2',
+          type: 'GENERATED_QUESTION',
+          sourceId: 'question-2',
+          sourceLabel: 'Question tied to another note',
+          weaknessScore: 85,
+          masteryScore: 20,
+          metadata: { noteId: 'note-2' },
+        }),
+      ],
+      replacePendingLearningPath: async (
+        _userId: string,
+        items: Array<Record<string, unknown>>,
+      ) => {
+        learningItems = items
+        return items
+      },
+    } as never,
+    {
+      ensureUserById: async () => ({ id: 'user-1' }),
+      findProfileByUserId: async () => null,
+    } as never,
+  )
+
+  await service.buildLearningPath({ id: 'user-1' })
+
+  assert.deepEqual(
+    learningItems?.map((item) => item.actionPath),
+    ['/notebook/note-1', '/notebook/note-2'],
+  )
+})
+
+test('ReviewService merges review signals that point to the same notebook target', async () => {
+  let learningItems: Array<Record<string, unknown>> | undefined
+  const service = new ReviewService(
+    {
+      listReviewItems: async () => [
+        createReviewItem({
+          id: 'note-review',
+          type: 'TECHNICAL_NOTE',
+          sourceId: 'note-1',
+          sourceLabel: 'Primary note title',
+          weaknessScore: 95,
+          masteryScore: 10,
+        }),
+        createReviewItem({
+          id: 'question-review',
+          type: 'GENERATED_QUESTION',
+          sourceId: 'question-1',
+          sourceLabel: 'Question for same note',
+          weaknessScore: 90,
+          masteryScore: 20,
+          metadata: { noteId: 'note-1' },
+          lastFailureAt: now,
+        }),
+      ],
+      replacePendingLearningPath: async (
+        _userId: string,
+        items: Array<Record<string, unknown>>,
+      ) => {
+        learningItems = items
+        return items
+      },
+    } as never,
+    {
+      ensureUserById: async () => ({ id: 'user-1' }),
+      findProfileByUserId: async () => null,
+    } as never,
+  )
+
+  await service.buildLearningPath({ id: 'user-1' })
+
+  assert.equal(learningItems?.length, 1)
+  assert.equal(learningItems?.[0]?.actionPath, '/notebook/note-1')
+  assert.equal(learningItems?.[0]?.title, 'Question for same note')
+  assert.equal(learningItems?.[0]?.sourceReviewItemId, 'question-review')
+  assert.deepEqual(learningItems?.[0]?.metadata, {
+    reviewType: 'GENERATED_QUESTION',
+    targetType: 'NOTEBOOK_NOTE',
+    targetId: 'note-1',
+    sourceReviewItemIds: ['question-review', 'note-review'],
+    reviewTypes: ['GENERATED_QUESTION', 'TECHNICAL_NOTE'],
+  })
+  assert.equal(learningItems?.[0]?.reason, 'overdue, recent failure')
+})
+
+test('ReviewService keeps generated questions without noteId as standalone fallback targets', async () => {
+  let learningItems: Array<Record<string, unknown>> | undefined
+  const service = new ReviewService(
+    {
+      listReviewItems: async () => [
+        createReviewItem({
+          id: 'question-review',
+          type: 'GENERATED_QUESTION',
+          sourceId: 'question-1',
+          sourceLabel: 'Standalone interview question',
+          metadata: {},
+        }),
+      ],
+      replacePendingLearningPath: async (
+        _userId: string,
+        items: Array<Record<string, unknown>>,
+      ) => {
+        learningItems = items
+        return items
+      },
+    } as never,
+    {
+      ensureUserById: async () => ({ id: 'user-1' }),
+      findProfileByUserId: async () => null,
+    } as never,
+  )
+
+  await service.buildLearningPath({ id: 'user-1' })
+
+  assert.deepEqual(learningItems, [
+    {
+      type: 'GENERATED_QUESTION',
+      title: 'Standalone interview question',
+      reason: 'overdue',
+      actionPath: '/interview',
+      priorityScore: 230,
+      sourceReviewItemId: 'question-review',
+      metadata: {
+        reviewType: 'GENERATED_QUESTION',
+        targetType: 'GENERATED_QUESTION',
+        targetId: 'question-1',
+        sourceReviewItemIds: ['question-review'],
+        reviewTypes: ['GENERATED_QUESTION'],
+      },
+    },
+  ])
+})
