@@ -64,6 +64,9 @@ test('RecommendationsService persists AI metadata on generated recommendations',
         },
       }),
     } as never,
+    {
+      getReviewQueue: async () => ({ items: [], dueCount: 0 }),
+    } as never,
   )
 
   await service.getRecommendations({

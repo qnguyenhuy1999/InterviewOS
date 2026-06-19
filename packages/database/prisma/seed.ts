@@ -1,17 +1,22 @@
-import { randomUUID, scryptSync } from 'node:crypto'
+import { createHash, randomUUID, scryptSync } from 'node:crypto'
 
 import { prisma } from '../src/client'
 
 async function main() {
+  const demoPassword = process.env.DEMO_USER_PASSWORD
+  if (!demoPassword) {
+    throw new Error('DEMO_USER_PASSWORD is required to seed the demo user safely.')
+  }
+
   const user = await prisma.user.upsert({
     where: { email: 'demo@interviewos.dev' },
     update: {
-      passwordHash: hashPassword('Password123!'),
+      passwordHash: hashPassword(demoPassword),
     },
     create: {
       email: 'demo@interviewos.dev',
       name: 'InterviewOS Demo User',
-      passwordHash: hashPassword('Password123!'),
+      passwordHash: hashPassword(demoPassword),
     },
   })
 
@@ -245,8 +250,9 @@ async function main() {
     })
   }
 
+  const fingerprint = createPasswordFingerprint(demoPassword)
   console.log(
-    `Seeded demo user ${user.email} with password Password123!, onboarding profile, one notebook entry, and 5 company modes.`,
+    `Seeded demo user ${user.email}, onboarding profile, one notebook entry, and 5 company modes. Password fingerprint: ${fingerprint}`,
   )
 }
 
@@ -263,4 +269,8 @@ function hashPassword(password: string): string {
   const salt = randomUUID()
   const derivedKey = scryptSync(password, salt, 64).toString('hex')
   return `${salt}:${derivedKey}`
+}
+
+function createPasswordFingerprint(password: string): string {
+  return createHash('sha256').update(password).digest('hex').slice(0, 12)
 }

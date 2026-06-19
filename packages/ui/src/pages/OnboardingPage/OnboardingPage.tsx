@@ -72,7 +72,7 @@ function Root({ reason, children }: OnboardingPageProps) {
           <Card className="relative overflow-hidden border-border/60 shadow-xl shadow-black/4">
             {/* Subtle top accent line */}
             <div
-              className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-primary/40 to-transparent"
+              className="absolute inset-x-8 top-0 h-px bg-primary/30"
               aria-hidden="true"
             />
 

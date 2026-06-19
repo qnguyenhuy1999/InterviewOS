@@ -17,11 +17,11 @@ interface AuthEmailProvider {
 }
 
 export function formatVerificationConsoleMessage(payload: VerificationEmail) {
-  return `Verification email requested for ${payload.email}: ${payload.link}`
+  return `Verification email requested for ${payload.email}: ${redactToken(payload.link)}`
 }
 
 export function formatPasswordResetConsoleMessage(payload: PasswordResetEmail) {
-  return `Password reset email requested for ${payload.email}: ${payload.link}`
+  return `Password reset email requested for ${payload.email}: ${redactToken(payload.link)}`
 }
 
 @Injectable()
@@ -65,4 +65,8 @@ class NoopAuthEmailProvider implements AuthEmailProvider {
   async sendVerificationEmail(_payload: VerificationEmail) {}
 
   async sendPasswordResetEmail(_payload: PasswordResetEmail) {}
+}
+
+function redactToken(link: string) {
+  return link.replace(/([?&]token=)[^&]+/i, '$1[redacted]')
 }

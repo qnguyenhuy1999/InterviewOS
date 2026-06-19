@@ -22,11 +22,9 @@ export class RecommendationsService {
     private readonly recommendationsRepository: RecommendationsRepository,
     private readonly usersRepository: UsersRepository,
     private readonly aiGateway: AIGateway,
-    reviewService?: ReviewService,
+    reviewService: ReviewService,
   ) {
-    this.reviewActions = reviewService ?? {
-      getReviewQueue: async () => ({ items: [], dueCount: 0 }),
-    }
+    this.reviewActions = reviewService
   }
 
   async getRecommendations(currentUser: AuthenticatedUser): Promise<RecommendationSummary> {

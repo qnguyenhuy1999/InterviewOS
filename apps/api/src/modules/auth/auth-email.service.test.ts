@@ -7,7 +7,7 @@ import {
   formatVerificationConsoleMessage,
 } from './auth-email.service'
 
-test('console auth email messages include the delivery link', () => {
+test('console auth email messages redact sensitive token values', () => {
   const verificationMessage = formatVerificationConsoleMessage({
     email: 'verify@example.com',
     link: 'http://localhost:3000/verify-email?token=verify-token',
@@ -18,9 +18,11 @@ test('console auth email messages include the delivery link', () => {
   })
 
   assert.match(verificationMessage, /verify@example.com/)
-  assert.match(verificationMessage, /verify-email\?token=verify-token/)
+  assert.match(verificationMessage, /verify-email\?token=\[redacted\]/)
+  assert.doesNotMatch(verificationMessage, /verify-token/)
   assert.match(passwordResetMessage, /reset@example.com/)
-  assert.match(passwordResetMessage, /reset-password\?token=reset-token/)
+  assert.match(passwordResetMessage, /reset-password\?token=\[redacted\]/)
+  assert.doesNotMatch(passwordResetMessage, /reset-token/)
 })
 
 test('AuthEmailService blocks console delivery in production', () => {

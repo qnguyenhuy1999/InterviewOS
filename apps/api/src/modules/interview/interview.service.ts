@@ -30,12 +30,9 @@ export class InterviewService {
     private readonly notebookRepository: NotebookRepository,
     private readonly usersRepository: UsersRepository,
     private readonly aiGateway: AIGateway,
-    reviewService?: ReviewService,
+    reviewService: ReviewService,
   ) {
-    this.reviewActions = reviewService ?? {
-      syncEnglishNoteReviews: async () => undefined,
-      syncWeakConceptReviews: async () => undefined,
-    }
+    this.reviewActions = reviewService
   }
 
   async createSession(currentUser: CurrentUserRef, payload: CreateInterviewSessionDto) {

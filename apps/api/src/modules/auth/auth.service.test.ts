@@ -326,6 +326,19 @@ test('AuthService creates hashed sessions and enforces expiration and revocation
   )
 })
 
+test('AuthService treats malformed stored password hashes as invalid credentials', async () => {
+  const harness = createHarness()
+  const user = harness.seedUser({
+    email: 'broken-hash@example.com',
+    passwordHash: 'salt:abc',
+  })
+
+  await assert.rejects(
+    () => harness.service.login({ email: user.email, password: 'password123' }, {}),
+    UnauthorizedException,
+  )
+})
+
 test('AuthService supports logout all and blocks revocation of another user session', async () => {
   const harness = createHarness()
   const userOne = harness.seedUser({ email: 'one@example.com', password: 'password123' })

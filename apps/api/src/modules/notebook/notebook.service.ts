@@ -53,12 +53,9 @@ export class NotebookService {
     private readonly usersRepository: UsersRepository,
     private readonly aiGateway: AIGateway,
     private readonly aiContextBuilder: AIContextBuilder,
-    reviewService?: ReviewService,
+    reviewService: ReviewService,
   ) {
-    this.reviewActions = reviewService ?? {
-      syncTechnicalNoteReview: async () => undefined,
-      replaceQuestionReviews: async () => undefined,
-    }
+    this.reviewActions = reviewService
   }
 
   async createNote(currentUser: CurrentUserRef, payload: CreateNoteDto) {

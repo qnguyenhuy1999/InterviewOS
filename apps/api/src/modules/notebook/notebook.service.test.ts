@@ -21,6 +21,7 @@ test('NotebookService uses saved onboarding defaults when note overrides are abs
         overrideEnglishLevel: null,
         preferredOutputStyle: null,
       }),
+      setNoteStatus: async () => undefined,
       replaceGeneratedContent: async (
         _userId: string,
         _noteId: string,
@@ -91,9 +92,14 @@ test('NotebookService uses saved onboarding defaults when note overrides are abs
         explanationDepth: 'DEEP',
       }),
     } as never,
+    {
+      syncTechnicalNoteReview: async () => undefined,
+      replaceQuestionReviews: async () => undefined,
+    } as never,
   )
 
   await service.generateTechnicalNote({ id: 'user-1' }, 'note-1')
+  await new Promise((resolve) => setImmediate(resolve))
 
   assert.deepEqual(capturedInput, {
     topic: 'Redis',

@@ -112,6 +112,10 @@ test('InterviewService lets session overrides replace saved defaults', async () 
         }
       },
     } as never,
+    {
+      syncEnglishNoteReviews: async () => undefined,
+      syncWeakConceptReviews: async () => undefined,
+    } as never,
   )
 
   await service.answerQuestion({ id: 'user-1' }, 'session-1', {

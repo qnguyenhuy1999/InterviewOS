@@ -18,7 +18,12 @@ import {
 import { ConfigService } from '@nestjs/config'
 
 import type { AuthenticatedUser } from '../../common/auth/authenticated-request'
-import { generateOpaqueToken, hashOpaqueToken, hashPassword, verifyPassword } from './auth.crypto'
+import {
+  generateOpaqueToken,
+  hashOpaqueToken,
+  hashPasswordAsync,
+  verifyPasswordAsync,
+} from './auth.crypto'
 import { AuthRepository } from './auth.repository'
 import { AuthEmailService } from './auth-email.service'
 import type {
@@ -50,7 +55,7 @@ export class AuthService {
     const user = await this.authRepository.findByEmail(input.email.toLowerCase())
 
     const passwordHash = user?.passwordHash ?? DUMMY_HASH
-    const passwordValid = verifyPassword(input.password, passwordHash)
+    const passwordValid = await verifyPasswordAsync(input.password, passwordHash)
     if (!user?.passwordHash || !passwordValid) {
       throw new UnauthorizedException('Invalid email or password.')
     }
@@ -69,7 +74,7 @@ export class AuthService {
 
     const user = await this.authRepository.createUser({
       email,
-      passwordHash: hashPassword(input.password),
+      passwordHash: await hashPasswordAsync(input.password),
       name: input.name,
     })
 
@@ -167,7 +172,7 @@ export class AuthService {
 
     const result = await this.authRepository.resetPasswordAndRevokeSessions({
       userId: token.userId,
-      passwordHash: hashPassword(input.password),
+      passwordHash: await hashPasswordAsync(input.password),
       resetTokenId: token.id,
       now,
     })

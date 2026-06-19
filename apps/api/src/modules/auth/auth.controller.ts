@@ -8,6 +8,7 @@ import type {
   AuthenticatedRequest,
   AuthenticatedUser,
 } from '../../common/auth/authenticated-request'
+import { AllowUnverifiedEmail } from '../../common/decorators/allow-unverified-email.decorator'
 import { CurrentUser } from '../../common/decorators/current-user.decorator'
 import { Public } from '../../common/decorators/public.decorator'
 import { AuthThrottle } from '../../common/decorators/throttle.decorator'
@@ -68,6 +69,7 @@ export class AuthController {
   }
 
   @Post('logout')
+  @AllowUnverifiedEmail()
   @ApiOperation({ summary: 'Logout the current session' })
   @ApiEntityResponse(AuthSuccessResponseDto, { status: 'created' })
   async logout(
@@ -80,6 +82,7 @@ export class AuthController {
   }
 
   @Post('logout-all')
+  @AllowUnverifiedEmail()
   @ApiOperation({ summary: 'Logout all active sessions' })
   @ApiEntityResponse(AuthSuccessResponseDto, { status: 'created' })
   async logoutAll(
@@ -92,6 +95,7 @@ export class AuthController {
   }
 
   @Get('me')
+  @AllowUnverifiedEmail()
   @ApiOperation({ summary: 'Get the authenticated session user' })
   @ApiEntityResponse(AuthSessionResponseDto)
   me(@CurrentUser() currentUser: AuthenticatedUser) {
@@ -99,6 +103,7 @@ export class AuthController {
   }
 
   @Get('sessions')
+  @AllowUnverifiedEmail()
   @ApiOperation({ summary: 'List active sessions for the current user' })
   @ApiArrayResponse(ActiveAuthSessionDto)
   sessions(@CurrentUser() currentUser: AuthenticatedUser) {
@@ -106,6 +111,7 @@ export class AuthController {
   }
 
   @Delete('sessions/:sessionId')
+  @AllowUnverifiedEmail()
   @ApiOperation({ summary: 'Revoke a specific active session' })
   @ApiParam({ name: 'sessionId', type: String })
   @ApiEntityResponse(AuthSuccessResponseDto)
